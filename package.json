@@ -5,6 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "start": "nodemon server/index.js",
+    "production": "node server/index.js",
     "dev": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
