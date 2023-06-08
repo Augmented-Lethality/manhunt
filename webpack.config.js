@@ -9,7 +9,7 @@ module.exports = {
   watch: true,
   devtool: "eval-source-map",
   entry: {
-    app: path.resolve(srcDir, "index.jsx"),
+    app: path.resolve(srcDir, "index.tsx"),
   },
   output: {
     path: distDir,
@@ -24,15 +24,15 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env", "@babel/preset-react"],
-          },
+          loader: "ts-loader",
         },
       },
     ],
+  },
+  resolve: {
+    extensions: [".js", ".ts", ".tsx"],
   },
 };
