@@ -1,18 +1,20 @@
 import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 
-import LoginButton from './0Auth/LoginButton.jsx';
-import LogoutButton from './0Auth/LogoutButton.jsx';
+// import NotFoundPage from "./pages/NotFoundPage.jsx";
+
+import LandingPage from './pages/LandingPage.jsx';
+import HomePage from './pages/HomePage.jsx';
 
 const App = () => {
 
-
   return (
-    <div>
-          <h1>Manhunt in App.jsx</h1>
-<LoginButton></LoginButton>
-<LogoutButton></LogoutButton>
-    </div>
-  )
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/home" element={<HomePage />} />
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
+      </Routes>
+  );
 };
 
 export default App
