@@ -5,9 +5,12 @@
   "main": "index.ts",
   "scripts": {
     "start": "nodemon server/index.ts",
-    "build": "webpack",
-    "dev": "webpack -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:server": "tsc -p tsconfig-server.json",
+    "build:client": "webpack",
+    "build": "npm run build:server && npm run build:client",
+    "dev:server": "tsc -p tsconfig-server.json -w",
+    "dev:client": "webpack -w",
+    "dev": "npm run dev:server & npm run dev:client"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +22,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.12.0",
+    "sequelize": "^6.32.0",
     "socket.io": "^4.6.2"
   },
   "devDependencies": {
