@@ -1,6 +1,6 @@
 import React from 'react';
-import {LoginButton} from '../Auth0/LoginButton.jsx';
-import {SignupButton} from '../Auth0/SignupButton.jsx';
+import {LoginButton} from '../Auth0/LoginButton';
+import {SignupButton} from '../Auth0/SignupButton';
 
 const LandingPage = () => {
   return (
