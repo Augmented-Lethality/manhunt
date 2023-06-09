@@ -14,7 +14,11 @@ module.exports = {
   output: {
     path: distDir,
     filename: "bundle.js",
+    // publicPath: '/'
   },
+  // devServer: {
+  //   historyApiFallback: true,
+  // },
   plugins: [
     new HtmlWebPackPlugin({
       template: path.resolve(srcDir, "index.html"),
