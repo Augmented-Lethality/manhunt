@@ -6,7 +6,7 @@ const distDir = path.resolve(__dirname, "client/dist");
 
 module.exports = {
   mode: "development",
-  watch: true,
+  // watch: true,
   devtool: "eval-source-map",
   entry: {
     app: path.resolve(srcDir, "index.tsx"),
