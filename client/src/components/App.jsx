@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { PageLoader } from './Auth0/Loading.jsx'
 import { useAuth0 } from "@auth0/auth0-react";
+import { AuthenticationGuard } from "./Auth0/authentication-guard.js";
 // import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 import LandingPage from './pages/LandingPage.jsx';
@@ -22,8 +23,8 @@ const App = () => {
   return (
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/home" element={<AuthenticationGuard component={HomePage} />} />
+        <Route path="/profile" element={<AuthenticationGuard component={ProfilePage} />} />
         {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
   );
