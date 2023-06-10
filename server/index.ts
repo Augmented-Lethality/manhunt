@@ -6,14 +6,14 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
-const dist = path.resolve(__dirname, '..', 'client', 'dist');
+const dist = path.resolve(__dirname, '..', 'dist', 'client');
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, { /* options */ });
 const port = process.env.PORT || 3666;
 
 app.use(express.json());
-app.use(express.static(path.resolve(__dirname, '../client/dist')));
+app.use(express.static(dist));
 app.use(express.urlencoded({ extended: true }));
 
 app.get('*', (req, res) => {
