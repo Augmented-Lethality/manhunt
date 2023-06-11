@@ -3,7 +3,6 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 const srcDir = path.resolve(__dirname, "client/src");
 const distDir = path.resolve(__dirname, "dist/client");
-// console.log(distDir)
 
 module.exports = {
   mode: "production",
