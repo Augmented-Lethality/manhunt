@@ -118,7 +118,7 @@ Game.init({
   status: {
     type: DataTypes.ENUM('lobby', 'ongoing', 'complete'),
     allowNull: false,
-    defaultValue: 'pending'
+    defaultValue: 'lobby'
   },
   timeConstraints: {
     type: DataTypes.STRING,
@@ -200,12 +200,12 @@ async function dropTables() {
     // Drop the tables in reverse order of their dependencies
 
 
-    await UserTrophy.drop();
-    await Trophy.drop();
-    await Session.drop();
-    await Friends.drop();
-    await Game.drop();
-    await User.drop();
+    // await UserTrophy.drop();
+    // await Trophy.drop();
+    // await Session.drop();
+    // await Friends.drop();
+    // await Game.drop();
+    // await User.drop();
     
     console.log('Tables listed have been dropped.');
   } catch (error) {
@@ -213,4 +213,4 @@ async function dropTables() {
   }
 }
 
-dropTables();
+// dropTables();
