@@ -6,6 +6,7 @@ import { AuthenticationGuard } from "./Auth0/authentication-guard";
 import NotFoundPage from "./pages/NotFoundPage";
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
+import GamePage from './pages/GamePage';
 import ProfilePage from './pages/ProfilePage';
 
 const App = () => {
@@ -24,6 +25,8 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<AuthenticationGuard component={HomePage} />} />
         <Route path="/profile" element={<AuthenticationGuard component={ProfilePage} />} />
+        <Route path="/profile" element={<AuthenticationGuard component={ProfilePage} />} />
+        <Route path="/onthehunt" element={<AuthenticationGuard component={GamePage} />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
   );
