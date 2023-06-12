@@ -2,27 +2,47 @@ import { useAuth0 } from "@auth0/auth0-react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const ProfilePage = () => {
-  const { user, isAuthenticated } = useAuth0();
-  const [userData, setUserData] = useState(null);
+interface UserData {
+  username: string;
+  email: string;
+  authId: string;
+  // Add other user data properties as needed
+}
 
+const ProfilePage: React.FC = () => {
+  const { user, isAuthenticated } = useAuth0();
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
-    if (isAuthenticated && user) {
-      const fetchUserData = async () => {
-        try {
-          const response = await axios.get(`/Users/${user.sub}`);
-          setUserData(response.data);
-          console.log(response);
-        } catch (error) {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get<UserData>(`/Users/${user?.sub}`);
+        setUserData(response.data);
+        console.log(response);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          // User doesn't exist, post user data to the backend
+          try {
+            const postResponse = await axios.post<UserData>("/Users", {
+              username: user?.name,
+              email: user?.email,
+              authId: user?.sub,
+              // Include other user data properties you want to save
+            });
+            console.log(postResponse.data);
+          } catch (postError) {
+            console.error("Error posting user data:", postError);
+          }
+        } else {
           console.error("Error fetching user data:", error);
         }
-      };
+      }
+    };
 
+    if (isAuthenticated && user) {
       fetchUserData();
     }
   }, [isAuthenticated, user]);
-
 
   if (!user) {
     return null;
