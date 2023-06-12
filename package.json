@@ -20,7 +20,6 @@
   "dependencies": {
     "@auth0/auth0-react": "^2.1.0",
     "@react-three/fiber": "^8.13.2",
-    "@types/three": "^0.152.1",
     "ar.js": "^2.2.2",
     "concurrently": "^8.2.0",
     "dotenv": "^16.1.4",
@@ -42,6 +41,7 @@
     "@types/node": "^20.2.5",
     "@types/react": "^18.2.9",
     "@types/react-dom": "^18.2.4",
+    "@types/three": "^0.152.1",
     "babel-loader": "^9.1.2",
     "html-webpack-plugin": "^5.5.1",
     "nodemon": "^2.0.22",
