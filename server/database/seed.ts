@@ -1,4 +1,4 @@
-const { Client } =require('pg');
+const { Client } = require('pg');
 
 // Create a new client instance
 const client = new Client({

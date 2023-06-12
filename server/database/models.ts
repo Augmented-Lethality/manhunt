@@ -42,7 +42,23 @@ User.init({
   tfModelPath: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+
+  gamesPlayed: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+
+  gamesWon: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+
+  killsConfirmed: {
+    type: DataTypes.INTEGER,
+    allowNull: true
   }
+  
 }, { sequelize });
 
 class Friends extends Model {}
