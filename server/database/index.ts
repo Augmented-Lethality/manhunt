@@ -1,20 +1,26 @@
 import { Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize('Manhunt', 'postgres', '5432', {
+// parameters are db, user, and password
+const sequelize = new Sequelize('manhunt', 'postgres', '', {
   host: 'localhost',
   port: 5432,
   dialect: 'postgres',
+  logging: false, // Avoids printing all syncing messages in server
 });
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection to the database has been established successfully.');
 
-    // Additional code and server initialization can go here
+sequelize.sync({alter: true})  // Syncs the database and models
+  .then(() => {
+    console.log("Tables synched.");
+    sequelize.authenticate()
+  })
+  .then(() => {
+    console.log("Connected to database.");
   })
   .catch((error: Error) => {
     console.error('Unable to connect to the database:', error);
   });
 
-  export { sequelize };
+  // sequelize.query("set foreign_key_checks = 0");
+
+  module.exports = { sequelize };

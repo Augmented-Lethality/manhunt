@@ -1,26 +1,31 @@
-import { sequelize } from './index'; // Assuming this is the path to your app.ts file
-import { User } from './models/User'; // Assuming User is a Sequelize model
+const { Client } =require('pg');
 
-const seedData = async () => {
+// Create a new client instance
+const client = new Client({
+  user: 'postgres',
+  host: 'localhost',
+  password: '',
+  port: 5432,
+});
+
+async function setupDatabase() {
   try {
-    // Create seed data using Sequelize model methods
-    await User.bulkCreate([
-      { name: 'John Doe', email: 'john@example.com' },
-      { name: 'Jane Smith', email: 'jane@example.com' },
-      // Add more seed data as needed
-    ]);
+    await client.connect();
 
-    console.log('Seed data created successfully.');
+    // Drop the database if it exists
+    await client.query('DROP DATABASE IF EXISTS manhunt');
+
+    // Create the database
+    await client.query('CREATE DATABASE manhunt');
+
+    console.log('Database setup complete.');
   } catch (error) {
-    console.error('Error creating seed data:', error);
+    console.error('Error setting up database:', error);
   } finally {
-    // Close the Sequelize connection
-    await sequelize.close();
+    // Make sure to always close the client
+    await client.end();
   }
-};
+}
 
-seedData();
-
-
-
+setupDatabase();
 

@@ -3,18 +3,22 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { createServer } from "http";
 import { Server } from "socket.io";
+const { sequelize } = require("./database/index");
+const { Users } = require("./routes/users");
 
 dotenv.config();
 
-const dist = path.resolve(__dirname, '..', 'client', 'dist');
+const dist = path.resolve(__dirname, '..', 'client');
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, { /* options */ });
 const port = process.env.PORT || 3666;
 
 app.use(express.json());
-app.use(express.static(path.resolve(__dirname, '../client/dist')));
+app.use(express.static(dist));
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/users', Users);
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(dist, 'index.html'), (err) => {
