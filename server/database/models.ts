@@ -24,6 +24,12 @@ User.init({
     }
   },
 
+  authId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    unique: true
+  },
+
   sessionId: {
     type: DataTypes.STRING,
     allowNull: true
@@ -58,7 +64,7 @@ User.init({
     type: DataTypes.INTEGER,
     allowNull: true
   }
-  
+
 }, { sequelize });
 
 class Friends extends Model {}

@@ -2,8 +2,6 @@ const { Router } = require('express');
 const Users = Router();
 const { User } = require('../database/models')
 
-console.log('test3')
-
 // GET ALL USERS
 Users.get('/', async (req, res) => {
   try {
@@ -17,13 +15,18 @@ Users.get('/', async (req, res) => {
   }
 });
 
-// GET CURRENT USER
-Users.get('/:userId', async (req, res) => {
+
+// GET SPECIFIC USER
+Users.get('/:authId', async (req, res) => {
   try {
-    const userId = req.params.userId; // Assuming you have access to the authenticated user's ID
-    console.log(userId);
-    // Fetch the user's data from the database based on their ID
-    const user = await User.findByPk(userId);
+    const authId = req.params.authId; // Assuming you have access to the authenticated user's ID
+    console.log('authId:', authId);
+    console.log('req.params.authId:', req.params.authId);
+    
+    // Fetch the user's data from the database based on their google auth ID
+    const user = await User.findOne({ where: { authId: req.params.authId } });
+
+    console.log('User:', user);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -39,11 +42,12 @@ Users.get('/:userId', async (req, res) => {
 // POST NEW USER
 Users.post('/', async (req, res) => {
   try {
-    const { username, email, sessionId, gameId, location, tfModelPath, gamesPlayed, gamesWon, killsConfirmed } = req.body;
+    const { username, email, authId, sessionId, gameId, location, tfModelPath, gamesPlayed, gamesWon, killsConfirmed } = req.body;
     // Create a new user in the database
     const newUser = await User.create({
       username,
       email,
+      authId,
       sessionId,
       gameId,
       location,

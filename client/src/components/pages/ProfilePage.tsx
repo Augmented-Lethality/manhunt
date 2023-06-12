@@ -1,8 +1,28 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const ProfilePage = () => {
-  const { user } = useAuth0();
+  const { user, isAuthenticated } = useAuth0();
+  const [userData, setUserData] = useState(null);
+
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const fetchUserData = async () => {
+        try {
+          const response = await axios.get(`/Users/${user.sub}`);
+          setUserData(response.data);
+          console.log(response);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      };
+
+      fetchUserData();
+    }
+  }, [isAuthenticated, user]);
+
 
   if (!user) {
     return null;
@@ -38,6 +58,8 @@ const ProfilePage = () => {
           <div className="profile__details">
             <h2>Decoded ID Token</h2>
             <p>{JSON.stringify(user, null, 2)}</p>
+            <h2>userData from axios request to backend</h2>
+            <p>{JSON.stringify(userData, null, 2)}</p>
           </div>
         </div>
       </div>
