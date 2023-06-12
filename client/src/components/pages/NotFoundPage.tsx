@@ -1,8 +1,7 @@
 import React from 'react';
 
-function PageLoader() {
+function NotFoundPage() {
   return <h1>404 PAGE NOT FOUND</h1>;
 }
 
-export default PageLoader;
-
+export default NotFoundPage;
