@@ -19,6 +19,7 @@ async function setupDatabase() {
     await client.query('CREATE DATABASE manhunt');
 
     console.log('Database setup complete.');
+    
   } catch (error) {
     console.error('Error setting up database:', error);
   } finally {
