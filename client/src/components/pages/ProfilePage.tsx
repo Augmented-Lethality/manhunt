@@ -1,8 +1,48 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const ProfilePage = () => {
-  const { user } = useAuth0();
+interface UserData {
+  username: string;
+  email: string;
+  authId: string;
+  // Add other user data properties as needed
+}
+
+const ProfilePage: React.FC = () => {
+  const { user, isAuthenticated } = useAuth0();
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get<UserData>(`/Users/${user?.sub}`);
+        setUserData(response.data);
+        console.log(response);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          // User doesn't exist, post user data to the backend
+          try {
+            const postResponse = await axios.post<UserData>("/Users", {
+              username: user?.name,
+              email: user?.email,
+              authId: user?.sub,
+              // Include other user data properties you want to save
+            });
+            console.log(postResponse.data);
+          } catch (postError) {
+            console.error("Error posting user data:", postError);
+          }
+        } else {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+
+    if (isAuthenticated && user) {
+      fetchUserData();
+    }
+  }, [isAuthenticated, user]);
 
   if (!user) {
     return null;
@@ -38,6 +78,8 @@ const ProfilePage = () => {
           <div className="profile__details">
             <h2>Decoded ID Token</h2>
             <p>{JSON.stringify(user, null, 2)}</p>
+            <h2>userData from axios request to backend</h2>
+            <p>{JSON.stringify(userData, null, 2)}</p>
           </div>
         </div>
       </div>

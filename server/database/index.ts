@@ -17,8 +17,8 @@ sequelize.sync({alter: true})  // Syncs the database and models
   .then(() => {
     console.log("Connected to database.");
   })
-  .catch((err) => {
-    console.error("Unable to connect to database:", err);
+  .catch((error: Error) => {
+    console.error('Unable to connect to the database:', error);
   });
 
   // sequelize.query("set foreign_key_checks = 0");
