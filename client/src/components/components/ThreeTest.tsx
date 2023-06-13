@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import React, { useRef, useEffect } from 'react'
 
+import {WebcamRendererLocal} from './webcam';
+
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 import * as THREEx from '@ar-js-org/ar.js/three.js/build/ar-threex-location-only.js';
 
@@ -37,18 +39,14 @@ const ThreeTest: React.FC = () => {
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
 
     // new video element
-    const video = document.getElementById('video1') as HTMLVideoElement;
-    // video.style.position = 'absolute';
-    video.style.top = '0';
-    video.style.left = '0';
-    video.style.zIndex = '-1';
+    // const video = document.getElementById('video1') as HTMLVideoElement;
 
     // LocationBased object for AR, takes scene and camera
     const arjs = new THREEx.LocationBased(scene, camera);
 
     // renders the webcam stream as the background for the scene
     // I THINK THIS IS THE PROBLEM
-    const cam = new THREEx.WebcamRenderer(renderer, '#video1');
+    const cam = new WebcamRendererLocal(renderer, '#video1');
 
     // create a red box to render on the screen that stays in the defined location
     const geom = new THREE.BoxGeometry(20, 20, 20);
@@ -59,7 +57,7 @@ const ThreeTest: React.FC = () => {
     arjs.add(box, -0.72, 51.051);
 
     // on desktop so need the fake gps
-    arjs.fakeGps(-0.72, 51.05);
+    arjs.fakeGps(-0.72, 51.05, 10);
 
     // can be used outside of the useEffect scope, check above
     cameraRef.current = camera;
