@@ -2,11 +2,15 @@ import * as THREE from 'three'
 import React, { useRef, useState } from 'react'
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber'
 
+import * as THREEx from '@ar-js-org/ar.js/three.js/build/ar-threex-location-only.js';
+
 function Box(props: ThreeElements['mesh']) {
   const mesh = useRef<THREE.Mesh>(null!)
   const [hovered, setHover] = useState(false)
   const [active, setActive] = useState(false)
   useFrame((state, delta) => (mesh.current.rotation.x += delta))
+
+
   return (
     <mesh
       {...props}
@@ -22,6 +26,11 @@ function Box(props: ThreeElements['mesh']) {
 }
 
 const ThreeTest: React.FC = () => {
+
+  // const arjs = new THREEx.LocationBased();
+  // const cam = new THREEx.WebcamRenderer();
+  console.log(THREEx)
+
   return (
     <Canvas>
     <ambientLight />
