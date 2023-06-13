@@ -16,33 +16,24 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get<UserData>(`/Users/${user?.sub}`);
+        // Check if the user exists by sending a POST request instead of a GET request
+        const response = await axios.post<UserData>("/Users", {
+          username: user?.name,
+          email: user?.email,
+          authId: user?.sub,
+          // Include other user data properties you want to save
+        });
         setUserData(response.data);
         console.log(response);
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
-          // User doesn't exist, post user data to the backend
-          try {
-            const postResponse = await axios.post<UserData>("/Users", {
-              username: user?.name,
-              email: user?.email,
-              authId: user?.sub,
-              // Include other user data properties you want to save
-            });
-            console.log(postResponse.data);
-          } catch (postError) {
-            console.error("Error posting user data:", postError);
-          }
-        } else {
-          console.error("Error fetching user data:", error);
-        }
+        console.error("Error fetching user data:", error);
       }
     };
 
     if (isAuthenticated && user) {
       fetchUserData();
     }
-  }, [isAuthenticated, user]);
+  }, []);
 
   if (!user) {
     return null;

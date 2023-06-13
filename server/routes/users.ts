@@ -25,7 +25,7 @@ Users.get('/:authId', async (req, res) => {
     
     // Fetch the user's data from the database based on their google auth ID
     const user = await User.findOne({ where: { authId: req.params.authId } });
-
+    
     console.log('User:', user);
 
     if (!user) {
@@ -39,28 +39,40 @@ Users.get('/:authId', async (req, res) => {
   }
 });
 
-// POST NEW USER
+
+
+// POST NEW USER, checks if user exists first
 Users.post('/', async (req, res) => {
   try {
     const { username, email, authId, sessionId, gameId, location, tfModelPath, gamesPlayed, gamesWon, killsConfirmed } = req.body;
-    // Create a new user in the database
-    const newUser = await User.create({
-      username,
-      email,
-      authId,
-      sessionId,
-      gameId,
-      location,
-      tfModelPath,
-      gamesPlayed,
-      gamesWon,
-      killsConfirmed,
-    });
-    res.status(201).json(newUser);
+
+    // Check if the user already exists
+    const existingUser = await User.findOne({ where: { authId } });
+
+    if (existingUser) {
+      // User already exists, return the existing user in the response
+      res.status(200).json(existingUser);
+    } else {
+      // Create a new user in the database
+      const newUser = await User.create({
+        username,
+        email,
+        authId,
+        sessionId,
+        gameId,
+        location,
+        tfModelPath,
+        gamesPlayed,
+        gamesWon,
+        killsConfirmed,
+      });
+      res.status(201).json(newUser);
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 module.exports = { Users };
