@@ -5,7 +5,6 @@ import React, { useRef, useEffect } from 'react'
 import * as THREEx from '@ar-js-org/ar.js/three.js/build/ar-threex-location-only.js';
 
 const ThreeTest: React.FC = () => {
-
   // the canvas element to render the scene
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -25,7 +24,6 @@ const ThreeTest: React.FC = () => {
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
 
   useEffect(() => {
-
     // checks if the canvas HTML element is there, otherwise return and don't touch
     // the rest of the code
     if (!canvasRef.current) return;
@@ -33,17 +31,24 @@ const ThreeTest: React.FC = () => {
     // otherwise it isn't null and assigns it
     const canvas = canvasRef.current;
 
-    // new scene, camera, and renderer
+     // new scene, camera, and renderer
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, 1.33, 0.1, 10000);
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas});
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+
+    // new video element
+    const video = document.getElementById('video1') as HTMLVideoElement;
+    // video.style.position = 'absolute';
+    video.style.top = '0';
+    video.style.left = '0';
+    video.style.zIndex = '-1';
 
     // LocationBased object for AR, takes scene and camera
     const arjs = new THREEx.LocationBased(scene, camera);
 
     // renders the webcam stream as the background for the scene
     // I THINK THIS IS THE PROBLEM
-    const cam = new THREEx.WebcamRenderer(renderer, "#video1");
+    const cam = new THREEx.WebcamRenderer(renderer, '#video1');
 
     // create a red box to render on the screen that stays in the defined location
     const geom = new THREE.BoxGeometry(20, 20, 20);
@@ -76,7 +81,7 @@ const ThreeTest: React.FC = () => {
         camera.updateProjectionMatrix();
       }
       cam.update();
-      renderer.render(scene, camera); //recursively calls itself to continue looping
+      renderer.render(scene, camera);
       frameIdRef.current = requestAnimationFrame(render);
     }
 
@@ -123,17 +128,16 @@ const ThreeTest: React.FC = () => {
     };
   }, []);
 
-  // returning the canvas element onto the react component
   return (
     <>
-      <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }}/>
-      <video
-        id="video1"
+      <video id="video1" style={{ width: '100%', height: '100%', position: 'absolute' }}/>
+      <canvas
+        ref={canvasRef}
+        style={{ width: '100%', height: '100%', position: 'absolute' }}
       />
     </>
   );
-}
-
+};
 // REACT THREE FIBER NOTES IF NEEDED
 /*
 <Canvas />:
