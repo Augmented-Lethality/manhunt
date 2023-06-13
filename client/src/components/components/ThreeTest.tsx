@@ -42,6 +42,7 @@ const ThreeTest: React.FC = () => {
     const arjs = new THREEx.LocationBased(scene, camera);
 
     // renders the webcam stream as the background for the scene
+    // I THINK THIS IS THE PROBLEM
     const cam = new THREEx.WebcamRenderer(renderer);
 
     // create a red box to render on the screen that stays in the defined location
@@ -123,7 +124,7 @@ const ThreeTest: React.FC = () => {
   }, []);
 
   // returning the canvas element onto the react component
-  return <canvas ref={canvasRef} style={{ backgroundColor: 'black', width: '100%', height: '100%' }}/>;
+  return <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }}/>;
 }
 
 // REACT THREE FIBER NOTES IF NEEDED
