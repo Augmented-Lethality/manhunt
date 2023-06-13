@@ -1,10 +1,10 @@
 import React from 'react';
+import FaceRecognition from './FaceRecognition'
 
 function KillMode() {
+
   return (
-    <div>
-      <h2>KillMode</h2>
-    </div>
+    <FaceRecognition/>
   );
 }
 
