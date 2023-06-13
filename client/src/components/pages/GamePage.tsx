@@ -3,7 +3,7 @@ import KillMode from '../components/KillMode'
 import ChaseMode from '../components/ChaseMode'
 
 function GamePage() {
-  const [gameMode, setGameMode] = useState('Chase')
+  const [gameMode, setGameMode] = useState('Kill')
   
   return (
     <div>
