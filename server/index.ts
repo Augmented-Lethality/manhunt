@@ -18,6 +18,10 @@ app.use(express.json());
 app.use(express.static(dist));
 app.use(express.urlencoded({ extended: true }));
 
+//server static files. will need to change for production.
+app.use('/assets', express.static(path.join(__dirname, '..', '..', 'public/assets')))
+app.use('/models', express.static(path.join(__dirname, '..', '..', 'public/models')))
+
 app.use('/users', Users);
 
 app.get('*', (req, res) => {
