@@ -32,12 +32,50 @@ export class ServerSocket {
   StartListeners = (socket: Socket) => {
     console.info('Message received from ' + socket.id);
 
-    socket.on('handshake', () => {
+    socket.on('handshake', (callback:(uid: string, users:string[]) => void) => {
       console.info('handshake received from ' + socket.id);
+
+      // reconnection attempt?
+      const reconnected = Object.keys(this.users).includes(socket.id);
+
+      if(reconnected) {
+        console.info('User has reconnected');
+        const uid = this.GetUidFromSocketId(socket.id);
+        const users = Object.keys(this.users);
+
+        if(uid) {
+          console.info('Sending callback for reconnect...');
+          callback(uid, users);
+          return;
+        }
+      }
+
+      // Generate new user
+      const uid = v4();
+      this.users[uid] = socket.id;
+      const users = Object.keys(this.users);
+
+      console.info('Sending callback for handshake...');
+      callback(uid, users);
+
+      // Send new user to all connected users
+      this.SendMessage(
+        'user_connected',
+        users.filter((id) => id !== socket.id),
+        users
+      );
     });
 
     socket.on('disconnect', () => {
       console.info('Disconnect received from ' + socket.id)
     })
+  }
+
+  GetUidFromSocketId = (id: string) => Object.keys(this.users).find((uid) => this.users[uid] === id);
+
+  // name is name of socket, users is list of socket ids, payload is information needed by the user for state updates
+  SendMessage = (name: string, users: string[], payload?: Object) => {
+    console.info('Emitting event: ' + name + ' to ', users);
+    users.forEach((id) => (payload ? this.io.to(id).emit(name, payload) : this.io.to(id).emit(name)));
   }
 }
