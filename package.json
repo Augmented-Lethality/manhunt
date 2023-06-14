@@ -25,7 +25,6 @@
     "canvas": "^2.11.2",
     "@ar-js-org/ar.js": "3.4.2",
     "@react-three/fiber": "^8.13.2",
-    "ar.js": "^2.2.2",
     "axios": "^1.4.0",
     "concurrently": "^8.2.0",
     "crypto-browserify": "^3.12.0",
