@@ -73,8 +73,8 @@ export class ServerSocket {
 
       if(uid) {
         delete this.users[uid];
-        const users = Object.keys(this.users);
-        this.SendMessage('user_disconnected', users, uid);
+        const users = Object.values(this.users);
+        this.SendMessage('user_disconnected', users, socket.id);
       }
     })
   }

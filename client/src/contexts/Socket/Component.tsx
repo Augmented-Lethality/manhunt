@@ -44,7 +44,6 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
   const StartListeners = () => {
     // declare default event listeners that socket.io provides to handle reconnection events
-
     socket.io.on('reconnect', (attempt) => {
       console.info('Reconnected on attempt: ' + attempt);
     })
@@ -61,6 +60,18 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       console.info('Reconnection failure');
       alert('Unable to connect to web socket')
     })
+
+    // user connected event
+    socket.on('user_connected', (users: string[]) => {
+      console.info('user connected, new user list received')
+      SocketDispatch({ type: 'update_users', payload: users })
+    });
+
+    // user disconnected event
+    socket.on('user_disconnected', (uid: string) => {
+      console.info('user disconnected')
+      SocketDispatch({ type: 'remove_user', payload: uid })
+    });
 
   }
 
