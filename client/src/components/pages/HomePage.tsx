@@ -1,34 +1,27 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import {LogoutButton} from '../Auth0/LogoutButton'
 
-import ChaseCam from '../components/ChaseCam'
-import SocketContext from '../../contexts/Socket/SocketContext';
+// import ChaseCam from '../components/ChaseCam'
 
-export interface IHomePageProps {};
+import ButtonToLobby from '../components/buttons/ButtonToLobby';
 
-const HomePage: React.FunctionComponent<IHomePageProps> = (props) => {
+const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
 
   if (!user) {
     return null;
   }
 
-  const { socket, uid, users } = useContext(SocketContext).SocketState;
-
   return (
-    <div>
+    isAuthenticated && (
+      <div>
         <h1>Welcome, {user.name}!</h1>
+        <ButtonToLobby />
         <LogoutButton/>
-
-      <h2>Socket IO Information</h2>
-      <p>
-        Your user ID: <strong>{ uid }</strong><br />
-        Users Online: <strong>{ users.length }</strong><br />
-        Socket ID: <strong>{ socket?.id }</strong><br />
-      </p>
-    </div>
-
+        {/* <ChaseCam /> */}
+      </div>
+    )
   )
 };
 

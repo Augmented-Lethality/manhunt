@@ -4,8 +4,6 @@ import { Auth0ProviderWithNavigate } from "./components/Auth0/auth0-provider-wit
 import { BrowserRouter } from 'react-router-dom';
 import App from './components/App';
 
-import SocketContextComponent from './contexts/Socket/SocketContextComponent';
-
 const rootElement = document.getElementById('app');
 
 // HTMLElement | null; had to add error handling or has an error
@@ -17,12 +15,10 @@ const root = ReactDOM.createRoot(rootElement);
 
 root.render(
   // <React.StrictMode>
-  <SocketContextComponent>
         <BrowserRouter>
       <Auth0ProviderWithNavigate>
         <App />
       </Auth0ProviderWithNavigate>
     </BrowserRouter>
-  </SocketContextComponent>
   // </React.StrictMode>
 );
