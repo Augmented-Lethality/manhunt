@@ -168,6 +168,14 @@ Trophy.init({
   description: DataTypes.STRING,
   generationConditions: DataTypes.TEXT, // This can be a stringified function or JSON
   filePath: DataTypes.STRING,
+  ownersId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: User,
+      key: 'id'
+    },
+    allowNull: true
+  }
 }, { sequelize, modelName: 'trophy' });
 
 
