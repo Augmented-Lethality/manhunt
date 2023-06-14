@@ -1,18 +1,21 @@
 import React, {useState} from 'react';
-import KillMode from '../components/KillMode'
 import ChaseMode from '../components/ChaseMode'
+import FaceRecognition from "../components/FaceRecognition";
+import VideoStream from '../components/VideoStream';
 
-function GamePage() {
+const GamePage: React.FC = () => {
   const [gameMode, setGameMode] = useState('Kill')
-  
+
   return (
     <div>
       {gameMode === 'Chase' &&
         <ChaseMode/>
       }
       {gameMode === 'Kill' &&
-        <KillMode/>
+
+        <FaceRecognition/>
       }
+      {/* <VideoStream setStream={setStream}/> */}
     </div>
   );
 }
