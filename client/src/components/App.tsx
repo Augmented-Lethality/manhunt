@@ -25,6 +25,7 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<AuthenticationGuard component={HomePage} />} />
         <Route path="/profile" element={<AuthenticationGuard component={ProfilePage} />} />
+        <Route path="/profile" element={<AuthenticationGuard component={ProfilePage} />} />
         <Route path="/onthehunt" element={<AuthenticationGuard component={GamePage} />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

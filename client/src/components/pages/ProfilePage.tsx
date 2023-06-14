@@ -1,6 +1,8 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+
 
 interface UserData {
   username: string;
@@ -9,9 +11,15 @@ interface UserData {
   // Add other user data properties as needed
 }
 
-const ProfilePage: React.FC = () => {
+const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
+
+  const navigate = useNavigate();
+
+  const navigateHome = () => {
+    navigate("/home");
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -24,7 +32,7 @@ const ProfilePage: React.FC = () => {
           // Include other user data properties you want to save
         });
         setUserData(response.data);
-        console.log(response);
+        // console.log(response);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -34,6 +42,9 @@ const ProfilePage: React.FC = () => {
       fetchUserData();
     }
   }, []);
+  console.log(userData, "USeRdatA");
+
+  
 
   if (!user) {
     return null;
@@ -44,6 +55,7 @@ const ProfilePage: React.FC = () => {
       <h1 id="page-title" className="content__title">
         Profile Page
       </h1>
+      <button onClick={navigateHome}> Home </button>
       <div className="content__body">
         <p id="page-description">
           <span>
@@ -56,11 +68,7 @@ const ProfilePage: React.FC = () => {
         </p>
         <div className="profile-grid">
           <div className="profile__header">
-            <img
-              src={user.picture}
-              alt="Profile"
-              className="profile__avatar"
-            />
+            <img src={user.picture} alt="Profile" className="profile__avatar" />
             <div className="profile__headline">
               <h2 className="profile__title">{user.name}</h2>
               <span className="profile__description">{user.email}</span>
