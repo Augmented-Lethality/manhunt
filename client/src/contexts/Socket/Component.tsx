@@ -64,7 +64,18 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
   }
 
-  const SendHandshake = () => {}
+  const SendHandshake = () => {
+    console.info('Sending handshake to server ...');
+
+    // the cb on the same message so don't have to create a handshake_reply emit
+    socket.emit('handshake', (uid: string, users: string[]) => {
+      console.log('User handshake cb message received');
+      SocketDispatch({ type: 'update_uid', payload: uid });
+      SocketDispatch({ type: 'update_users', payload: users })
+
+      setLoading(false);
+    });
+  }
 
   if(loading) {
     return <p>Loading Socket IO...</p>
