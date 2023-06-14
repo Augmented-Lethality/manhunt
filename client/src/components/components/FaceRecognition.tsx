@@ -67,26 +67,32 @@ const FaceRecognition: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log('nets',faceapi.nets)
     const run = async () => {
       try{
-      await faceapi.loadMtcnnModel('./models');
-      await faceapi.loadFaceRecognitionModel('./models');
+        await faceapi.loadFaceRecognitionModel('/models')
+        await faceapi.loadMtcnnModel('/models')
       } catch (err){
         console.error(err)
+        return;
       }
-      const labeledFaceDescriptors = await Promise.all(
-        labels.map(async label => {
-          const imgUrl = `../client/public/assets/${label}.jpg`;
-          const img = await faceapi.fetchImage(imgUrl);
-          const fullFaceDescription = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-          if (!fullFaceDescription) {
-            throw new Error(`no faces detected for ${label}`);
-          }
-          const faceDescriptors = [fullFaceDescription.descriptor];
-          return new faceapi.LabeledFaceDescriptors(label, faceDescriptors);
-        }),
-      );
+      let labeledFaceDescriptors;
+      try {
+        labeledFaceDescriptors = await Promise.all(
+          labels.map(async label => {
+            const imgUrl = `/assets/${label}.jpg`;
+            const img = await faceapi.fetchImage(imgUrl);
+            const fullFaceDescription = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+            if (!fullFaceDescription) {
+              throw new Error(`no faces detected for ${label}`);
+            }
+            const faceDescriptors = [fullFaceDescription.descriptor];
+            return new faceapi.LabeledFaceDescriptors(label, faceDescriptors);
+          }),
+        );
+      } catch (err) {
+        console.error('Failed to create labeled face descriptors:', err);
+        return;
+      }
 
       const maxDescriptorDistance = 0.6;
       const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, maxDescriptorDistance);
