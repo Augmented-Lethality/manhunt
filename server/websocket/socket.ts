@@ -36,12 +36,12 @@ export class ServerSocket {
       console.info('handshake received from ' + socket.id);
 
       // reconnection attempt?
-      const reconnected = Object.keys(this.users).includes(socket.id);
+      const reconnected = Object.values(this.users).includes(socket.id);
 
       if(reconnected) {
         console.info('User has reconnected');
         const uid = this.GetUidFromSocketId(socket.id);
-        const users = Object.keys(this.users);
+        const users = Object.values(this.users);
 
         if(uid) {
           console.info('Sending callback for reconnect...');
@@ -53,7 +53,7 @@ export class ServerSocket {
       // Generate new user
       const uid = v4();
       this.users[uid] = socket.id;
-      const users = Object.keys(this.users);
+      const users = Object.values(this.users);
 
       console.info('Sending callback for handshake...');
       callback(uid, users);
@@ -68,6 +68,14 @@ export class ServerSocket {
 
     socket.on('disconnect', () => {
       console.info('Disconnect received from ' + socket.id)
+
+      const uid = this.GetUidFromSocketId(socket.id);
+
+      if(uid) {
+        delete this.users[uid];
+        const users = Object.keys(this.users);
+        this.SendMessage('user_disconnected', users, uid);
+      }
     })
   }
 
