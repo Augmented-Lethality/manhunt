@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useReducer, useState } from 'react';
-import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './Socket/Context'; // custom by meee
+import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './Context'; // custom by meee
 
 // THIS CAN BE REUSED TO PASS THE SOCKET INFORMATION AROUND THE CLIENT SIDE
 
