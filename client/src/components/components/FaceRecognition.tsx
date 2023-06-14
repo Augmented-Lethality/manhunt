@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as faceapi from 'face-api.js';
+// import VideoStream from './VideoStream';
+
 
 const FaceRecognition: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -12,25 +14,70 @@ const FaceRecognition: React.FC = () => {
     minFaceSize: 200,
   };
 
-  const labels = ['alyson-hannigan', 'anna-taylor-joy', 'megan-fox'];
+  const labels = ['alyson-hannigan', 'anya-taylor-joy', 'megan-fox'];
+
 
   useEffect(() => {
     const run = async () => {
-      await faceapi.loadMtcnnModel('/');
-      await faceapi.loadFaceRecognitionModel('/');
-
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error('Browser API navigator.mediaDevices.getUserMedia not available');
+        console.error('Browser API navigator.mediaDevices.getUserMedia not available');
+        return;
       }
 
-      const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
+      // Get the aspect ratio of the screen or specific area
+      // const aspectRatio = window.innerWidth / window.innerHeight;
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: {
+          width: 1280,
+          height: 720,
+          facingMode: "environment", // Try rear-facing camera first
+        }});
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: {
+            width: 1280,
+            height: 720,
+            facingMode: "user", // Fallback to front-facing camera
+          }});
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        } catch (err) {
+          // Handle error when neither camera is available
+          console.error('Failed to access the camera:', err);
+        }
+     }
+    };
 
+    run();
+
+    // Cleanup function to stop the video stream when the component is unmounted
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        const tracks = stream.getTracks();
+        tracks.forEach((track) => track.stop());
+        videoRef.current.srcObject = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log('nets',faceapi.nets)
+    const run = async () => {
+      try{
+      await faceapi.loadMtcnnModel('./models');
+      await faceapi.loadFaceRecognitionModel('./models');
+      } catch (err){
+        console.error(err)
+      }
       const labeledFaceDescriptors = await Promise.all(
         labels.map(async label => {
-          const imgUrl = `${label}.png`;
+          const imgUrl = `../client/public/assets/${label}.jpg`;
           const img = await faceapi.fetchImage(imgUrl);
           const fullFaceDescription = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
           if (!fullFaceDescription) {
@@ -72,9 +119,8 @@ const FaceRecognition: React.FC = () => {
 
   return (
     <div style={{ position: 'relative' }}>
-      <h1>video</h1>
-      <video ref={videoRef} autoPlay muted />
       <canvas ref={canvasRef} />
+      <video ref={videoRef} autoPlay muted style={{ width: '100%', height: 'auto' }} />
     </div>
   );
 };
