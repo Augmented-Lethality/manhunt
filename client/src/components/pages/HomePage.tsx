@@ -3,7 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import {LogoutButton} from '../Auth0/LogoutButton'
 
 import ChaseCam from '../components/ChaseCam'
-import SocketContext from '../../contexts/Socket/Context';
+import SocketContext from '../../contexts/Socket/SocketContext';
 
 export interface IHomePageProps {};
 

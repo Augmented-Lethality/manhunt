@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import {LoginButton} from '../Auth0/LoginButton';
 import {SignupButton} from '../Auth0/SignupButton';
 
-import SocketContext from '../../contexts/Socket/Context';
+import SocketContext from '../../contexts/Socket/SocketContext';
 
 export interface ILandingPageProps {};
 

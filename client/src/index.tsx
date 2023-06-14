@@ -4,7 +4,7 @@ import { Auth0ProviderWithNavigate } from "./components/Auth0/auth0-provider-wit
 import { BrowserRouter } from 'react-router-dom';
 import App from './components/App';
 
-import SocketContextComponent from './contexts/Socket/Component';
+import SocketContextComponent from './contexts/Socket/SocketContextComponent';
 
 const rootElement = document.getElementById('app');
 

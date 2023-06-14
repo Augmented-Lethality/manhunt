@@ -1,8 +1,10 @@
-// declare how our state works with our context and our reducers
+// THIS CONTEXT DECLARES HOW OUR STATE IN SOCKET COMPONENT WORKS (TYPESCRIPT INCLUDED)
+
 import { Socket } from 'socket.io-client';
 import { createContext } from 'react';
 
-// syntax that the context state must conform to
+// syntax that the context state must conform to, gives properties and types of those properties
+// server will be passing this information back and forth with client as needed
 export interface ISocketContextState {
   socket: Socket | undefined;
   uid: string,
@@ -16,7 +18,7 @@ export const defaultSocketContextState: ISocketContextState = {
   users: [],
 };
 
-// these actions will each have their own functions in their reducer
+// these actions will each have their own functions in the reducer
 export type TSocketContextActions = 'update_socket' | 'update_uid' | 'update_users' | 'remove_user';
 
 // payload represents the data that is associated with each action that is within this context
