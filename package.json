@@ -18,14 +18,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ar-js-org/ar.js": "3.4.2",
     "@auth0/auth0-react": "^2.1.0",
+    "@react-three/fiber": "^8.13.2",
     "@tensorflow/tfjs": "^4.7.0",
+    "axios": "^1.4.0",
     "browserify-fs": "^1.0.0",
     "buffer": "^6.0.3",
     "canvas": "^2.11.2",
-    "@ar-js-org/ar.js": "3.4.2",
-    "@react-three/fiber": "^8.13.2",
-    "axios": "^1.4.0",
     "concurrently": "^8.2.0",
     "crypto-browserify": "^3.12.0",
     "dotenv": "^16.1.4",
@@ -41,9 +41,9 @@
     "sequelize": "^6.32.0",
     "socket.io": "^4.6.2",
     "stream-browserify": "^3.0.0",
+    "three": "^0.153.0",
     "tslib": "^2.5.3",
-    "util": "^0.12.5",
-    "three": "^0.153.0"
+    "util": "^0.12.5"
   },
   "devDependencies": {
     "@babel/core": "^7.22.1",
