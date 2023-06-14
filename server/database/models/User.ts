@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
-import { sequelize } from '../index'; // Assuming this is the path to your index file
+const { sequelize } = require('../index'); // Assuming this is the path to your index file
 
 interface UserAttributes {
   id?: number;
