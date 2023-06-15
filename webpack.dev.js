@@ -41,7 +41,11 @@ module.exports = {
       "buffer": require.resolve("buffer"),
       "stream": require.resolve("stream-browserify"),
       "util": require.resolve("util"),
-      "path": require.resolve("path-browserify")
+      "path": require.resolve("path-browserify"),
+      "assert": require.resolve("assert/"),
+      "os": require.resolve("os-browserify/browser"),
+      "url": require.resolve("url"),
+      "zlib": require.resolve("browserify-zlib")
     }
   },
   optimization: {
