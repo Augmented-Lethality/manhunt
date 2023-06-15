@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import GameLobby from './GameLobby'
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import GameLobby from './GameLobby';
+import axios from 'axios';
 
 interface GameLobby {
   id: number;
@@ -15,10 +15,10 @@ const JoinGamePage: React.FC = () => {
     // Fetch the game lobbies from the server
     const fetchGameLobbies = async () => {
       try {
-        const response = await axios.get<GameLobby[]>("/gameLobbies");
+        const response = await axios.get<GameLobby[]>('/gameLobbies');
         setGameLobbies(response.data);
       } catch (error) {
-        console.error("Error fetching game lobbies:", error);
+        console.error('Error fetching game lobbies:', error);
       }
     };
 
@@ -39,7 +39,9 @@ const JoinGamePage: React.FC = () => {
             <li key={gameLobby.id}>
               <h2>{gameLobby.name}</h2>
               <p>Players: {gameLobby.players}</p>
-              <button onClick={() => handleJoinGame(gameLobby.id)}>Join Game</button>
+              <button onClick={() => handleJoinGame(gameLobby.id)}>
+                Join Game
+              </button>
             </li>
           ))}
         </ul>

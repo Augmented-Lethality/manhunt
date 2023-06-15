@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 
 import SocketContext from '../../contexts/Socket/SocketContext';
-import ButtonToHome from '../components/buttons/ButtontoHome';
-import ButtonToGame from '../components/buttons/ButtontoGame';
+import ButtonToHome from '../buttons/ButtonToHome';
+import ButtonToGame from '../buttons/ButtonToGame';
 
 export interface IGameLobbyProps {};
 

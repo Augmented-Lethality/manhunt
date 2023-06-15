@@ -3,7 +3,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { LogoutButton } from "../Auth0/LogoutButton";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import ProfilePage from "./ProfilePage";
+import ButtonToLobby from '../buttons/ButtonToLobby';
+import ButtonToFindGame from '../buttons/ButtonToFindGame'
+import ButtonToProfile from '../buttons/ButtonToProfile'
+
+// import ChaseCam from '../components/ChaseCam'
+
 
 interface UserData {
   username: string;
@@ -12,22 +17,11 @@ interface UserData {
   // Add other user data properties as needed
 }
 
-// import ChaseCam from '../components/ChaseCam'
-
-import ButtonToLobby from '../components/buttons/ButtonToLobby';
-
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
   const navigate = useNavigate();
 
-  const navigateToProfile = () => {
-    navigate("/profile");
-  };
-  
-  const navigateToFindGame = () => {
-    navigate("/findGame");
-  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -59,8 +53,8 @@ const HomePage = () => {
     isAuthenticated && (
       <div>
         <h1>{`Welcome Home, ${user.given_name}`}!</h1>
-        <button onClick={navigateToProfile}>Profile</button>
-        <button onClick={navigateToFindGame}>Join A Game</button>
+        <ButtonToProfile />
+        <ButtonToFindGame />
         <LogoutButton />
         <ButtonToLobby />
         <LogoutButton/>
