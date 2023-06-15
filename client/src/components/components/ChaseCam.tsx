@@ -6,7 +6,7 @@ import { WebcamRendererLocal } from './webcam';
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 import * as THREEx from '@ar-js-org/ar.js/three.js/build/ar-threex-location-only.js';
 
-const ThreeTest: React.FC = () => {
+const ChaseCam: React.FC = () => {
   // the canvas element to render the scene
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -154,4 +154,4 @@ Passing constructor arguments:
 
 */
 
-export default ThreeTest;
+export default ChaseCam;

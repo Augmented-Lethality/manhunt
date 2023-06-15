@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 
 import SocketContext from '../../contexts/Socket/SocketContext';
 import ButtonToHome from '../components/buttons/ButtontoHome';
+import ButtonToGame from '../components/buttons/ButtontoGame';
 
 export interface IGameLobbyProps {};
 
@@ -17,6 +18,7 @@ const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
         Users Online: <strong>{ users.length }</strong><br />
         Socket ID: <strong>{ socket?.id }</strong><br />
       </p>
+      <ButtonToGame /><br />
       <ButtonToHome />
     </div>
   )
