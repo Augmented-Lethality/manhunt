@@ -1,52 +1,37 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const ButtonToHome: React.FC = () => {
+type ButtonProps = {
+  label: string;
+  route: string;
+};
+
+export const Button: React.FC<ButtonProps> = ({ label, route }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/home');
+    navigate(route);
   };
 
-  return <button onClick={handleClick}>Back Home</button>;
+  return <button onClick={handleClick}>{label}</button>;
+};
+
+export const ButtonToHome: React.FC = () => {
+  return <Button label="Back Home" route="/home" />;
 };
 
 export const ButtonToLobby: React.FC = () => {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate('/lobby');
-  };
-
-  return <button onClick={handleClick}>Game Lobby</button>;
+  return <Button label="Game Lobby" route="/lobby" />;
 };
 
 export const ButtonToGame: React.FC = () => {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate('/onthehunt');
-  };
-
-  return <button onClick={handleClick}>Game Time</button>;
+  return <Button label="Game Time" route="/onthehunt" />;
 };
 
 export const ButtonToProfile: React.FC = () => {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate('/profile');
-  };
-
-  return <button onClick={handleClick}>Profile</button>;
+  return <Button label="Profile" route="/profile" />;
 };
 
 export const ButtonToFindGame: React.FC = () => {
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate('/findGame');
-  };
-
-  return <button onClick={handleClick}>Find a Game</button>;
+  return <Button label="Find a Game" route="/findGame" />;
 };
