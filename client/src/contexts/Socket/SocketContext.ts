@@ -8,7 +8,8 @@ import { createContext } from 'react';
 export interface ISocketContextState {
   socket: Socket | undefined;
   uid: string,
-  users: string[];
+  users: string[],
+  games: { [host: string]: { gameId: string, uidList: string[]} }
 };
 
 // initial context state, will be overwritten eventually, but need the default state
@@ -16,13 +17,15 @@ export const defaultSocketContextState: ISocketContextState = {
   socket: undefined,
   uid: '',
   users: [],
+  games: {},
 };
 
 // these actions will each have their own functions in the reducer
-export type TSocketContextActions = 'update_socket' | 'update_uid' | 'update_users' | 'remove_user';
+export type TSocketContextActions = 'update_socket' | 'update_uid' |
+'update_users' | 'remove_user' | 'update_games'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = string | string[] | Socket;
+export type TSocketContextPayload = string | string[] | Socket | { [host: string]: { gameId: string, uidList: string[]} };
 
 // describes the shape of the actions in this context
 export interface ISocketContextActions {
@@ -44,6 +47,9 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
       return { ...state, users: action.payload as string[] };
     case 'remove_user':
       return { ...state, users: state.users.filter((uid) => uid !== (action.payload as string)) };
+    case 'update_games':
+      return { ...state, games: action.payload as  { [host: string]: { gameId: string, uidList: string[]} }};
+
     default:
       return { ...state };
   }

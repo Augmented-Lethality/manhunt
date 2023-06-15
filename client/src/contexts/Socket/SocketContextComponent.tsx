@@ -78,6 +78,12 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       SocketDispatch({ type: 'remove_user', payload: uid })
     });
 
+    // created a game event
+    socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+    console.info('game created, new game list received')
+    SocketDispatch({ type: 'update_games', payload: games })
+  });
+
   }
 
   // sending the handshake to the server, meaning it's trying to establish a connection to the server using websocket
@@ -95,6 +101,15 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       setLoading(false);
     });
   }
+
+    // sending createRoom to the server
+    const CreateRoom = () => {
+      console.info('Client wants to create a game...');
+
+      socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+        SocketDispatch({ type: 'update_games', payload: games })
+      });
+    }
 
   // showing this on client side while socket isn't connected
   if(loading) {

@@ -26,6 +26,13 @@ export class ServerSocket {
     // key is the user id and the value is the socket id to send messages to the correct clients
     public users: { [uid: string]: string };
 
+    // dictionary object of connected games
+    // key is the host (the user id of who created the game)
+    // the object holds the game id, and uidList which is the list of connected users
+    public games: { [host: string]: { gameId: string, uidList: string[] } };
+
+
+
     // constructor automatically called when an instance of a class is created, meaning when the server starts, this socket server
     // will be created and the items within the constructor will be performed automatically
     constructor(server: HttpServer) {
@@ -33,6 +40,8 @@ export class ServerSocket {
         ServerSocket.instance = this;
         // initializing the empty users object
         this.users = {};
+        // initializing the empty games object
+        this.games = {};
 
         // new instance of the server class from socket.io, has basic options from socket.io website
         this.io = new Server(server, {
@@ -99,6 +108,38 @@ export class ServerSocket {
             );
         });
 
+        // when client emits a createGame event, make the new game
+        socket.on('create_game', (callback: (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => void) => {
+
+            // does the game exist?
+            const host = this.GetUidFromSocketID(socket.id);
+
+            if (host) {
+                // now that we have the hostid, do the games have the host id?
+              if (Object.keys(this.games).includes(host)) {
+
+                // if they do, send back all of the games
+                callback(host, this.games);
+                return;
+              }
+
+            // game doesn't exist, make a new one:
+            const gameId = v4();
+
+            // add this to the games dictionary object
+            this.games[host] = { gameId: gameId, uidList: [] };
+
+            // now send back the updated list of games
+            callback(host, this.games);
+
+            // send new game to users
+            const users = Object.values(this.users);
+            this.SendMessage('game_created', users, socket.id);
+            }
+
+
+          });
+
         // when the disconnect occurs
         socket.on('disconnect', () => {
             // console.info('Disconnect received from: ' + socket.id);
@@ -126,7 +167,9 @@ export class ServerSocket {
 
     // name is name of socket, users is list of socket ids, payload is information needed by the user for state updates
     SendMessage = (name: string, users: string[], payload?: Object) => {
-        // console.info('Emitting event: ' + name + ' to', users);
+        console.info('Emitting event: ' + name + ' to', users);
         users.forEach((id) => (payload ? this.io.to(id).emit(name, payload) : this.io.to(id).emit(name)));
     };
+
+
 }
