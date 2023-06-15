@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
-const { sequelize } = require("./index");
+import { Sequelize, DataTypes, Model } from 'sequelize';
+import sequelize from './index';
 
 class User extends Model {}
 User.init({
@@ -8,13 +8,11 @@ User.init({
     autoIncrement: true,
     primaryKey: true
   },
-
   username: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
-
   email: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -23,48 +21,39 @@ User.init({
       isEmail: true
     }
   },
-
   authId: {
     type: DataTypes.STRING,
     allowNull: true,
     unique: true
   },
-
   sessionId: {
     type: DataTypes.STRING,
     allowNull: true
   },
-
   gameId: {
     type: DataTypes.INTEGER,
     allowNull: true
   },
-
   location: {
     type: DataTypes.STRING,
     allowNull: true
   },
-
   tfModelPath: {
     type: DataTypes.STRING,
     allowNull: true
   },
-
   gamesPlayed: {
     type: DataTypes.INTEGER,
     allowNull: true
   },
-
   gamesWon: {
     type: DataTypes.INTEGER,
     allowNull: true
   },
-
   killsConfirmed: {
     type: DataTypes.INTEGER,
     allowNull: true
   }
-
 }, { sequelize });
 
 class Friends extends Model {}
@@ -156,7 +145,6 @@ Game.init({
   }
 }, { sequelize });
 
-
 class Trophy extends Model { }
 Trophy.init({
   id: {
@@ -177,7 +165,6 @@ Trophy.init({
     allowNull: true
   }
 }, { sequelize, modelName: 'trophy' });
-
 
 // Define the UserTrophy model for the join table
 class UserTrophy extends Model { }
@@ -212,31 +199,27 @@ Friends.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Friends, { foreignKey: 'friendId' });
 Friends.belongsTo(User, { foreignKey: 'friendId' });
 
-Game.belongsTo(User, {foreginKey: 'userId' });
+Game.belongsTo(User, { foreignKey: 'userId' });
 
 User.hasMany(Session, { foreignKey: 'userId' });
 Session.belongsTo(User, { foreignKey: 'userId' });
 
 export { User, Friends, Session, Game, Trophy, UserTrophy };
 
-
-
 /*** THE FOLLOWING EXISTS INCASE YOU NEED TO DROP INDIVIDUAL TABLES ***/
 /*** JUST UNCOMMENT THE TABLE FROM THE LIST BELOW ***/
 /*** THEN RECOMMENT IT SO YOU DON'T ACCIDENTALLY DELETE A TABLE YOU DONT WANT TO ***/
 
-async function dropTables() {
+async function dropTables(): Promise<void> {
   try {
     // Drop the tables in reverse order of their dependencies
-
-
     // await UserTrophy.drop();
     // await Trophy.drop();
     // await Session.drop();
     // await Friends.drop();
     // await Game.drop();
     // await User.drop();
-    
+
     console.log('Tables listed have been dropped.');
   } catch (error) {
     console.error('An error occurred while dropping the tables:', error);

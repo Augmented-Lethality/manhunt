@@ -12,6 +12,10 @@ interface UserData {
   // Add other user data properties as needed
 }
 
+// import ChaseCam from '../components/ChaseCam'
+
+import ButtonToLobby from '../components/buttons/ButtonToLobby';
+
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -53,6 +57,9 @@ const HomePage = () => {
         <h1>{`Welcome Home, ${user.given_name}`}!</h1>
         <button onClick={navigateToProfile}>Profile</button>
         <LogoutButton />
+        <ButtonToLobby />
+        <LogoutButton/>
+        {/* <ChaseCam /> */}
       </div>
     )
   );
