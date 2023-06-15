@@ -1,11 +1,11 @@
-import * as THREE from "three";
+import { PlaneGeometry, VideoTexture, MeshBasicMaterial, Mesh, OrthographicCamera, Scene } from 'three';
 
 // From the source files of AR.js, edited line 19 because the original BufferPlaneGeometry or whatever it was, was outdated
 class WebcamRendererLocal {
   constructor(renderer, videoElement) {
     this.renderer = renderer;
     this.renderer.autoClear = false;
-    this.sceneWebcam = new THREE.Scene();
+    this.sceneWebcam = new Scene();
     let video;
     if (videoElement === undefined) {
       video = document.createElement("video");
@@ -16,12 +16,12 @@ class WebcamRendererLocal {
     } else {
       video = document.querySelector(videoElement);
     }
-    this.geom = new THREE.PlaneGeometry();
-    this.texture = new THREE.VideoTexture(video);
-    this.material = new THREE.MeshBasicMaterial({ map: this.texture });
-    const mesh = new THREE.Mesh(this.geom, this.material);
+    this.geom = new PlaneGeometry();
+    this.texture = new VideoTexture(video);
+    this.material = new MeshBasicMaterial({ map: this.texture });
+    const mesh = new Mesh(this.geom, this.material);
     this.sceneWebcam.add(mesh);
-    this.cameraWebcam = new THREE.OrthographicCamera(
+    this.cameraWebcam = new OrthographicCamera(
       -0.5,
       0.5,
       0.5,

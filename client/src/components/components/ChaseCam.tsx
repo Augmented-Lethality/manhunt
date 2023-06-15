@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { PerspectiveCamera, Scene, WebGLRenderer, BoxGeometry, MeshBasicMaterial, Mesh } from 'three';
 import React, { useRef, useEffect } from 'react'
 
 import { WebcamRendererLocal } from './webcam';
@@ -23,7 +23,7 @@ const ChaseCam: React.FC = () => {
   const lastXRef = useRef(0);
 
   // the camera reference in the three library
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const cameraRef = useRef<PerspectiveCamera | null>(null);
 
   useEffect(() => {
     // checks if the canvas HTML element is there, otherwise return and don't touch
@@ -34,9 +34,9 @@ const ChaseCam: React.FC = () => {
     const canvas = canvasRef.current;
 
      // new scene, camera, and renderer
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, 1.33, 0.1, 10000);
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+    const scene = new Scene();
+    const camera = new PerspectiveCamera(60, 1.33, 0.1, 10000);
+    const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
 
     // new video element
     // const video = document.getElementById('video1') as HTMLVideoElement;
@@ -49,9 +49,9 @@ const ChaseCam: React.FC = () => {
     const cam = new WebcamRendererLocal(renderer, '#video1');
 
     // create a red box to render on the screen that stays in the defined location
-    const geom = new THREE.BoxGeometry(20, 20, 20);
-    const mtl = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const box = new THREE.Mesh(geom, mtl);
+    const geom = new BoxGeometry(20, 20, 20);
+    const mtl = new MeshBasicMaterial({ color: 0xff0000 });
+    const box = new Mesh(geom, mtl);
 
     // box location in lat/long
     arjs.add(box, -0.72, 51.051);
