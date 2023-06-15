@@ -14,11 +14,11 @@ if (!rootElement){
 const root = ReactDOM.createRoot(rootElement);
 
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
+  // <React.StrictMode>
+        <BrowserRouter>
       <Auth0ProviderWithNavigate>
         <App />
       </Auth0ProviderWithNavigate>
     </BrowserRouter>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
