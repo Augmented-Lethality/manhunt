@@ -58,7 +58,6 @@ const HomePage = () => {
         <button onClick={navigateToProfile}>Profile</button>
         <LogoutButton />
         <ButtonToLobby />
-        <LogoutButton/>
         {/* <ChaseCam /> */}
       </div>
     )
