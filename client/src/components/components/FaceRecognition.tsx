@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import * as faceapi from 'face-api.js';
 // import VideoStream from './VideoStream';
 
-
 const FaceRecognition: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -25,12 +24,11 @@ const FaceRecognition: React.FC = () => {
       }
 
       // Get the aspect ratio of the screen or specific area
-      // const aspectRatio = window.innerWidth / window.innerHeight;
+      const aspectRatio = window.innerWidth / window.innerHeight;
       let stream;
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: {
-          width: 1280,
-          height: 720,
+          aspectRatio,
           facingMode: "environment", // Try rear-facing camera first
         }});
         if (videoRef.current) {
@@ -39,8 +37,7 @@ const FaceRecognition: React.FC = () => {
       } catch {
         try {
           stream = await navigator.mediaDevices.getUserMedia({ video: {
-            width: 1280,
-            height: 720,
+            aspectRatio,
             facingMode: "user", // Fallback to front-facing camera
           }});
           if (videoRef.current) {
@@ -65,59 +62,69 @@ const FaceRecognition: React.FC = () => {
       }
     };
   }, []);
+  // console.log(faceapi.loadFaceRecognitionModel);
+  //console.log(Lt.makeTensor);
 
+      //load all the models were using and then run the start function
+      Promise.all([
+        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+        faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
+      ])
   useEffect(() => {
     const run = async () => {
-      try{
-        await faceapi.loadFaceRecognitionModel('/models')
-        await faceapi.loadMtcnnModel('/models')
-      } catch (err){
-        console.error(err)
-        return;
-      }
-      let labeledFaceDescriptors;
-      try {
-        labeledFaceDescriptors = await Promise.all(
-          labels.map(async label => {
-            const imgUrl = `/assets/${label}.jpg`;
-            const img = await faceapi.fetchImage(imgUrl);
-            const fullFaceDescription = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-            if (!fullFaceDescription) {
-              throw new Error(`no faces detected for ${label}`);
-            }
-            const faceDescriptors = [fullFaceDescription.descriptor];
-            return new faceapi.LabeledFaceDescriptors(label, faceDescriptors);
-          }),
-        );
-      } catch (err) {
-        console.error('Failed to create labeled face descriptors:', err);
-        return;
-      }
 
-      const maxDescriptorDistance = 0.6;
-      const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, maxDescriptorDistance);
+      // try{
+      //   await faceapi.loadFaceRecognitionModel('/models')
+      //   await faceapi.loadMtcnnModel('/models')
+      // } catch (err){
+      //   console.error(err)
+      //   return;
+      // }
+      // let labeledFaceDescriptors;
+      // try {
+      //   labeledFaceDescriptors = await Promise.all(
+      //     labels.map(async label => {
+      //       const imgUrl = `/assets/${label}.jpg`;
+      //       const img = await faceapi.fetchImage(imgUrl);
+      //       const fullFaceDescription = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+      //       if (!fullFaceDescription) {
+      //         throw new Error(`no faces detected for ${label}`);
+      //       }
+      //       const faceDescriptors = [fullFaceDescription.descriptor];
+      //       return new faceapi.LabeledFaceDescriptors(label, faceDescriptors);
+      //     }),
+      //   );
+      //   console.log('labeledFaceDescriptors', labeledFaceDescriptors);
+      // } catch (err) {
+      //   console.error('Failed to create labeled face descriptors:', err);
+      //   return;
+      // }
 
-      const onPlay = async () => {
-        const options = new faceapi.MtcnnOptions(mtcnnForwardParams);
-        if(videoRef.current){
-          const fullFaceDescriptions = await faceapi.detectAllFaces(videoRef.current, options).withFaceLandmarks().withFaceDescriptors();
-          const results = fullFaceDescriptions.map(fd => faceMatcher.findBestMatch(fd.descriptor));
+    //   const maxDescriptorDistance = 0.6;
+    //   const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, maxDescriptorDistance);
 
-          results.forEach((bestMatch, i) => {
-            const box = fullFaceDescriptions[i].detection.box;
-            const text = bestMatch.toString();
-            const drawBox = new faceapi.draw.DrawBox(box, { label: text });
-            if(canvasRef.current){
-              drawBox.draw(canvasRef.current);
-            }
-          });
-        }
-        setTimeout(() => onPlay(), 100);
-      };
+    //   const onPlay = async () => {
+    //     const options = new faceapi.MtcnnOptions(mtcnnForwardParams);
+    //     if(videoRef.current){
+    //       const fullFaceDescriptions = await faceapi.detectAllFaces(videoRef.current, options).withFaceLandmarks().withFaceDescriptors();
+    //       const results = fullFaceDescriptions.map(fd => faceMatcher.findBestMatch(fd.descriptor));
 
-      if (videoRef.current) {
-        videoRef.current.onplay = onPlay;
-      }
+    //       results.forEach((bestMatch, i) => {
+    //         const box = fullFaceDescriptions[i].detection.box;
+    //         const text = bestMatch.toString();
+    //         const drawBox = new faceapi.draw.DrawBox(box, { label: text });
+    //         if(canvasRef.current){
+    //           drawBox.draw(canvasRef.current);
+    //         }
+    //       });
+    //     }
+    //     setTimeout(() => onPlay(), 100);
+    //   };
+
+    //   if (videoRef.current) {
+    //     videoRef.current.onplay = onPlay;
+    //   }
     };
 
     run();
