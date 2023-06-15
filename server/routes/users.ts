@@ -113,7 +113,4 @@ Users.put("/:authId", async (req, res) => {
 });
 
 
-
-
-
 module.exports = { Users };
