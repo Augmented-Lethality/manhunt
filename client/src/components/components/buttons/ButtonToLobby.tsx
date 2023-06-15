@@ -8,9 +8,7 @@ const ButtonToLobby: React.FC = () => {
     navigate('/lobby');
   };
 
-  return (
-    <button onClick={ handleClick }>Game Lobby</button>
-  );
+  return <button onClick={handleClick}>Game Lobby</button>;
 };
 
 export default ButtonToLobby;
