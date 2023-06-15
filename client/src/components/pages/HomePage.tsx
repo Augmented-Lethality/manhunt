@@ -25,6 +25,10 @@ const HomePage = () => {
     navigate("/profile");
   };
   
+  const navigateToFindGame = () => {
+    navigate("/findGame");
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -56,6 +60,7 @@ const HomePage = () => {
       <div>
         <h1>{`Welcome Home, ${user.given_name}`}!</h1>
         <button onClick={navigateToProfile}>Profile</button>
+        <button onClick={navigateToFindGame}>Join A Game</button>
         <LogoutButton />
         <ButtonToLobby />
         <LogoutButton/>

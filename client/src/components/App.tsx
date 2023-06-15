@@ -9,7 +9,7 @@ import HomePage from './pages/HomePage';
 import GamePage from './pages/GamePage';
 import ProfilePage from './pages/ProfilePage';
 import GameLobby from './pages/GameLobby';
-
+import FindGamePage from './pages/FindGamePage'
 import SocketContextComponent from '../contexts/Socket/SocketContextComponent';
 
 const App = () => {
@@ -28,7 +28,7 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<AuthenticationGuard component={HomePage} />} />
         <Route path="/profile" element={<AuthenticationGuard component={ProfilePage} />} />
-        <Route path="/profile" element={<AuthenticationGuard component={ProfilePage} />} />
+        <Route path="/findGame" element={<AuthenticationGuard component={FindGamePage} />} />
         <Route path="/onthehunt" element={<AuthenticationGuard component={GamePage} />} />
         <Route path="/lobby" element={<SocketContextComponent><AuthenticationGuard component={GameLobby} /></SocketContextComponent>} />
         <Route path="*" element={<NotFoundPage />} />
