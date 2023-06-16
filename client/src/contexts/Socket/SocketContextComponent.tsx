@@ -78,6 +78,19 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       SocketDispatch({ type: 'remove_user', payload: uid })
     });
 
+    // created a game event
+    socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+      console.info('game created, new game list received')
+      SocketDispatch({ type: 'update_games', payload: games })
+    });
+
+    // updated a game event
+    socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+      console.info('games updated, new game list received')
+      SocketDispatch({ type: 'update_games', payload: games })
+    });
+
+
   }
 
   // sending the handshake to the server, meaning it's trying to establish a connection to the server using websocket
@@ -86,15 +99,25 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
     // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
     // on the handshake and it gets the cb from the server on handshake
-    socket.emit('handshake', (uid: string, users: string[]) => {
+    socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] }}) => {
       console.log('We shook, let\'s trade info xoxo');
       SocketDispatch({ type: 'update_uid', payload: uid });
-      SocketDispatch({ type: 'update_users', payload: users })
+      SocketDispatch({ type: 'update_users', payload: users });
+      SocketDispatch({ type: 'update_games', payload: games })
 
       // not loading anymore since it connected
       setLoading(false);
     });
   }
+
+    // sending createRoom to the server
+    const CreateGame = () => {
+      console.info('Client wants to create a game...');
+
+      socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+        SocketDispatch({ type: 'update_games', payload: games })
+      });
+    }
 
   // showing this on client side while socket isn't connected
   if(loading) {
@@ -104,7 +127,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch}}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame }}>
       {children}
     </SocketContextProvider>
   )

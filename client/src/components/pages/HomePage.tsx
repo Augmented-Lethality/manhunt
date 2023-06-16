@@ -3,9 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { LogoutButton } from '../Auth0/LogoutButton';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ButtonToProfile, ButtonToFindGame, ButtonToLobby } from '../Buttons';
-
-// import ChaseCam from '../components/ChaseCam'
+import { ButtonToProfile, ButtonToFindGame, ButtonHostGame } from '../Buttons';
 
 type UserData = {
   username: string;
@@ -51,9 +49,8 @@ const HomePage = () => {
         <h1>{`Welcome Home, ${user.given_name}`}!</h1>
         <ButtonToProfile />
         <ButtonToFindGame />
-        <ButtonToLobby />
+        <ButtonHostGame />
         <LogoutButton />
-        {/* <ChaseCam /> */}
       </div>
     )
   );
