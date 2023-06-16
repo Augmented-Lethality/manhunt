@@ -64,25 +64,28 @@ const ChaseCam: React.FC = () => {
     const mtl = new MeshBasicMaterial({ color: 0xff0000 });
     const box = new Mesh(geom, mtl);
 
-    arjs.setMarkerPosition = (latitude, longitude) => {
-      const markerLatitude = latitude + 0.001;
-      const markerLongitude = longitude;
+    // arjs.setMarkerPosition = (latitude, longitude) => {
+    //   const markerLatitude = Number(((latitude + 0.001).toFixed(3)));
+    //   const markerLongitude = longitude;
 
-      console.log(markerLatitude, markerLongitude)
+    //   console.log(markerLatitude, markerLongitude)
 
-      arjs.markerLatitude = markerLatitude;
-      arjs.markerLongitude = markerLongitude;
+    //   arjs.markerLatitude = markerLatitude;
+    //   arjs.markerLongitude = markerLongitude;
 
-      setBoxLatitude(markerLatitude);
-      setBoxLongitude(markerLongitude);
+    //   setBoxLatitude(markerLatitude);
+    //   setBoxLongitude(markerLongitude);
 
-      console.log('going into box:', markerLatitude, markerLongitude)
-      arjs.add(box, markerLatitude, markerLongitude);
+    //   console.log('going into box:', markerLongitude, markerLatitude)
+    //   // arjs.add(box, markerLongitude, markerLatitude);
 
-      return [markerLatitude, markerLongitude];
-    };
+    //   return [markerLatitude, markerLongitude];
+    // };
+
+    console.log(arjs.markerLatitude, arjs.markerLongitude)
 
     // box location in long/lat, HARDCODED FOR MY COORDINATES
+    arjs.add(box, -90.047, 29.98272);
 
     // on desktop so need the fake gps
     arjs.startGps();

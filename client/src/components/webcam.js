@@ -116,23 +116,14 @@ class LocationBasedLocal {
     }
   }
 
-  setMarkerPosition = (latitude, longitude) => {
-    const markerLatitude = latitude + 0.001;
-    const markerLongitude = longitude;
-
-    this.markerLatitude = markerLatitude;
-    this.markerLongitude = markerLongitude;
-
-    return [markerLatitude, markerLongitude];
-  }
 
   startGps(maximumAge = 0) {
     if (this._watchPositionId === null) {
       this._watchPositionId = navigator.geolocation.watchPosition(
         (position) => {
           this._gpsReceived(position);
-          this.setMarkerPosition(position.coords.latitude, position.coords.longitude)
-          console.log(position)
+          this.setMarkerPosition(position.coords.longitude, position.coords.latitude)
+          console.log('my position: ', position.coords.longitude, position.coords.latitude)
         },
         (error) => {
           if (this._eventHandlers["gpserror"]) {
@@ -149,6 +140,15 @@ class LocationBasedLocal {
       return true;
     }
     return false;
+  }
+
+  setMarkerPosition = (longitude, latitude, ) => {
+
+    console.log('box position: ', longitude, latitude + 0.001, )
+
+    this.markerLatitude = latitude + 0.001;
+    this.markerLongitude = longitude;
+
   }
 
 
