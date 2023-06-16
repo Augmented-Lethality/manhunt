@@ -29,7 +29,7 @@ const FindGamePage: React.FC = () => {
   //   fetchGameLobbies();
   // }, []);
 
-  const handleJoinGame = (gameId: number) => {
+  const handleFindGame = (gameId: number) => {
     // join game = go to game lobby view where it shows all the players
     // just logs a made up "gameId" for now.
     console.log(`Joining game with ID: ${gameId}`);
@@ -44,7 +44,7 @@ const FindGamePage: React.FC = () => {
             <li key={gameLobby.id}>
               <h2>{gameLobby.gameLobbyName}</h2>
               <p>Players: {gameLobby.players}</p>
-              <button onClick={() => handleJoinGame(gameLobby.id)}>
+              <button onClick={() => handleFindGame(gameLobby.id)}>
                 Join Game
               </button>
             </li>
