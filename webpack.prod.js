@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const Dotenv = require('dotenv-webpack');
 
 const srcDir = path.resolve(__dirname, "client/src");
 const distDir = path.resolve(__dirname, "dist/client");
@@ -19,6 +20,7 @@ module.exports = {
       template: path.resolve(srcDir, "index.html"),
       inject: "body",
     }),
+    new Dotenv(),
   ],
   module: {
     rules: [

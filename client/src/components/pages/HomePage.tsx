@@ -50,7 +50,7 @@ const HomePage = () => {
   if (!user) {
     return null;
   }
-
+  console.log(user);
   return (
     isAuthenticated && (
       <div>
@@ -58,7 +58,6 @@ const HomePage = () => {
         <button onClick={navigateToProfile}>Profile</button>
         <LogoutButton />
         <ButtonToLobby />
-        <LogoutButton/>
         {/* <ChaseCam /> */}
       </div>
     )
