@@ -10,7 +10,7 @@ import GamePage from './pages/GamePage';
 import ProfilePage from './pages/ProfilePage';
 import GameLobby from './pages/GameLobby';
 import FindGamePage from './pages/FindGamePage';
-import SocketContextComponent from '../contexts/Socket/SocketContextComponent';
+import SocketContextComponent from './contexts/Socket/SocketContextComponent';
 
 const App = () => {
   const { isLoading } = useAuth0();

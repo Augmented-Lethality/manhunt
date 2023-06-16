@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { LogoutButton } from '../Auth0/LogoutButton';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ButtonToProfile, ButtonToFindGame, ButtonHostGame } from '../Buttons';
+import { ButtonToProfile, ButtonToFindGame, ButtonHostGame } from '../components/Buttons';
 
 type UserData = {
   username: string;

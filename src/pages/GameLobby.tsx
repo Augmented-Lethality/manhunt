@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 // import { useAuth0 } from "@auth0/auth0-react";
 
-import SocketContext from '../../contexts/Socket/SocketContext';
+import SocketContext from '../contexts/Socket/SocketContext';
 
-import { ButtonToHome, ButtonToGame } from '../Buttons';
+import { ButtonToHome, ButtonToGame } from '../components/Buttons';
 
 export interface IGameLobbyProps {};
 

@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import KillMode from '../KillMode'
-import ChaseCam from '../ChaseCam'
-import FaceRecognition from "../FaceRecognition";
+import ChaseCam from '../components/ChaseCam'
+import KillCam from "../components/KillCam";
 
 function GamePage() {
   const [gameMode, setGameMode] = useState('Chase')
@@ -12,7 +11,7 @@ function GamePage() {
         <ChaseCam />
       }
       {gameMode === 'Kill' &&
-        <FaceRecognition/>
+        <KillCam/>
       }
     </div>
   );

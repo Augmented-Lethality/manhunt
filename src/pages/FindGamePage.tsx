@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from 'react';
 // import GameLobby from './GameLobby';
 import axios from 'axios';
 
-import SocketContext from '../../contexts/Socket/SocketContext';
-import { ButtonToHome } from '../Buttons';
+import SocketContext from '../contexts/Socket/SocketContext';
+import { ButtonToHome } from '../components/Buttons';
 
 // THIS IS CURRENTLY SHOWING ALL ACTIVE GAMES, EVEN IF YOU'RE HOSTING THE GAME IT STILL SHOWS
 

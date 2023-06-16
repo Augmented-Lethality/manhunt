@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Auth0ProviderWithNavigate } from "./components/Auth0/auth0-provider-with-navigate";
+import { Auth0ProviderWithNavigate } from "./Auth0/auth0-provider-with-navigate";
 import { BrowserRouter } from 'react-router-dom';
-import App from './components/App';
+import App from './App';
 
 const rootElement = document.getElementById('app');
 

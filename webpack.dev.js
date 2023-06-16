@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const Dotenv = require('dotenv-webpack');
 
-const srcDir = path.resolve(__dirname, "client/src");
+const srcDir = path.resolve(__dirname, "src");
 const distDir = path.resolve(__dirname, "dist/client");
 console.log(distDir)
 
