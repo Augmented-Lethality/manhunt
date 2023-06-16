@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { ButtonToHome } from "../Buttons";
 
 
 type UserData = {
@@ -14,12 +14,6 @@ type UserData = {
 const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
-
-  const navigate = useNavigate();
-
-  const navigateHome = () => {
-    navigate("/home");
-  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -53,17 +47,15 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
   return (
     <div className="content-layout">
       <h1 id="page-title" className="content__title">
-        Profile Page
+        Profile
       </h1>
-      <button onClick={navigateHome}> Home </button>
+      <ButtonToHome />
       <div className="content__body">
         <p id="page-description">
           <span>
-            You can use the <strong>ID Token</strong> to get the profile
-            information of an authenticated user.
           </span>
           <span>
-            <strong>Only authenticated users can access this page.</strong>
+            <strong></strong>
           </span>
         </p>
         <div className="profile-grid">
@@ -75,9 +67,9 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
             </div>
           </div>
           <div className="profile__details">
-            <h2>Decoded ID Token</h2>
+            <h2>Decoded ID Token from authenticated user</h2>
             <p>{JSON.stringify(user, null, 2)}</p>
-            <h2>userData from axios request to backend</h2>
+            <h2>userData from database</h2>
             <p>{JSON.stringify(userData, null, 2)}</p>
           </div>
         </div>

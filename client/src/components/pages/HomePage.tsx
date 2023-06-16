@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { LogoutButton } from '../Auth0/LogoutButton';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ButtonToProfile, ButtonToFindGame, ButtonHostGame } from '../Buttons';
+import { ButtonToProfile, ButtonToFindGame, ButtonToHostGame } from '../Buttons';
 
 type UserData = {
   username: string;
@@ -46,10 +46,10 @@ const HomePage = () => {
   return (
     isAuthenticated && (
       <div>
-        <h1>{`Welcome Home, ${user.given_name}`}!</h1>
+        <h1>{`Welcome Home, ${user.name}`}!</h1>
         <ButtonToProfile />
         <ButtonToFindGame />
-        <ButtonHostGame />
+        <ButtonToHostGame />
         <LogoutButton />
       </div>
     )

@@ -6,6 +6,7 @@ import SocketContext from '../contexts/Socket/SocketContext';
 type ButtonProps = {
   label: string;
   route: string;
+  onClick?: () => void;
 };
 
 export const Button: React.FC<ButtonProps> = ({ label, route }) => {
@@ -19,7 +20,7 @@ export const Button: React.FC<ButtonProps> = ({ label, route }) => {
 };
 
 export const ButtonToHome: React.FC = () => {
-  return <Button label="Back Home" route="/home" />;
+  return <Button label="Home" route="/home" />;
 };
 
 export const ButtonToGame: React.FC = () => {
@@ -34,17 +35,11 @@ export const ButtonToFindGame: React.FC = () => {
   return <Button label="Find a Game" route="/findGame" />;
 };
 
-export const ButtonHostGame: React.FC = () => {
+export const ButtonToHostGame: React.FC = () => {
   const { CreateGame } = useContext(SocketContext);
-  const navigate = useNavigate();
-
   const handleClick = () => {
     CreateGame();
-    navigate('/lobby');
   };
-
-
-  return (
-    <button onClick={handleClick}>Host a Game</button>
-  );
+  return <Button label="Host a Game" route="/lobby" onClick={handleClick} />;
 };
+
