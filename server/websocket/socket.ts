@@ -129,13 +129,14 @@ export class ServerSocket {
             // add this to the games dictionary object
             this.games[host] = { gameId: gameId, uidList: [host] };
 
+
+            const users = Object.values(this.users);
+
             // now send back the updated list of games
             callback(host, this.games);
 
-            // noooo this double updates don't use this in here
-            // send new game to users
-            // const users = Object.values(this.users);
-            // this.SendMessage('game_created', users, socket.id);
+            this.SendMessage('update_games', users, this.games);
+
             }
 
 
@@ -169,6 +170,11 @@ export class ServerSocket {
     // name is name of socket, users is list of socket ids, payload is information needed by the user for state updates
     SendMessage = (name: string, users: string[], payload?: Object) => {
         console.info('Emitting event: ' + name + ' to', users);
+        users.forEach((id) => (payload ? this.io.to(id).emit(name, payload) : this.io.to(id).emit(name)));
+    };
+
+    SendGames = (name: string, users: string[], payload?: Object) => {
+        console.info('Emitting event: ' + name + ' to', users, 'payload', payload);
         users.forEach((id) => (payload ? this.io.to(id).emit(name, payload) : this.io.to(id).emit(name)));
     };
 

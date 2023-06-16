@@ -80,9 +80,16 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
     // created a game event
     socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[] }}) => {
-    console.info('game created, new game list received')
-    SocketDispatch({ type: 'update_games', payload: games })
-  });
+      console.info('game created, new game list received')
+      SocketDispatch({ type: 'update_games', payload: games })
+    });
+
+    // updated a game event
+    socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+      console.info('games updated, new game list received')
+      SocketDispatch({ type: 'update_games', payload: games })
+    });
+
 
   }
 

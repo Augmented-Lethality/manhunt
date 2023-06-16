@@ -48,7 +48,7 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
     case 'remove_user':
       return { ...state, users: state.users.filter((uid) => uid !== (action.payload as string)) };
     case 'update_games':
-      return { ...state, games: action.payload as  { [host: string]: { gameId: string, uidList: string[]} }};
+      return { ...state, games: { ...state.games, ...action.payload as { [host: string]: { gameId: string, uidList: string[] } } } };
 
     default:
       return { ...state };
