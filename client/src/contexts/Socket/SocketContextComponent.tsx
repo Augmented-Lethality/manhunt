@@ -20,7 +20,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   // if loading, let's show the loading message so it doesn't break
   const [loading, setLoading] = useState(true);
 
-  const socket = useSocket('ws://localhost:3666', {
+  const socket = useSocket(`ws://${ process.env.REACT_APP_SOCKET_URI }`, {
     reconnectionAttempts: 5,
     reconnectionDelay: 3000,
     autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false

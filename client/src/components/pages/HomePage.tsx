@@ -44,7 +44,7 @@ const HomePage = () => {
   if (!user) {
     return null;
   }
-
+  console.log(user);
   return (
     isAuthenticated && (
       <div>
