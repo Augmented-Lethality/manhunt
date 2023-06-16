@@ -6,12 +6,12 @@ import {
   MeshBasicMaterial,
   Mesh,
 } from 'three';
+
 import React, { useRef, useEffect } from 'react';
 
-import WebcamRendererLocal from "./webcam.js"
+import {WebcamRendererLocal, LocationBasedLocal} from "./webcam.js"
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
-import * as THREEx from '@ar-js-org/ar.js/three.js/build/ar-threex-location-only.js';
 
 const ChaseCam: React.FC = () => {
   // the canvas element to render the scene
@@ -49,7 +49,7 @@ const ChaseCam: React.FC = () => {
     // const video = document.getElementById('video1') as HTMLVideoElement;
 
     // LocationBased object for AR, takes scene and camera
-    const arjs = new THREEx.LocationBased(scene, camera);
+    const arjs = new LocationBasedLocal(scene, camera);
 
     // renders the webcam stream as the background for the scene
     // I THINK THIS IS THE PROBLEM
@@ -64,7 +64,8 @@ const ChaseCam: React.FC = () => {
     arjs.add(box, -0.72, 51.051);
 
     // on desktop so need the fake gps
-    arjs.fakeGps(-0.72, 51.05, 10);
+    // arjs.fakeGps(-0.72, 51.05, 10);
+    arjs.startGps();
 
     // can be used outside of the useEffect scope, check above
     cameraRef.current = camera;
