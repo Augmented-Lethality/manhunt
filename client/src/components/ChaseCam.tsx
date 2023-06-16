@@ -8,6 +8,7 @@ import {
   WebGLRenderer,
   BoxGeometry,
   MeshBasicMaterial,
+  PlaneGeometry,
   Mesh, } from "./webcam.js"
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
@@ -15,9 +16,9 @@ import {
 const ChaseCam: React.FC = () => {
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
-  const [boxLatitude, setBoxLatitude] = useState<number | null>(null);
-  const [boxLongitude, setBoxLongitude] = useState<number | null>(null);
-  const [boxSet, setBoxSet] = useState<boolean | null>(false);
+  const [userLatitude, setUserLatitude] = useState<number | null>(null);
+  const [userLongitude, setUserLongitude] = useState<number | null>(null);
+  const [firstPosition, setFirstPosition] = useState<boolean | null>(false);
 
   // the canvas element to render the scene
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -85,13 +86,13 @@ const ChaseCam: React.FC = () => {
       renderer.render(scene, camera);
       frameIdRef.current = requestAnimationFrame(render);
 
-      const markerPositions = arjsRef.current?.getMarkerPositions();
+      const userPositions = arjsRef.current?.getUserPosition();
 
-      // testing if the markerPositions are the same as the old ones
+      // testing if the userPositions are the same as the old ones
       // if not, update the state
-      if(boxLatitude !== markerPositions?.latitude || boxLongitude !== markerPositions.longitude) {
-          setBoxLatitude(markerPositions?.latitude);
-          setBoxLongitude(markerPositions?.longitude);
+      if(userLatitude !== userPositions?.latitude || userLongitude !== userPositions.longitude) {
+          setUserLatitude(userPositions?.latitude);
+          setUserLongitude(userPositions?.longitude);
       }
 
     }
@@ -147,25 +148,30 @@ const ChaseCam: React.FC = () => {
   useEffect(() => {
 
     // if the positions aren't null (why try to render a box at null positions)
-    if(boxLatitude !== null) {
-      // console.log('they changed', boxLongitude, boxLatitude)
+    if(userLatitude !== null) {
+      // console.log('they changed', userLongitude, userLatitude)
+
+      const markerLong = userLongitude;
+      const markerLat = userLatitude + .001;
+
+      console.log('marker positions: ', markerLong, markerLat, )
 
       // if the box has not been set on the map yet
-      if(!boxSet) {
-        // console.log('not set, adding');
-        arjsRef.current?.add(box, boxLongitude, boxLatitude);
+      if(!firstPosition) {
+        console.log('not set, adding');
+        arjsRef.current?.add(box, markerLong, markerLat, 10);
 
         // store this in the state so we know the first box has been set and we don't need to call the .add() function
-        setBoxSet(true);
+        setFirstPosition(true);
       } else {
-        // console.log('set, changing position');
+        console.log('set, changing position');
 
         // don't create a new box with add, just edit the old one
-        arjsRef.current?.setWorldPosition(box, boxLongitude, boxLatitude)
+        arjsRef.current?.setWorldPosition(box, markerLong, markerLat)
       }
 
     }
-  }, [boxLatitude, boxLongitude])
+  }, [userLatitude, userLongitude])
 
   return (
     <>
