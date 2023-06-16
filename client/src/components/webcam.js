@@ -119,6 +119,7 @@ class LocationBasedLocal {
 
   startGps(maximumAge = 0) {
     if (this._watchPositionId === null) {
+      navigator.geolocation.getCurrentPosition(function () {}, function () {}, {});
       this._watchPositionId = navigator.geolocation.watchPosition(
         (position) => {
           this._gpsReceived(position);
@@ -188,10 +189,15 @@ class LocationBasedLocal {
     return [projectedPos[0], -projectedPos[1]];
   }
 
-  add(object, lon, lat, elev) {
-    this.setWorldPosition(object, lon, lat, elev);
-    this._scene.add(object);
+  async add(object, lon, lat, elev) {
+    try {
+      this.setWorldPosition(object, lon, lat, elev);
+      await this._scene.add(object);
+    } catch (error) {
+      console.error('An error occurred while adding the object:', error);
+    }
   }
+
 
   setWorldPosition(object, lon, lat, elev) {
     const worldCoords = this.lonLatToWorldCoords(lon, lat);
