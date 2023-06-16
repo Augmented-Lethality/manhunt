@@ -1,5 +1,20 @@
-import { PlaneGeometry, VideoTexture, MeshBasicMaterial,
-  Mesh, OrthographicCamera, Scene, MathUtils, Euler, EventDispatcher, Quaternion, Vector3 } from 'three';
+import {
+  PlaneGeometry,
+  VideoTexture,
+  MeshBasicMaterial,
+  Mesh,
+  OrthographicCamera,
+  Scene,
+  MathUtils,
+  Euler,
+  EventDispatcher,
+  Quaternion,
+  Vector3,
+  PerspectiveCamera,
+  WebGLRenderer,
+  BoxGeometry,
+} from 'three';
+
 
 // From the source files of AR.js, edited line 19 because the original BufferPlaneGeometry or whatever it was, was outdated
 class WebcamRendererLocal {
@@ -547,7 +562,25 @@ class SphMercProjection {
 }
 
 export {
+
+  // ARjs methods
   WebcamRendererLocal,
   LocationBasedLocal,
-  DeviceOrientationControls
+  DeviceOrientationControls,
+
+  // three methods
+  PlaneGeometry,
+  VideoTexture,
+  MeshBasicMaterial,
+  Mesh,
+  OrthographicCamera,
+  Scene,
+  MathUtils,
+  Euler,
+  EventDispatcher,
+  Quaternion,
+  Vector3,
+  PerspectiveCamera,
+  WebGLRenderer,
+  BoxGeometry,
 };

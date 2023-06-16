@@ -1,15 +1,14 @@
+import React, { useRef, useEffect, useState } from 'react';
+
 import {
+  WebcamRendererLocal,
+  LocationBasedLocal,
   PerspectiveCamera,
   Scene,
   WebGLRenderer,
   BoxGeometry,
   MeshBasicMaterial,
-  Mesh,
-} from 'three';
-
-import React, { useRef, useEffect, useState } from 'react';
-
-import {WebcamRendererLocal, LocationBasedLocal} from "./webcam.js"
+  Mesh, } from "./webcam.js"
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
