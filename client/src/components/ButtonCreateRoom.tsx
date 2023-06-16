@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import SocketContext from '../../contexts/Socket/SocketContext';
+import SocketContext from '../contexts/Socket/SocketContext';
 
 const ButtonCreateRoom: React.FC = () => {
   const { CreateGame } = useContext(SocketContext);

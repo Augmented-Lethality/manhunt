@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
-import { LogoutButton } from "../Auth0/LogoutButton";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import ProfilePage from "./ProfilePage";
+import React, { useEffect, useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { LogoutButton } from '../Auth0/LogoutButton';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ButtonToProfile, ButtonToFindGame, ButtonToLobby } from '../Buttons';
 
-interface UserData {
+// import ChaseCam from '../components/ChaseCam'
+
+type UserData = {
   username: string;
   email: string;
   authId: string;
@@ -14,22 +16,18 @@ interface UserData {
 
 // import ChaseCam from '../components/ChaseCam'
 
-import ButtonToHostLobby from '../components/buttons/ButtontoHostLobby';
+import ButtonToHostLobby from '../buttons/ButtontoHostLobby';
 
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
   const navigate = useNavigate();
 
-  const navigateToProfile = () => {
-    navigate("/profile");
-  };
-  
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         // Check if the user exists by sending a POST request instead of a GET request
-        const response = await axios.post<UserData>("/Users", {
+        const response = await axios.post<UserData>('/Users', {
           username: user?.name,
           email: user?.email,
           authId: user?.sub,
@@ -38,7 +36,7 @@ const HomePage = () => {
         setUserData(response.data);
         // console.log(response);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       }
     };
 
@@ -55,7 +53,9 @@ const HomePage = () => {
     isAuthenticated && (
       <div>
         <h1>{`Welcome Home, ${user.given_name}`}!</h1>
-        <button onClick={navigateToProfile}>Profile</button>
+        <ButtonToProfile />
+        <ButtonToFindGame />
+        <ButtonToLobby />
         <LogoutButton />
         <ButtonToHostLobby />
         {/* <ChaseCam /> */}
