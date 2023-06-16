@@ -11,8 +11,7 @@ type UserData = {
   gamesWon: number;
   killsConfirmed: number;
   // Add other user data properties as needed
-}
-
+};
 
 const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -59,13 +58,29 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
           </span>
         </p>
         <div className='profile-grid'>
-          <div className='profile__header'>
-            <img src={user.picture} alt='Profile' className='profile__avatar' />
-            <div className='profile__headline'>
+          <div
+            className='profile__header'
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginLeft: 0,
+              padding: '20px', // Adjust as needed
+              backgroundColor: '#f7f2cd',
+            }}
+          >
+            <div style={{ marginRight: '20px' }}>
+              <img
+                src={user.picture}
+                alt='Profile'
+                className='profile__avatar'
+              />
+            </div>
+            <div>
               <h2 className='profile__title'>{user.name}</h2>
               <span className='profile__description'>{user.email}</span>
             </div>
           </div>
+
           <div className='profile__details'>
             <h2>Games Played: {userData?.gamesPlayed}</h2>
             <h2>Games Won: {userData?.gamesWon}</h2>
