@@ -60,8 +60,8 @@ const ChaseCam: React.FC = () => {
     const mtl = new MeshBasicMaterial({ color: 0xff0000 });
     const box = new Mesh(geom, mtl);
 
-    // box location in lat/long
-    arjs.add(box, -0.72, 51.051);
+    // box location in lat/long, HARDCODED FOR MY COORDINATES
+    arjs.add(box, -90.046464, 29.983);
 
     // on desktop so need the fake gps
     // arjs.fakeGps(-0.72, 51.05, 10);
