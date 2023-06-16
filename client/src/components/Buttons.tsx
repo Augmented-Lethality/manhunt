@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import SocketContext from '../contexts/Socket/SocketContext';
 
 type ButtonProps = {
   label: string;
@@ -20,10 +22,6 @@ export const ButtonToHome: React.FC = () => {
   return <Button label="Back Home" route="/home" />;
 };
 
-export const ButtonToLobby: React.FC = () => {
-  return <Button label="Game Lobby" route="/lobby" />;
-};
-
 export const ButtonToGame: React.FC = () => {
   return <Button label="Game Time" route="/onthehunt" />;
 };
@@ -34,4 +32,19 @@ export const ButtonToProfile: React.FC = () => {
 
 export const ButtonToFindGame: React.FC = () => {
   return <Button label="Find a Game" route="/findGame" />;
+};
+
+export const ButtonHostGame: React.FC = () => {
+  const { CreateGame } = useContext(SocketContext);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    CreateGame();
+    navigate('/lobby');
+  };
+
+
+  return (
+    <button onClick={handleClick}>Host a Game</button>
+  );
 };

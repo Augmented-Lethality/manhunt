@@ -28,7 +28,10 @@ const App = () => {
       <Route path="/" element={<LandingPage />} />
       <Route
         path="/home"
-        element={<AuthenticationGuard component={HomePage} />}
+        element={
+          <SocketContextComponent>
+            <AuthenticationGuard component={HomePage} />
+          </SocketContextComponent>}
       />
       <Route
         path="/profile"
@@ -36,12 +39,17 @@ const App = () => {
       />
       <Route
         path="/findGame"
-        element={<AuthenticationGuard component={FindGamePage} />}
+        element={
+          <SocketContextComponent>
+            <AuthenticationGuard component={FindGamePage}/>
+          </SocketContextComponent>}
       />
       <Route
         path="/onthehunt"
-        element={<AuthenticationGuard component={GamePage} />}
-      />
+        element={
+          <SocketContextComponent>
+            <AuthenticationGuard component={GamePage} />
+          </SocketContextComponent>}/>
       <Route
         path="/lobby"
         element={
