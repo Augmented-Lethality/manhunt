@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ButtonToLobby: React.FC = () => {
+const ButtonToHostLobby: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -13,4 +13,4 @@ const ButtonToLobby: React.FC = () => {
   );
 };
 
-export default ButtonToLobby;
+export default ButtonToHostLobby;

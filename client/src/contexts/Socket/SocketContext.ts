@@ -59,6 +59,7 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
 export interface ISocketContextProps {
   SocketState: ISocketContextState;
   SocketDispatch: React.Dispatch<ISocketContextActions>;
+  CreateGame: () => void;
 }
 
 // context object that creates the context using the createContext() method
@@ -67,7 +68,8 @@ export interface ISocketContextProps {
 // also initializes the SocketDispatch method
 const SocketContext = createContext<ISocketContextProps>({
   SocketState: defaultSocketContextState,
-  SocketDispatch: () => {}
+  SocketDispatch: () => {},
+  CreateGame: () => {}
 });
 
 // shares data between components without having to pass props around (react feature):

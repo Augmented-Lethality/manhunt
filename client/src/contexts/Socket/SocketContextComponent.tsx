@@ -103,7 +103,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   }
 
     // sending createRoom to the server
-    const CreateRoom = () => {
+    const CreateGame = () => {
       console.info('Client wants to create a game...');
 
       socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => {
@@ -119,7 +119,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch}}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame }}>
       {children}
     </SocketContextProvider>
   )
