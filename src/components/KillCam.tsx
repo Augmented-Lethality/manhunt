@@ -44,10 +44,8 @@ const FacialRecognition: React.FC = () => {
   const loadModels = async () => {
     try {
       await faceapi.loadSsdMobilenetv1Model('/models')
-      await faceapi.loadTinyFaceDetectorModel('/models')
       await faceapi.loadFaceLandmarkModel('/models')
       await faceapi.loadFaceRecognitionModel('/models')
-      await faceapi.loadFaceExpressionModel('/models')
       await createFaceMatcher();
       console.log('createdFaceMatcher')
       setModelsLoaded(true);
