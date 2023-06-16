@@ -37,9 +37,6 @@ export const ButtonToFindGame: React.FC = () => {
 
 export const ButtonToHostGame: React.FC = () => {
   const { CreateGame } = useContext(SocketContext);
-  const handleClick = () => {
-    CreateGame();
-  };
-  return <Button label="Host a Game" route="/lobby" onClick={handleClick} />;
+  return <Button label="Host a Game" route="/lobby" onClick={CreateGame} />;
 };
 
