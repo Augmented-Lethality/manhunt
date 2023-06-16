@@ -15,6 +15,7 @@ import {WebcamRendererLocal, LocationBasedLocal} from "./webcam.js"
 
 const ChaseCam: React.FC = () => {
 
+  // storing the marker long/lat so we can compare new coordinates to the old ones
   const [boxLatitude, setBoxLatitude] = useState<number | null>(null);
   const [boxLongitude, setBoxLongitude] = useState<number | null>(null);
   const [boxSet, setBoxSet] = useState<boolean | null>(false);
@@ -63,16 +64,8 @@ const ChaseCam: React.FC = () => {
     // renders the webcam stream as the background for the scene
     const cam = new WebcamRendererLocal(renderer, '#video1');
 
-    // create a red box to render on the screen that stays in the defined location
-    // const geom = new BoxGeometry(20, 20, 20);
-    // const mtl = new MeshBasicMaterial({ color: 0xff0000 });
-    // const box = new Mesh(geom, mtl);
-
     // start the location
     arjsRef.current.startGps();
-
-    // box location in long/lat, HARDCODED FOR MY COORDINATES
-    // arjs.add(box, -90.046464, 29.98372);
 
     // can be used outside of the useEffect scope, check above
     cameraRef.current = camera;
@@ -95,6 +88,8 @@ const ChaseCam: React.FC = () => {
 
       const markerPositions = arjsRef.current?.getMarkerPositions();
 
+      // testing if the markerPositions are the same as the old ones
+      // if not, update the state
       if(boxLatitude !== markerPositions?.latitude || boxLongitude !== markerPositions.longitude) {
           setBoxLatitude(markerPositions?.latitude);
           setBoxLongitude(markerPositions?.longitude);
@@ -146,21 +141,27 @@ const ChaseCam: React.FC = () => {
   }, []);
 
   // create a red box to render on the screen that stays in the defined location
-const geom = new BoxGeometry(20, 20, 20);
-const mtl = new MeshBasicMaterial({ color: 0xff0000 });
-const box = new Mesh(geom, mtl);
+  const geom = new BoxGeometry(20, 20, 20);
+  const mtl = new MeshBasicMaterial({ color: 0xff0000 });
+  const box = new Mesh(geom, mtl);
 
   useEffect(() => {
 
+    // if the positions aren't null (why try to render a box at null positions)
     if(boxLatitude !== null) {
-      console.log('they changed', boxLongitude, boxLatitude)
+      // console.log('they changed', boxLongitude, boxLatitude)
 
+      // if the box has not been set on the map yet
       if(!boxSet) {
-        console.log('not set, adding');
+        // console.log('not set, adding');
         arjsRef.current?.add(box, boxLongitude, boxLatitude);
+
+        // store this in the state so we know the first box has been set and we don't need to call the .add() function
         setBoxSet(true);
       } else {
-        console.log('set, changing position');
+        // console.log('set, changing position');
+
+        // don't create a new box with add, just edit the old one
         arjsRef.current?.setWorldPosition(box, boxLongitude, boxLatitude)
       }
 
@@ -180,22 +181,5 @@ const box = new Mesh(geom, mtl);
     </>
   );
 };
-// REACT THREE FIBER NOTES IF NEEDED
-/*
-<Canvas />:
-- It sets up a Scene and a Camera, the basic building blocks necessary for rendering
-- It renders our scene every frame, you do not need a traditional render-loop
-
-<mesh />
-- see something in our scene
-- direct equivalent to new THREE.Mesh()
-- the geometry and material automatically attach to their parent
-
-Passing constructor arguments:
-- Instead of: new THREE.BoxGeometry(2, 2, 2)
-- Do this instead: <boxGeometry args={[2, 2, 2]} />
-- Note that every time you change args, the object must be re-constructed!
-
-*/
 
 export default ChaseCam;
