@@ -1,39 +1,26 @@
 import React, { useContext, useEffect } from 'react';
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 
 import SocketContext from '../../contexts/Socket/SocketContext';
-import ButtonCreateRoom from '../ButtonCreateRoom';
 
 import { ButtonToHome, ButtonToGame } from '../Buttons';
 
 export interface IGameLobbyProps {};
 
+// THIS IS CURRENTLY SHOWING ALL USERS ONLINE, NOT ONLY THE ONES WITHIN IN THE LOBBY
+
 const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
   const { socket, uid, users, games } = useContext(SocketContext).SocketState;
-  const { user, isAuthenticated } = useAuth0();
+  // const { user, isAuthenticated } = useAuth0();
 
   return (
     <div>
-      <h2>Socket IO Information</h2>
+      <h2>Game Lobby</h2>
       <p>
-        Your user ID: <strong>{uid}</strong><br />
-        Users Online: <strong>{users.length}</strong><br />
-        Socket ID: <strong>{socket?.id}</strong><br />
-        Your user AuthToken: <strong>{user?.sub}</strong><br />
-        <ButtonCreateRoom />
+        Your Socket User ID: <strong>{uid}</strong><br />
+        Total Users Active on App: <strong>{users.length}</strong><br />
+        Your Socket ID: <strong>{socket?.id}</strong><br />
       </p>
-      {Object.keys(games).length > 0 && (
-          <>
-            <strong>The Games:</strong>
-            <ul>
-              {Object.keys(games).map((host) => (
-                <li key={host}>
-                  Game ID: {games[host].gameId}, Host: {host}, Users: {games[host].uidList.join(', ')}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
 
       <ButtonToGame /><br />
       <ButtonToHome />

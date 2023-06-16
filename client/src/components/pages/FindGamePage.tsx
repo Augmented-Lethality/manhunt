@@ -5,6 +5,8 @@ import axios from 'axios';
 import SocketContext from '../../contexts/Socket/SocketContext';
 import { ButtonToHome } from '../Buttons';
 
+// THIS IS CURRENTLY SHOWING ALL ACTIVE GAMES, EVEN IF YOU'RE HOSTING THE GAME IT STILL SHOWS
+
 // type GameLobby = {
 //   id: number;
 //   gameLobbyName: string;
