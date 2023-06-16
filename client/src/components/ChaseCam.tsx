@@ -13,7 +13,11 @@ import {
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
-const ChaseCam: React.FC = () => {
+type ChaseCamProps = {
+  markers: Array<Mesh<BoxGeometry, MeshBasicMaterial>>;
+}
+
+const ChaseCam: React.FC<ChaseCamProps> = ({ markers }) => {
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
   const [userLatitude, setUserLatitude] = useState<number | null>(null);
