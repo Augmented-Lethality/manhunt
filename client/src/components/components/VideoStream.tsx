@@ -1,9 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, ReactElement } from 'react';
+import { CanvasHandles } from './Canvas';
 
+type VideoStreamProps = {
+  readyToPlay: boolean;
+  children: React.ReactNode;
+};
 
-
-const VideoStream: React.FC = () => {
+const VideoStream: React.FC<VideoStreamProps> = ({readyToPlay, children}) => {
+  const canvasRef = useRef<CanvasHandles | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  
+  useEffect(() => {
+    if (readyToPlay && videoRef.current) {
+      videoRef.current.play();
+      canvasRef.current?.detectFaces(); // Call the detectFaces function
+    }
+  }, [readyToPlay]);
 
   useEffect(() => {
     const run = async () => {
@@ -11,38 +23,20 @@ const VideoStream: React.FC = () => {
         console.error('Browser API navigator.mediaDevices.getUserMedia not available');
         return;
       }
-
-      // Get the aspect ratio of the screen or specific area
       // const aspectRatio = window.innerWidth / window.innerHeight;
       let stream;
+      //const aspectRatio = window.innerWidth / window.innerHeight;
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: {
-          width: 1280,
-          height: 720,
-          facingMode: "environment", // Try rear-facing camera first
-        }});
+        const aspectRatio = window.innerWidth / window.innerHeight;
+        stream = await navigator.mediaDevices.getUserMedia({ video: {aspectRatio}});
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
-      } catch {
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({ video: {
-            width: 1280,
-            height: 720,
-            facingMode: "user", // Fallback to front-facing camera
-          }});
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-        } catch (err) {
-          // Handle error when neither camera is available
-          console.error('Failed to access the camera:', err);
-        }
-     }
+      } catch (err) {
+        console.error('Failed to access the camera:', err);
+      }
     };
-
     run();
-
     // Cleanup function to stop the video stream when the component is unmounted
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
@@ -52,12 +46,18 @@ const VideoStream: React.FC = () => {
         videoRef.current.srcObject = null;
       }
     };
-  }, []);
+  }, [readyToPlay]);
 
   return (
     <div style={{ position: 'relative' }}>
-    <video ref={videoRef} autoPlay muted style={{ width: '100%', height: 'auto' }} />
-  </div>
+      <video ref={videoRef} muted style={{ width: '100%', height: 'auto' }} />
+      {React.Children.map(children, child => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child as ReactElement, { videoElement: videoRef.current });
+        }
+        return child;
+      })}
+    </div>
   );
 };
 
