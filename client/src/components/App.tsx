@@ -1,15 +1,15 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { PageLoader } from './Auth0/Loading'
-import { useAuth0 } from "@auth0/auth0-react";
-import { AuthenticationGuard } from "./Auth0/authentication-guard";
-import NotFoundPage from "./pages/NotFoundPage";
+import { PageLoader } from './Auth0/Loading';
+import { useAuth0 } from '@auth0/auth0-react';
+import { AuthenticationGuard } from './Auth0/authentication-guard';
+import NotFoundPage from './pages/NotFoundPage';
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
 import GamePage from './pages/GamePage';
 import ProfilePage from './pages/ProfilePage';
 import GameLobby from './pages/GameLobby';
-
+import FindGamePage from './pages/FindGamePage';
 import SocketContextComponent from '../contexts/Socket/SocketContextComponent';
 
 const App = () => {
@@ -24,16 +24,35 @@ const App = () => {
   }
 
   return (
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/home" element={<AuthenticationGuard component={HomePage} />} />
-        <Route path="/profile" element={<AuthenticationGuard component={ProfilePage} />} />
-        <Route path="/profile" element={<AuthenticationGuard component={ProfilePage} />} />
-        <Route path="/onthehunt" element={<AuthenticationGuard component={GamePage} />} />
-        <Route path="/lobby" element={<SocketContextComponent><AuthenticationGuard component={GameLobby} /></SocketContextComponent>} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route
+        path="/home"
+        element={<AuthenticationGuard component={HomePage} />}
+      />
+      <Route
+        path="/profile"
+        element={<AuthenticationGuard component={ProfilePage} />}
+      />
+      <Route
+        path="/findGame"
+        element={<AuthenticationGuard component={FindGamePage} />}
+      />
+      <Route
+        path="/onthehunt"
+        element={<AuthenticationGuard component={GamePage} />}
+      />
+      <Route
+        path="/lobby"
+        element={
+          <SocketContextComponent>
+            <AuthenticationGuard component={GameLobby} />
+          </SocketContextComponent>
+        }
+      />
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   );
 };
 
-export default App
+export default App;
