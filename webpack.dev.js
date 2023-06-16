@@ -43,7 +43,4 @@ module.exports = {
       "path": require.resolve("path-browserify"),
     }
   },
-  optimization: {
-    minimize: false
-},
 };
