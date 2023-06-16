@@ -193,10 +193,13 @@ class LocationBasedLocal {
     try {
       this.setWorldPosition(object, lon, lat, elev);
       await this._scene.add(object);
+
+      console.log('added object!')
     } catch (error) {
       console.error('An error occurred while adding the object:', error);
     }
   }
+
 
 
   setWorldPosition(object, lon, lat, elev) {

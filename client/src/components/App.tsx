@@ -47,9 +47,16 @@ const App = () => {
       <Route
         path="/onthehunt"
         element={
+         
+            <AuthenticationGuard component={GamePage} />
+         }/>
+
+          {/* <Route
+        path="/onthehunt"
+        element={
           <SocketContextComponent>
             <AuthenticationGuard component={GamePage} />
-          </SocketContextComponent>}/>
+          </SocketContextComponent>}/> */}
       <Route
         path="/lobby"
         element={

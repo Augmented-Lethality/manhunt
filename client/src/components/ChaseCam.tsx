@@ -46,7 +46,7 @@ const ChaseCam: React.FC = () => {
 
     // new scene, camera, and renderer
     const scene = new Scene();
-    const camera = new PerspectiveCamera(60, 1.33, 0.1, 10000);
+    const camera = new PerspectiveCamera(60, 1.33, 0.00000001, 100000000000000);
     const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
 
     // new video element
@@ -56,7 +56,6 @@ const ChaseCam: React.FC = () => {
     const arjs = new LocationBasedLocal(scene, camera);
 
     // renders the webcam stream as the background for the scene
-    // I THINK THIS IS THE PROBLEM
     const cam = new WebcamRendererLocal(renderer, '#video1');
 
     // create a red box to render on the screen that stays in the defined location
@@ -64,31 +63,11 @@ const ChaseCam: React.FC = () => {
     const mtl = new MeshBasicMaterial({ color: 0xff0000 });
     const box = new Mesh(geom, mtl);
 
-    // arjs.setMarkerPosition = (latitude, longitude) => {
-    //   const markerLatitude = Number(((latitude + 0.001).toFixed(3)));
-    //   const markerLongitude = longitude;
-
-    //   console.log(markerLatitude, markerLongitude)
-
-    //   arjs.markerLatitude = markerLatitude;
-    //   arjs.markerLongitude = markerLongitude;
-
-    //   setBoxLatitude(markerLatitude);
-    //   setBoxLongitude(markerLongitude);
-
-    //   console.log('going into box:', markerLongitude, markerLatitude)
-    //   // arjs.add(box, markerLongitude, markerLatitude);
-
-    //   return [markerLatitude, markerLongitude];
-    // };
-
-    console.log(arjs.markerLatitude, arjs.markerLongitude)
+    // start the location
+    arjs.startGps();
 
     // box location in long/lat, HARDCODED FOR MY COORDINATES
-    arjs.add(box, -90.047, 29.98272);
-
-    // on desktop so need the fake gps
-    arjs.startGps();
+    arjs.add(box, -90.046464, 29.98372);
 
     // can be used outside of the useEffect scope, check above
     cameraRef.current = camera;
