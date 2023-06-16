@@ -5,18 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ButtonToProfile, ButtonToFindGame, ButtonToLobby } from '../Buttons';
 
-// import ChaseCam from '../components/ChaseCam'
-
 type UserData = {
   username: string;
   email: string;
   authId: string;
   // Add other user data properties as needed
 }
-
-// import ChaseCam from '../components/ChaseCam'
-
-import ButtonToHostLobby from '../buttons/ButtontoHostLobby';
 
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -57,8 +51,6 @@ const HomePage = () => {
         <ButtonToFindGame />
         <ButtonToLobby />
         <LogoutButton />
-        <ButtonToHostLobby />
-        {/* <ChaseCam /> */}
       </div>
     )
   );

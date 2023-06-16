@@ -4,7 +4,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import SocketContext from '../../contexts/Socket/SocketContext';
 import ButtonCreateRoom from '../ButtonCreateRoom';
 
-
 import { ButtonToHome, ButtonToGame } from '../Buttons';
 
 export interface IGameLobbyProps {};
@@ -12,8 +11,6 @@ export interface IGameLobbyProps {};
 const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
   const { socket, uid, users, games } = useContext(SocketContext).SocketState;
   const { user, isAuthenticated } = useAuth0();
-
-  console.log(Object.values(games));
 
   return (
     <div>
