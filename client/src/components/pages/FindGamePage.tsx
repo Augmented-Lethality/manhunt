@@ -8,7 +8,7 @@ type GameLobby = {
   players: number;
 };
 
-const JoinGamePage: React.FC = () => {
+const FindGamePage: React.FC = () => {
   // const [gameLobbies, setGameLobbies] = useState<GameLobby[]>([]);
   const gameLobbies = [
     { id: 1, gameLobbyName: "Alex's Game Lobby", players: 69 },
@@ -57,4 +57,4 @@ const JoinGamePage: React.FC = () => {
   );
 };
 
-export default JoinGamePage;
+export default FindGamePage;
