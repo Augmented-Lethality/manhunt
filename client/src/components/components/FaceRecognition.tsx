@@ -1,141 +1,150 @@
-import React, { useEffect, useRef } from 'react';
 import * as faceapi from 'face-api.js';
-// import VideoStream from './VideoStream';
+import React, {useEffect, useState, useRef} from 'react';
 
-const FaceRecognition: React.FC = () => {
+const FacialRecognition: React.FC = () => {
+
+  const [modelsLoaded, setModelsLoaded] = useState(false);
+  const [captureVideo, setCaptureVideo] = useState(false);
+  const [faceMatcherReady, setFaceMatcherReady] = useState(false);
+  const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
+
   const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const videoHeight = window.innerHeight;
+  const videoWidth = window.innerWidth;
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  const displaySize = { width: videoWidth, height: videoHeight };
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  const mtcnnForwardParams = {
-    maxNumScales: 10,
-    scaleFactor: 0.709,
-    scoreThresholds: [0.6, 0.7, 0.7],
-    minFaceSize: 200,
+  useEffect(() => {
+    loadModels();
+    console.log('models loaded')
+  }, []);
+
+  useEffect(() => {
+    createCanvas()
+    console.log('createdCanvas')
+  }, [canvasRef])
+
+  const createFaceMatcher = async () => {
+    const labels = ['alyson-hannigan', 'anya-taylor-joy', 'kalypso-homan', 'megan-fox'];
+    const promises = labels.map(async label => {
+      const descriptions: Float32Array[] = [];
+      const img = await faceapi.fetchImage(`assets/${label}.jpg`);
+      const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+      if(detection){
+        descriptions.push(detection.descriptor);
+      }
+      return new faceapi.LabeledFaceDescriptors(label, descriptions);
+    });
+    const labeledFaceDescriptors = await Promise.all(promises);
+    setFaceMatcher( new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6));
+    setFaceMatcherReady(true);
+  }
+
+  const loadModels = async () => {
+    try {
+      await faceapi.loadSsdMobilenetv1Model('/models')
+      await faceapi.loadTinyFaceDetectorModel('/models')
+      await faceapi.loadFaceLandmarkModel('/models')
+      await faceapi.loadFaceRecognitionModel('/models')
+      await faceapi.loadFaceExpressionModel('/models')
+      await createFaceMatcher();
+      console.log('createdFaceMatcher')
+      setModelsLoaded(true);
+    } catch (err) {
+      console.error(err);
+      setModelsLoaded(false);
+    }
   };
 
-  const labels = ['alyson-hannigan', 'anya-taylor-joy', 'megan-fox'];
+  const createCanvas = () => {
+    if(videoRef.current){
+      canvasRef.current = faceapi.createCanvasFromMedia(videoRef.current);
+    }
+  };
 
-
-  useEffect(() => {
-    const run = async () => {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        console.error('Browser API navigator.mediaDevices.getUserMedia not available');
-        return;
+  const startVideo = async () => {
+    setCaptureVideo(true);
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { aspectRatio } })
+      if(videoRef.current){
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
       }
+    } catch(err){
+      console.error("error:", err);
+    }
+  }
 
-      // Get the aspect ratio of the screen or specific area
-      const aspectRatio = window.innerWidth / window.innerHeight;
-      let stream;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: {
-          aspectRatio,
-          facingMode: "environment", // Try rear-facing camera first
-        }});
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
+  const handleVideoOnPlay = () => {
+    if (canvasRef.current && videoRef.current) {
+      faceapi.matchDimensions(canvasRef.current, displaySize);
+    }
+    setInterval(async () => {
+      if (faceMatcher && videoRef.current && canvasRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA) {
+        const detections = await faceapi.detectAllFaces(videoRef.current).withFaceLandmarks().withFaceDescriptors();
+        const resizedDetections = faceapi.resizeResults(detections, displaySize);
+        const context = canvasRef.current.getContext('2d');
+        if (context) {
+          context.clearRect(0, 0, videoWidth, videoHeight);
         }
-      } catch {
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({ video: {
-            aspectRatio,
-            facingMode: "user", // Fallback to front-facing camera
-          }});
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-        } catch (err) {
-          // Handle error when neither camera is available
-          console.error('Failed to access the camera:', err);
-        }
-     }
-    };
+        //faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
+        faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
 
-    run();
-
-    // Cleanup function to stop the video stream when the component is unmounted
-    return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        const tracks = stream.getTracks();
-        tracks.forEach((track) => track.stop());
-        videoRef.current.srcObject = null;
+        // for every face, find best result
+        const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
+        //for Each, adds a box
+        results.forEach((result, i) => {
+          const box = resizedDetections[i].detection.box
+          const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
+          if (canvasRef.current) {
+              drawBox.draw(canvasRef.current)
+          }        
+        })
       }
-    };
-  }, []);
-  // console.log(faceapi.loadFaceRecognitionModel);
-  //console.log(Lt.makeTensor);
+    }, 100);
+  };
 
-      //load all the models were using and then run the start function
-      Promise.all([
-        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-        faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
-      ])
-  useEffect(() => {
-    const run = async () => {
-
-      // try{
-      //   await faceapi.loadFaceRecognitionModel('/models')
-      //   await faceapi.loadMtcnnModel('/models')
-      // } catch (err){
-      //   console.error(err)
-      //   return;
-      // }
-      // let labeledFaceDescriptors;
-      // try {
-      //   labeledFaceDescriptors = await Promise.all(
-      //     labels.map(async label => {
-      //       const imgUrl = `/assets/${label}.jpg`;
-      //       const img = await faceapi.fetchImage(imgUrl);
-      //       const fullFaceDescription = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-      //       if (!fullFaceDescription) {
-      //         throw new Error(`no faces detected for ${label}`);
-      //       }
-      //       const faceDescriptors = [fullFaceDescription.descriptor];
-      //       return new faceapi.LabeledFaceDescriptors(label, faceDescriptors);
-      //     }),
-      //   );
-      //   console.log('labeledFaceDescriptors', labeledFaceDescriptors);
-      // } catch (err) {
-      //   console.error('Failed to create labeled face descriptors:', err);
-      //   return;
-      // }
-
-    //   const maxDescriptorDistance = 0.6;
-    //   const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, maxDescriptorDistance);
-
-    //   const onPlay = async () => {
-    //     const options = new faceapi.MtcnnOptions(mtcnnForwardParams);
-    //     if(videoRef.current){
-    //       const fullFaceDescriptions = await faceapi.detectAllFaces(videoRef.current, options).withFaceLandmarks().withFaceDescriptors();
-    //       const results = fullFaceDescriptions.map(fd => faceMatcher.findBestMatch(fd.descriptor));
-
-    //       results.forEach((bestMatch, i) => {
-    //         const box = fullFaceDescriptions[i].detection.box;
-    //         const text = bestMatch.toString();
-    //         const drawBox = new faceapi.draw.DrawBox(box, { label: text });
-    //         if(canvasRef.current){
-    //           drawBox.draw(canvasRef.current);
-    //         }
-    //       });
-    //     }
-    //     setTimeout(() => onPlay(), 100);
-    //   };
-
-    //   if (videoRef.current) {
-    //     videoRef.current.onplay = onPlay;
-    //   }
-    };
-
-    run();
-  }, []);
+  const closeWebcam = () => {
+    if(videoRef.current && videoRef.current.srcObject){
+      const mediaStream = videoRef.current.srcObject as MediaStream;
+      videoRef.current.pause();
+      mediaStream.getTracks()[0].stop();
+      setCaptureVideo(false);
+    }
+  }
 
   return (
-    <div style={{ position: 'relative' }}>
-      <canvas ref={canvasRef} />
-      <video ref={videoRef} autoPlay muted style={{ width: '100%', height: 'auto' }} />
+    <div>
+      <div style={{ textAlign: 'center', padding: '10px' }}>
+        {
+          captureVideo && modelsLoaded && faceMatcherReady ?
+            <button onClick={closeWebcam} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
+              Close Webcam
+            </button>
+            :
+            <button onClick={startVideo} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
+              Open Webcam
+            </button>
+        }
+      </div>
+      {
+        captureVideo ?
+          modelsLoaded && faceMatcherReady ?
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+                <video ref={videoRef} height={videoHeight} width={videoWidth} onPlay={handleVideoOnPlay} style={{ borderRadius: '10px' }} />
+                <canvas ref={canvasRef} style={{ position: 'absolute' }} />
+              </div>
+            </div>
+            :
+            <div>loading...</div>
+          :
+          <>
+          </>
+      }
     </div>
   );
-};
-
-export default FaceRecognition;
+}
+export default FacialRecognition;
