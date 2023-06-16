@@ -2,7 +2,8 @@ import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import { createServer } from "http";
-import { Server } from "socket.io";
+
+import { ServerSocket } from './websocket/socket';
 const { sequelize } = require("./database/index");
 const { Users } = require("./routes/users");
 
@@ -11,7 +12,10 @@ dotenv.config();
 const dist = path.resolve(__dirname, '..', 'client');
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, { /* options */ });
+
+// start the socket
+new ServerSocket(httpServer);
+
 const port = process.env.PORT || 3666;
 
 app.use(express.json());
@@ -32,9 +36,6 @@ app.get('*', (req, res) => {
   });
 });
 
-io.on("connection", (socket) => {
-  // ...
-});
 
 httpServer.listen(port, () => {
   console.log(`Server listening on port ${port}`);
