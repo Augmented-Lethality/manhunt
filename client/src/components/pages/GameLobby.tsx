@@ -12,7 +12,7 @@ const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
   const { socket, uid, users, games } = useContext(SocketContext).SocketState;
   const { user, isAuthenticated } = useAuth0();
 
-  console.log(games);
+  console.log(Object.values(games));
 
   return (
     <div>
@@ -23,8 +23,20 @@ const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
         Socket ID: <strong>{socket?.id}</strong><br />
         Your user AuthToken: <strong>{user?.sub}</strong><br />
         <ButtonCreateRoom />
-            <strong>The Games:</strong>
       </p>
+      {Object.keys(games).length > 0 && (
+          <>
+            <strong>The Games:</strong>
+            <ul>
+              {Object.keys(games).map((host) => (
+                <li key={host}>
+                  Game ID: {games[host].gameId}, Host: {host}, Users: {games[host].uidList.join(', ')}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+
       <ButtonToGame /><br />
       <ButtonToHome />
     </div>

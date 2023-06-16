@@ -92,10 +92,11 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
     // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
     // on the handshake and it gets the cb from the server on handshake
-    socket.emit('handshake', (uid: string, users: string[]) => {
+    socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] }}) => {
       console.log('We shook, let\'s trade info xoxo');
       SocketDispatch({ type: 'update_uid', payload: uid });
-      SocketDispatch({ type: 'update_users', payload: users })
+      SocketDispatch({ type: 'update_users', payload: users });
+      SocketDispatch({ type: 'update_games', payload: games })
 
       // not loading anymore since it connected
       setLoading(false);

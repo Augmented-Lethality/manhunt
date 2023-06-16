@@ -68,7 +68,7 @@ export class ServerSocket {
         // console.info('Message received from ' + socket.id);
 
         // client is attempting to connect to the server, also known as a handshake
-        socket.on('handshake', (callback: (uid: string, users: string[]) => void) => {
+        socket.on('handshake', (callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] }}) => void) => {
             console.info('Handshake received from: ' + socket.id);
 
             // is this a reconnection attempt?
@@ -84,7 +84,7 @@ export class ServerSocket {
                 // if the uid obtained is valid and cool, send the client the uid and users
                 if (uid) {
                     // console.info('Sending info for reconnect ...');
-                    callback(uid, users);
+                    callback(uid, users, this.games);
                     return;
                 }
             }
@@ -98,7 +98,7 @@ export class ServerSocket {
             // storing all of the users from the users object into an array
             const users = Object.values(this.users);
             // console.info('Sending new user info ...');
-            callback(uid, users);
+            callback(uid, users, this.games);
 
             // send new user to all connected users
             this.SendMessage(
@@ -127,14 +127,15 @@ export class ServerSocket {
             const gameId = v4();
 
             // add this to the games dictionary object
-            this.games[host] = { gameId: gameId, uidList: [] };
+            this.games[host] = { gameId: gameId, uidList: [host] };
 
             // now send back the updated list of games
             callback(host, this.games);
 
+            // noooo this double updates don't use this in here
             // send new game to users
-            const users = Object.values(this.users);
-            this.SendMessage('game_created', users, socket.id);
+            // const users = Object.values(this.users);
+            // this.SendMessage('game_created', users, socket.id);
             }
 
 
