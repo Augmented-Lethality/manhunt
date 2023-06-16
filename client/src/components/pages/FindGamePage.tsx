@@ -2,31 +2,36 @@ import React, { useEffect, useState } from 'react';
 import GameLobby from './GameLobby';
 import axios from 'axios';
 
-interface GameLobby {
+type GameLobby = {
   id: number;
-  name: string;
+  gameLobbyName: string;
   players: number;
-}
+};
 
 const JoinGamePage: React.FC = () => {
-  const [gameLobbies, setGameLobbies] = useState<GameLobby[]>([]);
+  // const [gameLobbies, setGameLobbies] = useState<GameLobby[]>([]);
+  const gameLobbies = [
+    { id: 1, gameLobbyName: "Alex's Game Lobby", players: 69 },
+    { id: 2, gameLobbyName: "Alexander's Game Lobby", players: 323 },
+    { id: 3, gameLobbyName: "Al's Game Lobby", players: 1929 },
+  ];
+  // useEffect(() => {
+  //   // Fetch the game lobbies from the server
+  //   const fetchGameLobbies = async () => {
+  //     try {
+  //       const response = await axios.get<GameLobby[]>('/gameLobbies');
+  //       setGameLobbies(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching game lobbies:', error);
+  //     }
+  //   };
 
-  useEffect(() => {
-    // Fetch the game lobbies from the server
-    const fetchGameLobbies = async () => {
-      try {
-        const response = await axios.get<GameLobby[]>('/gameLobbies');
-        setGameLobbies(response.data);
-      } catch (error) {
-        console.error('Error fetching game lobbies:', error);
-      }
-    };
-
-    fetchGameLobbies();
-  }, []);
+  //   fetchGameLobbies();
+  // }, []);
 
   const handleJoinGame = (gameId: number) => {
-    // Handle logic for joining the game
+    // join game = go to game lobby view where it shows all the players
+    // just logs a made up "gameId" for now.
     console.log(`Joining game with ID: ${gameId}`);
   };
 
@@ -37,7 +42,7 @@ const JoinGamePage: React.FC = () => {
         <ul>
           {gameLobbies.map((gameLobby) => (
             <li key={gameLobby.id}>
-              <h2>{gameLobby.name}</h2>
+              <h2>{gameLobby.gameLobbyName}</h2>
               <p>Players: {gameLobby.players}</p>
               <button onClick={() => handleJoinGame(gameLobby.id)}>
                 Join Game

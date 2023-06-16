@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 
-interface UserData {
+type UserData = {
   username: string;
   email: string;
   authId: string;

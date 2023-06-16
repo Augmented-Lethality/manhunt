@@ -7,7 +7,7 @@ import { ButtonToProfile, ButtonToFindGame, ButtonToLobby } from '../Buttons';
 
 // import ChaseCam from '../components/ChaseCam'
 
-interface UserData {
+type UserData = {
   username: string;
   email: string;
   authId: string;
