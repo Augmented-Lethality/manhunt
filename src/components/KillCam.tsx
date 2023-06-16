@@ -26,7 +26,7 @@ const FacialRecognition: React.FC = () => {
   }, [canvasRef])
 
   const createFaceMatcher = async () => {
-    const labels = ['alyson-hannigan', 'anya-taylor-joy', 'kalypso-homan', 'megan-fox'];
+    const labels = ['kalypso-homan'];
     const promises = labels.map(async label => {
       const descriptions: Float32Array[] = [];
       const img = await faceapi.fetchImage(`assets/${label}.jpg`);
