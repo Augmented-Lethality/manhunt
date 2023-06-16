@@ -80,3 +80,5 @@ class WebcamRendererLocal {
     }
   }
 }
+
+export default WebcamRendererLocal;

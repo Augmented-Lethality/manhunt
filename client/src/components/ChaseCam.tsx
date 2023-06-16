@@ -1,8 +1,14 @@
-import { PerspectiveCamera, Scene, WebGLRenderer, BoxGeometry, MeshBasicMaterial, Mesh } from 'three';
-import React, { useRef, useEffect } from 'react'
+import {
+  PerspectiveCamera,
+  Scene,
+  WebGLRenderer,
+  BoxGeometry,
+  MeshBasicMaterial,
+  Mesh,
+} from 'three';
+import React, { useRef, useEffect } from 'react';
 
-
-import { WebcamRendererLocal } from './webcam';
+import WebcamRendererLocal from "./webcam.js"
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 import * as THREEx from '@ar-js-org/ar.js/three.js/build/ar-threex-location-only.js';
@@ -34,7 +40,7 @@ const ChaseCam: React.FC = () => {
     // otherwise it isn't null and assigns it
     const canvas = canvasRef.current;
 
-     // new scene, camera, and renderer
+    // new scene, camera, and renderer
     const scene = new Scene();
     const camera = new PerspectiveCamera(60, 1.33, 0.1, 10000);
     const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
@@ -70,11 +76,7 @@ const ChaseCam: React.FC = () => {
         canvas.width !== canvas.clientWidth ||
         canvas.height !== canvas.clientHeight
       ) {
-        renderer.setSize(
-          canvas.clientWidth,
-          canvas.clientHeight,
-          false
-        );
+        renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
         const aspect = canvas.clientWidth / canvas.clientHeight;
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
@@ -129,7 +131,10 @@ const ChaseCam: React.FC = () => {
 
   return (
     <>
-      <video id="video1" style={{ width: '100%', height: '100%', position: 'absolute' }}/>
+      <video
+        id='video1'
+        style={{ width: '100%', height: '100%', position: 'absolute' }}
+      />
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: '100%', position: 'absolute' }}
@@ -154,3 +159,5 @@ Passing constructor arguments:
 - Note that every time you change args, the object must be re-constructed!
 
 */
+
+export default ChaseCam;
