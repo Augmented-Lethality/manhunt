@@ -17,6 +17,7 @@ const ChaseCam: React.FC = () => {
 
   const [boxLatitude, setBoxLatitude] = useState<number | null>(null);
   const [boxLongitude, setBoxLongitude] = useState<number | null>(null);
+  const [boxSet, setBoxSet] = useState<boolean | null>(false);
 
   // the canvas element to render the scene
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -144,18 +145,25 @@ const ChaseCam: React.FC = () => {
     };
   }, []);
 
+  // create a red box to render on the screen that stays in the defined location
+const geom = new BoxGeometry(20, 20, 20);
+const mtl = new MeshBasicMaterial({ color: 0xff0000 });
+const box = new Mesh(geom, mtl);
+
   useEffect(() => {
 
     if(boxLatitude !== null) {
       console.log('they changed', boxLongitude, boxLatitude)
 
-      // create a red box to render on the screen that stays in the defined location
-      const geom = new BoxGeometry(20, 20, 20);
-      const mtl = new MeshBasicMaterial({ color: 0xff0000 });
-      const box = new Mesh(geom, mtl);
-  
-      arjsRef.current?.add(box, boxLongitude, boxLatitude)
-  
+      if(!boxSet) {
+        console.log('not set, adding');
+        arjsRef.current?.add(box, boxLongitude, boxLatitude);
+        setBoxSet(true);
+      } else {
+        console.log('set, changing position');
+        arjsRef.current?.setWorldPosition(box, boxLongitude, boxLatitude)
+      }
+
     }
   }, [boxLatitude, boxLongitude])
 
