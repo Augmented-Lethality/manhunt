@@ -8,6 +8,7 @@ import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
 import GamePage from './pages/GamePage';
 import ProfilePage from './pages/ProfilePage';
+import TestPage from './pages/TestPage';
 import GameLobby from './pages/GameLobby';
 import FindGamePage from './pages/FindGamePage';
 import SocketContextComponent from './contexts/Socket/SocketContextComponent';
@@ -36,6 +37,10 @@ const App = () => {
       <Route
         path="/profile"
         element={<AuthenticationGuard component={ProfilePage} />}
+      />
+      <Route
+        path="/test"
+        element={<AuthenticationGuard component={TestPage} />}
       />
       <Route
         path="/findGame"
