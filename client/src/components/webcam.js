@@ -211,16 +211,20 @@ class LocationBasedLocal {
     return [projectedPos[0], -projectedPos[1]];
   }
 
-  async add(object, lon, lat, elev) {
-    try {
-      this.setWorldPosition(object, lon, lat, elev);
-      await this._scene.add(object);
-
-      console.log('added object!')
-    } catch (error) {
-      console.error('An error occurred while adding the object:', error);
-    }
+  add(object, lon, lat, elev) {
+    return new Promise((resolve, reject) => {
+      try {
+        this.setWorldPosition(object, lon, lat, elev);
+        this._scene.add(object);
+        console.log('added object!');
+        resolve();
+      } catch (error) {
+        console.error('An error occurred while adding the object:', error);
+        reject(error);
+      }
+    });
   }
+
 
 
 
