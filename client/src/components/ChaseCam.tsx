@@ -7,13 +7,17 @@ import {
   Mesh,
 } from 'three';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 import {WebcamRendererLocal, LocationBasedLocal} from "./webcam.js"
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
 const ChaseCam: React.FC = () => {
+
+  const [boxLatitude, setBoxLatitude] = useState<number | null>(null);
+  const [boxLongitude, setBoxLongitude] = useState<number | null>(null);
+
   // the canvas element to render the scene
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -60,11 +64,27 @@ const ChaseCam: React.FC = () => {
     const mtl = new MeshBasicMaterial({ color: 0xff0000 });
     const box = new Mesh(geom, mtl);
 
-    // box location in lat/long, HARDCODED FOR MY COORDINATES
-    arjs.add(box, -90.046464, 29.983);
+    arjs.setMarkerPosition = (latitude, longitude) => {
+      const markerLatitude = latitude + 0.001;
+      const markerLongitude = longitude;
+
+      console.log(markerLatitude, markerLongitude)
+
+      arjs.markerLatitude = markerLatitude;
+      arjs.markerLongitude = markerLongitude;
+
+      setBoxLatitude(markerLatitude);
+      setBoxLongitude(markerLongitude);
+
+      console.log('going into box:', markerLatitude, markerLongitude)
+      arjs.add(box, markerLatitude, markerLongitude);
+
+      return [markerLatitude, markerLongitude];
+    };
+
+    // box location in long/lat, HARDCODED FOR MY COORDINATES
 
     // on desktop so need the fake gps
-    // arjs.fakeGps(-0.72, 51.05, 10);
     arjs.startGps();
 
     // can be used outside of the useEffect scope, check above

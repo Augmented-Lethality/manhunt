@@ -95,6 +95,9 @@ class LocationBasedLocal {
     this.setGpsOptions(options);
     this.initialPosition = null;
     this.initialPositionAsOrigin = options.initialPositionAsOrigin || false;
+
+    this.markerLatitude = null;
+    this.markerLongitude = null;
   }
 
   setProjection(proj) {
@@ -113,11 +116,22 @@ class LocationBasedLocal {
     }
   }
 
+  setMarkerPosition = (latitude, longitude) => {
+    const markerLatitude = latitude + 0.001;
+    const markerLongitude = longitude;
+
+    this.markerLatitude = markerLatitude;
+    this.markerLongitude = markerLongitude;
+
+    return [markerLatitude, markerLongitude];
+  }
+
   startGps(maximumAge = 0) {
     if (this._watchPositionId === null) {
       this._watchPositionId = navigator.geolocation.watchPosition(
         (position) => {
           this._gpsReceived(position);
+          this.setMarkerPosition(position.coords.latitude, position.coords.longitude)
           console.log(position)
         },
         (error) => {
