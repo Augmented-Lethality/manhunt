@@ -36,6 +36,10 @@ const ChaseCam: React.FC = () => {
   // the camera reference in the three library
   const cameraRef = useRef<PerspectiveCamera | null>(null);
 
+  // arjs reference
+  const arjsRef = useRef<LocationBasedLocal | null>(null);
+
+
   useEffect(() => {
     // checks if the canvas HTML element is there, otherwise return and don't touch
     // the rest of the code
@@ -53,21 +57,21 @@ const ChaseCam: React.FC = () => {
     // const video = document.getElementById('video1') as HTMLVideoElement;
 
     // LocationBased object for AR, takes scene and camera
-    const arjs = new LocationBasedLocal(scene, camera);
+    arjsRef.current = new LocationBasedLocal(scene, camera);
 
     // renders the webcam stream as the background for the scene
     const cam = new WebcamRendererLocal(renderer, '#video1');
 
     // create a red box to render on the screen that stays in the defined location
-    const geom = new BoxGeometry(20, 20, 20);
-    const mtl = new MeshBasicMaterial({ color: 0xff0000 });
-    const box = new Mesh(geom, mtl);
+    // const geom = new BoxGeometry(20, 20, 20);
+    // const mtl = new MeshBasicMaterial({ color: 0xff0000 });
+    // const box = new Mesh(geom, mtl);
 
     // start the location
-    arjs.startGps();
+    arjsRef.current.startGps();
 
     // box location in long/lat, HARDCODED FOR MY COORDINATES
-    arjs.add(box, -90.046464, 29.98372);
+    // arjs.add(box, -90.046464, 29.98372);
 
     // can be used outside of the useEffect scope, check above
     cameraRef.current = camera;
@@ -87,6 +91,14 @@ const ChaseCam: React.FC = () => {
       cam.update();
       renderer.render(scene, camera);
       frameIdRef.current = requestAnimationFrame(render);
+
+      const markerPositions = arjsRef.current?.getMarkerPositions();
+
+      if(boxLatitude !== markerPositions?.latitude || boxLongitude !== markerPositions.longitude) {
+          setBoxLatitude(markerPositions?.latitude);
+          setBoxLongitude(markerPositions?.longitude);
+      }
+
     }
 
     // kick starts the loop of rendering the canvas
@@ -131,6 +143,21 @@ const ChaseCam: React.FC = () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
+
+  useEffect(() => {
+
+    if(boxLatitude !== null) {
+      console.log('they changed', boxLongitude, boxLatitude)
+
+      // create a red box to render on the screen that stays in the defined location
+      const geom = new BoxGeometry(20, 20, 20);
+      const mtl = new MeshBasicMaterial({ color: 0xff0000 });
+      const box = new Mesh(geom, mtl);
+  
+      arjsRef.current?.add(box, boxLongitude, boxLatitude)
+  
+    }
+  }, [boxLatitude, boxLongitude])
 
   return (
     <>

@@ -152,6 +152,13 @@ class LocationBasedLocal {
 
   }
 
+  getMarkerPositions() {
+    return {
+      latitude: this.markerLatitude,
+      longitude: this.markerLongitude,
+    };
+  }
+
 
   stopGps() {
     if (this._watchPositionId !== null) {
