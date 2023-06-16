@@ -28,7 +28,7 @@ export type TSocketContextActions = 'update_socket' | 'update_uid' |
 export type TSocketContextPayload = string | string[] | Socket | { [host: string]: { gameId: string, uidList: string[]} };
 
 // describes the shape of the actions in this context
-export interface ISocketContextActions {
+export type ISocketContextActions = {
   type: TSocketContextActions;
   payload: TSocketContextPayload;
 }

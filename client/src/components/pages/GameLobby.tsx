@@ -5,7 +5,7 @@ import SocketContext from '../../contexts/Socket/SocketContext';
 
 import { ButtonToHome, ButtonToGame } from '../Buttons';
 
-export interface IGameLobbyProps {};
+export type IGameLobbyProps = {};
 
 // THIS IS CURRENTLY SHOWING ALL USERS ONLINE, NOT ONLY THE ONES WITHIN IN THE LOBBY
 
