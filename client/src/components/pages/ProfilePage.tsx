@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ButtonToHome } from '../Buttons';
 
-type UserData = {
+export type UserData = {
   username: string;
   email: string;
   authId: string;
