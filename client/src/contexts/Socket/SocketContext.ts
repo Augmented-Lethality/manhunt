@@ -64,7 +64,7 @@ export interface ISocketContextProps {
   SocketState: ISocketContextState;
   SocketDispatch: React.Dispatch<ISocketContextActions>;
   CreateGame: () => void;
-  AddLocation: () => void;
+  AddLocation: (gameId: string, longitude: number, latitude: number) => void;
 }
 
 // context object that creates the context using the createContext() method

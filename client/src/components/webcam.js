@@ -16,6 +16,7 @@ import {
 } from 'three';
 
 
+
 // From the source files of AR.js, edited line 19 because the original BufferPlaneGeometry or whatever it was, was outdated
 class WebcamRendererLocal {
   constructor(renderer, videoElement) {
