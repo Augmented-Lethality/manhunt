@@ -90,6 +90,12 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       SocketDispatch({ type: 'update_games', payload: games })
     });
 
+    // update locations event
+    socket.on('updated_locations', (locations) => {
+      console.info('location created, new location list received');
+      SocketDispatch({ type: 'updated_locations', payload: locations });
+    });
+
 
   }
 

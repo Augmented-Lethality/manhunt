@@ -31,6 +31,8 @@ export class ServerSocket {
     // the object holds the game id, and uidList which is the list of connected users
     public games: { [host: string]: { gameId: string, uidList: string[] } };
 
+    // new locations object, key is the user id, stores the long and lat as number values
+    public locations: { [gameId: string]: { [uid: string]: { longitude: number, latitude: number } } };
 
 
     // constructor automatically called when an instance of a class is created, meaning when the server starts, this socket server
@@ -132,6 +134,9 @@ export class ServerSocket {
 
             const users = Object.values(this.users);
 
+            // add the game ID to the locations object
+            this.locations[gameId] = {};
+
             // now send back the updated list of games
             callback(host, this.games);
 
@@ -139,8 +144,29 @@ export class ServerSocket {
 
             }
 
-
           });
+
+          // adding/updating a location
+          socket.on('add_location', (gameId, longitude, latitude, callback) => {
+
+            // game ID exists in the locations object?
+            if (Object.keys(this.locations).includes(gameId)) {
+
+              const uid = this.GetUidFromSocketID(socket.id);
+
+              if (uid) {
+                // add the location to the user in that game
+                this.locations[gameId][uid] = { longitude: longitude, latitude: latitude };
+
+                // send back the updated locations to the specific player
+                callback(uid, this.locations[gameId]);
+
+                // Emit the updated locations to all players in the game except the sender
+                socket.to(gameId).emit('updated_locations', this.locations[gameId]);
+              }
+            }
+          });
+
 
         // when the disconnect occurs
         socket.on('disconnect', () => {

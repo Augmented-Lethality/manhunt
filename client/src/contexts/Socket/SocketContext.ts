@@ -9,7 +9,8 @@ export interface ISocketContextState {
   socket: Socket | undefined;
   uid: string,
   users: string[],
-  games: { [host: string]: { gameId: string, uidList: string[]} }
+  games: { [host: string]: { gameId: string, uidList: string[]} },
+  locations: { [uid: string]: { longitude: number, latitude: number } }
 };
 
 // initial context state, will be overwritten eventually, but need the default state
@@ -18,14 +19,16 @@ export const defaultSocketContextState: ISocketContextState = {
   uid: '',
   users: [],
   games: {},
+  locations: {}
 };
 
 // these actions will each have their own functions in the reducer
 export type TSocketContextActions = 'update_socket' | 'update_uid' |
-'update_users' | 'remove_user' | 'update_games'
+'update_users' | 'remove_user' | 'update_games' | 'updated_locations'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = string | string[] | Socket | { [host: string]: { gameId: string, uidList: string[]} };
+export type TSocketContextPayload = string | string[] | Socket | { [host: string]: { gameId: string, uidList: string[]} }
+| { [uid: string]: { longitude: number, latitude: number } };
 
 // describes the shape of the actions in this context
 export type ISocketContextActions = {
@@ -49,7 +52,8 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
       return { ...state, users: state.users.filter((uid) => uid !== (action.payload as string)) };
     case 'update_games':
       return { ...state, games: { ...state.games, ...action.payload as { [host: string]: { gameId: string, uidList: string[] } } } };
-
+    case 'updated_locations':
+      return { ...state, locations: action.payload as { [uid: string]: { longitude: number, latitude: number } } };
     default:
       return { ...state };
   }
