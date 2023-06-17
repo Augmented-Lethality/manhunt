@@ -52,7 +52,7 @@ const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
       </>
 )}
 {/* <button onClick={handleClick}>Game Time</button> */}
-{uid === host && <ButtonToGame />}
+<ButtonToGame />
 <ButtonToHome />
     </div>
   );
