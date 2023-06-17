@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LogoutButton } from '../Auth0/LogoutButton';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ButtonToProfile, ButtonToFindGame, ButtonHostGame } from '../components/Buttons';
+
+import SocketContext from '../contexts/Socket/SocketContext';
 
 type UserData = {
   username: string;
@@ -14,6 +16,8 @@ type UserData = {
 
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
+  const { AddName } = useContext(SocketContext);
+  const { uid, names } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
   const navigate = useNavigate();
 
@@ -36,8 +40,12 @@ const HomePage = () => {
 
     if (isAuthenticated && user) {
       fetchUserData();
+      AddName(user.given_name || '', uid);
+
     }
+
   }, []);
+
 
   if (!user) {
     return null;

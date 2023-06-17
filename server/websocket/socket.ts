@@ -26,6 +26,9 @@ export class ServerSocket {
     // key is the user id and the value is the socket id to send messages to the correct clients
     public users: { [uid: string]: string };
 
+    // names object, stores the uid as the string
+    public names: { [uid: string]: string }
+
     // dictionary object of connected games
     // key is the host (the user id of who created the game)
     // the object holds the game id, and uidList which is the list of connected users
@@ -47,6 +50,9 @@ export class ServerSocket {
 
         // initializing the empty locations object
         this.locations = {};
+
+        // initializing the empty names object
+        this.names = {}
 
         // new instance of the server class from socket.io, has basic options from socket.io website
         this.io = new Server(server, {
@@ -73,7 +79,8 @@ export class ServerSocket {
         // console.info('Message received from ' + socket.id);
 
         // client is attempting to connect to the server, also known as a handshake
-        socket.on('handshake', (callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] }}) => void) => {
+        socket.on('handshake', (callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] }},
+          names: { [uid: string]: string }) => void) => {
             console.info('Handshake received from: ' + socket.id);
 
             // is this a reconnection attempt?
@@ -89,7 +96,7 @@ export class ServerSocket {
                 // if the uid obtained is valid and cool, send the client the uid and users
                 if (uid) {
                     // console.info('Sending info for reconnect ...');
-                    callback(uid, users, this.games);
+                    callback(uid, users, this.games, this.names);
                     return;
                 }
             }
@@ -103,7 +110,7 @@ export class ServerSocket {
             // storing all of the users from the users object into an array
             const users = Object.values(this.users);
             // console.info('Sending new user info ...');
-            callback(uid, users, this.games);
+            callback(uid, users, this.games, this.names);
 
             // send new user to all connected users
             this.SendMessage(
@@ -176,7 +183,6 @@ export class ServerSocket {
         });
 
 
-
           // adding/updating a location
           socket.on('add_location', (gameId, longitude, latitude, callback) => {
 
@@ -223,6 +229,22 @@ export class ServerSocket {
                 this.SendMessage('update_games', users, this.games);
               }
           });
+
+              // adding/updating a name
+              socket.on('add_name', (name, uid, callback) => {
+
+                // uid is not in the names object?
+                if (!this.names[uid]) {
+
+                  this.names[uid] = name;
+
+                  const users = Object.values(this.users);
+
+                  callback(this.names);
+
+                  this.SendMessage('update_names', users, this.names);
+                }
+              });
 
 
         // when the disconnect occurs

@@ -2,11 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { ButtonToHome, ButtonToGame } from '../components/Buttons';
 import WhosHunting from '../components/WhosHunting';
-// import { useAuth0 } from "@auth0/auth0-react";
-// const { user, isAuthenticated } = useAuth0();
+import { useAuth0 } from "@auth0/auth0-react";
 
 
 const GameLobby: React.FunctionComponent = (props) => {
+
+  const { user, isAuthenticated } = useAuth0();
 
   const { socket, uid, users, games } = useContext(SocketContext).SocketState;
   const [showHunting, setShowHunting] = useState(false);
