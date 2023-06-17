@@ -11,7 +11,7 @@ const GamePage: React.FC = () => {
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
 
-  const { uid, games } = useContext(SocketContext).SocketState;
+  const { uid, games, names } = useContext(SocketContext).SocketState;
 
   const [currentGame, setUserGame] = useState<{ gameId: string; uidList: string[], hunted: string }>({ gameId: '', uidList: [], hunted: '' });
 
@@ -32,7 +32,7 @@ const GamePage: React.FC = () => {
       <p>Players in this game:</p>
     <ul>
       {currentGame?.uidList.map((playerUid) => (
-        <li key={playerUid}>{playerUid}</li>
+        <li key={playerUid}>{names[playerUid]}</li>
       ))}
     </ul>
     <button onClick={ handleGameChange }>Go in For the Kill</button>
