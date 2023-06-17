@@ -169,15 +169,14 @@ export class ServerSocket {
 
           if (uid) {
             if (Object.keys(this.games).includes(host)) {
-              this.games[host].uidList.push(uid);
 
-              // send back the updated list of games
-              callback(uid, this.games);
+              if(!this.games[host].uidList.includes(uid)) {
+                this.games[host].uidList.push(uid);
+                const users = Object.values(this.users);
 
-              const users = Object.values(this.users);
-
-              // update the games for everyone
-              this.SendMessage('update_games', users, this.games);
+                // update the games for everyone
+                this.SendMessage('update_games', users, this.games);
+              }
             }
           }
         });

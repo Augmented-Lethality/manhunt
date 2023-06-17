@@ -40,7 +40,8 @@ const HomePage = () => {
 
     if (isAuthenticated && user) {
       fetchUserData();
-      AddName(user.given_name || '', uid);
+      const insertName = `${ user.given_name || '' } ${ user.family_name?.charAt(0) }`
+      AddName( insertName|| '', uid);
 
     }
 

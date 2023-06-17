@@ -154,8 +154,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       const JoinGame = (host: string) => {
         console.info('Client wants to join a game...');
 
-        socket.emit('join_game', host, (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
-          SocketDispatch({ type: 'update_games', payload: games });
+        socket.emit('join_game', host, (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
+          // SocketDispatch({ type: 'update_games', payload: games });
         });
       };
 
