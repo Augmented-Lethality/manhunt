@@ -198,6 +198,15 @@ export class ServerSocket {
             }
           });
 
+          socket.on('nav_to_endpoint', (host, endpoint) => {
+              if (Object.keys(this.games).includes(host)) {
+                const gameId = this.games[host].gameId
+
+                // redirects all of the users within this game
+                this.io.to(gameId).emit('redirect', endpoint);
+              }
+          });
+
 
         // when the disconnect occurs
         socket.on('disconnect', () => {

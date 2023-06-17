@@ -1,4 +1,5 @@
 import React, { PropsWithChildren, useReducer, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 
@@ -96,6 +97,13 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       SocketDispatch({ type: 'updated_locations', payload: locations });
     });
 
+    // redirect users event
+    socket.on('redirect', (endpoint) => {
+      console.info(`redirecting to ${ endpoint }`);
+      const navigate = useNavigate();
+      navigate(endpoint);
+    });
+
 
   }
 
@@ -142,6 +150,10 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
         });
       };
 
+      const Redirect = (host: string, endpoint: string) => {
+        console.info(`Redirect from ${host} to ${endpoint}`);
+        socket.emit('nav_to_endpoint', host, endpoint);
+      };
 
 
   // showing this on client side while socket isn't connected
@@ -152,7 +164,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame }}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect }}>
       {children}
     </SocketContextProvider>
   )
