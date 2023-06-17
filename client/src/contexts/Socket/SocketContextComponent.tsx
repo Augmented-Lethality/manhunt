@@ -133,6 +133,16 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       });
     };
 
+      // sending join game to the server, host identifies game to join
+      const JoinGame = (host: string) => {
+        console.info('Client wants to join a game...');
+
+        socket.emit('join_game', host, (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+          SocketDispatch({ type: 'update_games', payload: games });
+        });
+      };
+
+
 
   // showing this on client side while socket isn't connected
   if(loading) {
@@ -142,7 +152,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation }}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame }}>
       {children}
     </SocketContextProvider>
   )

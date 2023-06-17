@@ -156,6 +156,27 @@ export class ServerSocket {
 
           });
 
+        // Adding a user to a game
+        socket.on('join_game', (host, callback) => {
+          const uid = this.GetUidFromSocketID(socket.id);
+
+          if (uid) {
+            if (Object.keys(this.games).includes(host)) {
+              this.games[host].uidList.push(uid);
+
+              // send back the updated list of games
+              callback(uid, this.games);
+
+              const users = Object.values(this.users);
+
+              // update the games for everyone
+              this.SendMessage('update_games', users, this.games);
+            }
+          }
+        });
+
+
+
           // adding/updating a location
           socket.on('add_location', (gameId, longitude, latitude, callback) => {
 

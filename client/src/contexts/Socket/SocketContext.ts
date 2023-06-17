@@ -65,6 +65,7 @@ export interface ISocketContextProps {
   SocketDispatch: React.Dispatch<ISocketContextActions>;
   CreateGame: () => void;
   AddLocation: (gameId: string, longitude: number, latitude: number) => void;
+  JoinGame: (host: string) => void;
 }
 
 // context object that creates the context using the createContext() method
@@ -75,7 +76,8 @@ const SocketContext = createContext<ISocketContextProps>({
   SocketState: defaultSocketContextState,
   SocketDispatch: () => {},
   CreateGame: () => {},
-  AddLocation: () => {}
+  AddLocation: () => {},
+  JoinGame: () => {}
 });
 
 // shares data between components without having to pass props around (react feature):
