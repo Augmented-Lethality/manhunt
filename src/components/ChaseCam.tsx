@@ -15,12 +15,12 @@ import {
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
 type ChaseCamProps = {
-  markerBlueprint: Mesh<BoxGeometry, MeshBasicMaterial>;
+  currentGame: { gameId: string; uidList: string[], hunted: string },
 };
 
-const ChaseCam: React.FC<ChaseCamProps> = ({ markerBlueprint }) => {
+const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
 
-  const { socket, uid, users, games, locations } = useContext(SocketContext).SocketState;
+  const { locations, uid } = useContext(SocketContext).SocketState;
   const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
@@ -148,54 +148,24 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ markerBlueprint }) => {
     };
   }, []);
 
-  // create a red box to render on the screen that stays in the defined location
+  // create markers to render on the screen that stays in the defined location
   const geom = new BoxGeometry(20, 20, 20);
-  const mtl = new MeshBasicMaterial({ color: 0xff0000 });
-  const box = new Mesh(geom, mtl);
+  const killMtl = new MeshBasicMaterial({ color: 0xff0000 }); // red
+  const vicMtl = new MeshBasicMaterial({ color: 0x476930 }); // victim
+  const killers = new Mesh(geom, killMtl); // blueprint, will need to clone
+  const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
 
   useEffect(() => {
 
-    // // if the positions aren't null (why try to render a box at null positions)
-    // if(userLatitude !== null) {
-    //   // console.log('they changed', userLongitude, userLatitude)
-
-    //   const markerLong = userLongitude;
-    //   const markerLat = userLatitude + .001;
-
-    //   console.log('marker positions: ', markerLong, markerLat, )
-
-    //   // if the box has not been set on the map yet
-    //   if(!firstPosition) {
-    //     console.log('not set, adding');
-    //     arjsRef.current?.add(box, markerLong, markerLat, 10);
-
-    //     // store this in the state so we know the first box has been set and we don't need to call the .add() function
-    //     setFirstPosition(true);
-    //   } else {
-    //     console.log('set, changing position');
-
-    //     // don't create a new box with add, just edit the old one
-    //     arjsRef.current?.setWorldPosition(box, markerLong, markerLat)
-    //   }
-
-    // }
-    let theId = '';
-    for (const host in games) {
-      if (games.hasOwnProperty(host)) {
-        const game = games[host];
-        if (game.uidList.includes(uid)) {
-          theId = game.gameId;
-        }
-      }
-    }
-    AddLocation(theId, userLongitude, userLatitude);
-
+  AddLocation(currentGame.gameId, userLongitude, userLatitude);
 
   }, [userLatitude, userLongitude])
 
   useEffect(() => {
 
-    // getting the user locations from the locations of the socket state
+    // getting the user locations from the locations of the current socket state
+    // this route I am emitting correctly, won't need to change this on
+    // the refactor of socket codes
     const userLocations = Object.values(locations);
 
     if (userLocations.length === 0) {
@@ -212,20 +182,27 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ markerBlueprint }) => {
       const markerLong = longitude;
       const markerLat = latitude;
 
-      // checking if there's a marker that exists already
+      // checking if there's a marker that exists already for the user
       const existingMarker = addedMarkers.find((marker) => marker.userData.id === uid);
 
       // if it exists, then just change the location, don't make a new one
       if (existingMarker) {
         arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
       } else {
-        // make a clone of the markerBlueprint
-        const clonedMarker = markerBlueprint.clone();
-        clonedMarker.userData.id = uid;
-        arjsRef.current?.add(clonedMarker, markerLong, markerLat, 10);
-
-        // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
-        addedMarkers.push(clonedMarker);
+        // store the first round of markers into the markers array/add them to the list
+        for(let player of currentGame.uidList) {
+          if(player === currentGame.hunted) {
+            victim.userData.id = uid;
+            arjsRef.current?.add(victim, markerLong, markerLat, 10);
+            addedMarkers.push(victim);
+          } else {
+            const clonedKiller = killers.clone();
+            clonedKiller.userData.id = uid;
+            arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
+            // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
+            addedMarkers.push(clonedKiller);
+          }
+        }
       }
     }
   }, [locations]);
