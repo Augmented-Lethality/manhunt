@@ -15,7 +15,10 @@ const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
     // if user is part of a game
     const userGame = Object.values(games).find((game) =>
     game.uidList.includes(uid)
-  );
+    );
+
+    // host
+    const host = userGame ? userGame.uidList[0] : null;
 
 
   return (
@@ -41,8 +44,8 @@ const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
       </>
 )}
 
-      <ButtonToGame /><br />
-      <ButtonToHome />
+{uid === host && <ButtonToGame />}
+<ButtonToHome />
     </div>
   );
 };

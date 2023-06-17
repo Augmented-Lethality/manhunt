@@ -68,7 +68,7 @@ const FindGamePage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleJoinGame = async (host) => {
+  const handleJoinGame = async (host: string) => {
     JoinGame(host);
     navigate('/lobby');
   };
