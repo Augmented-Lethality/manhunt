@@ -39,9 +39,8 @@ const GameLobby: React.FunctionComponent = (props) => {
       <h2>Game Lobby</h2>
       {currentGame ? (
         <div>
-          <h3>Game Lobby for Game {currentGame.gameId}</h3>
           {showHunting && <WhosHunting users={currentGame.uidList} host={ host } hunted={ currentGame.hunted }/>}
-          {host === uid && (
+          {host === uid && !showHunting && (
             <button onClick={() => setShowHunting(!showHunting)}>
               Pick the Victim
             </button>

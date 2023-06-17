@@ -93,11 +93,11 @@ const FindGamePage: React.FC = () => {
               //   </li>
               // );
               return (
+                <ol>
                 <li key={host}>
-                  <a onClick={() => handleJoinGame(host)}>
-                    Game ID: {games[host].gameId}, Host: {hostName}, Users in Game: {games[host].uidList.length}
-                  </a>
+                  <a onClick={() => handleJoinGame(host)}>Host: {hostName}, Users in Game: {games[host].uidList.length}</a>
                 </li>
+                </ol>
               );
             })}
           </ul>
