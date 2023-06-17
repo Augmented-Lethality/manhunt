@@ -10,7 +10,7 @@ import {
   MeshBasicMaterial,
   Mesh, } from "./webcam.js"
 
-  import SocketContext from '../contexts/Socket/SocketContext.js';
+  import SocketContext from '../contexts/Socket/SocketContext';
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 

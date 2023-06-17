@@ -109,7 +109,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       console.log('We shook, let\'s trade info xoxo');
       SocketDispatch({ type: 'update_uid', payload: uid });
       SocketDispatch({ type: 'update_users', payload: users });
-      SocketDispatch({ type: 'update_games', payload: games })
+      SocketDispatch({ type: 'update_games', payload: games });
 
       // not loading anymore since it connected
       setLoading(false);

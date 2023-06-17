@@ -45,6 +45,9 @@ export class ServerSocket {
         // initializing the empty games object
         this.games = {};
 
+        // initializing the empty locations object
+        this.locations = {};
+
         // new instance of the server class from socket.io, has basic options from socket.io website
         this.io = new Server(server, {
             serveClient: false,
@@ -134,13 +137,20 @@ export class ServerSocket {
 
             const users = Object.values(this.users);
 
-            // add the game ID to the locations object
-            this.locations[gameId] = {};
+            if (!this.locations[gameId]) {
+                this.locations[gameId] = {};
+              }
+
+              this.locations[gameId][host] = { longitude: 0, latitude: 0 };
 
             // now send back the updated list of games
             callback(host, this.games);
 
+            // update the list of games
             this.SendMessage('update_games', users, this.games);
+
+            // emit the updated locations to all players in the game EXCEPT the sender
+            socket.to(gameId).emit('updated_locations', this.locations[gameId]);
 
             }
 
