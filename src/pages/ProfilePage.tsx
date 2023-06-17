@@ -2,6 +2,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ButtonToHome } from '../components/Buttons';
+import { GameOver } from '../components/GameOver';
 
 export type UserData = {
   username: string;
@@ -45,11 +46,17 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
   }
 
   return (
-    <div className='content-layout'>
+    <div
+      className='content-layout'
+      style={{
+        textAlign: 'center',
+        padding: '20px',
+        backgroundColor: '#fcf18d',
+      }}
+    >
       <h1 id='page-title' className='content__title'>
         Profile
       </h1>
-      <ButtonToHome />
       <div className='content__body'>
         <p id='page-description'>
           <span></span>
@@ -62,10 +69,9 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
             className='profile__header'
             style={{
               display: 'flex',
-              alignItems: 'center',
-              marginLeft: 0,
-              padding: '20px', // Adjust as needed
-              backgroundColor: '#f7f2cd',
+              margin: 'auto',
+              width: '65%',
+              backgroundColor: '#fcf18d',
             }}
           >
             <div style={{ marginRight: '20px' }}>
@@ -80,14 +86,13 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
               <span className='profile__description'>{user.email}</span>
             </div>
           </div>
-
           <div className='profile__details'>
             <h2>Games Played: {userData?.gamesPlayed}</h2>
             <h2>Games Won: {userData?.gamesWon}</h2>
             <h2>Kills Confirmed: {userData?.killsConfirmed}</h2>
-            
-            <h2>userData from database</h2>
-            <p>{JSON.stringify(userData, null, 2)}</p>
+            {/* <h2>userData from database</h2>
+            <p>{JSON.stringify(userData, null, 2)}</p> */}
+            <ButtonToHome />
           </div>
         </div>
       </div>

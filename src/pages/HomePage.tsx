@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { LogoutButton } from '../Auth0/LogoutButton';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ButtonToProfile, ButtonToFindGame, ButtonToHostGame } from '../components/Buttons';
+import {
+  ButtonToProfile,
+  ButtonToFindGame,
+  ButtonToHostGame,
+  LogoutButton,
+} from '../components/Buttons';
 
 type UserData = {
   username: string;
   email: string;
   authId: string;
   // Add other user data properties as needed
-}
+};
 
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -45,11 +49,18 @@ const HomePage = () => {
   console.log(user);
   return (
     isAuthenticated && (
-      <div>
-        <h1>{`Welcome Home, ${user.name}`}!</h1>
+      <div
+        style={{
+          backgroundColor: '#fcf18d',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <h1>Home</h1>
         <ButtonToProfile />
-        <ButtonToFindGame />
         <ButtonToHostGame />
+        <ButtonToFindGame />
         <LogoutButton />
       </div>
     )

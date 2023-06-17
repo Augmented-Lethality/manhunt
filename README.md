@@ -69,6 +69,10 @@ Man Hunt is built using Typescript, React, Express, and is hosted on AWS. For mo
 * To display tables:
     \dt 
 
+## Additional notes
+
+* Used to install styled components:
+    npm i -D styled-components@5.3.10 @types/styled-components
 
 ## Designed by @Augmented-Lethality:
   *Logan Hochwald*

@@ -7,7 +7,7 @@ export const GameOver: React.FC = () => {
     <div style={{
       textAlign: 'center',
       padding: '50px',
-      backgroundColor: '#f7f2cd',
+      backgroundColor: '#fcf18d',
     }}>
       <h1>GAME OVER</h1>
       <h3>Thanks for playing.</h3>
