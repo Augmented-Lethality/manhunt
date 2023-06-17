@@ -1,5 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { BoxGeometry, Mesh, MeshBasicMaterial } from '../webcam';
+import SocketContext from '../../contexts/Socket/SocketContext';
+
 
 import KillMode from '../KillMode';
 import ChaseCam from '../ChaseCam';
@@ -11,6 +13,11 @@ import ChaseCam from '../ChaseCam';
 
 
 const GamePage: React.FC = () => {
+  const { socket, uid, users, games } = useContext(SocketContext).SocketState;
+
+
+  const userGame = Object.values(games).find((game) =>
+  game.uidList.includes(uid));
 
   const geom = new BoxGeometry(20, 20, 20);
   const mtl = new MeshBasicMaterial({ color: 0xff0000 });
@@ -37,8 +44,14 @@ const GamePage: React.FC = () => {
 
   return (
     <div>
-      {gameMode === 'Chase' && <ChaseCam markerBlueprint={ markerBlueprint }/>}
-      {gameMode === 'Kill' && <KillMode />}
+          <p>Players in this game:</p>
+    <ul>
+      {userGame?.uidList.map((playerUid) => (
+        <li key={playerUid}>{playerUid}</li>
+      ))}
+    </ul>
+      {/* {gameMode === 'Chase' && <ChaseCam markerBlueprint={ markerBlueprint }/>}
+      {gameMode === 'Kill' && <KillMode />} */}
     </div>
   );
 }
