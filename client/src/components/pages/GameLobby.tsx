@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, } from 'react';
-import { useNavigate } from 'react-router';
 // import { useAuth0 } from "@auth0/auth0-react";
 
 import SocketContext from '../../contexts/Socket/SocketContext';
 
-import { ButtonToHome, ButtonToGame } from '../Buttons';
+import { ButtonToHome } from '../Buttons';
 
 export type IGameLobbyProps = {};
 
 const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
   const { socket, uid, users, games } = useContext(SocketContext).SocketState;
+  const { Redirect } = useContext(SocketContext)
   // const { user, isAuthenticated } = useAuth0();
 
     // if user is part of a game
@@ -18,7 +18,15 @@ const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
     );
 
     // host
-    const host = userGame ? userGame.uidList[0] : null;
+    const host = userGame?.uidList[0];
+
+    const handleClick = () => {
+      if(host) {
+        Redirect(host, '/onthehunt');
+      } else {
+        console.error('no host right now :(');
+      }
+    };
 
 
   return (
@@ -44,7 +52,7 @@ const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
       </>
 )}
 
-{uid === host && <ButtonToGame />}
+{uid === host && <button onClick={handleClick}>Game Time</button>}
 <ButtonToHome />
     </div>
   );

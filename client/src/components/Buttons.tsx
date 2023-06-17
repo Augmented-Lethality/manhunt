@@ -22,9 +22,9 @@ export const ButtonToHome: React.FC = () => {
   return <Button label="Back Home" route="/home" />;
 };
 
-export const ButtonToGame: React.FC = () => {
-  return <Button label="Game Time" route="/onthehunt" />;
-};
+// export const ButtonToGame: React.FC = () => {
+//   return <Button label="Game Time" route="/onthehunt" />;
+// };
 
 export const ButtonToProfile: React.FC = () => {
   return <Button label="Profile" route="/profile" />;
