@@ -11,6 +11,8 @@ import SocketContext from '../contexts/Socket/SocketContext';
 
 const WhosHunting: React.FunctionComponent<IWhosHuntingProps> = (props) => {
   const { SetHunted } = useContext(SocketContext);
+  const { names } = useContext(SocketContext).SocketState;
+
 
   const { users, host, hunted } = props;
 
@@ -25,7 +27,7 @@ const WhosHunting: React.FunctionComponent<IWhosHuntingProps> = (props) => {
 
   return (
     <div>
-      {hunted.length > 0 && <p>{hunted}, you're being hunted.</p>}
+      {hunted.length > 0 && <p>{names[hunted]}, you're being hunted.</p>}
     </div>
   );
 

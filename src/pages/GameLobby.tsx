@@ -7,9 +7,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const GameLobby: React.FunctionComponent = (props) => {
 
-  const { user, isAuthenticated } = useAuth0();
-
-  const { socket, uid, users, games } = useContext(SocketContext).SocketState;
+  const { socket, uid, games, users, names } = useContext(SocketContext).SocketState;
   const [showHunting, setShowHunting] = useState(false);
   const [currentGame, setCurrentGame] = useState<{gameId: string, uidList: string[], hunted: string }>({gameId: '', uidList: [], hunted: ''});
   const [host, setHost] = useState<string>('');
@@ -39,14 +37,6 @@ const GameLobby: React.FunctionComponent = (props) => {
     <div>
       <ButtonToHome />
       <h2>Game Lobby</h2>
-      <p>
-        {/* Your Socket User ID: <strong>{uid}</strong>
-        <br /> */}
-        Total Users Active on App: <strong>{users.length}</strong>
-        <br />
-        {/* Your Socket ID: <strong>{socket?.id}</strong>
-        <br /> */}
-      </p>
       {currentGame ? (
         <div>
           <h3>Game Lobby for Game {currentGame.gameId}</h3>
@@ -56,10 +46,10 @@ const GameLobby: React.FunctionComponent = (props) => {
               Pick the Victim
             </button>
           )}
-          <p>Players in this game:</p>
+          <p>Players:</p>
           <ul>
             {currentGame.uidList.map((playerUid) => (
-              <li key={playerUid}>{playerUid}</li>
+              <li key={playerUid}>{names[playerUid]}</li>
             ))}
           </ul>
         </div>
