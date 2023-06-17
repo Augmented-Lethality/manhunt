@@ -5,14 +5,14 @@ import { SocketContextProvider, SocketReducer, defaultSocketContextState } from 
 
 // THIS CAN BE REUSED TO PASS THE SOCKET INFORMATION AROUND THE CLIENT SIDE
 
-// allows for defining the prop types expected by the SocketContextComponent
+// allows for defining the prop types expected by the SocketComponent
 // PropsWithChildren allows components to accept nested elements in its children
-export interface ISocketContextComponentProps extends PropsWithChildren {}
+export interface ISocketComponentProps extends PropsWithChildren {}
 
-// functional component that has ISocketContextComponentProps as its children/props
-const SocketContextComponent: React.FunctionComponent<ISocketContextComponentProps> = (props) => {
+// functional component that has ISocketComponentProps as its children/props
+const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) => {
 
-  // nested elements within SocketContextComponent, rendered in the context provider
+  // nested elements within SocketComponent, rendered in the context provider
   const { children } = props;
 
   // making a local state to store the created reducer and the default socket context state
@@ -176,4 +176,4 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
 }
 
-export default SocketContextComponent;
+export default SocketComponent;
