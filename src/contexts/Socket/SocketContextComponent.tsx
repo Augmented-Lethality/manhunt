@@ -29,7 +29,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
   useEffect(() => {
     // connect to Web Socket
-      socket.connect();
+    socket.connect();
 
     // save the socket in context
     SocketDispatch({ type: 'update_socket', payload: socket })
@@ -155,6 +155,11 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
         socket.emit('nav_to_endpoint', host, endpoint);
       };
 
+      const SetHunted = (host: string, uid: string) => {
+        console.info(`Setting Hunted, ${host} picked ${ uid }`);
+        socket.emit('set_hunted', host, uid);
+      };
+
 
   // showing this on client side while socket isn't connected
   if(loading) {
@@ -164,7 +169,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect }}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted }}>
       {children}
     </SocketContextProvider>
   )

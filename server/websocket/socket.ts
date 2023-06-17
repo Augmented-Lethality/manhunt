@@ -29,7 +29,7 @@ export class ServerSocket {
     // dictionary object of connected games
     // key is the host (the user id of who created the game)
     // the object holds the game id, and uidList which is the list of connected users
-    public games: { [host: string]: { gameId: string, uidList: string[] } };
+    public games: { [host: string]: { gameId: string, uidList: string[], hunted: string } };
 
     // new locations object, key is the user id, stores the long and lat as number values
     public locations: { [gameId: string]: { [uid: string]: { longitude: number, latitude: number } } };
@@ -114,7 +114,7 @@ export class ServerSocket {
         });
 
         // when client emits a createGame event, make the new game
-        socket.on('create_game', (callback: (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => void) => {
+        socket.on('create_game', (callback: (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => void) => {
 
             // does the game exist?
             const host = this.GetUidFromSocketID(socket.id);
@@ -132,7 +132,7 @@ export class ServerSocket {
             const gameId = v4();
 
             // add this to the games dictionary object
-            this.games[host] = { gameId: gameId, uidList: [host] };
+            this.games[host] = { gameId: gameId, uidList: [host], hunted: '' };
 
 
             const users = Object.values(this.users);
@@ -208,6 +208,18 @@ export class ServerSocket {
 
                 // redirects all of the users within this game
                 this.io.in(gameId).emit('redirect', endpoint);
+              }
+          });
+
+          socket.on('set_hunted', (host, uid) => {
+
+            console.log(`received set hunted to ${ uid } from ${ host }`)
+              if (Object.keys(this.games).includes(host)) {
+
+                this.games[host].hunted = uid;
+                const gameId = this.games[host].gameId
+
+                this.io.in(gameId).emit('update_games', this.games);
               }
           });
 
