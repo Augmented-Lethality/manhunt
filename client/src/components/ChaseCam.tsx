@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 
 import {
   WebcamRendererLocal,
@@ -11,13 +11,17 @@ import {
   PlaneGeometry,
   Mesh, } from "./webcam.js"
 
+  import SocketContext from '../contexts/Socket/SocketContext.js';
+
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
 type ChaseCamProps = {
-  markers: Array<Mesh<BoxGeometry, MeshBasicMaterial>>;
-}
+  markerBlueprint: Mesh<BoxGeometry, MeshBasicMaterial>;
+};
 
-const ChaseCam: React.FC<ChaseCamProps> = ({ markers }) => {
+const ChaseCam: React.FC<ChaseCamProps> = ({ markerBlueprint }) => {
+
+  const { socket, uid, users, games, locations } = useContext(SocketContext).SocketState;
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
   const [userLatitude, setUserLatitude] = useState<number | null>(null);
@@ -176,6 +180,45 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ markers }) => {
 
     }
   }, [userLatitude, userLongitude])
+
+  useEffect(() => {
+
+    // getting the user locations from the locations of the socket state
+    const userLocations = Object.values(locations);
+
+    if (userLocations.length === 0) {
+      console.log('There are no locations to plot.');
+      return;
+    }
+
+    // markers that have been added are stored in this array
+    const addedMarkers: Array<Mesh<BoxGeometry, MeshBasicMaterial>> = [];
+
+    // iterating through the locations of the current locations state
+    for (const userLocation of userLocations) {
+      const { latitude, longitude } = userLocation;
+      const markerLong = longitude;
+      const markerLat = latitude;
+
+      // checking if there's a marker that exists already
+      const existingMarker = addedMarkers.find((marker) => marker.userData.id === uid);
+
+      // if it exists, then just change the location, don't make a new one
+      if (existingMarker) {
+        arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
+      } else {
+        // make a clone of the markerBlueprint
+        const clonedMarker = markerBlueprint.clone();
+        clonedMarker.userData.id = uid;
+        arjsRef.current?.add(clonedMarker, markerLong, markerLat, 10);
+
+        // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
+        addedMarkers.push(clonedMarker);
+      }
+    }
+  }, [locations]);
+
+
 
   return (
     <>

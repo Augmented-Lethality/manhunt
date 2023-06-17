@@ -5,12 +5,19 @@ import KillMode from '../KillMode';
 import ChaseCam from '../ChaseCam';
 
 // creating the marker to be used for all players
-const geom = new BoxGeometry(20, 20, 20);
-const mtl = new MeshBasicMaterial({ color: 0xff0000 });
-const marker: Mesh<BoxGeometry, MeshBasicMaterial> = new Mesh(geom, mtl);
+// const geom = new BoxGeometry(20, 20, 20);
+// const mtl = new MeshBasicMaterial({ color: 0xff0000 });
+// const marker: Mesh<BoxGeometry, MeshBasicMaterial> = new Mesh(geom, mtl);
 
 
 const GamePage: React.FC = () => {
+
+  const geom = new BoxGeometry(20, 20, 20);
+  const mtl = new MeshBasicMaterial({ color: 0xff0000 });
+  const marker: Mesh<BoxGeometry, MeshBasicMaterial> = new Mesh(geom, mtl);
+
+  const [markerBlueprint, setMarkerBlueprint] = useState<Mesh<BoxGeometry, MeshBasicMaterial>>(marker);
+
 
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
@@ -30,7 +37,7 @@ const GamePage: React.FC = () => {
 
   return (
     <div>
-      {gameMode === 'Chase' && <ChaseCam markers={ markers }/>}
+      {gameMode === 'Chase' && <ChaseCam markerBlueprint={ markerBlueprint }/>}
       {gameMode === 'Kill' && <KillMode />}
     </div>
   );
