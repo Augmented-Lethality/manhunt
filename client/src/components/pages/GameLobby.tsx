@@ -3,7 +3,7 @@ import React, { useContext, useEffect, } from 'react';
 
 import SocketContext from '../../contexts/Socket/SocketContext';
 
-import { ButtonToHome } from '../Buttons';
+import { ButtonToHome, ButtonToGame } from '../Buttons';
 
 export type IGameLobbyProps = {};
 
@@ -51,8 +51,8 @@ const GameLobby: React.FunctionComponent<IGameLobbyProps> = (props) => {
       <>
       </>
 )}
-
-{uid === host && <button onClick={handleClick}>Game Time</button>}
+{/* <button onClick={handleClick}>Game Time</button> */}
+{uid === host && <ButtonToGame />}
 <ButtonToHome />
     </div>
   );

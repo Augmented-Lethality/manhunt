@@ -199,11 +199,15 @@ export class ServerSocket {
           });
 
           socket.on('nav_to_endpoint', (host, endpoint) => {
+
+            console.log(`received redirect to ${ endpoint } from ${ host }`)
               if (Object.keys(this.games).includes(host)) {
+
+                console.log('host is in games list')
                 const gameId = this.games[host].gameId
 
                 // redirects all of the users within this game
-                this.io.to(gameId).emit('redirect', endpoint);
+                this.io.in(gameId).emit('redirect', endpoint);
               }
           });
 
