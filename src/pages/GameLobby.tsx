@@ -31,21 +31,20 @@ const GameLobby: React.FunctionComponent = (props) => {
 
     setHost(currentGame?.uidList[0]);
 
-
-
   }, [games])
 
 
   return (
     <div>
+      <ButtonToHome />
       <h2>Game Lobby</h2>
       <p>
-        Your Socket User ID: <strong>{uid}</strong>
-        <br />
+        {/* Your Socket User ID: <strong>{uid}</strong>
+        <br /> */}
         Total Users Active on App: <strong>{users.length}</strong>
         <br />
-        Your Socket ID: <strong>{socket?.id}</strong>
-        <br />
+        {/* Your Socket ID: <strong>{socket?.id}</strong>
+        <br /> */}
       </p>
       {currentGame ? (
         <div>
@@ -67,8 +66,7 @@ const GameLobby: React.FunctionComponent = (props) => {
         <>
         </>
       )}
-      <ButtonToGame />
-      <ButtonToHome />
+      { showHunting && <ButtonToGame />}
     </div>
   );
 };
