@@ -17,7 +17,7 @@ type UserData = {
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
   const { AddName } = useContext(SocketContext);
-  const { uid, names } = useContext(SocketContext).SocketState;
+  const { uid, users } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
   const navigate = useNavigate();
 
@@ -55,6 +55,7 @@ const HomePage = () => {
     isAuthenticated && (
       <div>
         <h1>{`Welcome Home, ${user.given_name}`}!</h1>
+        Users Online: <strong>{users.length}</strong><br/><br/>
         <ButtonToProfile />
         <ButtonToFindGame />
         <ButtonHostGame />
