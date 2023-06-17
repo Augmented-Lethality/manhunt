@@ -49,12 +49,14 @@ const App = () => {
             <AuthenticationGuard component={FindGamePage}/>
           </SocketContextComponent>}
       />
-      <Route
+
+          <Route
         path="/onthehunt"
         element={
           <SocketContextComponent>
             <AuthenticationGuard component={GamePage} />
           </SocketContextComponent>}/>
+
       <Route
         path="/lobby"
         element={
