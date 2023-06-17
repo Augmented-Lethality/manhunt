@@ -217,9 +217,10 @@ export class ServerSocket {
               if (Object.keys(this.games).includes(host)) {
 
                 this.games[host].hunted = uid;
-                const gameId = this.games[host].gameId
+                // const gameId = this.games[host].gameId
 
-                this.io.in(gameId).emit('update_games', this.games);
+                const users = Object.values(this.users);
+                this.SendMessage('update_games', users, this.games);
               }
           });
 

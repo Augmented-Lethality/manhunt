@@ -23,9 +23,14 @@ const GameLobby: React.FunctionComponent = (props) => {
 
     if(currGame) {
       setCurrentGame(currGame);
+
+      if(currGame.hunted.length > 0) {
+        setShowHunting(true);
+      }
     }
 
     setHost(currentGame?.uidList[0]);
+
 
 
   }, [games])
@@ -45,8 +50,8 @@ const GameLobby: React.FunctionComponent = (props) => {
       {currentGame ? (
         <div>
           <h3>Game Lobby for Game {currentGame.gameId}</h3>
-          {showHunting && <WhosHunting users={currentGame.uidList} host={ host }/>}
-          {host === uid && !showHunting && (
+          {showHunting && <WhosHunting users={currentGame.uidList} host={ host } hunted={ currentGame.hunted }/>}
+          {host === uid && (
             <button onClick={() => setShowHunting(!showHunting)}>
               Pick the Victim
             </button>
