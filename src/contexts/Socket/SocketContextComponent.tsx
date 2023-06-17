@@ -80,13 +80,13 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
     });
 
     // created a game event
-    socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+    socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
       console.info('game created, new game list received')
       SocketDispatch({ type: 'update_games', payload: games })
     });
 
     // updated a game event
-    socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+    socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
       console.info('games updated, new game list received')
       SocketDispatch({ type: 'update_games', payload: games })
     });
@@ -113,7 +113,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
     // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
     // on the handshake and it gets the cb from the server on handshake
-    socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+    socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
       console.log('We shook, let\'s trade info xoxo');
       SocketDispatch({ type: 'update_uid', payload: uid });
       SocketDispatch({ type: 'update_users', payload: users });
@@ -128,7 +128,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
     const CreateGame = () => {
       console.info('Client wants to create a game...');
 
-      socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+      socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
         SocketDispatch({ type: 'update_games', payload: games })
       });
     }
@@ -145,7 +145,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       const JoinGame = (host: string) => {
         console.info('Client wants to join a game...');
 
-        socket.emit('join_game', host, (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+        socket.emit('join_game', host, (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
           SocketDispatch({ type: 'update_games', payload: games });
         });
       };

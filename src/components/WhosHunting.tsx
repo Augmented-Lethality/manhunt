@@ -1,26 +1,33 @@
 import React, { useContext, useEffect, useState } from 'react';
 
 export interface IWhosHuntingProps {
-  users: string[];
+  users: string[]
+  host: string
 }
 
+import SocketContext from '../contexts/Socket/SocketContext';
+
+
 const WhosHunting: React.FunctionComponent<IWhosHuntingProps> = (props) => {
+  const { SetHunted } = useContext(SocketContext);
+  const [victim, setVictim] = useState('');
 
-  const { users } = props;
-
-  const [hunted, setHunted] = useState('');
+  const { users, host } = props;
 
   // randomly pick a user
   useEffect(() => {
 
     const victim = users[Math.floor(Math.random() * users.length)];
-    setHunted(victim);
+    setVictim(victim);
+
+    SetHunted(host, victim);
+
 
   }, [])
 
   return (
     <div>
-      <p>{ hunted }, you're being hunted.</p>
+      {victim && victim.length > 0 && <p>{victim}, you're being hunted.</p>}
     </div>
   );
 

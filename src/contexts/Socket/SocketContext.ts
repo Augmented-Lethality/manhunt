@@ -9,7 +9,7 @@ export interface ISocketContextState {
   socket: Socket | undefined;
   uid: string,
   users: string[],
-  games: { [host: string]: { gameId: string, uidList: string[]} },
+  games: { [host: string]: { gameId: string, uidList: string[], hunted: string } },
   locations: { [uid: string]: { longitude: number, latitude: number } }
 };
 
@@ -27,7 +27,7 @@ export type TSocketContextActions = 'update_socket' | 'update_uid' |
 'update_users' | 'remove_user' | 'update_games' | 'updated_locations'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = string | string[] | Socket | { [host: string]: { gameId: string, uidList: string[]} }
+export type TSocketContextPayload = string | string[] | Socket | { [host: string]: { gameId: string, uidList: string[], hunted: string } }
 | { [uid: string]: { longitude: number, latitude: number } };
 
 // describes the shape of the actions in this context
@@ -51,7 +51,7 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
     case 'remove_user':
       return { ...state, users: state.users.filter((uid) => uid !== (action.payload as string)) };
     case 'update_games':
-      return { ...state, games: { ...state.games, ...action.payload as { [host: string]: { gameId: string, uidList: string[] } } } };
+      return { ...state, games: { ...state.games, ...action.payload as { [host: string]: { gameId: string, uidList: string[], hunted: string } } } };
     case 'updated_locations':
       return { ...state, locations: action.payload as { [uid: string]: { longitude: number, latitude: number } } };
     default:
