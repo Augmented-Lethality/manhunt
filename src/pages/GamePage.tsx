@@ -2,6 +2,8 @@ import React, { useState, useContext, useEffect } from 'react';
 import { BoxGeometry, Mesh, MeshBasicMaterial } from '../components/webcam';
 import SocketContext from '../contexts/Socket/SocketContext';
 
+import { ButtonToHome } from '../components/Buttons'
+
 
 // import KillMode from '../components/KillMode';
 import ChaseCam from '../components/ChaseCam';
@@ -52,13 +54,14 @@ const GamePage: React.FC = () => {
 
   return (
     <div>
-          <p>Players in this game:</p>
+      <ButtonToHome />
+      <p>Players in this game:</p>
     <ul>
       {userGame?.uidList.map((playerUid) => (
         <li key={playerUid}>{playerUid}</li>
       ))}
     </ul>
-    <button onClick={ handleGameChange }></button>
+    <button onClick={ handleGameChange }>Go in For the Kill</button>
       {gameMode === 'Chase' && markers.length !== 0 && <ChaseCam markerBlueprint={markerBlueprint} />}
       {gameMode === 'Kill' && markers.length !== 0 && <KillCam />}
     </div>
