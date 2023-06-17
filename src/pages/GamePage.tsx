@@ -5,6 +5,8 @@ import SocketContext from '../contexts/Socket/SocketContext';
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
 
+import { ButtonToHome } from '../components/Buttons';
+
 
 const GamePage: React.FC = () => {
 
@@ -29,6 +31,7 @@ const GamePage: React.FC = () => {
 
   return (
     <div>
+      <ButtonToHome />
       <p>Players in this game:</p>
     <ul>
       {currentGame?.uidList.map((playerUid) => (
