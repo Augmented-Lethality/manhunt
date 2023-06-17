@@ -125,6 +125,15 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       });
     }
 
+    const AddLocation = (gameId: string, longitude: number, latitude: number) => {
+      console.info(`Someone from game ${gameId} wants to add a location...`);
+
+      socket.emit('add_location', gameId, longitude, latitude, (uid: string, locations: { [uid: string]: { longitude: number, latitude: number } }) => {
+        SocketDispatch({ type: 'updated_locations', payload: locations });
+      });
+    };
+
+
   // showing this on client side while socket isn't connected
   if(loading) {
     return <p>Loading Socket Connection...</p>
@@ -133,7 +142,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame }}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation }}>
       {children}
     </SocketContextProvider>
   )
