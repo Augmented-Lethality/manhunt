@@ -7,40 +7,40 @@ import KillMode from '../KillMode';
 import ChaseCam from '../ChaseCam';
 
 // creating the marker to be used for all players
-// const geom = new BoxGeometry(20, 20, 20);
-// const mtl = new MeshBasicMaterial({ color: 0xff0000 });
-// const marker: Mesh<BoxGeometry, MeshBasicMaterial> = new Mesh(geom, mtl);
+const geom = new BoxGeometry(20, 20, 20);
+const mtl = new MeshBasicMaterial({ color: 0xff0000 });
+const marker: Mesh<BoxGeometry, MeshBasicMaterial> = new Mesh(geom, mtl);
 
 
 const GamePage: React.FC = () => {
-  const { socket, uid, users, games } = useContext(SocketContext).SocketState;
-
-
-  const userGame = Object.values(games).find((game) =>
-  game.uidList.includes(uid));
-
-  const geom = new BoxGeometry(20, 20, 20);
-  const mtl = new MeshBasicMaterial({ color: 0xff0000 });
-  const marker: Mesh<BoxGeometry, MeshBasicMaterial> = new Mesh(geom, mtl);
-
-  const [markerBlueprint, setMarkerBlueprint] = useState<Mesh<BoxGeometry, MeshBasicMaterial>>(marker);
-
 
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
 
-  // creating the markers based on the number of users in the game lobby
-  const [hardcodeUidList, setHardCode] = useState<string[]>(['1', '2', '3']);
+  const { socket, uid, users, games } = useContext(SocketContext).SocketState;
+
+  const [userGame, setUserGame] = useState<{ gameId: string; uidList: string[] }>({ gameId: '', uidList: [] });
+  const [markerBlueprint, setMarkerBlueprint] = useState<Mesh<BoxGeometry, MeshBasicMaterial>>(marker);
   const [markers, setMarkers] = useState<Array<Mesh<BoxGeometry, MeshBasicMaterial>>>([]);
+
+
+  useEffect(() => {
+    const foundUserGame = Object.values(games).find((game) => game.uidList.includes(uid));
+    setUserGame(foundUserGame || { gameId: '', uidList: [] });
+  }, [games, uid]);
+
+
 
   // when the page is mounted, create all of the markers
   useEffect(() => {
     const newMarkers: Array<Mesh<BoxGeometry, MeshBasicMaterial>> = [];
-    for (let i = 0; i < hardcodeUidList.length; i++) {
+    for (let i = 0; i < userGame.uidList.length; i++) {
       newMarkers.push(marker);
     }
     setMarkers(newMarkers);
-  }, [hardcodeUidList]);
+
+    console.log(newMarkers.length)
+  }, [userGame]);
 
   return (
     <div>
@@ -50,8 +50,8 @@ const GamePage: React.FC = () => {
         <li key={playerUid}>{playerUid}</li>
       ))}
     </ul>
-      {/* {gameMode === 'Chase' && <ChaseCam markerBlueprint={ markerBlueprint }/>}
-      {gameMode === 'Kill' && <KillMode />} */}
+      {gameMode === 'Chase' && markers.length !== 0 && <ChaseCam markerBlueprint={markerBlueprint} />}
+      {gameMode === 'Kill' && markers.length !== 0 && <KillMode />}
     </div>
   );
 }
