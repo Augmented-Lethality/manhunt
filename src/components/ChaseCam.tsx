@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 
 import {
   WebcamRendererLocal,
@@ -10,14 +10,23 @@ import {
   MeshBasicMaterial,
   Mesh, } from "./webcam.js"
 
+  import SocketContext from '../contexts/Socket/SocketContext';
+
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
-const ChaseCam: React.FC = () => {
+type ChaseCamProps = {
+  markerBlueprint: Mesh<BoxGeometry, MeshBasicMaterial>;
+};
+
+const ChaseCam: React.FC<ChaseCamProps> = ({ markerBlueprint }) => {
+
+  const { socket, uid, users, games, locations } = useContext(SocketContext).SocketState;
+  const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
-  const [boxLatitude, setBoxLatitude] = useState<number | null>(null);
-  const [boxLongitude, setBoxLongitude] = useState<number | null>(null);
-  const [boxSet, setBoxSet] = useState<boolean | null>(false);
+  const [userLatitude, setUserLatitude] = useState<number | any>(null);
+  const [userLongitude, setUserLongitude] = useState<number | any>(null);
+  const [firstPosition, setFirstPosition] = useState<boolean | null>(false);
 
   // the canvas element to render the scene
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -85,13 +94,13 @@ const ChaseCam: React.FC = () => {
       renderer.render(scene, camera);
       frameIdRef.current = requestAnimationFrame(render);
 
-      const markerPositions = arjsRef.current?.getMarkerPositions();
+      const userPositions = arjsRef.current?.getUserPosition();
 
-      // testing if the markerPositions are the same as the old ones
+      // testing if the userPositions are the same as the old ones
       // if not, update the state
-      if(boxLatitude !== markerPositions?.latitude || boxLongitude !== markerPositions.longitude) {
-          setBoxLatitude(markerPositions?.latitude);
-          setBoxLongitude(markerPositions?.longitude);
+      if(userLatitude !== userPositions?.latitude || userLongitude !== userPositions?.longitude) {
+          setUserLatitude(userPositions?.latitude);
+          setUserLongitude(userPositions?.longitude);
       }
 
     }
@@ -146,26 +155,82 @@ const ChaseCam: React.FC = () => {
 
   useEffect(() => {
 
-    // if the positions aren't null (why try to render a box at null positions)
-    if(boxLatitude !== null) {
-      // console.log('they changed', boxLongitude, boxLatitude)
+    // // if the positions aren't null (why try to render a box at null positions)
+    // if(userLatitude !== null) {
+    //   // console.log('they changed', userLongitude, userLatitude)
 
-      // if the box has not been set on the map yet
-      if(!boxSet) {
-        // console.log('not set, adding');
-        arjsRef.current?.add(box, boxLongitude, boxLatitude);
+    //   const markerLong = userLongitude;
+    //   const markerLat = userLatitude + .001;
 
-        // store this in the state so we know the first box has been set and we don't need to call the .add() function
-        setBoxSet(true);
-      } else {
-        // console.log('set, changing position');
+    //   console.log('marker positions: ', markerLong, markerLat, )
 
-        // don't create a new box with add, just edit the old one
-        arjsRef.current?.setWorldPosition(box, boxLongitude, boxLatitude)
+    //   // if the box has not been set on the map yet
+    //   if(!firstPosition) {
+    //     console.log('not set, adding');
+    //     arjsRef.current?.add(box, markerLong, markerLat, 10);
+
+    //     // store this in the state so we know the first box has been set and we don't need to call the .add() function
+    //     setFirstPosition(true);
+    //   } else {
+    //     console.log('set, changing position');
+
+    //     // don't create a new box with add, just edit the old one
+    //     arjsRef.current?.setWorldPosition(box, markerLong, markerLat)
+    //   }
+
+    // }
+    let theId = '';
+    for (const host in games) {
+      if (games.hasOwnProperty(host)) {
+        const game = games[host];
+        if (game.uidList.includes(uid)) {
+          theId = game.gameId;
+        }
       }
-
     }
-  }, [boxLatitude, boxLongitude])
+    AddLocation(theId, userLongitude, userLatitude);
+
+
+  }, [userLatitude, userLongitude])
+
+  useEffect(() => {
+
+    // getting the user locations from the locations of the socket state
+    const userLocations = Object.values(locations);
+
+    if (userLocations.length === 0) {
+      console.log('There are no locations to plot.');
+      return;
+    }
+
+    // markers that have been added are stored in this array
+    const addedMarkers: Array<Mesh<BoxGeometry, MeshBasicMaterial>> = [];
+
+    // iterating through the locations of the current locations state
+    for (const userLocation of userLocations) {
+      const { latitude, longitude } = userLocation;
+      const markerLong = longitude;
+      const markerLat = latitude;
+
+      // checking if there's a marker that exists already
+      const existingMarker = addedMarkers.find((marker) => marker.userData.id === uid);
+
+      // if it exists, then just change the location, don't make a new one
+      if (existingMarker) {
+        arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
+      } else {
+        // make a clone of the markerBlueprint
+        const clonedMarker = markerBlueprint.clone();
+        clonedMarker.userData.id = uid;
+        arjsRef.current?.add(clonedMarker, markerLong, markerLat, 10);
+
+        // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
+        addedMarkers.push(clonedMarker);
+      }
+    }
+  }, [locations]);
+
+
 
   return (
     <>

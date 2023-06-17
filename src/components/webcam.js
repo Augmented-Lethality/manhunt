@@ -16,6 +16,7 @@ import {
 } from 'three';
 
 
+
 // From the source files of AR.js, edited line 19 because the original BufferPlaneGeometry or whatever it was, was outdated
 class WebcamRendererLocal {
   constructor(renderer, videoElement) {
@@ -111,8 +112,8 @@ class LocationBasedLocal {
     this.initialPosition = null;
     this.initialPositionAsOrigin = options.initialPositionAsOrigin || false;
 
-    this.markerLatitude = null;
-    this.markerLongitude = null;
+    this.userLatitude = null;
+    this.userLongitude = null;
   }
 
   setProjection(proj) {
@@ -134,11 +135,11 @@ class LocationBasedLocal {
 
   startGps(maximumAge = 0) {
     if (this._watchPositionId === null) {
-      navigator.geolocation.getCurrentPosition(function () {}, function () {}, {});
+      navigator.geolocation.getCurrentPosition(function () {}, function (err) { console.log('error on getting location', error)}, {});
       this._watchPositionId = navigator.geolocation.watchPosition(
         (position) => {
           this._gpsReceived(position);
-          this.setMarkerPosition(position.coords.longitude, position.coords.latitude)
+          this.setUserPosition(position.coords.longitude, position.coords.latitude)
           console.log('my position: ', position.coords.longitude, position.coords.latitude)
         },
         (error) => {
@@ -158,19 +159,19 @@ class LocationBasedLocal {
     return false;
   }
 
-  setMarkerPosition = (longitude, latitude, ) => {
+  setUserPosition = (longitude, latitude, ) => {
 
-    console.log('box position: ', longitude, latitude + 0.001, )
+    // console.log('box position: ', longitude, latitude + 0.001, )
 
-    this.markerLatitude = latitude + 0.001;
-    this.markerLongitude = longitude;
+    this.userLatitude = latitude;
+    this.userLongitude = longitude;
 
   }
 
-  getMarkerPositions() {
+  getUserPosition() {
     return {
-      latitude: this.markerLatitude,
-      longitude: this.markerLongitude,
+      latitude: this.userLatitude,
+      longitude: this.userLongitude,
     };
   }
 

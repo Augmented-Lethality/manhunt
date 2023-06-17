@@ -1,4 +1,5 @@
 import React, { PropsWithChildren, useReducer, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 
@@ -90,6 +91,19 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       SocketDispatch({ type: 'update_games', payload: games })
     });
 
+    // update locations event
+    socket.on('updated_locations', (locations) => {
+      console.info('location created, new location list received');
+      SocketDispatch({ type: 'updated_locations', payload: locations });
+    });
+
+    // redirect users event
+    socket.on('redirect', (endpoint) => {
+      console.info(`redirecting to ${ endpoint }`);
+      const navigate = useNavigate();
+      navigate(endpoint);
+    });
+
 
   }
 
@@ -103,7 +117,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       console.log('We shook, let\'s trade info xoxo');
       SocketDispatch({ type: 'update_uid', payload: uid });
       SocketDispatch({ type: 'update_users', payload: users });
-      SocketDispatch({ type: 'update_games', payload: games })
+      SocketDispatch({ type: 'update_games', payload: games });
 
       // not loading anymore since it connected
       setLoading(false);
@@ -119,6 +133,29 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       });
     }
 
+    const AddLocation = (gameId: string, longitude: number, latitude: number) => {
+      console.info(`Someone from game ${gameId} wants to add a location...`);
+
+      socket.emit('add_location', gameId, longitude, latitude, (uid: string, locations: { [uid: string]: { longitude: number, latitude: number } }) => {
+        SocketDispatch({ type: 'updated_locations', payload: locations });
+      });
+    };
+
+      // sending join game to the server, host identifies game to join
+      const JoinGame = (host: string) => {
+        console.info('Client wants to join a game...');
+
+        socket.emit('join_game', host, (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+          SocketDispatch({ type: 'update_games', payload: games });
+        });
+      };
+
+      const Redirect = (host: string, endpoint: string) => {
+        console.info(`Redirect from ${host} to ${endpoint}`);
+        socket.emit('nav_to_endpoint', host, endpoint);
+      };
+
+
   // showing this on client side while socket isn't connected
   if(loading) {
     return <p>Loading Socket Connection...</p>
@@ -127,7 +164,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame }}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect }}>
       {children}
     </SocketContextProvider>
   )
