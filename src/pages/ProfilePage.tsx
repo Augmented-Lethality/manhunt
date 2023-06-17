@@ -85,7 +85,7 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
             <h2>Games Played: {userData?.gamesPlayed}</h2>
             <h2>Games Won: {userData?.gamesWon}</h2>
             <h2>Kills Confirmed: {userData?.killsConfirmed}</h2>
-            {/* <h2>Suckers Ducked: {JSON.stringify(userData, null, 2)}</h2> */}
+            
             <h2>userData from database</h2>
             <p>{JSON.stringify(userData, null, 2)}</p>
           </div>
