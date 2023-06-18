@@ -20,7 +20,7 @@ type ChaseCamProps = {
 
 const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
 
-  const { locations, uid } = useContext(SocketContext).SocketState;
+  const { locations, uid, names } = useContext(SocketContext).SocketState;
   const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
@@ -62,9 +62,6 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     const scene = new Scene();
     const camera = new PerspectiveCamera(60, 1.33, 0.00000001, 100000000000000);
     const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
-
-    // new video element
-    // const video = document.getElementById('video1') as HTMLVideoElement;
 
     // LocationBased object for AR, takes scene and camera
     arjsRef.current = new LocationBasedLocal(scene, camera);
@@ -152,12 +149,19 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
   const geom = new BoxGeometry(20, 20, 20);
   const killMtl = new MeshBasicMaterial({ color: 0xff0000 }); // red
   const vicMtl = new MeshBasicMaterial({ color: 0x476930 }); // victim
+  const hardCodeMtl = new MeshBasicMaterial({ color: 0x993399 });
   const killers = new Mesh(geom, killMtl); // blueprint, will need to clone
   const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
+  const hardCodeMarker = new Mesh(geom, hardCodeMtl);
+
 
   useEffect(() => {
 
   AddLocation(currentGame.gameId, userLongitude, userLatitude);
+
+  arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
+
+
 
   }, [userLatitude, userLongitude])
 
@@ -187,18 +191,21 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
 
       // if it exists, then just change the location, don't make a new one
       if (existingMarker) {
+        console.log(`Changing marker position for ${ names[uid]}`)
         arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
       } else {
         // store the first round of markers into the markers array/add them to the list
         for(let player of currentGame.uidList) {
           if(player === currentGame.hunted) {
-            victim.userData.id = uid;
+            victim.userData.id = player;
             arjsRef.current?.add(victim, markerLong, markerLat, 10);
+            console.log(`Added marker for ${ names[player]}`)
             addedMarkers.push(victim);
           } else {
             const clonedKiller = killers.clone();
-            clonedKiller.userData.id = uid;
+            clonedKiller.userData.id = player;
             arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
+            console.log(`Added marker for ${ names[player]}`)
             // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
             addedMarkers.push(clonedKiller);
           }
