@@ -43,13 +43,12 @@ const HomePage = () => {
 
     if (isAuthenticated && user) {
       fetchUserData();
-      const insertName = `${ user.given_name || '' } ${ user.family_name?.charAt(0) }`
-      AddName( insertName|| '', uid);
-
+      const insertName = `${user.given_name || ''} ${user.family_name?.charAt(
+        0
+      )}`;
+      AddName(insertName || '', uid);
     }
-
   }, []);
-
 
   if (!user) {
     return null;
@@ -66,21 +65,19 @@ const HomePage = () => {
           minHeight: '100vh',
         }}
       >
-        <h1
-          style={{color: '#6e6b8c'}}
-        >
-          Home
-        </h1>
+        <h1 style={{ color: '#6e6b8c' }}>Home</h1>
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             gap: '2rem',
             width: '80%',
-            maxWidth: '400px', // Maximum width for the buttons
+            maxWidth: '400px',
           }}
         >
-        Users Online: <strong>{users.length}</strong><br/><br/>
+          Users Online: <strong>{users.length}</strong>
+          <br />
+          <br />
           <ButtonToProfile />
           <ButtonToHostGame />
           <ButtonToFindGame />
