@@ -20,7 +20,7 @@ Man Hunt is built using Typescript, React, Express, and is hosted on AWS. For mo
 
 
 ## To see the development files:
-* Make sure you have Node ^v18.
+* Make sure you have Node ^.
 * Download the directory.
 * If you're using Mac or Linux, run this command:
 
@@ -50,6 +50,30 @@ Man Hunt is built using Typescript, React, Express, and is hosted on AWS. For mo
 
 <br>
 
+
+## To run the database:
+* Download Postgresql globally 
+* Make sure the Postgresql service is started. 
+* Start the Postgresql shell:
+
+    psql -U postgres
+
+* In a separate terminal:
+
+    npm run seed
+
+* In Psql shell, connect to database "manhunt":
+
+    \c manhunt    
+    
+* To display tables:
+    \dt 
+
+## Additional notes
+
+* Used to install styled components:
+    npm i -D styled-components@5.3.10 @types/styled-components
+
 ## Designed by @Augmented-Lethality:
   *Logan Hochwald*
   @loganhochwald
@@ -62,14 +86,15 @@ Man Hunt is built using Typescript, React, Express, and is hosted on AWS. For mo
 
 
 ## Techstack
-* Typescript
-* React
-* Express
-* Socket.IO
+* Typescript 
+* React 
+* Express 
+* Node 
+* Socket.IO 
 * Redux (if needed, may need to edit)
 * Axios
-* Sequelize
-* Postgres
+* Sequelize 
+* Postgres 
 * TensorFlow
 * AR.js
 * Three.js
