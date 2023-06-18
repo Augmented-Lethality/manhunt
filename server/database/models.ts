@@ -30,8 +30,8 @@ User.init({
     type: DataTypes.STRING,
     allowNull: true
   },
-  faceDescription: {
-    type: DataTypes.ARRAY(DataTypes.INTEGER),
+  facialDescriptions: {
+    type: DataTypes.ARRAY(DataTypes.FLOAT),
     allowNull: true
   },
   gameId: {
