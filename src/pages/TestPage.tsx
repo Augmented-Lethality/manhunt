@@ -1,11 +1,9 @@
 import React from 'react';
-import CapturePhoto from '../components/CapturePhoto'
+import CreateFaceDescriptors from '../components/CreateFaceDescriptions';
 
 function TestPage() {
   return (
-    <>
-      <CapturePhoto />
-    </>
+      <CreateFaceDescriptors/>
   )
 }
 
