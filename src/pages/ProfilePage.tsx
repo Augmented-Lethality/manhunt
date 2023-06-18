@@ -2,7 +2,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ButtonToHome } from '../components/Buttons';
-import { GameOver } from '../components/GameOver';
 
 export type UserData = {
   username: string;
@@ -21,24 +20,17 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Check if the user exists by sending a POST request instead of a GET request
-        const response = await axios.post<UserData>('/Users', {
-          username: user?.name,
-          email: user?.email,
-          authId: user?.sub,
-          // Include other user data properties you want to save
-        });
+        const response = await axios.get<UserData>(`/Users/${user?.sub}`);
         setUserData(response.data);
-        // console.log(response);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
-
     if (isAuthenticated && user) {
       fetchUserData();
     }
   }, []);
+
   console.log(userData, 'USeRdatA');
 
   if (!user) {
@@ -52,6 +44,13 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
         textAlign: 'center',
         padding: '20px',
         backgroundColor: '#fcf18d',
+        minHeight: '100vh', // Fill the entire screen vertically
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: '#6e6b8c',
+        fontWeight: 'bold',
       }}
     >
       <h1 id='page-title' className='content__title'>
@@ -70,8 +69,10 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
             style={{
               display: 'flex',
               margin: 'auto',
-              width: '65%',
+              width: '100%',
               backgroundColor: '#fcf18d',
+              justifyContent: 'center',
+              marginBottom: '20px',
             }}
           >
             <div style={{ marginRight: '20px' }}>
@@ -83,7 +84,10 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
             </div>
             <div>
               <h2 className='profile__title'>{user.name}</h2>
-              <span className='profile__description'>{user.email}</span>
+              <span className='profile__description'>
+                {user.email}
+                {/* <ButtonToUpdateEmail /> */}
+              </span>
             </div>
           </div>
           <div className='profile__details'>

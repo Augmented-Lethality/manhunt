@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { useAuth0 } from '@auth0/auth0-react';
+import axios from 'axios'
 
 type ButtonProps = {
   label: string;
@@ -14,13 +15,13 @@ type ButtonProps = {
 
 const StyledButton = styled.button<ButtonProps>`
   /* Adapt the colors based on primary prop */
-  background: ${(props) => (props.primary ? '#BF4F74' : 'white')};
-  color: ${(props) => (props.primary ? 'white' : '#BF4F74')};
+  background: ${(props) => (props.primary ? '#6e6b8c' : 'white')};
+  color: ${(props) => (props.primary ? 'white' : '#6e6b8c')};
 
   font-size: 1em;
   margin: 1em;
   padding: 0.25em 1em;
-  border: 2px solid #bf4f74;
+  border: 2px solid #6e6b8c;
   border-radius: 3px;
 `;
 
@@ -131,3 +132,4 @@ export const SignupButton = () => {
     />
   );
 };
+

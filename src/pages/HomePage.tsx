@@ -19,7 +19,6 @@ type UserData = {
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -55,13 +54,28 @@ const HomePage = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          minHeight: '100vh',
         }}
       >
-        <h1>Home</h1>
-        <ButtonToProfile />
-        <ButtonToHostGame />
-        <ButtonToFindGame />
-        <LogoutButton />
+        <h1
+          style={{color: '#6e6b8c'}}
+        >
+          Home
+        </h1>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2rem',
+            width: '80%',
+            maxWidth: '400px', // Maximum width for the buttons
+          }}
+        >
+          <ButtonToProfile />
+          <ButtonToHostGame />
+          <ButtonToFindGame />
+          <LogoutButton style={{ flex: 1 }} />
+        </div>
       </div>
     )
   );
