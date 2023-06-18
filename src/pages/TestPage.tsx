@@ -3,7 +3,7 @@ import CreateFaceDescriptors from '../components/CreateFaceDescriptions';
 
 function TestPage() {
   return (
-      <CreateFaceDescriptors/>
+      <></>// <CreateFaceDescriptors/>
   )
 }
 
