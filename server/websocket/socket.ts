@@ -69,7 +69,7 @@ export class ServerSocket {
         this.io.on('connect', this.StartListeners);
 
         // confirms that the socket is ready for client emits
-        console.info('Socket.io is listening');
+        // console.info('Socket.io is listening');
     }
 
     // method to handle all of the socket functions
@@ -81,7 +81,7 @@ export class ServerSocket {
         // client is attempting to connect to the server, also known as a handshake
         socket.on('handshake', (callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] }},
           names: { [uid: string]: string }) => void) => {
-            console.info('Handshake received from: ' + socket.id);
+            // console.info('Handshake received from: ' + socket.id);
 
             // is this a reconnection attempt?
             const reconnected = Object.values(this.users).includes(socket.id);
