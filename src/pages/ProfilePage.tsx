@@ -11,6 +11,7 @@ export type UserData = {
   gamesPlayed: number;
   gamesWon: number;
   killsConfirmed: number;
+  facialDescriptions: Array<number> | null
   // Add other user data properties as needed
 };
 
@@ -41,7 +42,11 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
 
   if(isVerifying){
     return (
-      <CreateFaceDescriptions setIsVerifying={setIsVerifying}/>
+      <CreateFaceDescriptions
+        setIsVerifying={setIsVerifying}
+        username={user.name}
+        userID={user.sub}
+        setUser={setUserData}/>
     )
   }
 
@@ -99,21 +104,18 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
               </span>
             </div>
           </div>
-          
-            {user.faceDescriptions ? (
+            {userData?.facialDescriptions ? (
               <div className='profile_verification'>
-                <h2>Citizen has been verified. The Corpoverse thanks you for your cooperation.</h2>
+                <h2>Citizen has been verified. The CorpoVerse thanks you for your cooperation.</h2>
                 <button onClick={()=>setIsVerifying(true)}>Feeling Patriotic? Reverify</button>
               </div>
             ) : (
               <div className='profile_verification'>
-                <h3>Citizen has not been processed by the corporeality police.</h3>
-                <h3>Please send in biodata to participate in society.</h3>
+                <h3>Citizen has not been processed by the CorpoReality Police.</h3>
+                <h3>Please send in Biodata to participate in SOCIETY™.</h3>
                 <button onClick={()=>setIsVerifying(true)}>Send BioData</button>
               </div>
-            )
-            }
-
+            )}
           <div className='profile__details'>
             <h2>Games Played: {userData?.gamesPlayed}</h2>
             <h2>Games Won: {userData?.gamesWon}</h2>

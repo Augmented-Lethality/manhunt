@@ -3,16 +3,20 @@ import * as faceapi from 'face-api.js';
 import CapturePhoto from './CapturePhoto'
 import { WebcamProvider } from '../contexts/WebcamProvider';
 import axios from 'axios';
+import {UserData} from '../pages/ProfilePage'
 
 interface CreateFaceDescriptionsProps {
   setIsVerifying: (verify: boolean) => void;
+  username?: (string);
+  userID?: (string);
+  setUser: (user: UserData | null) => void;
 }
 
 
 
-const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVerifying}) => {
+const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVerifying, username, userID, setUser}) => {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
-  
+  console.log(username)
   useEffect(() => {
     loadModels();
     console.log('models loaded')
@@ -34,16 +38,19 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
       console.error("No image provided");
       return;
     }
+    // This is just to get typescript to stop throwing an err
+    if(!username){
+      return
+    }
     try {
       const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
       if (!detection) {
-        console.error("No face detected in the image");
+        alert("No face detected in the image, please try again");
         return;
       }
-      const label = 'user-face1';
       const descriptions = [detection.descriptor];
-      const labeledFaceDescriptor = new faceapi.LabeledFaceDescriptors(label, descriptions);
-      const candy = await sendDescriptionToServer(labeledFaceDescriptor);
+      const labeledFaceDescriptor = new faceapi.LabeledFaceDescriptors(username, descriptions);
+      sendDescriptionToServer(labeledFaceDescriptor);
       setIsVerifying(false)
     } catch (err){
       console.error(err)
@@ -54,12 +61,11 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
     try {
       // Convert descriptor to array for easier serialization
       const descriptorArray = Array.from(labeledFaceDescriptor.descriptors[0]);
-      console.log(descriptorArray)
-      const response = await axios.patch('user/face-description', {
-        label: labeledFaceDescriptor.label,
-        descriptor: descriptorArray
-      });
-      console.log(response.data);
+      console.log(labeledFaceDescriptor.label)
+      const res = await axios.patch(`/users/face-description/${userID}`, {descriptions: descriptorArray});
+      if(res.status === 200){
+        setUser(res.data)
+      }
     } catch (error) {
       console.error('Error sending descriptor to server:', error);
     }
