@@ -5,11 +5,7 @@ type KillCamProps = {
   faceMatcher: (faceapi.FaceMatcher | null)
 }
 const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
-
-  //const [modelsLoaded, setModelsLoaded] = useState(false);
   const [captureVideo, setCaptureVideo] = useState(false);
-  //const [faceMatcherReady, setFaceMatcherReady] = useState(false);
-  // const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoHeight = window.innerHeight;
@@ -18,45 +14,11 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
   const displaySize = { width: videoWidth, height: videoHeight };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // useEffect(() => {
-  //   loadModels();
-  //   console.log('models loaded')
-  // }, []);
-
   useEffect(() => {
     createCanvas()
     console.log('createdCanvas')
   }, [canvasRef])
 
-  // const createFaceMatcher = async () => {
-  //   const labels = ['kalypso-homan'];
-  //   const promises = labels.map(async label => {
-  //     const descriptions: Float32Array[] = [];
-  //     const img = await faceapi.fetchImage(`assets/${label}.jpg`);
-  //     const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-  //     if(detection){
-  //       descriptions.push(detection.descriptor);
-  //     }
-  //     return new faceapi.LabeledFaceDescriptors(label, descriptions);
-  //   });
-  //   const labeledFaceDescriptors = await Promise.all(promises);
-  //   setFaceMatcher( new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6));
-  //   setFaceMatcherReady(true);
-  // }
-
-  // const loadModels = async () => {
-  //   try {
-  //     await faceapi.loadSsdMobilenetv1Model('/models')
-  //     await faceapi.loadFaceLandmarkModel('/models')
-  //     await faceapi.loadFaceRecognitionModel('/models')
-  //     await createFaceMatcher();
-  //     console.log('createdFaceMatcher')
-  //     setModelsLoaded(true);
-  //   } catch (err) {
-  //     console.error(err);
-  //     setModelsLoaded(false);
-  //   }
-  // };
 
   const createCanvas = () => {
     if(videoRef.current){
@@ -89,11 +51,9 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
         if (context) {
           context.clearRect(0, 0, videoWidth, videoHeight);
         }
-        //faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
         faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
-
         // for every face, find best result
-        const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
+        const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))   
         //for Each, adds a box
         results.forEach((result, i) => {
           const box = resizedDetections[i].detection.box
