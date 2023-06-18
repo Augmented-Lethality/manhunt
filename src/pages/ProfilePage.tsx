@@ -2,6 +2,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ButtonToHome } from '../components/Buttons';
+import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
 
 export type UserData = {
   username: string;
@@ -16,6 +17,7 @@ export type UserData = {
 const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -37,12 +39,19 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
     return null;
   }
 
+  if(isVerifying){
+    return (
+      <CreateFaceDescriptions setIsVerifying={setIsVerifying}/>
+    )
+  }
+
   return (
     <div
       className='content-layout'
       style={{
         textAlign: 'center',
-        padding: '20px',
+        padding: '0px',
+        margin: '0px',
         backgroundColor: '#fcf18d',
         minHeight: '100vh', // Fill the entire screen vertically
         display: 'flex',
@@ -90,6 +99,21 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
               </span>
             </div>
           </div>
+          
+            {user.faceDescriptions ? (
+              <div className='profile_verification'>
+                <h2>Citizen has been verified. The Corpoverse thanks you for your cooperation.</h2>
+                <button onClick={()=>setIsVerifying(true)}>Feeling Patriotic? Reverify</button>
+              </div>
+            ) : (
+              <div className='profile_verification'>
+                <h3>Citizen has not been processed by the corporeality police.</h3>
+                <h3>Please send in biodata to participate in society.</h3>
+                <button onClick={()=>setIsVerifying(true)}>Send BioData</button>
+              </div>
+            )
+            }
+
           <div className='profile__details'>
             <h2>Games Played: {userData?.gamesPlayed}</h2>
             <h2>Games Won: {userData?.gamesWon}</h2>
