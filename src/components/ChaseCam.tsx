@@ -157,8 +157,8 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
 
   useEffect(() => {
 
-  AddLocation(currentGame.gameId, userLongitude, userLatitude);
-
+    AddLocation(currentGame.gameId, userLongitude, userLatitude);
+    arjsRef.current?.add(killers, userLongitude, userLatitude + 0.001, 10);
   }, [userLatitude, userLongitude])
 
   useEffect(() => {
