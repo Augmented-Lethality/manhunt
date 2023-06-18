@@ -12,8 +12,6 @@ interface CreateFaceDescriptionsProps {
   setUser: (user: UserData | null) => void;
 }
 
-
-
 const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVerifying, username, userID, setUser}) => {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   console.log(username)
@@ -21,7 +19,6 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
     loadModels();
     console.log('models loaded')
   }, []);
-
   
   const loadModels = async () => {
     try {
@@ -61,7 +58,6 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
     try {
       // Convert descriptor to array for easier serialization
       const descriptorArray = Array.from(labeledFaceDescriptor.descriptors[0]);
-      console.log(labeledFaceDescriptor.label)
       const res = await axios.patch(`/users/face-description/${userID}`, {descriptions: descriptorArray});
       if(res.status === 200){
         setUser(res.data)
