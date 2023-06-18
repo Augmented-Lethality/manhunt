@@ -260,6 +260,12 @@ export class ServerSocket {
                 const users = Object.values(this.users);
 
                 this.SendMessage('user_disconnected', users, socket.id);
+
+              if(this.games[uid]) {
+                delete this.games[uid];
+
+                this.SendMessage('update_games', users, this.games);
+              }
             }
         });
     };
