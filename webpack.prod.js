@@ -35,10 +35,11 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".ts", ".tsx"],
+    fallback: {
+      "fs": require.resolve("browserify-fs"),
+      "stream": require.resolve("stream-browserify"),
+      "path": require.resolve("path-browserify"),
+    }
   },
-  fallback: {
-    "fs": require.resolve("browserify-fs"),
-    "stream": require.resolve("stream-browserify"),
-    "path": require.resolve("path-browserify"),
-  }
+
 };

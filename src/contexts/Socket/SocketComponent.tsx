@@ -1,18 +1,17 @@
 import React, { PropsWithChildren, useReducer, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
 import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 
 // THIS CAN BE REUSED TO PASS THE SOCKET INFORMATION AROUND THE CLIENT SIDE
 
-// allows for defining the prop types expected by the SocketContextComponent
+// allows for defining the prop types expected by the SocketComponent
 // PropsWithChildren allows components to accept nested elements in its children
-export interface ISocketContextComponentProps extends PropsWithChildren {}
+export interface ISocketComponentProps extends PropsWithChildren {}
 
-// functional component that has ISocketContextComponentProps as its children/props
-const SocketContextComponent: React.FunctionComponent<ISocketContextComponentProps> = (props) => {
+// functional component that has ISocketComponentProps as its children/props
+const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) => {
 
-  // nested elements within SocketContextComponent, rendered in the context provider
+  // nested elements within SocketComponent, rendered in the context provider
   const { children } = props;
 
   // making a local state to store the created reducer and the default socket context state
@@ -29,7 +28,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
   useEffect(() => {
     // connect to Web Socket
-      socket.connect();
+    socket.connect();
 
     // save the socket in context
     SocketDispatch({ type: 'update_socket', payload: socket })
@@ -71,22 +70,24 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
     socket.on('user_connected', (users: string[]) => {
       console.info('user connected, new user list received')
       SocketDispatch({ type: 'update_users', payload: users })
+      // update names
     });
 
     // user disconnected event
     socket.on('user_disconnected', (uid: string) => {
       console.info('user disconnected')
       SocketDispatch({ type: 'remove_user', payload: uid })
+      // remove name
     });
 
     // created a game event
-    socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+    socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
       console.info('game created, new game list received')
       SocketDispatch({ type: 'update_games', payload: games })
     });
 
     // updated a game event
-    socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+    socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
       console.info('games updated, new game list received')
       SocketDispatch({ type: 'update_games', payload: games })
     });
@@ -97,12 +98,18 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       SocketDispatch({ type: 'updated_locations', payload: locations });
     });
 
-    // redirect users event
-    socket.on('redirect', (endpoint) => {
-      console.info(`redirecting to ${ endpoint }`);
-      const navigate = useNavigate();
-      navigate(endpoint);
+    // update the names state
+    socket.on('update_names', (names: { [uid: string]: string }) => {
+      console.info('names updated, new name list received')
+      SocketDispatch({ type: 'update_names', payload: names })
     });
+
+    // redirect users event
+    // socket.on('redirect', (endpoint) => {
+    //   console.info(`redirecting to ${ endpoint }`);
+    //   const navigate = useNavigate();
+    //   navigate(endpoint);
+    // });
 
 
   }
@@ -113,11 +120,13 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
     // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
     // on the handshake and it gets the cb from the server on handshake
-    socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+    socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string }},
+      names: { [uid: string]: string }) => {
       console.log('We shook, let\'s trade info xoxo');
       SocketDispatch({ type: 'update_uid', payload: uid });
       SocketDispatch({ type: 'update_users', payload: users });
       SocketDispatch({ type: 'update_games', payload: games });
+      SocketDispatch({ type: 'update_names', payload: names });
 
       // not loading anymore since it connected
       setLoading(false);
@@ -128,7 +137,7 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
     const CreateGame = () => {
       console.info('Client wants to create a game...');
 
-      socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => {
+      socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
         SocketDispatch({ type: 'update_games', payload: games })
       });
     }
@@ -145,8 +154,8 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
       const JoinGame = (host: string) => {
         console.info('Client wants to join a game...');
 
-        socket.emit('join_game', host, (uid: string, games: { [host: string]: { gameId: string, uidList: string[] }}) => {
-          SocketDispatch({ type: 'update_games', payload: games });
+        socket.emit('join_game', host, (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
+          // SocketDispatch({ type: 'update_games', payload: games });
         });
       };
 
@@ -154,6 +163,18 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
         console.info(`Redirect from ${host} to ${endpoint}`);
         socket.emit('nav_to_endpoint', host, endpoint);
       };
+
+      const SetHunted = (host: string, uid: string) => {
+        console.info(`Setting Hunted, ${host} picked ${ uid }`);
+        socket.emit('set_hunted', host, uid);
+      };
+
+      const AddName = (name: string, uid: string) => {
+        console.info('Adding name');
+        socket.emit('add_name', name, uid, (names: { [uid: string]: string }) => {
+          SocketDispatch({ type: 'update_names', payload: names });
+        });
+      }
 
 
   // showing this on client side while socket isn't connected
@@ -164,11 +185,11 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect }}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, AddName }}>
       {children}
     </SocketContextProvider>
   )
 
 }
 
-export default SocketContextComponent;
+export default SocketComponent;

@@ -9,8 +9,9 @@ export interface ISocketContextState {
   socket: Socket | undefined;
   uid: string,
   users: string[],
-  games: { [host: string]: { gameId: string, uidList: string[]} },
-  locations: { [uid: string]: { longitude: number, latitude: number } }
+  games: { [host: string]: { gameId: string, uidList: string[], hunted: string } },
+  locations: { [uid: string]: { longitude: number, latitude: number } },
+  names: { [uid: string]: string }
 };
 
 // initial context state, will be overwritten eventually, but need the default state
@@ -19,16 +20,17 @@ export const defaultSocketContextState: ISocketContextState = {
   uid: '',
   users: [],
   games: {},
-  locations: {}
+  locations: {},
+  names: {}
 };
 
 // these actions will each have their own functions in the reducer
 export type TSocketContextActions = 'update_socket' | 'update_uid' |
-'update_users' | 'remove_user' | 'update_games' | 'updated_locations'
+'update_users' | 'remove_user' | 'update_games' | 'updated_locations' | 'update_names'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = string | string[] | Socket | { [host: string]: { gameId: string, uidList: string[]} }
-| { [uid: string]: { longitude: number, latitude: number } };
+export type TSocketContextPayload = string | string[] | Socket | { [host: string]: { gameId: string, uidList: string[], hunted: string } }
+| { [uid: string]: { longitude: number, latitude: number } } | { [uid: string]: string };
 
 // describes the shape of the actions in this context
 export type ISocketContextActions = {
@@ -51,9 +53,11 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
     case 'remove_user':
       return { ...state, users: state.users.filter((uid) => uid !== (action.payload as string)) };
     case 'update_games':
-      return { ...state, games: { ...state.games, ...action.payload as { [host: string]: { gameId: string, uidList: string[] } } } };
+      return { ...state, games: { ...state.games, ...action.payload as { [host: string]: { gameId: string, uidList: string[], hunted: string } } } };
     case 'updated_locations':
       return { ...state, locations: action.payload as { [uid: string]: { longitude: number, latitude: number } } };
+    case 'update_names':
+      return { ...state, names: { ...state.names, ...action.payload as { [uid: string]: string } } };
     default:
       return { ...state };
   }
@@ -67,6 +71,8 @@ export interface ISocketContextProps {
   AddLocation: (gameId: string, longitude: number, latitude: number) => void;
   JoinGame: (host: string) => void;
   Redirect: (host: string, endpoint: string) => void;
+  SetHunted: (host: string, uid: string) => void;
+  AddName: (name: string, uid: string) => void;
 }
 
 // context object that creates the context using the createContext() method
@@ -79,7 +85,9 @@ const SocketContext = createContext<ISocketContextProps>({
   CreateGame: () => {},
   AddLocation: () => {},
   JoinGame: () => {},
-  Redirect: () => {}
+  Redirect: () => {},
+  SetHunted: () => {},
+  AddName: () => {}
 });
 
 // shares data between components without having to pass props around (react feature):
