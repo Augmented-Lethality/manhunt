@@ -41,9 +41,10 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <StyledButton primary={!primary} onClick={handleClick}>
-      {label}
-    </StyledButton>
+<StyledButton label={label} primary={!primary} onClick={handleClick} route={route}>
+  {label}
+</StyledButton>
+
   );
 };
 
@@ -132,4 +133,3 @@ export const SignupButton = () => {
     />
   );
 };
-
