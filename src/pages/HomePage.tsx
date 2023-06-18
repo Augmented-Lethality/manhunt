@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -9,6 +9,8 @@ import {
   LogoutButton,
 } from '../components/Buttons';
 
+import SocketContext from '../contexts/Socket/SocketContext';
+
 type UserData = {
   username: string;
   email: string;
@@ -18,6 +20,8 @@ type UserData = {
 
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
+  const { AddName } = useContext(SocketContext);
+  const { uid, users } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
@@ -39,8 +43,13 @@ const HomePage = () => {
 
     if (isAuthenticated && user) {
       fetchUserData();
+      const insertName = `${ user.given_name || '' } ${ user.family_name?.charAt(0) }`
+      AddName( insertName|| '', uid);
+
     }
+
   }, []);
+
 
   if (!user) {
     return null;
@@ -71,6 +80,7 @@ const HomePage = () => {
             maxWidth: '400px', // Maximum width for the buttons
           }}
         >
+        Users Online: <strong>{users.length}</strong><br/><br/>
           <ButtonToProfile />
           <ButtonToHostGame />
           <ButtonToFindGame />
