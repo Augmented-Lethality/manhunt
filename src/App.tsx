@@ -11,7 +11,7 @@ import ProfilePage from './pages/ProfilePage';
 import TestPage from './pages/TestPage';
 import GameLobby from './pages/GameLobby';
 import FindGamePage from './pages/FindGamePage';
-import SocketContextComponent from './contexts/Socket/SocketContextComponent';
+import SocketComponent from './contexts/Socket/SocketComponent';
 
 const App = () => {
   const { isLoading } = useAuth0();
@@ -30,9 +30,9 @@ const App = () => {
       <Route
         path="/home"
         element={
-          <SocketContextComponent>
+          <SocketComponent>
             <AuthenticationGuard component={HomePage} />
-          </SocketContextComponent>}
+          </SocketComponent>}
       />
       <Route
         path="/profile"
@@ -45,22 +45,24 @@ const App = () => {
       <Route
         path="/findGame"
         element={
-          <SocketContextComponent>
+          <SocketComponent>
             <AuthenticationGuard component={FindGamePage}/>
-          </SocketContextComponent>}
+          </SocketComponent>}
       />
-      <Route
+
+          <Route
         path="/onthehunt"
         element={
-          <SocketContextComponent>
+          <SocketComponent>
             <AuthenticationGuard component={GamePage} />
-          </SocketContextComponent>}/>
+          </SocketComponent>}/>
+
       <Route
         path="/lobby"
         element={
-          <SocketContextComponent>
+          <SocketComponent>
             <AuthenticationGuard component={GameLobby} />
-          </SocketContextComponent>
+          </SocketComponent>
         }
       />
       <Route path="*" element={<NotFoundPage />} />

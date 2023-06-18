@@ -1,19 +1,33 @@
+import React, { useRef, useEffect, useState, useContext } from 'react';
+
 import {
+  WebcamRendererLocal,
+  LocationBasedLocal,
   PerspectiveCamera,
   Scene,
   WebGLRenderer,
   BoxGeometry,
   MeshBasicMaterial,
-  Mesh,
-} from 'three';
-import React, { useRef, useEffect } from 'react';
+  Mesh, } from "./webcam.js"
 
-import WebcamRendererLocal from "./webcam.js"
+  import SocketContext from '../contexts/Socket/SocketContext';
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
-import * as THREEx from '@ar-js-org/ar.js/three.js/build/ar-threex-location-only.js';
 
-const ChaseCam: React.FC = () => {
+type ChaseCamProps = {
+  currentGame: { gameId: string; uidList: string[], hunted: string },
+};
+
+const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
+
+  const { locations, uid } = useContext(SocketContext).SocketState;
+  const { AddLocation } = useContext(SocketContext);
+
+  // storing the marker long/lat so we can compare new coordinates to the old ones
+  const [userLatitude, setUserLatitude] = useState<number | any>(null);
+  const [userLongitude, setUserLongitude] = useState<number | any>(null);
+  const [firstPosition, setFirstPosition] = useState<boolean | null>(false);
+
   // the canvas element to render the scene
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -32,6 +46,10 @@ const ChaseCam: React.FC = () => {
   // the camera reference in the three library
   const cameraRef = useRef<PerspectiveCamera | null>(null);
 
+  // arjs reference
+  const arjsRef = useRef<LocationBasedLocal | null>(null);
+
+
   useEffect(() => {
     // checks if the canvas HTML element is there, otherwise return and don't touch
     // the rest of the code
@@ -42,29 +60,20 @@ const ChaseCam: React.FC = () => {
 
     // new scene, camera, and renderer
     const scene = new Scene();
-    const camera = new PerspectiveCamera(60, 1.33, 0.1, 10000);
+    const camera = new PerspectiveCamera(60, 1.33, 0.00000001, 100000000000000);
     const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
 
     // new video element
     // const video = document.getElementById('video1') as HTMLVideoElement;
 
     // LocationBased object for AR, takes scene and camera
-    const arjs = new THREEx.LocationBased(scene, camera);
+    arjsRef.current = new LocationBasedLocal(scene, camera);
 
     // renders the webcam stream as the background for the scene
-    // I THINK THIS IS THE PROBLEM
     const cam = new WebcamRendererLocal(renderer, '#video1');
 
-    // create a red box to render on the screen that stays in the defined location
-    const geom = new BoxGeometry(20, 20, 20);
-    const mtl = new MeshBasicMaterial({ color: 0xff0000 });
-    const box = new Mesh(geom, mtl);
-
-    // box location in lat/long
-    arjs.add(box, -0.72, 51.051);
-
-    // on desktop so need the fake gps
-    arjs.fakeGps(-0.72, 51.05, 10);
+    // start the location
+    arjsRef.current.startGps();
 
     // can be used outside of the useEffect scope, check above
     cameraRef.current = camera;
@@ -84,6 +93,16 @@ const ChaseCam: React.FC = () => {
       cam.update();
       renderer.render(scene, camera);
       frameIdRef.current = requestAnimationFrame(render);
+
+      const userPositions = arjsRef.current?.getUserPosition();
+
+      // testing if the userPositions are the same as the old ones
+      // if not, update the state
+      if(userLatitude !== userPositions?.latitude || userLongitude !== userPositions?.longitude) {
+          setUserLatitude(userPositions?.latitude);
+          setUserLongitude(userPositions?.longitude);
+      }
+
     }
 
     // kick starts the loop of rendering the canvas
@@ -129,6 +148,67 @@ const ChaseCam: React.FC = () => {
     };
   }, []);
 
+  // create markers to render on the screen that stays in the defined location
+  const geom = new BoxGeometry(20, 20, 20);
+  const killMtl = new MeshBasicMaterial({ color: 0xff0000 }); // red
+  const vicMtl = new MeshBasicMaterial({ color: 0x476930 }); // victim
+  const killers = new Mesh(geom, killMtl); // blueprint, will need to clone
+  const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
+
+  useEffect(() => {
+
+  AddLocation(currentGame.gameId, userLongitude, userLatitude);
+
+  }, [userLatitude, userLongitude])
+
+  useEffect(() => {
+
+    // getting the user locations from the locations of the current socket state
+    // this route I am emitting correctly, won't need to change this on
+    // the refactor of socket codes
+    const userLocations = Object.values(locations);
+
+    if (userLocations.length === 0) {
+      console.log('There are no locations to plot.');
+      return;
+    }
+
+    // markers that have been added are stored in this array
+    const addedMarkers: Array<Mesh<BoxGeometry, MeshBasicMaterial>> = [];
+
+    // iterating through the locations of the current locations state
+    for (const userLocation of userLocations) {
+      const { latitude, longitude } = userLocation;
+      const markerLong = longitude;
+      const markerLat = latitude;
+
+      // checking if there's a marker that exists already for the user
+      const existingMarker = addedMarkers.find((marker) => marker.userData.id === uid);
+
+      // if it exists, then just change the location, don't make a new one
+      if (existingMarker) {
+        arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
+      } else {
+        // store the first round of markers into the markers array/add them to the list
+        for(let player of currentGame.uidList) {
+          if(player === currentGame.hunted) {
+            victim.userData.id = uid;
+            arjsRef.current?.add(victim, markerLong, markerLat, 10);
+            addedMarkers.push(victim);
+          } else {
+            const clonedKiller = killers.clone();
+            clonedKiller.userData.id = uid;
+            arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
+            // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
+            addedMarkers.push(clonedKiller);
+          }
+        }
+      }
+    }
+  }, [locations]);
+
+
+
   return (
     <>
       <video
@@ -142,22 +222,5 @@ const ChaseCam: React.FC = () => {
     </>
   );
 };
-// REACT THREE FIBER NOTES IF NEEDED
-/*
-<Canvas />:
-- It sets up a Scene and a Camera, the basic building blocks necessary for rendering
-- It renders our scene every frame, you do not need a traditional render-loop
-
-<mesh />
-- see something in our scene
-- direct equivalent to new THREE.Mesh()
-- the geometry and material automatically attach to their parent
-
-Passing constructor arguments:
-- Instead of: new THREE.BoxGeometry(2, 2, 2)
-- Do this instead: <boxGeometry args={[2, 2, 2]} />
-- Note that every time you change args, the object must be re-constructed!
-
-*/
 
 export default ChaseCam;

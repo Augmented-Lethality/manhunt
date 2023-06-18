@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router';
 // import GameLobby from './GameLobby';
 import axios from 'axios';
 
@@ -62,27 +63,51 @@ const FindGamePage: React.FC = () => {
   //   </div>
   // );
 
-  const { socket, uid, users, games } = useContext(SocketContext).SocketState;
+  const { uid, games, names } = useContext(SocketContext).SocketState;
+  const { JoinGame } = useContext(SocketContext);
 
+  const navigate = useNavigate();
+
+  const handleJoinGame = async (host: string) => {
+    JoinGame(host);
+    navigate('/lobby');
+  };
+
+  const hostName = names[uid];
 
   return (
     <div>
-            {Object.keys(games).length > 0 ? (
-          <>
-            <strong>Available Games:</strong>
-            <ul>
-              {Object.keys(games).map((host) => (
+      {Object.keys(games).length > 0 ? (
+        <>
+          <strong>Available Games:</strong>
+          <ul>
+            {Object.keys(games).map((host) => {
+              if (host === uid) {
+                return null;
+              }
+              // return (
+              //   <li key={host}>
+              //     <a onClick={() => handleJoinGame(host)}>
+              //       Game ID: {games[host].gameId}, Host: {host}, Users: {games[host].uidList.join(', ')}
+              //     </a>
+              //   </li>
+              // );
+              return (
+                <ol>
                 <li key={host}>
-                  Game ID: {games[host].gameId}, Host: {host}, Users: {games[host].uidList.join(', ')}
+                  <a onClick={() => handleJoinGame(host)}>Host: {hostName}, Users in Game: {games[host].uidList.length}</a>
                 </li>
-              ))}
-            </ul>
-          </>
-        ) :
-        <p>No game lobbies available</p>}
-        <ButtonToHome />
+                </ol>
+              );
+            })}
+          </ul>
+        </>
+      ) : (
+        <p>No game lobbies available</p>
+      )}
+      <ButtonToHome />
     </div>
-  )
-};
+  );
+}
 
 export default FindGamePage;
