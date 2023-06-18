@@ -53,9 +53,10 @@ const HomePage = () => {
   if (!user) {
     return null;
   }
-  console.log(user);
+  // console.log(user);
   return (
     isAuthenticated && (
+
         <div
           style={{
             display: 'flex',
@@ -65,14 +66,14 @@ const HomePage = () => {
             margin: 0
           }}
         >
-        <h1 style={{ color: '#6e6b8c' }}>Home</h1>
+        <h1 style={{ color: '#6e6b8c' }}>Welcome Home, { user.given_name }</h1>
           Users Online: {users.length}
           <br />
           <br />
           <ButtonToProfile />
           <ButtonToHostGame />
           <ButtonToFindGame />
-          <LogoutButton/>
+          <LogoutButton />
         </div>
     )
   );

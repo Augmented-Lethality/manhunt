@@ -82,13 +82,13 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
     // created a game event
     socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
-      console.info('game created, new game list received')
+      // console.info('game created, new game list received')
       SocketDispatch({ type: 'update_games', payload: games })
     });
 
     // updated a game event
     socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
-      console.info('games updated, new game list received')
+      // console.info('games updated, new game list received')
       SocketDispatch({ type: 'update_games', payload: games })
     });
 
@@ -100,7 +100,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
     // update the names state
     socket.on('update_names', (names: { [uid: string]: string }) => {
-      console.info('names updated, new name list received')
+      // console.info('names updated, new name list received')
       SocketDispatch({ type: 'update_names', payload: names })
     });
 
@@ -116,13 +116,13 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // sending the handshake to the server, meaning it's trying to establish a connection to the server using websocket
   const SendHandshake = () => {
-    console.info('Client wants a handshake...');
+    // console.info('Client wants a handshake...');
 
     // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
     // on the handshake and it gets the cb from the server on handshake
     socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string }},
       names: { [uid: string]: string }) => {
-      console.log('We shook, let\'s trade info xoxo');
+      // console.log('We shook, let\'s trade info xoxo');
       SocketDispatch({ type: 'update_uid', payload: uid });
       SocketDispatch({ type: 'update_users', payload: users });
       SocketDispatch({ type: 'update_games', payload: games });
@@ -135,7 +135,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
     // sending createRoom to the server
     const CreateGame = () => {
-      console.info('Client wants to create a game...');
+      // console.info('Client wants to create a game...');
 
       socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
         SocketDispatch({ type: 'update_games', payload: games })
@@ -152,25 +152,25 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
       // sending join game to the server, host identifies game to join
       const JoinGame = (host: string) => {
-        console.info('Client wants to join a game...');
+        // console.info('Client wants to join a game...');
 
         socket.emit('join_game', host, (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
-          // SocketDispatch({ type: 'update_games', payload: games });
+          SocketDispatch({ type: 'update_games', payload: games });
         });
       };
 
       const Redirect = (host: string, endpoint: string) => {
-        console.info(`Redirect from ${host} to ${endpoint}`);
+        // console.info(`Redirect from ${host} to ${endpoint}`);
         socket.emit('nav_to_endpoint', host, endpoint);
       };
 
       const SetHunted = (host: string, uid: string) => {
-        console.info(`Setting Hunted, ${host} picked ${ uid }`);
+        // console.info(`Setting Hunted, ${host} picked ${ uid }`);
         socket.emit('set_hunted', host, uid);
       };
 
       const AddName = (name: string, uid: string) => {
-        console.info('Adding name');
+        // console.info('Adding name');
         socket.emit('add_name', name, uid, (names: { [uid: string]: string }) => {
           SocketDispatch({ type: 'update_names', payload: names });
         });
