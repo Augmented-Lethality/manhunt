@@ -53,7 +53,7 @@ const HomePage = () => {
   if (!user) {
     return null;
   }
-  console.log(user);
+  // console.log(user);
   return (
     isAuthenticated && (
       <div
@@ -65,7 +65,9 @@ const HomePage = () => {
           minHeight: '100vh',
         }}
       >
-        <h1 style={{ color: '#6e6b8c' }}>Home</h1>
+        {/* <h1 style={{ color: '#6e6b8c' }}>Home</h1> */}
+        <h1 style={{ color: '#6e6b8c' }}>Welcome Home, { user.given_name }</h1>
+
         <div
           style={{
             display: 'flex',
@@ -81,7 +83,7 @@ const HomePage = () => {
           <ButtonToProfile />
           <ButtonToHostGame />
           <ButtonToFindGame />
-          <LogoutButton style={{ flex: 1 }} />
+          <LogoutButton />
         </div>
       </div>
     )
