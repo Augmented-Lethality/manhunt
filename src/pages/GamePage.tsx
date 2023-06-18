@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { WebcamProvider } from '../contexts/WebcamProvider'
+import axios from 'axios';
 import * as faceapi from 'face-api.js';
 // import KillMode from '../components/KillMode';
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
-
 import { ButtonToHome } from '../components/Buttons';
 
 const GamePage: React.FC = () => {
@@ -23,11 +23,10 @@ const GamePage: React.FC = () => {
   }, [uid]);
 
   useEffect(() => {
-    loadModels();
-    console.log('models loaded')
+    loadTensorFlowFaceMatcher();
   }, []);
 
-  const loadModels = async () => {
+  const loadTensorFlowFaceMatcher = async () => {
     try {
       await faceapi.loadSsdMobilenetv1Model('/models')
       await faceapi.loadFaceLandmarkModel('/models')
@@ -41,23 +40,20 @@ const GamePage: React.FC = () => {
   };
 
   const createFaceMatcher = async () => {
-    const labels = ['kalypso-homan'];
-    const promises = labels.map(async label => {
-      const descriptions: Float32Array[] = [];
-      const img = await faceapi.fetchImage(`assets/${label}.jpg`);
-      const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-      if(detection){
-        descriptions.push(detection.descriptor);
-      }
-      return new faceapi.LabeledFaceDescriptors(label, descriptions);
-    });
-    const labeledFaceDescriptors = await Promise.all(promises);
-    setFaceMatcher( new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6));
+    // get All users. AFTER MVP CHANGE TO GET ONLY RELEVANT USERS
+    const res = await axios.get('/users');
+    console.log(res)
+    const faceDescriptors = res.data.filter(user=>user.facialDescriptions).map(user=>user.facialDescriptions);
+    const formattedFaceDescriptors = new Float32Array(faceDescriptors)
+    setFaceMatcher( new faceapi.FaceMatcher(formattedFaceDescriptors, 0.7));
+    console.log('setFaceMatcher')
   }
 
   const handleGameChange = () => {
     if(gameMode === 'Chase') {
       setGameMode('Kill')
+    } else {
+      setGameMode('Chase')
     }
   }
 
@@ -70,13 +66,13 @@ const GamePage: React.FC = () => {
         <li key={playerUid}>{names[playerUid]}</li>
       ))}
     </ul>
-    <button onClick={ handleGameChange }>Go in For the Kill</button>
+    <button onClick={ handleGameChange }>{gameMode === 'Chase' ? 'Go in For the Kill' : 'Return to the Chase'}</button>
       {gameMode === 'Chase' && currentGame.hunted.length > 0 && <ChaseCam currentGame={ currentGame }/>}
       {gameMode === 'Kill' && currentGame.hunted.length > 0 && (
         <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-          <WebcamProvider>
-            <KillCam/>
-          </WebcamProvider>
+          {/* <WebcamProvider> */}
+            <KillCam faceMatcher={faceMatcher}/>
+          {/* </WebcamProvider> */}
         </div>
       )}
     </div>

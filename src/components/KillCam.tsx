@@ -1,12 +1,15 @@
 import * as faceapi from 'face-api.js';
 import React, {useEffect, useState, useRef} from 'react';
 
-const FacialRecognition: React.FC = () => {
+type KillCamProps = {
+  faceMatcher: (faceapi.FaceMatcher | null)
+}
+const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
 
-  const [modelsLoaded, setModelsLoaded] = useState(false);
+  //const [modelsLoaded, setModelsLoaded] = useState(false);
   const [captureVideo, setCaptureVideo] = useState(false);
-  const [faceMatcherReady, setFaceMatcherReady] = useState(false);
-  const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
+  //const [faceMatcherReady, setFaceMatcherReady] = useState(false);
+  // const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoHeight = window.innerHeight;
@@ -15,45 +18,45 @@ const FacialRecognition: React.FC = () => {
   const displaySize = { width: videoWidth, height: videoHeight };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  useEffect(() => {
-    loadModels();
-    console.log('models loaded')
-  }, []);
+  // useEffect(() => {
+  //   loadModels();
+  //   console.log('models loaded')
+  // }, []);
 
   useEffect(() => {
     createCanvas()
     console.log('createdCanvas')
   }, [canvasRef])
 
-  const createFaceMatcher = async () => {
-    const labels = ['kalypso-homan'];
-    const promises = labels.map(async label => {
-      const descriptions: Float32Array[] = [];
-      const img = await faceapi.fetchImage(`assets/${label}.jpg`);
-      const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-      if(detection){
-        descriptions.push(detection.descriptor);
-      }
-      return new faceapi.LabeledFaceDescriptors(label, descriptions);
-    });
-    const labeledFaceDescriptors = await Promise.all(promises);
-    setFaceMatcher( new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6));
-    setFaceMatcherReady(true);
-  }
+  // const createFaceMatcher = async () => {
+  //   const labels = ['kalypso-homan'];
+  //   const promises = labels.map(async label => {
+  //     const descriptions: Float32Array[] = [];
+  //     const img = await faceapi.fetchImage(`assets/${label}.jpg`);
+  //     const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+  //     if(detection){
+  //       descriptions.push(detection.descriptor);
+  //     }
+  //     return new faceapi.LabeledFaceDescriptors(label, descriptions);
+  //   });
+  //   const labeledFaceDescriptors = await Promise.all(promises);
+  //   setFaceMatcher( new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6));
+  //   setFaceMatcherReady(true);
+  // }
 
-  const loadModels = async () => {
-    try {
-      await faceapi.loadSsdMobilenetv1Model('/models')
-      await faceapi.loadFaceLandmarkModel('/models')
-      await faceapi.loadFaceRecognitionModel('/models')
-      await createFaceMatcher();
-      console.log('createdFaceMatcher')
-      setModelsLoaded(true);
-    } catch (err) {
-      console.error(err);
-      setModelsLoaded(false);
-    }
-  };
+  // const loadModels = async () => {
+  //   try {
+  //     await faceapi.loadSsdMobilenetv1Model('/models')
+  //     await faceapi.loadFaceLandmarkModel('/models')
+  //     await faceapi.loadFaceRecognitionModel('/models')
+  //     await createFaceMatcher();
+  //     console.log('createdFaceMatcher')
+  //     setModelsLoaded(true);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setModelsLoaded(false);
+  //   }
+  // };
 
   const createCanvas = () => {
     if(videoRef.current){
@@ -116,7 +119,7 @@ const FacialRecognition: React.FC = () => {
     <div>
       <div style={{ textAlign: 'center', padding: '10px' }}>
         {
-          captureVideo && modelsLoaded && faceMatcherReady ?
+          captureVideo ?
             <button onClick={closeWebcam} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
               Close Webcam
             </button>
@@ -126,23 +129,16 @@ const FacialRecognition: React.FC = () => {
             </button>
         }
       </div>
-      {
-        captureVideo ?
-          modelsLoaded && faceMatcherReady ?
-
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-                <video ref={videoRef} height={videoHeight} width={videoWidth} onPlay={handleVideoOnPlay} style={{ borderRadius: '10px' }} />
-                <canvas ref={canvasRef} style={{ position: 'absolute' }} />
-              </div>
-            </div>
-            :
-            <div>loading...</div>
-          :
-          <>
-          </>
+      { captureVideo ?
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+            <video ref={videoRef} height={videoHeight} width={videoWidth} onPlay={handleVideoOnPlay} style={{ borderRadius: '10px' }} />
+            <canvas ref={canvasRef} style={{ position: 'absolute' }} />
+          </div>
+        </div>
+        : <div>loading...</div>
       }
     </div>
   );
 }
-export default FacialRecognition;
+export default KillCam;
