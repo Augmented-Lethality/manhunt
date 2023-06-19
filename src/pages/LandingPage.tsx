@@ -7,7 +7,7 @@ const LandingPage = () => {
       <h1>Welcome to the Landing Page</h1>
       <LoginButton/>
       <SignupButton/>
-      <img src="https://img.freepik.com/premium-photo/jet-airplane-with-ready-landing-gear-isolated-white-background_165577-1900.jpg" />
+      <img style={{width:'100vw'}} src="https://img.freepik.com/premium-photo/jet-airplane-with-ready-landing-gear-isolated-white-background_165577-1900.jpg" />
     </div>
   )
 };

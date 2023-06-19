@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { Auth0ProviderWithNavigate } from "./Auth0/auth0-provider-with-navigate";
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import GlobalStyle from './styles/GlobalStyle';
 
 const rootElement = document.getElementById('app');
 
@@ -15,8 +16,9 @@ const root = ReactDOM.createRoot(rootElement);
 
 root.render(
   // <React.StrictMode>
-        <BrowserRouter>
+    <BrowserRouter>
       <Auth0ProviderWithNavigate>
+        <GlobalStyle />
         <App />
       </Auth0ProviderWithNavigate>
     </BrowserRouter>
