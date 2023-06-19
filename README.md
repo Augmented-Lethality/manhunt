@@ -20,7 +20,7 @@ Man Hunt is built using Typescript, React, Express, and is hosted on AWS. For mo
 
 
 ## To see the development files:
-* Make sure you have Node ^.
+* Make sure you have Node ^18.
 * Download the directory.
 * If you're using Mac or Linux, run this command:
 
@@ -90,8 +90,7 @@ Man Hunt is built using Typescript, React, Express, and is hosted on AWS. For mo
 * React 
 * Express 
 * Node 
-* Socket.IO 
-* Redux (if needed, may need to edit)
+* Socket.IO
 * Axios
 * Sequelize 
 * Postgres 

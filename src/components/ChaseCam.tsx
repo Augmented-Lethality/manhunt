@@ -217,7 +217,7 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
 
 
   return (
-    <>
+    <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
       <video
         id='video1'
         style={{ width: '100%', height: '100%', position: 'absolute' }}
@@ -226,7 +226,7 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
         ref={canvasRef}
         style={{ width: '100%', height: '100%', position: 'absolute' }}
       />
-    </>
+    </div >
   );
 };
 

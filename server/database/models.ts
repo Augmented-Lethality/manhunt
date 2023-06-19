@@ -30,6 +30,10 @@ User.init({
     type: DataTypes.STRING,
     allowNull: true
   },
+  facialDescriptions: {
+    type: DataTypes.ARRAY(DataTypes.FLOAT),
+    allowNull: true
+  },
   gameId: {
     type: DataTypes.INTEGER,
     allowNull: true
@@ -210,20 +214,20 @@ export { User, Friends, Session, Game, Trophy, UserTrophy };
 /*** JUST UNCOMMENT THE TABLE FROM THE LIST BELOW ***/
 /*** THEN RECOMMENT IT SO YOU DON'T ACCIDENTALLY DELETE A TABLE YOU DONT WANT TO ***/
 
-async function dropTables(): Promise<void> {
-  try {
-    // Drop the tables in reverse order of their dependencies
-    // await UserTrophy.drop();
-    // await Trophy.drop();
-    // await Session.drop();
-    // await Friends.drop();
-    // await Game.drop();
-    // await User.drop();
+// async function dropTables(): Promise<void> {
+//   try {
+//     // Drop the tables in reverse order of their dependencies
+//     await UserTrophy.drop();
+//     await Trophy.drop();
+//     await Session.drop();
+//     await Friends.drop();
+//     await Game.drop();
+//     await User.drop();
 
-    console.log('Tables listed have been dropped.');
-  } catch (error) {
-    console.error('An error occurred while dropping the tables:', error);
-  }
-}
+//     console.log('Tables listed have been dropped.');
+//   } catch (error) {
+//     console.error('An error occurred while dropping the tables:', error);
+//   }
+// }
 
 // dropTables();
