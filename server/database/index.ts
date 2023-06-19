@@ -6,12 +6,12 @@ const sequelize = new Sequelize('manhunt', process.env.DB_USER!, process.env.DB_
   host: process.env.DB_HOST!,
   port: 5432,
   dialect: 'postgres',
-  // dialectOptions: {   // NEED THIS FOR DEPLOYMENT, DO NOT REMOVE
-  //   ssl: {
-  //     require: true,
-  //     rejectUnauthorized: false,
-  //   }
-  // },
+  dialectOptions: {   // NEED THIS FOR DEPLOYMENT, DO NOT REMOVE
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    }
+  },
   logging: false, // Avoids printing all syncing messages in server
 });
 
