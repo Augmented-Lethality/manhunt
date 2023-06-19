@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useRef, useContext, ReactNode } from 'react';
+import React, { createContext, useCallback, useRef, useContext, ReactNode, useState } from 'react';
 import Webcam from 'react-webcam';
 
 const videoConstraints = {
@@ -8,7 +8,10 @@ const videoConstraints = {
 };
 
 // Create a context
-const WebcamContext = createContext<{ webcamRef: React.RefObject<Webcam> } | null>(null);
+const WebcamContext = createContext<{
+  webcamRef: React.RefObject<Webcam>,
+  videoStarted:boolean
+} | null>(null);
 
 interface WebcamProviderProps {
   children: ReactNode;
@@ -17,19 +20,26 @@ interface WebcamProviderProps {
 // Create a context provider component
 export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
   const webcamRef = useRef<Webcam | null>(null);
+  const [videoStarted, setVideoStarted] = useState(false);
+
 
   const setRef = useCallback((webcam: Webcam | null) => {
     webcamRef.current = webcam;
   }, []);
 
+  const handleUserMedia = () => {
+    setVideoStarted(true);
+  };
+
   return (
-    <WebcamContext.Provider value={{ webcamRef }}>
+    <WebcamContext.Provider value={{ webcamRef, videoStarted }}>
       <Webcam
         audio={false}
         ref={setRef} 
         height={window.innerHeight}
-        screenshotFormat="image/jpeg"
         width={window.innerWidth}
+        screenshotFormat="image/jpeg"
+        onUserMedia={handleUserMedia}
         videoConstraints={videoConstraints}
         style={{ position: 'absolute', top: 0, left: 0 }}/>
       {children}
