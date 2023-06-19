@@ -18,19 +18,11 @@ Users.get("/", async (req, res) => {
 // GET SPECIFIC USER
 Users.get("/:authId", async (req, res) => {
   try {
-    const authId = req.params.authId; // Assuming you have access to the authenticated user's ID
-    console.log("authId:", authId);
-    console.log("req.params.authId:", req.params.authId);
-
     // Fetch the user's data from the database based on their google auth ID
     const user = await User.findOne({ where: { authId: req.params.authId } });
-
-    console.log("User:", user);
-
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
     res.status(200).json(user);
   } catch (err) {
     console.warn(err);
@@ -112,5 +104,21 @@ Users.put("/:authId", async (req, res) => {
   }
 });
 
+// PATCH face-descriptions into user
+Users.patch("/face-description/:authId", async (req, res) => {
+  try {
+    console.log(req.params.authId)
+    const user = await User.findOne({ where: { authId: req.params.authId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    user.facialDescriptions = req.body.descriptions;
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 module.exports = { Users };

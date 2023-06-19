@@ -53,37 +53,28 @@ const HomePage = () => {
   if (!user) {
     return null;
   }
-  console.log(user);
+  // console.log(user);
   return (
     isAuthenticated && (
-      <div
-        style={{
-          backgroundColor: '#fcf18d',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          minHeight: '100vh',
-        }}
-      >
-        <h1 style={{ color: '#6e6b8c' }}>Home</h1>
+
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '2rem',
-            width: '80%',
+            gap: '1.5rem',
             maxWidth: '400px',
+            margin: 0
           }}
         >
-          Users Online: <strong>{users.length}</strong>
+        <h1 style={{ color: '#6e6b8c' }}>Welcome Home, { user.given_name }</h1>
+          Users Online: {users.length}
           <br />
           <br />
           <ButtonToProfile />
           <ButtonToHostGame />
           <ButtonToFindGame />
-          <LogoutButton  />
+          <LogoutButton />
         </div>
-      </div>
     )
   );
 };
