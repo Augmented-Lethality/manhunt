@@ -25,11 +25,13 @@ function TestPage() {
   const createFaceMatcher = async () => {
     // get All users. AFTER MVP CHANGE TO GET ONLY RELEVANT USERS
     const res = await axios.get('/users');
-    console.log(res)
-    const faceDescriptors = res.data.filter(user=>user.facialDescriptions).map(user=>user.facialDescriptions);
-    const formattedFaceDescriptors = new Float32Array(faceDescriptors)
-    setFaceMatcher( new faceapi.FaceMatcher(formattedFaceDescriptors, 0.7));
-    console.log('setFaceMatcher')
+    const users = res.data.filter(user => user.facialDescriptions);
+    const labeledFaceDescriptors = users.map((user) => {
+      // Convert each user's description array back to a Float32Array
+      const descriptions = [new Float32Array(user.facialDescriptions)];
+      return new faceapi.LabeledFaceDescriptors(user.username, descriptions);
+    });
+    setFaceMatcher(new faceapi.FaceMatcher(labeledFaceDescriptors, 0.7));
   }
 
   return (
