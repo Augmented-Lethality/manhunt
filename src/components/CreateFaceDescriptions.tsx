@@ -84,10 +84,10 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
             boxShadow: 'rgba(255, 255, 255, 0.5) 0px 0px 100px',
             border: '2px solid white',
             backdropFilter: 'blur(5px)',
-            width: '100px',
+            width: '50px',
             height: '50px',
           }}>
-          CANCEL</button>
+          X</button>
         <button
           onClick={()=>{setImg(null)}}
           style={{
@@ -135,10 +135,10 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
             boxShadow: 'rgba(255, 255, 255, 0.5) 0px 0px 100px',
             border: '2px solid white',
             backdropFilter: 'blur(5px)',
-            width: '100px',
+            width: '50px',
             height: '50px',
           }}>
-          CANCEL</button>
+          X</button>
         <CapturePhoto img={img} setImg={setImg}/>
       </WebcamProvider>
     )
