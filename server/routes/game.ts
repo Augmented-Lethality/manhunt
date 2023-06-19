@@ -1,15 +1,28 @@
-const Game = Router();
-const { Game: gameModel } = require("../database/models");
+import { Router } from "express";
+import { Game } from "../database/models";
+const Games = Router();
 
-// GET ALL USERS
-Game.post("/face-description", async (req, res) => {
+// GET all games
+Games.get("/", async (req, res) => {
   try {
-    const {label, descriptor} = req.body;
-    // put values into current game
-    await Game.create({label, descriptor});
-    res.status(201);
-} catch (err) {
-  console.error(err);
-  res.status(500).json({ error: "Internal Server Error" });
-}
+    const games = await Game.findAll();
+    res.status(200).send(games);
+
+  } catch (err) {
+    res.sendStatus(500);
+  }
 });
+
+// GET specific game using game's id
+Games.get("/:gameId", async (req, res) => {
+  try {
+    const game = await Game.findOne({ where: { id: req.params.gameId } });
+    if (!game) {
+      res.sendStatus(404);
+    }
+    res.status(200).send(game);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
