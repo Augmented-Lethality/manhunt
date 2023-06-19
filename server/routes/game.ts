@@ -19,8 +19,30 @@ Games.get("/:gameId", async (req, res) => {
     const game = await Game.findOne({ where: { id: req.params.gameId } });
     if (!game) {
       res.sendStatus(404);
+    } else {
+      res.status(200).send(game);
     }
-    res.status(200).send(game);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+// POST new game
+Games.post("/", async (req, res) => {
+  const { id, host } = req.body;
+
+  try {
+    // game already exists?
+    const exists = await Game.findOne({ where: { id } });
+
+    if (exists) {
+      res.status(200).send(exists);
+    } else {
+
+      const game = await Game.create({ id, host, status: 'lobby' });
+      res.status(201).send(game);
+
+    }
   } catch (err) {
     res.sendStatus(500);
   }

@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import sequelize from './index';
 
-class User extends Model {}
+class User extends Model { }
 User.init({
   id: {
     type: DataTypes.INTEGER,
@@ -34,9 +34,15 @@ User.init({
     type: DataTypes.ARRAY(DataTypes.FLOAT),
     allowNull: true
   },
+  uid: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    unique: true
+  },
   gameId: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    unique: true
   },
   location: {
     type: DataTypes.STRING,
@@ -60,7 +66,7 @@ User.init({
   }
 }, { sequelize });
 
-class Friends extends Model {}
+class Friends extends Model { }
 Friends.init({
   id: {
     type: DataTypes.INTEGER,
@@ -96,7 +102,7 @@ Friends.init({
   }
 }, { sequelize });
 
-class Session extends Model {}
+class Session extends Model { }
 Session.init({
   id: {
     type: DataTypes.STRING,
@@ -115,7 +121,7 @@ Session.init({
   userAgent: DataTypes.STRING
 }, { sequelize });
 
-class Game extends Model {}
+class Game extends Model { }
 Game.init({
   id: {
     type: DataTypes.INTEGER,
@@ -194,6 +200,8 @@ UserTrophy.init({
   },
 }, { sequelize, modelName: 'userTrophy' });
 
+
+
 // Define the associations
 User.belongsToMany(Trophy, { through: UserTrophy });
 Trophy.belongsToMany(User, { through: UserTrophy });
@@ -203,7 +211,8 @@ Friends.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Friends, { foreignKey: 'friendId' });
 Friends.belongsTo(User, { foreignKey: 'friendId' });
 
-Game.belongsTo(User, { foreignKey: 'userId' });
+User.belongsTo(Game, { foreignKey: 'gameId' });
+Game.hasMany(User, { foreignKey: 'gameId' });
 
 User.hasMany(Session, { foreignKey: 'userId' });
 Session.belongsTo(User, { foreignKey: 'userId' });
