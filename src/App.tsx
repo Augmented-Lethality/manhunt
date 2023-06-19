@@ -10,6 +10,7 @@ import GamePage from './pages/GamePage';
 import ProfilePage from './pages/ProfilePage';
 import TestPage from './pages/TestPage';
 import GameLobby from './pages/GameLobby';
+import EndGame from './pages/EndGame';
 import FindGamePage from './pages/FindGamePage';
 import SocketComponent from './contexts/Socket/SocketComponent';
 
@@ -55,6 +56,13 @@ const App = () => {
         element={
           <SocketComponent>
             <AuthenticationGuard component={GamePage} />
+          </SocketComponent>}/>
+
+          <Route
+        path="/gameover"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={EndGame} />
           </SocketComponent>}/>
 
       <Route
