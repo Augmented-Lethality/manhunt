@@ -81,7 +81,7 @@ const HomePage = () => {
           <ButtonToProfile />
           <ButtonToHostGame />
           <ButtonToFindGame />
-          <LogoutButton style={{ flex: 1 }} />
+          <LogoutButton  />
         </div>
       </div>
     )

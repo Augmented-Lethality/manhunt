@@ -11,7 +11,7 @@ type ButtonProps = {
   onClick?: () => void;
   primary?: boolean;
   className?: string;
-};
+} 
 
 const StyledButton = styled.button<ButtonProps>`
   /* Adapt the colors based on primary prop */
@@ -41,7 +41,7 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <StyledButton primary={!primary} onClick={handleClick}>
+    <StyledButton primary={!primary} onClick={handleClick} route={route}>
       {label}
     </StyledButton>
   );
