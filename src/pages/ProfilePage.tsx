@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ButtonToHome } from '../components/Buttons';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
+import { Trophy } from '../components/Trophy'
 
 export type UserData = {
   username: string;
@@ -69,7 +70,9 @@ const ProfilePage: React.FC<{ userData: UserData | null }> = () => {
                 {/* <ButtonToUpdateEmail /> */}
               </span>
             </div>
+            
           </div>
+          <Trophy />
           {userData?.facialDescriptions ? (
             <div className='profile_verification'>
               <p style={{textAlign:'start', margin:'3vh'}}>
