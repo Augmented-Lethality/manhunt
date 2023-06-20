@@ -13,7 +13,7 @@ export const Auth0ProviderWithNavigate = ({
 
   const domain = process.env.REACT_APP_AUTH0_DOMAN;
   const clientId = process.env.REACT_APP_AUTH0_CLIENTID;
-  const redirectUri = process.env.REACT_APP_AUTH0_REDIRECTURI!;
+  const redirectUri = process.env.REACT_APP_AUTH0_REDIRECTURI;
 
   const onRedirectCallback = (appState: AppState | undefined) => {
     navigate(appState?.returnTo || window.location.pathname);
