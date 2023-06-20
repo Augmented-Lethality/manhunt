@@ -2,8 +2,14 @@ import { withAuthenticationRequired } from "@auth0/auth0-react";
 import React from "react";
 import PageLoader from "./Loading";
 
-export const AuthenticationGuard = ({ component }) => {
-  const Component = withAuthenticationRequired(component, {
+interface AuthenticationGuardProps {
+  component: React.ComponentType<any>;
+}
+
+export const AuthenticationGuard = ({
+  component: Component,
+}: AuthenticationGuardProps) => {
+  const ComponentWithAuthentication = withAuthenticationRequired(Component, {
     onRedirecting: () => (
       <div className="page-layout">
         <PageLoader />
@@ -11,5 +17,5 @@ export const AuthenticationGuard = ({ component }) => {
     ),
   });
 
-  return <Component />;
+  return <ComponentWithAuthentication />;
 };
