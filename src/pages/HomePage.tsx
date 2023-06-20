@@ -25,6 +25,8 @@ const HomePage = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
+
+    console.log(user)
     const fetchUserData = async () => {
       try {
         // Check if the user exists by sending a POST request instead of a GET request
@@ -48,34 +50,31 @@ const HomePage = () => {
       )}`;
       AddName(insertName || '', uid);
     }
-  }, []);
+  }, [user, isAuthenticated, AddName, uid]);
 
-  if (!user) {
+  if (!isAuthenticated || !user) {
     return null;
   }
-  // console.log(user);
-  return (
-    isAuthenticated && (
 
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1.5rem',
-            maxWidth: '400px',
-            margin: 0
-          }}
-        >
-        <h1 style={{ color: '#6e6b8c' }}>Welcome Home, { user.given_name }</h1>
-          Users Online: {users.length}
-          <br />
-          <br />
-          <ButtonToProfile />
-          <ButtonToHostGame />
-          <ButtonToFindGame />
-          <LogoutButton />
-        </div>
-    )
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1.5rem',
+        maxWidth: '400px',
+        margin: 0,
+      }}
+    >
+      <h1 style={{ color: '#6e6b8c' }}>Welcome Home, {user.given_name}</h1>
+      Users Online: {users.length}
+      <br />
+      <br />
+      <ButtonToProfile />
+      <ButtonToHostGame />
+      <ButtonToFindGame />
+      <LogoutButton />
+    </div>
   );
 };
 
