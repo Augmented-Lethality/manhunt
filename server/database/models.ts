@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from './index';
 
 class User extends Model { }
@@ -25,10 +25,6 @@ User.init({
     type: DataTypes.STRING,
     allowNull: true,
     unique: true
-  },
-  sessionId: {
-    type: DataTypes.STRING,
-    allowNull: true
   },
   facialDescriptions: {
     type: DataTypes.ARRAY(DataTypes.FLOAT),
@@ -105,25 +101,6 @@ Friends.init({
     },
     allowNull: false
   }
-}, { sequelize });
-
-class Session extends Model { }
-Session.init({
-  id: {
-    type: DataTypes.STRING,
-    primaryKey: true
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: User,
-      key: 'id'
-    }
-  },
-  createdAt: DataTypes.DATE,
-  expiresAt: DataTypes.DATE,
-  ipAddress: DataTypes.STRING,
-  userAgent: DataTypes.STRING
 }, { sequelize });
 
 class Game extends Model { }
@@ -219,10 +196,7 @@ Friends.belongsTo(User, { foreignKey: 'friendId' });
 User.belongsTo(Game, { foreignKey: 'gameId' });
 Game.hasMany(User, { foreignKey: 'gameId' });
 
-User.hasMany(Session, { foreignKey: 'userId' });
-Session.belongsTo(User, { foreignKey: 'userId' });
-
-export { User, Friends, Session, Game, Trophy, UserTrophy };
+export { User, Friends, Game, Trophy, UserTrophy };
 
 /*** THE FOLLOWING EXISTS INCASE YOU NEED TO DROP INDIVIDUAL TABLES ***/
 /*** JUST UNCOMMENT THE TABLE FROM THE LIST BELOW ***/
@@ -233,7 +207,6 @@ export { User, Friends, Session, Game, Trophy, UserTrophy };
 //     // Drop the tables in reverse order of their dependencies
 //     await UserTrophy.drop();
 //     await Trophy.drop();
-//     await Session.drop();
 //     await Friends.drop();
 //     await Game.drop();
 //     await User.drop();
