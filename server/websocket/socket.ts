@@ -79,10 +79,9 @@ export class ServerSocket {
         // console.info('Message received from ' + socket.id);
 
         // client is attempting to connect to the server, also known as a handshake
-        socket.on('handshake', (callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] }},
+        socket.on('handshake', (user, callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] }},
           names: { [uid: string]: string }) => void) => {
             // console.info('Handshake received from: ' + socket.id);
-
             // is this a reconnection attempt?
             const reconnected = Object.values(this.users).includes(socket.id);
 
