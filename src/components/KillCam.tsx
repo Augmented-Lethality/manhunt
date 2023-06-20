@@ -64,7 +64,7 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
     <div style={{ textAlign: 'center', padding: '10px', display: 'flex', justifyContent: 'center' }}>      
       <button
         style={{ position: 'absolute', top:'10%', zIndex: 1 }}
-        onClick={()=>{console.log('clicked'); navigate('/gameover')}}
+        onClick={()=>{navigate('/gameover')}}
       > wow you won the game! </button>
       <canvas ref={canvasRef} style={{ position: 'absolute' }} />
     </div>
