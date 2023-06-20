@@ -6,7 +6,7 @@ import { SocketContextProvider, SocketReducer, defaultSocketContextState } from 
 
 // allows for defining the prop types expected by the SocketComponent
 // PropsWithChildren allows components to accept nested elements in its children
-export interface ISocketComponentProps extends PropsWithChildren {}
+export interface ISocketComponentProps extends PropsWithChildren { }
 
 // functional component that has ISocketComponentProps as its children/props
 const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) => {
@@ -20,7 +20,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // if loading, let's show the loading message so it doesn't break
   const [loading, setLoading] = useState(true);
 
-  const socket = useSocket(`ws://${ process.env.REACT_APP_SOCKET_URI }`, {
+  const socket = useSocket(`https://${process.env.REACT_APP_SOCKET_URI}`, {
     reconnectionAttempts: 5,
     reconnectionDelay: 3000,
     autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
@@ -81,13 +81,13 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
 
     // created a game event
-    socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
+    socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
       // console.info('game created, new game list received')
       SocketDispatch({ type: 'update_games', payload: games })
     });
 
     // updated a game event
-    socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
+    socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
       // console.info('games updated, new game list received')
       SocketDispatch({ type: 'update_games', payload: games })
     });
@@ -120,7 +120,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
     // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
     // on the handshake and it gets the cb from the server on handshake
-    socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string }},
+    socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string } },
       names: { [uid: string]: string }) => {
       // console.log('We shook, let\'s trade info xoxo');
       SocketDispatch({ type: 'update_uid', payload: uid });
@@ -133,52 +133,52 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
   }
 
-    // sending createRoom to the server
-    const CreateGame = () => {
-      // console.info('Client wants to create a game...');
+  // sending createRoom to the server
+  const CreateGame = () => {
+    // console.info('Client wants to create a game...');
 
-      socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
-        SocketDispatch({ type: 'update_games', payload: games })
-      });
-    }
+    socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
+      SocketDispatch({ type: 'update_games', payload: games })
+    });
+  }
 
-    const AddLocation = (gameId: string, longitude: number, latitude: number) => {
-      console.info(`Someone from game ${gameId} wants to add a location...`);
+  const AddLocation = (gameId: string, longitude: number, latitude: number) => {
+    console.info(`Someone from game ${gameId} wants to add a location...`);
 
-      socket.emit('add_location', gameId, longitude, latitude, (uid: string, locations: { [uid: string]: { longitude: number, latitude: number } }) => {
-        SocketDispatch({ type: 'updated_locations', payload: locations });
-      });
-    };
+    socket.emit('add_location', gameId, longitude, latitude, (uid: string, locations: { [uid: string]: { longitude: number, latitude: number } }) => {
+      SocketDispatch({ type: 'updated_locations', payload: locations });
+    });
+  };
 
-      // sending join game to the server, host identifies game to join
-      const JoinGame = (host: string) => {
-        // console.info('Client wants to join a game...');
+  // sending join game to the server, host identifies game to join
+  const JoinGame = (host: string) => {
+    // console.info('Client wants to join a game...');
 
-        socket.emit('join_game', host, (games: { [host: string]: { gameId: string, uidList: string[], hunted: string }}) => {
-          SocketDispatch({ type: 'update_games', payload: games });
-        });
-      };
+    socket.emit('join_game', host, (games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
+      SocketDispatch({ type: 'update_games', payload: games });
+    });
+  };
 
-      const Redirect = (host: string, endpoint: string) => {
-        // console.info(`Redirect from ${host} to ${endpoint}`);
-        socket.emit('nav_to_endpoint', host, endpoint);
-      };
+  const Redirect = (host: string, endpoint: string) => {
+    // console.info(`Redirect from ${host} to ${endpoint}`);
+    socket.emit('nav_to_endpoint', host, endpoint);
+  };
 
-      const SetHunted = (host: string, uid: string) => {
-        // console.info(`Setting Hunted, ${host} picked ${ uid }`);
-        socket.emit('set_hunted', host, uid);
-      };
+  const SetHunted = (host: string, uid: string) => {
+    // console.info(`Setting Hunted, ${host} picked ${ uid }`);
+    socket.emit('set_hunted', host, uid);
+  };
 
-      const AddName = (name: string, uid: string) => {
-        // console.info('Adding name');
-        socket.emit('add_name', name, uid, (names: { [uid: string]: string }) => {
-          SocketDispatch({ type: 'update_names', payload: names });
-        });
-      }
+  const AddName = (name: string, uid: string) => {
+    // console.info('Adding name');
+    socket.emit('add_name', name, uid, (names: { [uid: string]: string }) => {
+      SocketDispatch({ type: 'update_names', payload: names });
+    });
+  }
 
 
   // showing this on client side while socket isn't connected
-  if(loading) {
+  if (loading) {
     return <p>Loading Socket Connection...</p>
   };
 
