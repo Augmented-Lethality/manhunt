@@ -79,13 +79,32 @@ export class ServerSocket {
 
 
     // client is asking to make a socket connection to the server, also known as a handshake
-    socket.on('handshake', (user, callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] } },
+    socket.on('handshake', async (user, callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] } },
       names: { [uid: string]: string }) => void) => {
 
-      console.log("backend user:", user)
+      // console.log("backend user:", user)
       // is this a reconnection attempt?
       const reconnected = Object.values(this.users).includes(socket.id);
-      // const reconnected = User.findOne({ where: { socketId: socket.id } })
+
+      ///////////// NEW ///////////////////
+      // user exists based on authId (user.sub)?
+
+      try {
+
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+
+        if (existingUser) {
+          // If the user exists, update the socket.id if it doesn't match the current socket.id
+          if (existingUser.socketId !== socket.id) {
+            existingUser.socketId = socket.id;
+            await existingUser.save();
+          }
+        }
+
+      } catch (err) {
+        console.error(err);
+      }
+      ////////////////////////////////////////
 
       // if it was a reconnection, re-establish the connection
       if (reconnected) {

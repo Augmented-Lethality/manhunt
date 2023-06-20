@@ -1,7 +1,9 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from './index';
 
-class User extends Model { }
+class User extends Model {
+  socketId: string;
+}
 User.init({
   id: {
     type: DataTypes.INTEGER,
@@ -31,12 +33,12 @@ User.init({
     allowNull: true
   },
   uid: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: true,
     unique: true
   },
   socketId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: true,
     unique: true
   },
