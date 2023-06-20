@@ -6,7 +6,6 @@ import { createServer } from 'https';
 import fs from 'fs';
 
 import { ServerSocket } from './websocket/socket';
-const { sequelize } = require("./database/index");
 const { Users } = require("./routes/users");
 
 dotenv.config();

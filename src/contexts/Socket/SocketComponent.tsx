@@ -1,6 +1,8 @@
 import React, { PropsWithChildren, useReducer, useState, useEffect } from 'react';
 import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
+import { useAuth0 } from '@auth0/auth0-react';
+
 
 // THIS CAN BE REUSED TO PASS THE SOCKET INFORMATION AROUND THE CLIENT SIDE
 
@@ -14,6 +16,9 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // nested elements within SocketComponent, rendered in the context provider
   const { children } = props;
 
+  const { user, isAuthenticated } = useAuth0();
+
+
   // making a local state to store the created reducer and the default socket context state
   const [SocketState, SocketDispatch] = useReducer(SocketReducer, defaultSocketContextState);
 
@@ -26,17 +31,19 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
   });
 
+  // when the component mounts, aka the user visits a react component surrounded by this socket component, these functions are called
   useEffect(() => {
-    // connect to Web Socket
+
+    // opens the socket
     socket.connect();
 
-    // save the socket in context
+    // updates the socket state on the connection
     SocketDispatch({ type: 'update_socket', payload: socket })
 
     // start the event listeners
     StartListeners();
 
-    // send the handshake
+    // send the handshake (attempts to connect to the server)
     SendHandshake();
 
     // eslint-disable-next-line
@@ -48,6 +55,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     // reconnect
     socket.io.on('reconnect', (attempt) => {
       console.info('Reconnected on attempt: ' + attempt);
+      // socket.emit('user_connected', some global state variable)
     })
 
     // trying to reconnect
@@ -120,7 +128,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
     // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
     // on the handshake and it gets the cb from the server on handshake
-    socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string } },
+    socket.emit('handshake', user, (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string } },
       names: { [uid: string]: string }) => {
       // console.log('We shook, let\'s trade info xoxo');
       SocketDispatch({ type: 'update_uid', payload: uid });
