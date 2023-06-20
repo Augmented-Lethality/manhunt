@@ -18,7 +18,6 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
 
   useEffect(() => {
     createCanvas()
-    console.log('createdCanvas')
   }, [])
 
   useEffect(() => {
@@ -32,14 +31,11 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
   };
 
   const handleVideoOnPlay = () => {
-    console.log('handling video play')
     if (canvasRef.current && webcamRef?.current) {
       faceapi.matchDimensions(canvasRef.current, displaySize);
-      console.log('matching facial dimensions')
     }
     setInterval(async () => {
       if (faceMatcher && webcamRef?.current?.video && canvasRef.current) {
-        console.log('1');
         const detections = await faceapi
           .detectAllFaces(webcamRef.current.video)
           .withFaceLandmarks()
@@ -66,7 +62,10 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
 
   return (
     <div style={{ textAlign: 'center', padding: '10px', display: 'flex', justifyContent: 'center' }}>      
-      <button style={{ position: 'absolute', top:'10%' }} onClick={()=>{navigate('/gameover')}}> wow you won the game! </button>
+      <button
+        style={{ position: 'absolute', top:'10%', zIndex: 1 }}
+        onClick={()=>{navigate('/gameover')}}
+      > wow you won the game! </button>
       <canvas ref={canvasRef} style={{ position: 'absolute' }} />
     </div>
   );
