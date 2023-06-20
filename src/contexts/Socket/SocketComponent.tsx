@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, useReducer, useState, useEffect } from 'react';
 import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
+import { useAuth0 } from '@auth0/auth0-react';
 
 // THIS CAN BE REUSED TO PASS THE SOCKET INFORMATION AROUND THE CLIENT SIDE
 
@@ -10,7 +11,7 @@ export interface ISocketComponentProps extends PropsWithChildren {}
 
 // functional component that has ISocketComponentProps as its children/props
 const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) => {
-
+  const { user, isAuthenticated } = useAuth0();
   // nested elements within SocketComponent, rendered in the context provider
   const { children } = props;
 
@@ -120,7 +121,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
     // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
     // on the handshake and it gets the cb from the server on handshake
-    socket.emit('handshake', (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string }},
+    socket.emit('handshake', user, (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string }},
       names: { [uid: string]: string }) => {
       // console.log('We shook, let\'s trade info xoxo');
       SocketDispatch({ type: 'update_uid', payload: uid });
