@@ -39,6 +39,11 @@ User.init({
     allowNull: true,
     unique: true
   },
+  socketId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    unique: true
+  },
   gameId: {
     type: DataTypes.INTEGER,
     allowNull: true,
