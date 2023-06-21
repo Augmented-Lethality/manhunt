@@ -82,6 +82,8 @@ export class ServerSocket {
     socket.on('handshake', async (user, callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] } },
       names: { [uid: string]: string }) => void) => {
 
+      socket.join('users');
+
       // console.log("backend user:", user)
       // is this a reconnection attempt?
       const reconnected = Object.values(this.users).includes(socket.id);
@@ -161,6 +163,7 @@ export class ServerSocket {
             { gameId: gameId },
             { where: { authId: user.sub } }
           )
+          socket.join(gameId);
           console.log(newGame, updatedUser);
         }
 
@@ -183,6 +186,7 @@ export class ServerSocket {
 
         // add this to the games dictionary object
         this.games[host] = { gameId: gameId, uidList: [host], hunted: '' };
+        socket.join(gameId);
 
 
         const users = Object.values(this.users);
