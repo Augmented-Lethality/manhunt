@@ -46,7 +46,7 @@ const Trophy: React.FC<TrophyProps> = () => {
   };
   
   const getRandomColor = (): string => {
-    const colors = ['darkred', 'lightgreen', 'blue', 'yellow', 'orange', 'purple', 'pink'];
+    const colors = ['darkred', 'lightgreen', 'blue', 'yellow', 'orange', 'black', 'pink', 'aquamarine'];
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   }  
