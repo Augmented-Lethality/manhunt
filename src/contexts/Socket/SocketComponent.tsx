@@ -16,9 +16,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // nested elements within SocketComponent, rendered in the context provider
   const { children } = props;
 
-  const { user, isAuthenticated } = useAuth0();
-
-
   // making a local state to store the created reducer and the default socket context state
   const [SocketState, SocketDispatch] = useReducer(SocketReducer, defaultSocketContextState);
 
