@@ -1,5 +1,11 @@
+import {
+  loadSsdMobilenetv1Model,
+  loadFaceLandmarkModel,
+  loadFaceRecognitionModel,
+  detectSingleFace,
+  LabeledFaceDescriptors
+} from 'face-api.js';
 import React, { useState, useEffect } from 'react';
-import faceapi from 'face-api.js';
 import CapturePhoto from './CapturePhoto'
 import { WebcamProvider } from '../contexts/WebcamProvider';
 import axios from 'axios';
@@ -22,9 +28,9 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
   
   const loadModels = async () => {
     try {
-      await faceapi.loadSsdMobilenetv1Model('/models')
-      await faceapi.loadFaceLandmarkModel('/models')
-      await faceapi.loadFaceRecognitionModel('/models')
+      await loadSsdMobilenetv1Model('/models')
+      await loadFaceLandmarkModel('/models')
+      await loadFaceRecognitionModel('/models')
     } catch (err) {
       console.error(err);
     }
@@ -40,13 +46,13 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
       return
     }
     try {
-      const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+      const detection = await detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
       if (!detection) {
         alert("No face detected in the image, please try again");
         return;
       }
       const descriptions = [detection.descriptor];
-      const labeledFaceDescriptor = new faceapi.LabeledFaceDescriptors(username, descriptions);
+      const labeledFaceDescriptor = new LabeledFaceDescriptors(username, descriptions);
       sendDescriptionToServer(labeledFaceDescriptor);
       setIsVerifying(false)
     } catch (err){
@@ -54,7 +60,7 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
     }
   }
 
-  const sendDescriptionToServer = async (labeledFaceDescriptor: faceapi.LabeledFaceDescriptors) => {
+  const sendDescriptionToServer = async (labeledFaceDescriptor: LabeledFaceDescriptors) => {
     try {
       // Convert descriptor to array for easier serialization
       const descriptorArray = Array.from(labeledFaceDescriptor.descriptors[0]);
