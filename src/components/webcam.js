@@ -135,18 +135,22 @@ class LocationBasedLocal {
 
   startGps(maximumAge = 0) {
     if (this._watchPositionId === null) {
-      navigator.geolocation.getCurrentPosition(function () {}, function (err) { console.log('error on getting location', error)}, {});
+      navigator.geolocation.getCurrentPosition(function () { }, function (err) { console.log('error on getting location', error) }, {});
       this._watchPositionId = navigator.geolocation.watchPosition(
         (position) => {
           this._gpsReceived(position);
-          this.setUserPosition(position.coords.longitude, position.coords.latitude)
-          console.log('my position: ', position.coords.longitude, position.coords.latitude)
+          if (!position.coords.longitude && !position.coords.latitude) {
+            console.log('did not get the positions');
+          } else {
+            console.log('my position: ', parseFloat(position.coords.longitude.toFixed(3)), parseFloat(position.coords.latitude.toFixed(3)))
+            this.setUserPosition(position.coords.longitude, position.coords.latitude)
+          }
         },
         (error) => {
           if (this._eventHandlers["gpserror"]) {
             this._eventHandlers["gpserror"](error.code);
           } else {
-            alert(`GPS error: code ${error.code}`);
+            // alert(`GPS error: code ${error.code}`);
           }
         },
         {
@@ -159,7 +163,7 @@ class LocationBasedLocal {
     return false;
   }
 
-  setUserPosition = (longitude, latitude, ) => {
+  setUserPosition = (longitude, latitude,) => {
 
     // console.log('box position: ', longitude, latitude + 0.001, )
 
@@ -296,8 +300,8 @@ class LocationBasedLocal {
     const a =
       Math.sin(dlatitude / 2) * Math.sin(dlatitude / 2) +
       Math.cos(MathUtils.degToRad(src.latitude)) *
-        Math.cos(MathUtils.degToRad(dest.latitude)) *
-        (Math.sin(dlongitude / 2) * Math.sin(dlongitude / 2));
+      Math.cos(MathUtils.degToRad(dest.latitude)) *
+      (Math.sin(dlongitude / 2) * Math.sin(dlongitude / 2));
     const angle = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return angle * 6371000;
   }

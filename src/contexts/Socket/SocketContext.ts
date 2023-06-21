@@ -26,11 +26,11 @@ export const defaultSocketContextState: ISocketContextState = {
 
 // these actions will each have their own functions in the reducer
 export type TSocketContextActions = 'update_socket' | 'update_uid' |
-'update_users' | 'remove_user' | 'update_games' | 'updated_locations' | 'update_names'
+  'update_users' | 'remove_user' | 'update_games' | 'updated_locations' | 'update_names'
 
 // payload represents the data that is associated with each action that is within this context
 export type TSocketContextPayload = string | string[] | Socket | { [host: string]: { gameId: string, uidList: string[], hunted: string } }
-| { [uid: string]: { longitude: number, latitude: number } } | { [uid: string]: string };
+  | { [uid: string]: { longitude: number, latitude: number } } | { [uid: string]: string };
 
 // describes the shape of the actions in this context
 export type ISocketContextActions = {
@@ -41,9 +41,9 @@ export type ISocketContextActions = {
 // reducer, accepts the current state and returns the new state depending on the action that is passed in and hits the switch case
 // has a default case in case the actions don't match
 export const SocketReducer = (state: ISocketContextState, action: ISocketContextActions) => {
-  console.log(`Message Received - Action: ${action.type} - Payload: `, action.payload);
+  // console.log(`Message Received - Action: ${action.type} - Payload: `, action.payload);
 
-  switch(action.type) {
+  switch (action.type) {
     case 'update_socket':
       return { ...state, socket: action.payload as Socket };
     case 'update_uid':
@@ -81,13 +81,13 @@ export interface ISocketContextProps {
 // also initializes the SocketDispatch method
 const SocketContext = createContext<ISocketContextProps>({
   SocketState: defaultSocketContextState,
-  SocketDispatch: () => {},
-  CreateGame: () => {},
-  AddLocation: () => {},
-  JoinGame: () => {},
-  Redirect: () => {},
-  SetHunted: () => {},
-  AddName: () => {}
+  SocketDispatch: () => { },
+  CreateGame: () => { },
+  AddLocation: () => { },
+  JoinGame: () => { },
+  Redirect: () => { },
+  SetHunted: () => { },
+  AddName: () => { }
 });
 
 // shares data between components without having to pass props around (react feature):

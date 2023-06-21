@@ -8,9 +8,11 @@ import {
   WebGLRenderer,
   BoxGeometry,
   MeshBasicMaterial,
-  Mesh, } from "./webcam.js"
+  Mesh,
+  DeviceOrientationControls,
+} from "./webcam.js"
 
-  import SocketContext from '../contexts/Socket/SocketContext';
+import SocketContext from '../contexts/Socket/SocketContext';
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
@@ -18,7 +20,18 @@ type ChaseCamProps = {
   currentGame: { gameId: string; uidList: string[], hunted: string },
 };
 
+
+
 const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
+
+  // create markers to render on the screen that stays in the defined location
+  const geom = new BoxGeometry(20, 20, 20);
+  const killMtl = new MeshBasicMaterial({ color: 0xff0000 }); // red
+  const vicMtl = new MeshBasicMaterial({ color: 0x476930 }); // victim
+  const hardCodeMtl = new MeshBasicMaterial({ color: 0x993399 });
+  const killers = new Mesh(geom, killMtl); // blueprint, will need to clone
+  const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
+  const hardCodeMarker = new Mesh(geom, hardCodeMtl);
 
   const { locations, uid, names } = useContext(SocketContext).SocketState;
   const { AddLocation } = useContext(SocketContext);
@@ -61,13 +74,16 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     // new scene, camera, and renderer
     const scene = new Scene();
     const camera = new PerspectiveCamera(60, 1.33, 0.00000001, 100000000000000);
-    const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
+    const renderer = new WebGLRenderer({ canvas: canvas });
 
     // LocationBased object for AR, takes scene and camera
     arjsRef.current = new LocationBasedLocal(scene, camera);
 
     // renders the webcam stream as the background for the scene
-    const cam = new WebcamRendererLocal(renderer, '#video1');
+    const cam = new WebcamRendererLocal(renderer);
+
+    const deviceOrientationControls = new DeviceOrientationControls(camera);
+
 
     // start the location
     arjsRef.current.startGps();
@@ -87,17 +103,21 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
       }
+
+      deviceOrientationControls.update();
       cam.update();
       renderer.render(scene, camera);
       frameIdRef.current = requestAnimationFrame(render);
+
+
 
       const userPositions = arjsRef.current?.getUserPosition();
 
       // testing if the userPositions are the same as the old ones
       // if not, update the state
-      if(userLatitude !== userPositions?.latitude || userLongitude !== userPositions?.longitude) {
-          setUserLatitude(userPositions?.latitude);
-          setUserLongitude(userPositions?.longitude);
+      if (userLatitude !== userPositions?.latitude || userLongitude !== userPositions?.longitude) {
+        setUserLatitude(userPositions?.latitude);
+        setUserLongitude(userPositions?.longitude);
       }
 
     }
@@ -145,23 +165,16 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     };
   }, []);
 
-  // create markers to render on the screen that stays in the defined location
-  const geom = new BoxGeometry(20, 20, 20);
-  const killMtl = new MeshBasicMaterial({ color: 0xff0000 }); // red
-  const vicMtl = new MeshBasicMaterial({ color: 0x476930 }); // victim
-  const hardCodeMtl = new MeshBasicMaterial({ color: 0x993399 });
-  const killers = new Mesh(geom, killMtl); // blueprint, will need to clone
-  const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
-  const hardCodeMarker = new Mesh(geom, hardCodeMtl);
-
 
   useEffect(() => {
 
-  AddLocation(currentGame.gameId, userLongitude, userLatitude);
+    if (userLongitude && userLatitude) {
+      AddLocation(currentGame.gameId, userLongitude, userLatitude);
 
-  arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
+      // hardcoded marker to test if the user location is working, should render right in front of them
+      // arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
 
-
+    }
 
   }, [userLatitude, userLongitude])
 
@@ -191,21 +204,21 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
 
       // if it exists, then just change the location, don't make a new one
       if (existingMarker) {
-        console.log(`Changing marker position for ${ names[uid]}`)
+        console.log(`Changing marker position for ${names[uid]}`)
         arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
       } else {
         // store the first round of markers into the markers array/add them to the list
-        for(let player of currentGame.uidList) {
-          if(player === currentGame.hunted) {
+        for (let player of currentGame.uidList) {
+          if (player === currentGame.hunted) {
             victim.userData.id = player;
             arjsRef.current?.add(victim, markerLong, markerLat, 10);
-            console.log(`Added marker for ${ names[player]}`)
+            console.log(`Added marker for ${names[player]}`)
             addedMarkers.push(victim);
           } else {
             const clonedKiller = killers.clone();
             clonedKiller.userData.id = player;
             arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
-            console.log(`Added marker for ${ names[player]}`)
+            console.log(`Added marker for ${names[player]}`)
             // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
             addedMarkers.push(clonedKiller);
           }
@@ -214,14 +227,28 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     }
   }, [locations]);
 
+  // arjsRef.current.on("gpsupdate", async (pos) => {
+  //   console.log('gps update!');
+  //   // if (!fetched) {
+
+  //   const fakeLocations =
+  //     [
+  //       [-73.9932334, 44.205],
+  //       [-73.9932334, 44.202],
+  //     ]
+
+  //   fakeLocations.forEach(coordinates => {
+  //     console.log('logging coordinates:', coordinates[0], coordinates[1])
+  //     arjsRef.current?.add(hardCodeMarker, coordinates[0], coordinates[1]);
+  //   });
+
+  //   fetched = true;
+  //   // }
+  // });
 
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-      <video
-        id='video1'
-        style={{ width: '100%', height: '100%', position: 'absolute' }}
-      />
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: '100%', position: 'absolute' }}
