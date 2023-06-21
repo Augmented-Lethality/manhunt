@@ -141,10 +141,33 @@ export class ServerSocket {
     });
 
     // when client emits a createGame event, make the new game
-    socket.on('create_game', (callback: (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => void) => {
+    socket.on('create_game', async (user, callback: (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => void) => {
 
       // does the game exist?
       const host = this.GetUidFromSocketID(socket.id);
+
+      ////////// NEW ////////////////
+
+      try {
+        const existingGame = await Game.findOne({ where: { host: user.sub } });
+        // console.log(existingGame)
+        if (existingGame) {
+          // const allGames = await Game.findAll();
+          console.log('already hosting a game');
+        } else {
+          const gameId = v4();
+          const newGame = await Game.create({ gameId: gameId, host: user.sub, status: 'lobby' });
+          const updatedUser = await User.update(
+            { gameId: gameId },
+            { where: { authId: user.sub } }
+          )
+          console.log(newGame, updatedUser);
+        }
+
+      } catch (err) {
+        console.log(err);
+      }
+      /////////////////////////////////////////////////////
 
       if (host) {
         // now that we have the hostid, do the games have the host id?

@@ -1,6 +1,8 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from './index';
 
+
+////////////////////////////////////////////////
 class User extends Model {
   socketId: string;
 }
@@ -43,7 +45,7 @@ User.init({
     unique: true
   },
   gameId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: true,
     unique: true
   },
@@ -68,6 +70,8 @@ User.init({
     allowNull: true
   }
 }, { sequelize });
+
+////////////////////////////////////////////////
 
 class Friends extends Model { }
 Friends.init({
@@ -105,6 +109,9 @@ Friends.init({
   }
 }, { sequelize });
 
+////////////////////////////////////////////////
+
+
 class Game extends Model { }
 Game.init({
   id: {
@@ -112,13 +119,18 @@ Game.init({
     autoIncrement: true,
     primaryKey: true
   },
+  gameId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
   host: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     references: {
       model: User,
-      key: 'id'
+      key: 'authId'
     },
-    allowNull: true
+    allowNull: false,
   },
   status: {
     type: DataTypes.ENUM('lobby', 'ongoing', 'complete'),
@@ -130,14 +142,16 @@ Game.init({
     allowNull: true
   },
   winnerId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     references: {
       model: User,
-      key: 'id'
+      key: 'authId'
     },
     allowNull: true
   }
 }, { sequelize });
+
+////////////////////////////////////////////////
 
 class Trophy extends Model { }
 Trophy.init({
