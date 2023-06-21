@@ -4,7 +4,6 @@ import sequelize from './index';
 
 ////////////////////////////////////////////////
 class User extends Model {
-  socketId: string;
 }
 User.init({
   id: {
@@ -114,15 +113,11 @@ Friends.init({
 
 class Game extends Model { }
 Game.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
   gameId: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: true,
+    primaryKey: true
   },
   host: {
     type: DataTypes.STRING,
@@ -148,7 +143,11 @@ Game.init({
       key: 'authId'
     },
     allowNull: true
-  }
+  },
+  users: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false,
+  },
 }, { sequelize });
 
 ////////////////////////////////////////////////
@@ -208,9 +207,6 @@ User.hasMany(Friends, { foreignKey: 'userId' });
 Friends.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Friends, { foreignKey: 'friendId' });
 Friends.belongsTo(User, { foreignKey: 'friendId' });
-
-User.belongsTo(Game, { foreignKey: 'gameId' });
-Game.hasMany(User, { foreignKey: 'gameId' });
 
 export { User, Friends, Game, Trophy, UserTrophy };
 

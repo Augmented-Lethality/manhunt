@@ -71,7 +71,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     // reconnect failed
     socket.io.on('reconnect_failed', () => {
       console.info('Reconnection failure');
-      alert('Unable to connect to web socket')
+      // alert('Unable to connect to web socket')
     })
 
     // user connected event

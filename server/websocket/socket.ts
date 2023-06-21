@@ -97,10 +97,11 @@ export class ServerSocket {
 
         if (existingUser) {
           // If the user exists, update the socket.id if it doesn't match the current socket.id
-          if (existingUser.socketId !== socket.id) {
-            existingUser.socketId = socket.id;
-            await existingUser.save();
-          }
+          await User.update(
+            { socketId: socket.id },
+            { where: { authId: user.sub } }
+          )
+          console.log('updated db user connection')
         }
 
       } catch (err) {
@@ -154,7 +155,7 @@ export class ServerSocket {
           console.log('already hosting a game');
         } else {
           const gameId = v4();
-          const newGame = await Game.create({ gameId: gameId, host: user.sub, status: 'lobby' });
+          const newGame = await Game.create({ gameId: gameId, host: user.sub, status: 'lobby', users: [user.sub] });
           const updatedUser = await User.update(
             { gameId: gameId },
             { where: { authId: user.sub } }
@@ -290,11 +291,37 @@ export class ServerSocket {
 
 
     // when the disconnect occurs
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
       // console.info('Disconnect received from: ' + socket.id);
 
       // gets the user uid from the users at the specific socket id
       const uid = this.GetUidFromSocketID(socket.id);
+
+      /////////// NEW //////////////////
+      // try {
+      //   const user = await User.findOne({ where: { socketId: socket.id } });
+
+      //   if (user) {
+      //     console.log(user);
+
+      //     await Game.findByPk(user.dataValues.gameId)
+      //       const updatedGame = await Game.update(
+      //         { socketId: '' },
+      //         { where: { gameId: gameId } }
+      //       )
+
+      //     const updatedUser = await User.update(
+      //       { socketId: '' },
+      //       { where: { socketId: socket.id } }
+      //     )
+      //   }
+
+
+
+      // } catch (err) {
+      //   console.log(err);
+      // }
+      //////////////////////////////////
 
       // if there was a valid uid returned, delete that user from the users object and send the updated array to the client
       if (uid) {
@@ -302,12 +329,13 @@ export class ServerSocket {
 
         const users = Object.values(this.users);
 
-        this.SendMessage('user_disconnected', users, socket.id);
+        this.io.to('users').emit('user_disconnected', users, socket.id)
 
         if (this.games[uid]) {
+
           delete this.games[uid];
 
-          this.SendMessage('update_games', users, this.games);
+          this.io.to('users').emit('update_games', users, this.games);
         }
       }
     });
