@@ -16,7 +16,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // nested elements within SocketComponent, rendered in the context provider
   const { children } = props;
 
-  const { user, isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
 
 
   // making a local state to store the created reducer and the default socket context state
@@ -150,10 +150,10 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
   }
 
-  const AddLocation = (gameId: string, longitude: number, latitude: number) => {
-    console.info(`Someone from game ${gameId} wants to add a location: ${longitude} ${latitude}`);
+  const AddLocation = (gameId: string, longitude: number, latitude: number, user: any) => {
+    console.info(`User ${user.sub} wants to add a location: ${longitude} ${latitude}`);
 
-    socket.emit('add_location', gameId, longitude, latitude, (uid: string, locations: { [uid: string]: { longitude: number, latitude: number } }) => {
+    socket.emit('add_location', gameId, longitude, latitude, user, (uid: string, locations: { [uid: string]: { longitude: number, latitude: number } }) => {
       SocketDispatch({ type: 'updated_locations', payload: locations });
     });
   };

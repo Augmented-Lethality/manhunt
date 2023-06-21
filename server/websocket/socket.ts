@@ -227,7 +227,10 @@ export class ServerSocket {
 
 
     // adding/updating a location
-    socket.on('add_location', (gameId, longitude, latitude, callback) => {
+    socket.on('add_location', (gameId, longitude, latitude, user, callback) => {
+      console.log(user.sub)
+
+
 
       // game ID exists in the locations object?
       if (Object.keys(this.locations).includes(gameId)) {
