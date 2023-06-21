@@ -41,7 +41,7 @@ export type ISocketContextActions = {
 // reducer, accepts the current state and returns the new state depending on the action that is passed in and hits the switch case
 // has a default case in case the actions don't match
 export const SocketReducer = (state: ISocketContextState, action: ISocketContextActions) => {
-  console.log(`Message Received - Action: ${action.type} - Payload: `, action.payload);
+  // console.log(`Message Received - Action: ${action.type} - Payload: `, action.payload);
 
   switch(action.type) {
     case 'update_socket':

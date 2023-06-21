@@ -173,7 +173,7 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     const userLocations = Object.values(locations);
 
     if (userLocations.length === 0) {
-      console.log('There are no locations to plot.');
+      // console.log('There are no locations to plot.');
       return;
     }
 
@@ -191,7 +191,7 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
 
       // if it exists, then just change the location, don't make a new one
       if (existingMarker) {
-        console.log(`Changing marker position for ${ names[uid]}`)
+        // console.log(`Changing marker position for ${ names[uid]}`)
         arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
       } else {
         // store the first round of markers into the markers array/add them to the list
@@ -199,13 +199,13 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
           if(player === currentGame.hunted) {
             victim.userData.id = player;
             arjsRef.current?.add(victim, markerLong, markerLat, 10);
-            console.log(`Added marker for ${ names[player]}`)
+            // console.log(`Added marker for ${ names[player]}`)
             addedMarkers.push(victim);
           } else {
             const clonedKiller = killers.clone();
             clonedKiller.userData.id = player;
             arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
-            console.log(`Added marker for ${ names[player]}`)
+            // console.log(`Added marker for ${ names[player]}`)
             // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
             addedMarkers.push(clonedKiller);
           }
