@@ -4,6 +4,7 @@ import { Box, Dodecahedron, Torus } from '@react-three/drei';
 
 interface TrophyProps {}
 
+
 const Trophy: React.FC<TrophyProps> = () => {
   const cubeRef = useRef<THREE.Mesh>(null);
   const dodecahedronRef = useRef<THREE.Mesh>(null);
@@ -11,6 +12,7 @@ const Trophy: React.FC<TrophyProps> = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [prevMouseX, setPrevMouseX] = useState(0);
 
+  
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
     setPrevMouseX(e.clientX);
@@ -39,34 +41,34 @@ const Trophy: React.FC<TrophyProps> = () => {
     }
   };
 
+  const getRandomElement = (array) => {
+    const randomIndex = Math.floor(Math.random() * array.length);
+    return array[randomIndex];
+  };
+
   const getRandomDimension = (): number => {
     const dimensions = [1, 2, 3];
-    const randomIndex = Math.floor(Math.random() * dimensions.length);
-    return dimensions[randomIndex];
+    return getRandomElement(dimensions);
   };
   
   const getRandomColor = (): string => {
     const colors = ['darkred', 'lightgreen', 'darkblue', 'yellow', 'orange', 'black', 'pink', 'aquamarine'];
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
+    return getRandomElement(colors);
   }  
 
   const getRandomShape = (): string => {
     const shapes = ['box', 'polyhedron', 'torus'];
-    const randomIndex = Math.floor(Math.random() * shapes.length);
-    return shapes[randomIndex];
+    return getRandomElement(shapes);
   };
 
   const getRandomTubularSegments = (): number => {
     const segments = [3, 4, 5, 6, 7, 8, 100];
-    const randomIndex = Math.floor(Math.random() * segments.length);
-    return segments[randomIndex];
+    return getRandomElement(segments);
   };
 
   const getRandomTubeWidth = (): number => {
     const tubeWidths = [0.1, 0.2, 0.3, 0.4, 0.5];
-    const randomIndex = Math.floor(Math.random() * tubeWidths.length);
-    return tubeWidths[randomIndex];
+    return getRandomElement(tubeWidths);
   };
   
   const dimension = useMemo(() => getRandomDimension(), []);
