@@ -46,7 +46,7 @@ const Trophy: React.FC<TrophyProps> = () => {
   };
   
   const getRandomColor = (): string => {
-    const colors = ['darkred', 'lightgreen', 'blue', 'yellow', 'orange', 'black', 'pink', 'aquamarine'];
+    const colors = ['darkred', 'lightgreen', 'darkblue', 'yellow', 'orange', 'black', 'pink', 'aquamarine'];
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   }  
@@ -57,15 +57,24 @@ const Trophy: React.FC<TrophyProps> = () => {
     return shapes[randomIndex];
   };
 
-  const shape = useMemo(() => getRandomShape(), []);
+  const getRandomTubularSegments = (): number => {
+    const segments = [3, 4, 5, 6, 7, 8, 100];
+    const randomIndex = Math.floor(Math.random() * segments.length);
+    return segments[randomIndex];
+  };
+
+  const getRandomTubeWidth = (): number => {
+    const tubeWidths = [0.1, 0.2, 0.3, 0.4, 0.5];
+    const randomIndex = Math.floor(Math.random() * tubeWidths.length);
+    return tubeWidths[randomIndex];
+  };
+  
   const dimension = useMemo(() => getRandomDimension(), []);
   const color = useMemo(() => getRandomColor(), []);
+  const shape = useMemo(() => getRandomShape(), []);
+  const tubularSegments = useMemo(() => getRandomTubularSegments(), []);
+  const tubeWidth = useMemo(() => getRandomTubeWidth(), []);
 
-  const trophyObj = {
-    shape: shape,
-    dimension: dimension,
-    color,
-  };
 
   return (
     <div onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}>
@@ -86,9 +95,9 @@ const Trophy: React.FC<TrophyProps> = () => {
         {shape === 'torus' && (
           <Torus
             ref={torusRef}
-            args={[dimension, 0.2, 16, 100]} // Adjust the arguments according to your desired torus shape
+            args={[dimension , tubeWidth, 16, tubularSegments]} 
             position={[0, 0, 0]}
-            rotation={[0, 0.4, 0]}
+            rotation={[0, 0.4, 0]} 
           >
             <meshStandardMaterial attach="material" color={color} />
           </Torus>
