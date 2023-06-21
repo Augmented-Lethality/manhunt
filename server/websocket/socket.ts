@@ -81,9 +81,8 @@ export class ServerSocket {
     // client is asking to make a socket connection to the server, also known as a handshake
     socket.on('handshake', (user, callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] } },
       names: { [uid: string]: string }) => void) => {
-
-      console.log("backend user:", user)
-      // is this a reconnection attempt?
+      //  console.log("backend user:", user)
+        // is this a reconnection attempt?
       const reconnected = Object.values(this.users).includes(socket.id);
       // const reconnected = User.findOne({ where: { socketId: socket.id } })
 
@@ -206,10 +205,10 @@ export class ServerSocket {
 
     socket.on('nav_to_endpoint', (host, endpoint) => {
 
-      console.log(`received redirect to ${endpoint} from ${host}`)
+      // console.log(`received redirect to ${endpoint} from ${host}`)
       if (Object.keys(this.games).includes(host)) {
 
-        console.log('host is in games list')
+        // console.log('host is in games list')
         const gameId = this.games[host].gameId
 
         // redirects all of the users within this game
@@ -219,7 +218,7 @@ export class ServerSocket {
 
     socket.on('set_hunted', (host, uid) => {
 
-      console.log(`received set hunted to ${uid} from ${host}`)
+      // console.log(`received set hunted to ${uid} from ${host}`)
       if (Object.keys(this.games).includes(host)) {
 
         this.games[host].hunted = uid;
