@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ButtonToHome } from '../components/Buttons';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
-
+import { Container } from '../styles/Container';
 export type UserData = {
   username: string;
   email: string;
@@ -55,7 +55,7 @@ const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className='content-layout' style={{ textAlign: 'center', fontWeight: 'bold', color: '#6e6b8c' }}>
+    <Container>
       <h1 id='page-title' className='content__title'>Profile</h1>
       <div className='content__body'>
         <div className='profile-grid'>
@@ -100,7 +100,7 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 

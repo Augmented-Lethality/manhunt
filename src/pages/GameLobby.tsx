@@ -3,6 +3,7 @@ import SocketContext from '../contexts/Socket/SocketContext';
 import { ButtonToHome, ButtonToGame } from '../components/Buttons';
 import WhosHunting from '../components/WhosHunting';
 import { useAuth0 } from "@auth0/auth0-react";
+import { Container } from '../styles/Container';
 
 
 const GameLobby: React.FunctionComponent = (props) => {
@@ -34,7 +35,7 @@ const GameLobby: React.FunctionComponent = (props) => {
 
 
   return (
-    <div>
+    <Container>
       <ButtonToHome />
       <h2>Game Lobby</h2>
       {currentGame ? (
@@ -57,7 +58,7 @@ const GameLobby: React.FunctionComponent = (props) => {
         </>
       )}
       { showHunting && <ButtonToGame />}
-    </div>
+    </Container>
   );
 };
 

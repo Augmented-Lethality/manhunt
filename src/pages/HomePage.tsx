@@ -10,6 +10,7 @@ import {
 } from '../components/Buttons';
 
 import SocketContext from '../contexts/Socket/SocketContext';
+import { Container } from '../styles/Container';
 
 type UserData = {
   username: string;
@@ -55,15 +56,7 @@ const HomePage = () => {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1.5rem',
-        maxWidth: '400px',
-        margin: 0,
-      }}
-    >
+    <Container>
       <h1 style={{ color: '#6e6b8c' }}>Welcome Home, {user.given_name}</h1>
       Users Online: {users.length}
       <br />
@@ -72,7 +65,7 @@ const HomePage = () => {
       <ButtonToHostGame />
       <ButtonToFindGame />
       <LogoutButton />
-    </div>
+    </Container>
   );
 };
 
