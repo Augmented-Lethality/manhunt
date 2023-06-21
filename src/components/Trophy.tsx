@@ -8,11 +8,12 @@ const Trophy: React.FC<TrophyProps> = () => {
   const trophyRef = useRef<THREE.Mesh>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [prevMouseX, setPrevMouseX] = useState(0);
-
+  const [prevMouseY, setPrevMouseY] = useState(0);
   
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
     setPrevMouseX(e.clientX);
+    setPrevMouseY(e.clientY);
   };
 
   const handleMouseUp = () => {
@@ -23,12 +24,16 @@ const Trophy: React.FC<TrophyProps> = () => {
     if (!isDragging) return;
 
     const mouseDeltaX = e.clientX - prevMouseX;
+    const mouseDeltaY = e.clientY - prevMouseY;
     setPrevMouseX(e.clientX);
+    setPrevMouseY(e.clientY);
 
     if (trophyRef.current) {
-      trophyRef.current.rotation.y += mouseDeltaX * 0.01;
+      trophyRef.current.rotation.y += mouseDeltaX * 0.01; // Rotate around Y-axis
+      trophyRef.current.rotation.x += mouseDeltaY * 0.01; // Rotate around X-axis
     }
   };
+
 
   const getRandomElement = (array) => {
     const randomIndex = Math.floor(Math.random() * array.length);
