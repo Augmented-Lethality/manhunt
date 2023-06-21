@@ -2,7 +2,6 @@ import { FaceMatcher, createCanvasFromMedia, matchDimensions, detectAllFaces, re
 import React, { useEffect, useRef } from 'react';
 import { useWebcam } from '../contexts/WebcamProvider';
 import { useNavigate } from 'react-router-dom';
-import DetectBounty from './DetectBounty';
 
 type KillCamProps = {
   faceMatcher: FaceMatcher | null;
