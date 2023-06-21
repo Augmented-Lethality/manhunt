@@ -6,7 +6,7 @@ import * as faceapi from 'face-api.js';
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
 import { ButtonToHome } from '../components/Buttons';
-
+import Countdown from '../components/countdown';
 const GamePage: React.FC = () => {
 
   // which component do we render? kill or chase?
@@ -58,6 +58,7 @@ const GamePage: React.FC = () => {
   return (
     <div>
       <ButtonToHome />
+      <Countdown initialCount={5*60}/>
       <p>Players in this game:</p>
     <ul>
       {currentGame?.uidList.map((playerUid) => (
