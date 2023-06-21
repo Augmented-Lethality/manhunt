@@ -105,7 +105,6 @@ Users.put("/:authId", async (req, res) => {
 // PATCH face-descriptions into user
 Users.patch("/face-description/:authId", async (req, res) => {
   try {
-    console.log(req.params.authId)
     const user = await User.findOne({ where: { authId: req.params.authId } });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
