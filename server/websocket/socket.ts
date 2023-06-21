@@ -292,35 +292,36 @@ export class ServerSocket {
 
     // when the disconnect occurs
     socket.on('disconnect', async () => {
-      // console.info('Disconnect received from: ' + socket.id);
 
       // gets the user uid from the users at the specific socket id
       const uid = this.GetUidFromSocketID(socket.id);
 
       /////////// NEW //////////////////
-      // try {
-      //   const user = await User.findOne({ where: { socketId: socket.id } });
+      try {
+        const user = await User.findOne({ where: { socketId: socket.id } });
+        if (user) {
+          const game = await Game.findByPk(user.dataValues.gameId);
 
-      //   if (user) {
-      //     console.log(user);
+          // remove user from the list of users in the game since they're disconnected
+          if (game) {
+            const updatedUserList = game.dataValues.users.filter((authId: string) => authId !== user.dataValues.authId);
+            await Game.update(
+              { users: updatedUserList },
+              { where: { gameId: user.dataValues.gameId } }
+            )
+          }
 
-      //     await Game.findByPk(user.dataValues.gameId)
-      //       const updatedGame = await Game.update(
-      //         { socketId: '' },
-      //         { where: { gameId: gameId } }
-      //       )
+          // delete the socket id from the user since they're not connected anymore
+          const updatedUser = await User.update(
+            { socketId: '' },
+            { where: { socketId: socket.id } }
+          )
+          // console.log('removed socket from user:', updatedUser)
+        }
 
-      //     const updatedUser = await User.update(
-      //       { socketId: '' },
-      //       { where: { socketId: socket.id } }
-      //     )
-      //   }
-
-
-
-      // } catch (err) {
-      //   console.log(err);
-      // }
+      } catch (err) {
+        console.log(err);
+      }
       //////////////////////////////////
 
       // if there was a valid uid returned, delete that user from the users object and send the updated array to the client
