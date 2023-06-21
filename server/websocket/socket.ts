@@ -134,12 +134,8 @@ export class ServerSocket {
       // console.info('Sending new user info ...');
       callback(uid, users, this.games, this.names);
 
-      // send new user to all connected users
-      this.SendMessage(
-        'user_connected',
-        users.filter((id) => id !== socket.id),
-        users
-      );
+      // send new user to all connected users to update their state
+      this.io.to('users').emit('user_connected', users)
     });
 
     // when client emits a createGame event, make the new game
