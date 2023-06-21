@@ -20,10 +20,8 @@ interface CreateFaceDescriptionsProps {
 
 const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVerifying, username, userID, setUser}) => {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
-  console.log(username)
   useEffect(() => {
     loadModels();
-    console.log('models loaded')
   }, []);
   
   const loadModels = async () => {
@@ -37,13 +35,8 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
   };
 
   const handleSave = async () => {
-    if (!img) {
-      console.error("No image provided");
+    if (!img || !username) {
       return;
-    }
-    // This is just to get typescript to stop throwing an err
-    if(!username){
-      return
     }
     try {
       const detection = await detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
