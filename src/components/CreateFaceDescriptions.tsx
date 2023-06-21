@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import * as faceapi from 'face-api.js';
+import faceapi from 'face-api.js';
 import CapturePhoto from './CapturePhoto'
 import { WebcamProvider } from '../contexts/WebcamProvider';
 import axios from 'axios';
