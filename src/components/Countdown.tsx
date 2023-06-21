@@ -25,7 +25,7 @@ const Countdown: React.FC<CountdownProps> = ({ initialCount }) => {
 
   return (
     <div>
-      {`again${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`}
+      {`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`}
     </div>
   );
 };
