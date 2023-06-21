@@ -4,7 +4,6 @@ import { Box, Dodecahedron, Torus } from '@react-three/drei';
 
 interface TrophyProps {}
 
-
 const Trophy: React.FC<TrophyProps> = () => {
   const cubeRef = useRef<THREE.Mesh>(null);
   const dodecahedronRef = useRef<THREE.Mesh>(null);
@@ -46,36 +45,36 @@ const Trophy: React.FC<TrophyProps> = () => {
     return array[randomIndex];
   };
 
-  const getRandomDimension = (): number => {
-    const dimensions = [1, 2, 3];
-    return getRandomElement(dimensions);
-  };
+  // const getRandomDimension = (): number => {
+  //   const dimensions = ;
+  //   return getRandomElement(dimensions);
+  // };
   
-  const getRandomColor = (): string => {
-    const colors = ['darkred', 'lightgreen', 'darkblue', 'yellow', 'orange', 'black', 'pink', 'aquamarine'];
-    return getRandomElement(colors);
-  }  
+  // const getRandomColor = (): string => {
+  //   const colors = ;
+  //   return getRandomElement(colors);
+  // }  
 
-  const getRandomShape = (): string => {
-    const shapes = ['box', 'polyhedron', 'torus'];
-    return getRandomElement(shapes);
-  };
+  // const getRandomShape = (): string => {
+  //   const shapes = ;
+  //   return getRandomElement(shapes);
+  // };
 
-  const getRandomTubularSegments = (): number => {
-    const segments = [3, 4, 5, 6, 7, 8, 100];
-    return getRandomElement(segments);
-  };
+  // const getRandomTubularSegments = (): number => {
+  //   const segments = [3, 4, 5, 6, 7, 8, 100];
+  //   return getRandomElement(segments);
+  // };
 
-  const getRandomTubeWidth = (): number => {
-    const tubeWidths = [0.1, 0.2, 0.3, 0.4, 0.5];
-    return getRandomElement(tubeWidths);
-  };
+  // const getRandomTubeWidth = (): number => {
+  //   const tubeWidths = ;
+  //   return getRandomElement(tubeWidths);
+  // };
   
-  const dimension = useMemo(() => getRandomDimension(), []);
-  const color = useMemo(() => getRandomColor(), []);
-  const shape = useMemo(() => getRandomShape(), []);
-  const tubularSegments = useMemo(() => getRandomTubularSegments(), []);
-  const tubeWidth = useMemo(() => getRandomTubeWidth(), []);
+  const dimension = useMemo(() => getRandomElement([1, 2, 3]), []);
+  const color = useMemo(() => getRandomElement(['darkred', 'lightgreen', 'darkblue', 'yellow', 'orange', 'black', 'pink', 'aquamarine']), []);
+  const shape = useMemo(() => getRandomElement(['box', 'polyhedron', 'torus']), []);
+  const tubularSegments = useMemo(() => getRandomElement([3, 4, 5, 6, 7, 8, 100]), []);
+  const tubeWidth = useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []);
 
 
   return (
