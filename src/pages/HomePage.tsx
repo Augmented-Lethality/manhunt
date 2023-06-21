@@ -25,8 +25,6 @@ const HomePage = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
-
-    console.log(user)
     const fetchUserData = async () => {
       try {
         // Check if the user exists by sending a POST request instead of a GET request
