@@ -1,30 +1,21 @@
-import { Auth0Provider, AppState } from "@auth0/auth0-react";
-import React, { ReactNode } from "react";
+import { Auth0Provider } from "@auth0/auth0-react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
-interface Auth0ProviderWithNavigateProps {
-  children: ReactNode;
-}
-
-export const Auth0ProviderWithNavigate = ({
-  children,
-}: Auth0ProviderWithNavigateProps) => {
+export const Auth0ProviderWithNavigate = ({ children }) => {
   const navigate = useNavigate();
 
   const domain = process.env.REACT_APP_AUTH0_DOMAN;
   const clientId = process.env.REACT_APP_AUTH0_CLIENTID;
-  const redirectUri = process.env.REACT_APP_AUTH0_REDIRECTURI;
+  const redirectUri = process.env.REACT_APP_AUTH0_REDIRECTURI!;
 
-  const onRedirectCallback = (appState: AppState | undefined) => {
+  const onRedirectCallback = (appState) => {
     navigate(appState?.returnTo || window.location.pathname);
   };
 
   if (!(domain && clientId && redirectUri)) {
     return (
-      <h1>
-        domain && clientId && redirectUri is not truthy inside auth0-provider
-        file
-      </h1>
+      <h1>domain && clientId && redirectUri is not truthy inside auth0-provider file</h1>
     );
   }
 
@@ -41,4 +32,3 @@ export const Auth0ProviderWithNavigate = ({
     </Auth0Provider>
   );
 };
-
