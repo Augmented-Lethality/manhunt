@@ -4,6 +4,10 @@ import sequelize from './index';
 
 ////////////////////////////////////////////////
 class User extends Model {
+  gamesPlayed: any;
+  gamesWon: any;
+  killsConfirmed: any;
+  facialDescriptions: any;
 }
 User.init({
   id: {

@@ -15,12 +15,29 @@ export interface Game {
   winnerId: string;
 }
 
+export interface User {
+  authId: string;
+  createdAt: string;
+  email: string;
+  facialDescriptions: number[];
+  gameId: string;
+  gamesPlayed: number | null;
+  gamesWon: number | null;
+  id: number;
+  killsConfirmed: number | null;
+  location: string | null;
+  socketId: string;
+  tfModelPath: string | null;
+  updatedAt: string;
+  username: string;
+}
+
 // syntax that the context state must conform to, gives properties and types of those properties
 // server will be passing this information back and forth with client as needed
 export interface ISocketContextState {
   socket: Socket | undefined;
   authId: string,
-  users: string[],
+  users: User[],
   games: Game[],
   locations: { [authId: string]: { longitude: number, latitude: number } },
   names: { [authId: string]: string }
@@ -41,7 +58,7 @@ export type TSocketContextActions = 'update_socket' | 'update_authId' |
   'update_users' | 'remove_user' | 'update_games' | 'updated_locations' | 'update_names'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = string | string[] | Socket | Game
+export type TSocketContextPayload = string | User | Socket | Game
   | { [authId: string]: { longitude: number, latitude: number } } | { [authId: string]: string };
 
 // describes the shape of the actions in this context
@@ -61,9 +78,9 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
     case 'update_authId':
       return { ...state, authId: action.payload as string };
     case 'update_users':
-      return { ...state, users: action.payload as string[] };
+      return { ...state, users: [action.payload as User] };
     case 'remove_user':
-      return { ...state, users: state.users.filter((authId) => authId !== (action.payload as string)) };
+      return { ...state, users: state.users.filter((user) => user.authId !== action.payload) };
     case 'update_games':
       return { ...state, games: [action.payload as Game] };
     case 'updated_locations':

@@ -79,8 +79,7 @@ export class ServerSocket {
 
 
     // client is asking to make a socket connection to the server, also known as a handshake
-    socket.on('handshake', async (user, callback: (authId: string, users: string[], games: { [host: string]: { gameId: string, authIdList: string[] } },
-      names: { [authId: string]: string }) => void) => {
+    socket.on('handshake', async (user) => {
 
       socket.join('users');
 
@@ -88,12 +87,7 @@ export class ServerSocket {
         console.log('A client reconnected');
       }
 
-      // console.log("backend user:", user)
-      // is this a reconnection attempt?
-      const reconnected = Object.values(this.users).includes(socket.id);
-
       ///////////// NEW ///////////////////
-      // user exists based on authId (user.sub)?
 
       try {
 
@@ -113,34 +107,11 @@ export class ServerSocket {
       }
       ////////////////////////////////////////
 
-      // if it was a reconnection, re-establish the connection
-      if (reconnected) {
-        // console.info('User reconnected.');
-
-        const authId = this.GetAuthIdFromSocketID(socket.id);
-        const users = Object.values(this.users);
-
-        // if the authId obtained is valid and cool, send the client the authId and users
-        if (authId) {
-          // console.info('Sending info for reconnect ...');
-          callback(authId, users, this.games, this.names);
-          return;
-        }
-      }
-
-      // generate new user, using authId module to generate a unique authId
-      const authId = user.sub;
-
-      // add this to the users dictionary object
-      this.users[authId] = socket.id;
-
-      // storing all of the users from the users object into an array
-      const users = Object.values(this.users);
-      // console.info('Sending new user info ...');
-      callback(authId, users, this.games, this.names);
-
       // send new user to all connected users to update their state
-      this.io.to('users').emit('user_connected', users)
+      this.io.to('users').emit('update_users');
+      this.io.to('users').emit('update_games');
+      socket.emit('handshake_reply', 'success');
+
     });
 
     // when client emits a createGame event, make the new game

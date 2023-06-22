@@ -26,7 +26,7 @@ const HomePage = () => {
 
   useEffect(() => {
 
-    console.log(user)
+    console.log(users)
     const fetchUserData = async () => {
       try {
         // Check if the user exists by sending a POST request instead of a GET request

@@ -1,6 +1,7 @@
-const { Router } = require("express");
-const Users = Router();
-const { User } = require("../database/models");
+import { Router } from "express";
+export const Users = Router();
+// const { User } = require("../database/models");
+import { User } from '../database/models'
 
 // GET ALL USERS
 Users.get("/", async (req, res) => {
@@ -119,4 +120,17 @@ Users.patch("/face-description/:authId", async (req, res) => {
   }
 });
 
-module.exports = { Users };
+// GET user information for games
+Users.get("/userGames", async (req, res) => {
+  try {
+    // Fetch all users from the database
+    const users = await User.findAll();
+    console.log(users)
+
+    res.status(200).send(users);
+
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+

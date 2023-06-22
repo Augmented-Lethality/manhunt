@@ -96,7 +96,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       // SocketDispatch({ type: 'update_games', payload: games })
     });
 
-    // updated a game event
+    // updating games
     socket.on('update_games', async () => {
       try {
         const response = await axios.get('/games');
@@ -108,7 +108,17 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       }
     });
 
-
+    // updating users
+    socket.on('update_users', async () => {
+      try {
+        const response = await axios.get('/users');
+        const users = response.data;
+        console.log('updating users state:', users)
+        SocketDispatch({ type: 'update_users', payload: users });
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    });
 
     // update locations event
     socket.on('updated_locations', (locations) => {
@@ -122,32 +132,21 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       SocketDispatch({ type: 'update_names', payload: names })
     });
 
-    // redirect users event
-    // socket.on('redirect', (endpoint) => {
-    //   console.info(`redirecting to ${ endpoint }`);
-    //   const navigate = useNavigate();
-    //   navigate(endpoint);
-    // });
-
 
   }
 
   // sending the handshake to the server, meaning it's trying to establish a connection to the server using websocket
   const SendHandshake = () => {
-    // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
-    // on the handshake and it gets the cb from the server on handshake
-    socket.emit('handshake', user, (authId: string, users: string[], games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } },
-      names: { [authId: string]: string }) => {
-      // console.log('We shook, let\'s trade info xoxo');
-      SocketDispatch({ type: 'update_authId', payload: authId });
-      SocketDispatch({ type: 'update_users', payload: users });
-      SocketDispatch({ type: 'update_games', payload: games });
-      SocketDispatch({ type: 'update_names', payload: names });
-
-      // not loading anymore since it connected
+    socket.emit('handshake', user, () => {
       setLoading(false);
     });
-  }
+
+    socket.on('handshake_reply', (response) => {
+      setLoading(false);
+    });
+  };
+
+
 
   // sending createRoom to the server
   const CreateGame = () => {
