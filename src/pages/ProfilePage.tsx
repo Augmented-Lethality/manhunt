@@ -39,13 +39,10 @@ const ProfilePage: React.FC = () => {
     }
   }, []);
 
-  // console.log(userData, 'USeRdatA');
-
   if (!user) {
     return null;
   }
 
-  if (isVerifying) {
   if (isVerifying) {
     return (
       <CreateFaceDescriptions
