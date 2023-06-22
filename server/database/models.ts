@@ -108,7 +108,10 @@ Friends.init({
 ////////////////////////////////////////////////
 
 
-class Game extends Model { }
+class Game extends Model {
+  gameId: any;
+  users: any;
+}
 Game.init({
   gameId: {
     type: DataTypes.STRING,

@@ -141,23 +141,23 @@ export class ServerSocket {
 
     });
 
-    // Adding a user to a game
-    socket.on('join_game', (host, callback) => {
-      const authId = this.GetAuthIdFromSocketID(socket.id);
+    socket.on('join_game', async (host, user) => {
+      try {
+        const game = await Game.findOne({ where: { host: host } });
+        if (game) {
+          await User.update({ gameId: game.gameId }, { where: { authId: user.sub } });
+          await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
+          socket.join(game.gameId);
 
-      if (authId) {
-        if (Object.keys(this.games).includes(host)) {
-
-          if (!this.games[host].authIdList.includes(authId)) {
-            this.games[host].authIdList.push(authId);
-            const users = Object.values(this.users);
-
-            // update the games for everyone
-            this.SendMessage('update_games', users, this.games);
-          }
+          this.io.to('users').emit('update_games');
+        } else {
+          console.log('no game with that host exists')
         }
+      } catch (err) {
+        console.log(err);
       }
     });
+
 
 
     // adding/updating a location

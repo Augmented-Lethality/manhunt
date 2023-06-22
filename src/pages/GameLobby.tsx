@@ -6,7 +6,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const GameLobby: React.FunctionComponent = (props) => {
 
-  const { socket, authId, games, users, names } = useContext(SocketContext).SocketState;
+  const { socket, games, users, names } = useContext(SocketContext).SocketState;
   const [showHunting, setShowHunting] = useState(false);
   const [currentGame, setCurrentGame] = useState<{ gameId: string, authIdList: string[], hunted: string }>({ gameId: '', authIdList: [], hunted: '' });
   const [host, setHost] = useState<string>('');

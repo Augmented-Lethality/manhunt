@@ -98,7 +98,7 @@ export interface ISocketContextProps {
   SocketDispatch: React.Dispatch<ISocketContextActions>;
   CreateGame: () => void;
   AddLocation: (gameId: string, longitude: number, latitude: number, user: any) => void;
-  JoinGame: (host: string) => void;
+  JoinGame: (host: string, user: User) => void;
   Redirect: (host: string, endpoint: string) => void;
   SetHunted: (host: string, authId: string) => void;
   AddName: (name: string, authId: string) => void;

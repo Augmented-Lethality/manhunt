@@ -76,24 +76,11 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       // alert('Unable to connect to web socket')
     })
 
-    // user connected event
-    socket.on('user_connected', (users: string[]) => {
-      console.info('user connected, new user list received')
-      SocketDispatch({ type: 'update_users', payload: users })
-      // update names
-    });
-
     // user disconnected event
     socket.on('user_disconnected', (authId: string) => {
       console.info('user disconnected')
       SocketDispatch({ type: 'remove_user', payload: authId })
       // remove name
-    });
-
-    // created a game event
-    socket.on('game_created', () => {
-      // console.info('game created, new game list received')
-      // SocketDispatch({ type: 'update_games', payload: games })
     });
 
     // updating games
@@ -151,7 +138,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // sending createRoom to the server
   const CreateGame = () => {
     socket.emit('create_game', user, () => {
-      console.log('creating game client side');
+      // console.log('creating game client side');
     });
   }
 
@@ -167,8 +154,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   const JoinGame = (host: string) => {
     // console.info('Client wants to join a game...');
 
-    socket.emit('join_game', host, (games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => {
-      // SocketDispatch({ type: 'update_games', payload: games });
+    socket.emit('join_game', host, user, () => {
+      console.log('joining game')
     });
   };
 
