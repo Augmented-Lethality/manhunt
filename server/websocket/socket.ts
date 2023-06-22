@@ -145,11 +145,16 @@ export class ServerSocket {
       try {
         const game = await Game.findOne({ where: { host: host } });
         if (game) {
-          await User.update({ gameId: game.gameId }, { where: { authId: user.sub } });
-          await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
-          socket.join(game.gameId);
+          if (game.dataValues.users.includes(user.sub)) {
+            console.log('user already in that game')
+          } else {
+            await User.update({ gameId: game.gameId }, { where: { authId: user.sub } });
+            await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
+            socket.join(game.gameId);
 
-          this.io.to('users').emit('update_games');
+            this.io.to('users').emit('update_games');
+          }
+
         } else {
           console.log('no game with that host exists')
         }
