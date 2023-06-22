@@ -49,7 +49,7 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ children }) => {
   box-sizing: border-box;
 `;
 
-const Dots2 = styled(IoIosCloseCircle)`
+const Close = styled(IoIosCloseCircle)`
 height: 10vw;
 width: 10vw;
 margin-left: 10px;
@@ -62,7 +62,7 @@ box-sizing: border-box;
     <>
       {!isMenuOpen ?
       <Dots onClick={toggleMenu} />
-      : <Dots2 onClick={toggleMenu} />
+      : <Close onClick={toggleMenu} />
       }
       <Menu isOpen={isMenuOpen}>
         {children}
