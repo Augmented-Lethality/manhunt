@@ -160,7 +160,7 @@ Trophy.init({
   description: DataTypes.STRING,
   generationConditions: DataTypes.TEXT, // This can be a stringified function or JSON
   filePath: DataTypes.STRING,
-  ownersId: {
+  ownerId: {
     type: DataTypes.INTEGER,
     references: {
       model: User,
