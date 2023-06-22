@@ -92,7 +92,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     // updating users
     socket.on('update_users', async () => {
       try {
-        const response = await axios.get('/users');
+        const response = await axios.get('/users/sockets');
         const users = response.data;
         console.log('updating users state:', users)
         SocketDispatch({ type: 'update_users', payload: users });

@@ -21,12 +21,12 @@ type UserData = {
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
   const { AddName } = useContext(SocketContext);
-  const { authId, users } = useContext(SocketContext).SocketState;
+  const { authId, users, socket } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
 
-    console.log(users)
+    console.log("users in socket state:", users, users.length)
     const fetchUserData = async () => {
       try {
         // Check if the user exists by sending a POST request instead of a GET request
@@ -50,7 +50,7 @@ const HomePage = () => {
       )}`;
       AddName(insertName || '', authId);
     }
-  }, [user, isAuthenticated, AddName, authId]);
+  }, [user, isAuthenticated, AddName, authId, users]);
 
   if (!isAuthenticated || !user) {
     return null;

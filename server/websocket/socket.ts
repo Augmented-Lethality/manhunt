@@ -80,12 +80,13 @@ export class ServerSocket {
     // client is asking to make a socket connection to the server, also known as a handshake
     socket.on('handshake', async (user) => {
 
-      // joining the users room on the server connection
-      socket.join('users');
-
       if (socket.rooms.has('users')) {
         console.log('A client reconnected');
+      } else {
+        // joining the users room on the server connection
+        socket.join('users');
       }
+
 
       try {
 
@@ -102,7 +103,7 @@ export class ServerSocket {
           // if the game exists on their model and the user isn't in the game list, add them back
           if (existingGame) {
             if (!existingGame.dataValues.users.includes(existingUser.dataValues.authId)) {
-              await Game.update({ users: [...existingGame.users, existingUser.dataValues.authId] }, { where: { gameId: existingUser.dataValues.gameId } });
+              await Game.update({ users: [...existingGame.dataValues.users, existingUser.dataValues.authId] }, { where: { gameId: existingUser.dataValues.gameId } });
               console.log('put user back in game')
             }
 
@@ -280,6 +281,7 @@ export class ServerSocket {
           )
           console.log('removed socket from disconnected user:')
         }
+        socket.leave('users');
 
         // send new games to all connected users to update their games lists
         this.io.to('users').emit('update_games');

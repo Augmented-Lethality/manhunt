@@ -59,7 +59,7 @@ export type TSocketContextActions = 'update_socket' | 'update_authId' |
   | 'update_lobby_games'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = string | User | Socket | Game
+export type TSocketContextPayload = string | User | Socket | Game | User[] | Game[]
   | { [authId: string]: { longitude: number, latitude: number } } | { [authId: string]: string };
 
 // describes the shape of the actions in this context
@@ -79,11 +79,11 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
     case 'update_authId':
       return { ...state, authId: action.payload as string };
     case 'update_users':
-      return { ...state, users: [action.payload as User] };
+      return { ...state, users: action.payload as User[] };
     case 'remove_user':
       return { ...state, users: state.users.filter((user) => user.authId !== action.payload) };
     case 'update_games':
-      return { ...state, games: [action.payload as Game] };
+      return { ...state, games: action.payload as Game[] };
     case 'updated_locations':
       return { ...state, locations: action.payload as { [authId: string]: { longitude: number, latitude: number } } };
     case 'update_names':

@@ -13,12 +13,8 @@ const GamePage: React.FC = () => {
   const [gameMode, setGameMode] = useState<string>('Chase');
   const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
   const { authId, games, names } = useContext(SocketContext).SocketState;
-  const [currentGame, setUserGame] = useState<{ gameId: string; authIdList: string[], hunted: string }>({ gameId: '', authIdList: [], hunted: '' });
+  const [currentGame, setUserGame] = useState();
 
-  // useEffect(() => {
-  //   const foundUserGame = Object.values(games).find((game) => game.authIdList.includes(authId));
-  //   setUserGame(foundUserGame || { gameId: '', authIdList: [], hunted: '' });
-  // }, [authId]);
 
   useEffect(() => {
     loadTensorFlowFaceMatcher();
@@ -65,8 +61,8 @@ const GamePage: React.FC = () => {
         ))}
       </ul> */}
       <button onClick={handleGameChange}>{gameMode === 'Chase' ? 'Go in For the Kill' : 'Return to the Chase'}</button>
-      {gameMode === 'Chase' && currentGame.hunted.length > 0 && <ChaseCam currentGame={currentGame} />}
-      {gameMode === 'Kill' && currentGame.hunted.length > 0 && (
+      {gameMode === 'Chase' && <ChaseCam />}
+      {gameMode === 'Kill' && (
         <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
           <WebcamProvider>
             <KillCam faceMatcher={faceMatcher} />

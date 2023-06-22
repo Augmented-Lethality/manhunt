@@ -18,12 +18,12 @@ import SocketContext from '../contexts/Socket/SocketContext';
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
 type ChaseCamProps = {
-  currentGame: { gameId: string; authIdList: string[], hunted: string },
+  // currentGame: { gameId: string; authIdList: string[], hunted: string },
 };
 
 
 
-const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
+const ChaseCam: React.FC<ChaseCamProps> = ({ }) => {
 
   const { user } = useAuth0();
 
@@ -36,7 +36,7 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
   const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
   const hardCodeMarker = new Mesh(geom, hardCodeMtl);
 
-  const { locations, authId, names } = useContext(SocketContext).SocketState;
+  const { locations, authId, names, } = useContext(SocketContext).SocketState;
   const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
@@ -85,8 +85,8 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     // renders the webcam stream as the background for the scene
     const cam = new WebcamRendererLocal(renderer);
 
+    // start the device orientation controls for mobile
     const deviceOrientationControls = new DeviceOrientationControls(camera);
-
 
     // start the location
     arjsRef.current.startGps();
@@ -97,6 +97,8 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     // sets size of canvas, renders the scene but with the camera, and
     // requests the next animation frame
     function render() {
+
+      // setting the camera width of the device
       if (
         canvas.width !== canvas.clientWidth ||
         canvas.height !== canvas.clientHeight
@@ -107,11 +109,12 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
         camera.updateProjectionMatrix();
       }
 
+      // send updates when the phone tilts
       deviceOrientationControls.update();
+      // update the camera's feed
       cam.update();
       renderer.render(scene, camera);
       frameIdRef.current = requestAnimationFrame(render);
-
 
 
       const userPositions = arjsRef.current?.getUserPosition();
@@ -128,8 +131,7 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     // kick starts the loop of rendering the canvas
     frameIdRef.current = requestAnimationFrame(render);
 
-    // all of this below handles the fake movement in desktop, got most of it from the
-    // AR.js docs but needed to edit it a little bit
+    /////// FOR DESKTOP TESTING //////
     const handleMouseDown = () => {
       mousedownRef.current = true;
     };
@@ -167,12 +169,13 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
-
+  /////// /////////////////////////////////// //////
 
   useEffect(() => {
 
     if (userLongitude && userLatitude) {
-      AddLocation(currentGame.gameId, userLongitude, userLatitude, user);
+      AddLocation(user?.gameId, userLongitude, userLatitude, user);
+      console.log('added userLong and userLat');
 
       // hardcoded marker to test if the user location is working, should render right in front of them
       arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
