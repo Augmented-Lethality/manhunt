@@ -1,6 +1,7 @@
 import React, { useRef, useState, useMemo } from 'react';
 import { Canvas } from 'react-three-fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
+import axios from 'axios';
 
 interface TrophyProps {}
 
@@ -64,6 +65,8 @@ const Trophy: React.FC<TrophyProps> = () => {
     });
   }, []);
 
+  // POST request to POST Trophy to dataase goes Here.
+  // axios.post();
 
   return (
     <div onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}>

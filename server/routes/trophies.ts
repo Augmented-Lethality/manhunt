@@ -1,12 +1,14 @@
-const Trophies = Router();
+import express from 'express';
+const { Router } = express;
 const { Trophy } = require('../database/models');
+
+const Trophies = Router();
 
 // POST NEW Trophy
 Trophies.post('/', async (req, res) => {
   try {
-    const { name, description, generationConditions, filePath, ownersId } =
-      req.body;
-
+    const { name, description, generationConditions, filePath, ownersId } = req.body;
+    console.log(name);
     const newTrophy = await Trophy.create({
       name,
       description,
@@ -21,6 +23,10 @@ Trophies.post('/', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+module.exports = { Trophies };
+
+
 
 //THESE HAVNT BEEN TESTED
 // // GET ALL TROPHIES Of Specific User
@@ -49,5 +55,3 @@ Trophies.post('/', async (req, res) => {
 //     res.status(500).json({ error: 'Internal Server Error' });
 //   }
 // });
-
-module.exports = { Trophies };

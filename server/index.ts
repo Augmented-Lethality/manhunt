@@ -6,6 +6,7 @@ import { createServer } from "http";
 import { ServerSocket } from './websocket/socket';
 const { sequelize } = require("./database/index");
 const { Users } = require("./routes/users");
+const { Trophies } = require('./routes/trophies');
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use('/assets', express.static(path.join(__dirname, '..', '..', 'public/asset
 app.use('/models', express.static(path.join(__dirname, '..', '..', 'public/models')))
 
 app.use('/users', Users);
+app.use('/trophies', Trophies);
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(dist, 'index.html'), (err) => {
