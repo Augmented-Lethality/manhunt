@@ -21,7 +21,7 @@ type UserData = {
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
   const { AddName } = useContext(SocketContext);
-  const { uid, users } = useContext(SocketContext).SocketState;
+  const { authId, users } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
@@ -48,9 +48,9 @@ const HomePage = () => {
       const insertName = `${user.given_name || ''} ${user.family_name?.charAt(
         0
       )}`;
-      AddName(insertName || '', uid);
+      AddName(insertName || '', authId);
     }
-  }, [user, isAuthenticated, AddName, uid]);
+  }, [user, isAuthenticated, AddName, authId]);
 
   if (!isAuthenticated || !user) {
     return null;

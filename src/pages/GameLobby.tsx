@@ -7,9 +7,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const GameLobby: React.FunctionComponent = (props) => {
 
-  const { socket, uid, games, users, names } = useContext(SocketContext).SocketState;
+  const { socket, authId, games, users, names } = useContext(SocketContext).SocketState;
   const [showHunting, setShowHunting] = useState(false);
-  const [currentGame, setCurrentGame] = useState<{gameId: string, uidList: string[], hunted: string }>({gameId: '', uidList: [], hunted: ''});
+  const [currentGame, setCurrentGame] = useState<{ gameId: string, authIdList: string[], hunted: string }>({ gameId: '', authIdList: [], hunted: '' });
   const [host, setHost] = useState<string>('');
 
 
@@ -17,18 +17,18 @@ const GameLobby: React.FunctionComponent = (props) => {
   // I HATE IT
   useEffect(() => {
     const currGame = Object.values(games).find((game) =>
-    game.uidList.includes(uid)
+      game.authIdList.includes(authId)
     );
 
-    if(currGame) {
+    if (currGame) {
       setCurrentGame(currGame);
 
-      if(currGame.hunted.length > 0) {
+      if (currGame.hunted.length > 0) {
         setShowHunting(true);
       }
     }
 
-    setHost(currentGame?.uidList[0]);
+    setHost(currentGame?.authIdList[0]);
 
   }, [games])
 
@@ -39,16 +39,16 @@ const GameLobby: React.FunctionComponent = (props) => {
       <h2>Game Lobby</h2>
       {currentGame ? (
         <div>
-          {showHunting && <WhosHunting users={currentGame.uidList} host={ host } hunted={ currentGame.hunted }/>}
-          {host === uid && !showHunting && (
+          {showHunting && <WhosHunting users={currentGame.authIdList} host={host} hunted={currentGame.hunted} />}
+          {host === authId && !showHunting && (
             <button onClick={() => setShowHunting(!showHunting)}>
               Pick the Victim
             </button>
           )}
           <p>Players:</p>
           <ul>
-            {currentGame.uidList.map((playerUid) => (
-              <li key={playerUid}>{names[playerUid]}</li>
+            {currentGame.authIdList.map((playerAuthId) => (
+              <li key={playerAuthId}>{names[playerAuthId]}</li>
             ))}
           </ul>
         </div>
@@ -56,7 +56,7 @@ const GameLobby: React.FunctionComponent = (props) => {
         <>
         </>
       )}
-      { showHunting && <ButtonToGame />}
+      {showHunting && <ButtonToGame />}
     </div>
   );
 };

@@ -33,11 +33,6 @@ User.init({
     type: DataTypes.ARRAY(DataTypes.FLOAT),
     allowNull: true
   },
-  uid: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    unique: true
-  },
   socketId: {
     type: DataTypes.STRING,
     allowNull: true,

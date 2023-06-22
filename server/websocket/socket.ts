@@ -117,7 +117,7 @@ export class ServerSocket {
       if (reconnected) {
         // console.info('User reconnected.');
 
-        const authId = this.GetUidFromSocketID(socket.id);
+        const authId = this.GetAuthIdFromSocketID(socket.id);
         const users = Object.values(this.users);
 
         // if the authId obtained is valid and cool, send the client the authId and users
@@ -147,7 +147,7 @@ export class ServerSocket {
     socket.on('create_game', async (user, callback: (authId: string, games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => void) => {
 
       // does the game exist?
-      const host = this.GetUidFromSocketID(socket.id);
+      const host = this.GetAuthIdFromSocketID(socket.id);
 
       ////////// NEW ////////////////
 
@@ -213,7 +213,7 @@ export class ServerSocket {
 
     // Adding a user to a game
     socket.on('join_game', (host, callback) => {
-      const authId = this.GetUidFromSocketID(socket.id);
+      const authId = this.GetAuthIdFromSocketID(socket.id);
 
       if (authId) {
         if (Object.keys(this.games).includes(host)) {
@@ -239,7 +239,7 @@ export class ServerSocket {
       // game ID exists in the locations object?
       if (Object.keys(this.locations).includes(gameId)) {
 
-        const authId = this.GetUidFromSocketID(socket.id);
+        const authId = this.GetAuthIdFromSocketID(socket.id);
 
         if (authId) {
           // add the location to the user in that game
@@ -301,7 +301,7 @@ export class ServerSocket {
     socket.on('disconnect', async () => {
 
       // gets the user authId from the users at the specific socket id
-      const authId = this.GetUidFromSocketID(socket.id);
+      const authId = this.GetAuthIdFromSocketID(socket.id);
 
       /////////// NEW //////////////////
       try {
@@ -352,7 +352,7 @@ export class ServerSocket {
   //// HELPER FUNCTIONS ////
 
   // inserting socket id of type string and finding the user within the users dictionary object
-  GetUidFromSocketID = (id: string) => {
+  GetAuthIdFromSocketID = (id: string) => {
     return Object.keys(this.users).find((authId) => this.users[authId] === id);
   };
 

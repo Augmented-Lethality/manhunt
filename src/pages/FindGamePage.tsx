@@ -63,7 +63,7 @@ const FindGamePage: React.FC = () => {
   //   </div>
   // );
 
-  const { uid, games, names } = useContext(SocketContext).SocketState;
+  const { authId, games, names } = useContext(SocketContext).SocketState;
   const { JoinGame } = useContext(SocketContext);
 
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ const FindGamePage: React.FC = () => {
     navigate('/lobby');
   };
 
-  const hostName = names[uid];
+  const hostName = names[authId];
 
   return (
     <div>
@@ -82,21 +82,21 @@ const FindGamePage: React.FC = () => {
           <strong>Available Games:</strong>
           <ul>
             {Object.keys(games).map((host) => {
-              if (host === uid) {
+              if (host === authId) {
                 return null;
               }
               // return (
               //   <li key={host}>
               //     <a onClick={() => handleJoinGame(host)}>
-              //       Game ID: {games[host].gameId}, Host: {host}, Users: {games[host].uidList.join(', ')}
+              //       Game ID: {games[host].gameId}, Host: {host}, Users: {games[host].authIdList.join(', ')}
               //     </a>
               //   </li>
               // );
               return (
                 <ol>
-                <li key={host}>
-                  <a onClick={() => handleJoinGame(host)}>Host: {hostName}, Users in Game: {games[host].uidList.length}</a>
-                </li>
+                  <li key={host}>
+                    <a onClick={() => handleJoinGame(host)}>Host: {hostName}, Users in Game: {games[host].authIdList.length}</a>
+                  </li>
                 </ol>
               );
             })}
