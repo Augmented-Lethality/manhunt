@@ -9,6 +9,14 @@ const Trophy: React.FC<TrophyProps> = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [prevMouseX, setPrevMouseX] = useState(0);
   const [prevMouseY, setPrevMouseY] = useState(0);
+
+
+  const storeTrophyInDatabase = (trophy) => {
+    // Save the trophy information to the database
+    // Use your database library and appropriate method or query here
+    // Example: db.saveTrophy(uniqueId, trophy);
+  };
+  
   
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
@@ -46,6 +54,15 @@ const Trophy: React.FC<TrophyProps> = () => {
   const shape = useMemo(() => getRandomElement(['box', 'polyhedron', 'torus']), []);
   const tubularSegments = useMemo(() => getRandomElement([3, 4, 5, 6, 7, 8, 100]), []);
   const tubeWidth = useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []);
+  const storedTrophy = useMemo(() => {
+    storeTrophyInDatabase({
+      dimension,
+      color,
+      shape,
+      tubularSegments,
+      tubeWidth
+    });
+  }, []);
 
 
   return (

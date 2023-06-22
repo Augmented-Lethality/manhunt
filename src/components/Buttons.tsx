@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios'
+
 
 type ButtonProps = {
   label: string;
@@ -49,7 +49,7 @@ export const Button: React.FC<ButtonProps> = ({
 };
 
 export const ButtonToHome: React.FC = () => {
-  return <Button label='Home' route='/home' />;
+  return <Button label='Home' route='/home'  />;
 };
 
 export const ButtonToGame: React.FC = () => {
