@@ -2,7 +2,7 @@ import { FaceMatcher, createCanvasFromMedia, matchDimensions, detectAllFaces, re
 import React, { useEffect, useRef } from 'react';
 import { useWebcam } from '../contexts/WebcamProvider';
 import { useNavigate } from 'react-router-dom';
-
+import TargetRecognition from './TargetRecognition'
 type KillCamProps = {
   faceMatcher: FaceMatcher | null;
 }
@@ -90,6 +90,7 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   return (
     <div style={{ textAlign: 'center', padding: '10px', display: 'flex', justifyContent: 'center' }}>      
       <canvas ref={canvasRef} style={{ position: 'absolute' }} />
+      {/* <TargetRecognition target/> */}
     </div>
   );
 }
