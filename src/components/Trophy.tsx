@@ -51,7 +51,7 @@ const Trophy: React.FC<TrophyProps> = () => {
   
   // Generate these Trophy properies randomly from given arrays
   const dimension = useMemo(() => getRandomElement([1, 2, 3]), []);
-  const color = useMemo(() => getRandomElement(['darkred', 'lightgreen', 'darkblue', 'yellow', 'orange', 'black', 'pink', 'aquamarine']), []);
+  const color = useMemo(() => getRandomElement(['darkred', 'lightgreen', '#3d6cb8', 'yellow', 'orange', '#19191a', 'pink', 'aquamarine']), []);
   const shape = useMemo(() => getRandomElement(['box', 'polyhedron', 'torus']), []);
   const tubularSegments = useMemo(() => getRandomElement([3, 4, 5, 6, 7, 8, 100]), []);
   const tubeWidth = useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []);
