@@ -4,10 +4,11 @@ import { ButtonToHome, ButtonToGame } from '../components/Buttons';
 import WhosHunting from '../components/WhosHunting';
 import { useAuth0 } from "@auth0/auth0-react";
 import { Container } from '../styles/Container';
-
+import { Header } from '../styles/Header'
+import { Main } from '../styles/Main'
 
 const GameLobby: React.FunctionComponent = (props) => {
-
+  const { user, isAuthenticated } = useAuth0();
   const { socket, uid, games, users, names } = useContext(SocketContext).SocketState;
   const [showHunting, setShowHunting] = useState(false);
   const [currentGame, setCurrentGame] = useState<{gameId: string, uidList: string[], hunted: string }>({gameId: '', uidList: [], hunted: ''});
@@ -33,31 +34,39 @@ const GameLobby: React.FunctionComponent = (props) => {
 
   }, [games])
 
+  if(!isAuthenticated ){
+    return null;
+  }
 
   return (
     <Container>
-      <ButtonToHome />
-      <h2>Game Lobby</h2>
-      {currentGame ? (
-        <div>
-          {showHunting && <WhosHunting users={currentGame.uidList} host={ host } hunted={ currentGame.hunted }/>}
-          {host === uid && !showHunting && (
-            <button onClick={() => setShowHunting(!showHunting)}>
-              Pick the Victim
-            </button>
-          )}
-          <p>Players:</p>
-          <ul>
-            {currentGame.uidList.map((playerUid) => (
-              <li key={playerUid}>{names[playerUid]}</li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <>
-        </>
-      )}
-      { showHunting && <ButtonToGame />}
+      <Header>
+        <h2>Game Lobby</h2>
+        <ButtonToHome />
+      </Header>
+      <Main>
+        {currentGame ? (
+          <div>
+            {showHunting && <WhosHunting users={currentGame.uidList} host={ host } hunted={ currentGame.hunted }/>}
+            {host === uid && !showHunting && (
+              <button onClick={() => setShowHunting(!showHunting)}>
+                Pick the Victim
+              </button>
+            )}
+            <p>Players:</p>
+            <ul>
+              {currentGame.uidList.map((playerUid) => (
+                <li key={playerUid}>{names[playerUid]}</li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <>
+          </>
+        )}
+        { showHunting && <ButtonToGame />}
+      </Main>
+      
     </Container>
   );
 };
