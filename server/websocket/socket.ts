@@ -234,11 +234,8 @@ export class ServerSocket {
 
     // when the disconnect occurs
     socket.on('disconnect', async () => {
+      console.log('there was a socket disconnection')
 
-      // gets the user authId from the users at the specific socket id
-      const authId = this.GetAuthIdFromSocketID(socket.id);
-
-      /////////// NEW //////////////////
       try {
         const user = await User.findOne({ where: { socketId: socket.id } });
         if (user) {
@@ -254,33 +251,23 @@ export class ServerSocket {
           }
 
           // delete the socket id from the user since they're not connected anymore
-          const updatedUser = await User.update(
+          await User.update(
             { socketId: '' },
             { where: { socketId: socket.id } }
           )
-          // console.log('removed socket from user:', updatedUser)
+          console.log('removed socket from disconnected user:')
         }
+
+        // send new games to all connected users to update their games lists
+        this.io.to('users').emit('update_games');
+        // send new user to all connected users to update their state
+        this.io.to('users').emit('update_users');
+
 
       } catch (err) {
         console.log(err);
       }
-      //////////////////////////////////
 
-      // if there was a valid authId returned, delete that user from the users object and send the updated array to the client
-      if (authId) {
-        delete this.users[authId];
-
-        const users = Object.values(this.users);
-
-        this.io.to('users').emit('user_disconnected', users, socket.id)
-
-        if (this.games[authId]) {
-
-          delete this.games[authId];
-
-          this.io.to('users').emit('update_games', users, this.games);
-        }
-      }
     });
   };
 
