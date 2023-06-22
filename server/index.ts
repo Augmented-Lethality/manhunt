@@ -2,9 +2,7 @@ import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import { createServer } from "http";
-
 import { ServerSocket } from './websocket/socket';
-const { sequelize } = require("./database/index");
 const { Users } = require("./routes/users");
 const { Trophies } = require('./routes/trophies');
 

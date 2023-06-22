@@ -22,7 +22,6 @@
     "@auth0/auth0-react": "^2.1.0",
     "@react-three/drei": "^9.77.0",
     "@tensorflow/tfjs": "4.3",
-    "@types/dotenv": "^8.2.0",
     "@types/styled-components": "^5.1.26",
     "axios": "^1.4.0",
     "browserify-fs": "^1.0.0",
