@@ -1,33 +1,34 @@
 import React, { useContext, useEffect, useState } from 'react';
-
+import { User } from '../contexts/Socket/SocketContext';
 export interface IWhosHuntingProps {
-  users: string[]
-  host: string
-  hunted: string
+  // host: string
+  // hunted: string
+  players: any
+  // users: User[]
+  setHunted: (victim: string) => void
 }
 
 import SocketContext from '../contexts/Socket/SocketContext';
 
 
 const WhosHunting: React.FunctionComponent<IWhosHuntingProps> = (props) => {
-  const { SetHunted } = useContext(SocketContext);
-  const { names } = useContext(SocketContext).SocketState;
 
+  const { players, setHunted } = props;
 
-  const { users, host, hunted } = props;
-
-  // randomly pick a user
   useEffect(() => {
+    // console.log(players[0])
+  }, [])
 
-    const victim = users[Math.floor(Math.random() * users.length)];
-    SetHunted(host, victim);
+  // // randomly pick a user
+  // const pickVictim = () => {
+  //   const victim = players[0].users[Math.floor(Math.random() * players.length)];
+  //   setHunted(victim);
 
-
-  }, [hunted])
+  // }
 
   return (
     <div>
-      {hunted.length > 0 && <p>{names[hunted]}, you're being hunted.</p>}
+      {/* <button onClick={pickVictim}>Who's Being Hunted?</button> */}
     </div>
   );
 

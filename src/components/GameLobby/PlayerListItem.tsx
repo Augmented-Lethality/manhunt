@@ -6,7 +6,7 @@ import { User } from '../../contexts/Socket/SocketContext';
 export const PlayerListItem: React.FC<{ player: User }> = ({ player }) => {
 
   useEffect(() => {
-    console.log('player:', player)
+    // console.log('player:', player)
   })
 
   return (
@@ -14,6 +14,7 @@ export const PlayerListItem: React.FC<{ player: User }> = ({ player }) => {
       <strong>Player: {player[0].username}</strong>
       <br />
       <strong>Games Won: {player[0].gamesWon}</strong>
+      <br />
     </div>
   );
 };
