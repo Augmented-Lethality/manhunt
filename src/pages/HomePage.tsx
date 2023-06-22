@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   ButtonToProfile,
@@ -11,6 +10,8 @@ import {
 
 import SocketContext from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
+import { Header } from '../styles/Header';
+import { Main } from '../styles/Main';
 
 type UserData = {
   username: string;
@@ -57,14 +58,20 @@ const HomePage = () => {
 
   return (
     <Container>
-      <h1 style={{ color: '#6e6b8c' }}>Welcome Home, {user.given_name}</h1>
-      Users Online: {users.length}
-      <br />
-      <br />
-      <ButtonToProfile />
-      <ButtonToHostGame />
-      <ButtonToFindGame />
-      <LogoutButton />
+      <Header>
+        <h1 className='logo'>Man Hunt</h1>
+        <img
+          src={user.picture}
+          alt='Profile'
+          className='profile__avatar'
+          style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
+      </Header>
+      <Main>
+        <ButtonToProfile />
+        <ButtonToHostGame />
+        <ButtonToFindGame />
+        <LogoutButton />
+      </Main>
     </Container>
   );
 };

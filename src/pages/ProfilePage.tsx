@@ -4,6 +4,9 @@ import axios from 'axios';
 import { ButtonToHome } from '../components/Buttons';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
 import { Container } from '../styles/Container';
+import { Header } from '../styles/Header';
+import { Main } from '../styles/Main';
+
 export type UserData = {
   username: string;
   email: string;
@@ -56,50 +59,54 @@ const ProfilePage: React.FC = () => {
 
   return (
     <Container>
-      <h1 id='page-title' className='content__title'>Profile</h1>
-      <div className='content__body'>
-        <div className='profile-grid'>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <img
-              src={user.picture}
-              alt='Profile'
-              className='profile__avatar'
-              style={{ height: '14vh', width: '14vh' }}
-            />
-            <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
-              <h2 className='profile__title'>{user.name}</h2>
-              <span className='profile__description'>
-                {user.email}
-                {/* <ButtonToUpdateEmail /> */}
-              </span>
+      <Header>
+        <h1>Profile</h1>
+        <ButtonToHome></ButtonToHome>
+      </Header>
+      <Main>
+        <div className='content__body'>
+          <div className='profile-grid'>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <img
+                src={user.picture}
+                alt='Profile'
+                className='profile__avatar'
+                style={{ height: '14vh', width: '14vh', borderRadius:'50%'}}
+              />
+              <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
+                <h2 className='profile__title'>{user.name}</h2>
+                <span className='profile__description'>
+                  {user.email}
+                  {/* <ButtonToUpdateEmail /> */}
+                </span>
+              </div>
             </div>
-          </div>
-          {userData?.facialDescriptions ? (
-            <div className='profile_verification'>
-              <p style={{ textAlign: 'start', margin: '3vh' }}>
-                Citizen has been verified. The CorpoVerse thanks you for your cooperation.
-              </p>
-              <button onClick={() => setIsVerifying(true)}>Feeling Patriotic? Reverify</button>
+
+            {userData?.facialDescriptions ? (
+              <div className='profile_verification'>
+                <p style={{ textAlign: 'start', margin: '3vh' }}>
+                  Citizen has been verified. The CorpoVerse thanks you for your cooperation.
+                </p>
+                <button onClick={() => setIsVerifying(true)}>Feeling Patriotic? Reverify</button>
+              </div>
+            ) : (
+              <div className='profile_verification'>
+                <h3>Citizen has not been processed by the CorpoReality Police.</h3>
+                <h3>Please send in Biodata to participate in SOCIETY™.</h3>
+                <button style={{ background: '#6e6b8c', color: 'white' }} onClick={() => setIsVerifying(true)}>Send BioData</button>
+              </div>
+            )}
+            <div className='profile__details'>
+              <br />
+              <br />
+              <h2>Games Played: {userData?.gamesPlayed}</h2>
+              <h2>Games Won: {userData?.gamesWon}</h2>
+              <h2>Kills Confirmed: {userData?.killsConfirmed}</h2>
             </div>
-          ) : (
-            <div className='profile_verification'>
-              <h3>Citizen has not been processed by the CorpoReality Police.</h3>
-              <h3>Please send in Biodata to participate in SOCIETY™.</h3>
-              <button style={{ background: '#6e6b8c', color: 'white' }} onClick={() => setIsVerifying(true)}>Send BioData</button>
-            </div>
-          )}
-          <div className='profile__details'>
-            <br />
-            <br />
-            <h2>Games Played: {userData?.gamesPlayed}</h2>
-            <h2>Games Won: {userData?.gamesWon}</h2>
-            <h2>Kills Confirmed: {userData?.killsConfirmed}</h2>
-            {/* <h2>userData from database</h2>
-            <p>{JSON.stringify(userData, null, 2)}</p> */}
-            <ButtonToHome />
           </div>
         </div>
-      </div>
+      </Main>
+      
     </Container>
   );
 };
