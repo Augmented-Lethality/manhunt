@@ -23,7 +23,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   const [loading, setLoading] = useState(true);
 
   // this is a custom hook I made to create a socket connection
-  const socket = useSocket(`ws://${process.env.REACT_APP_SOCKET_URI}`, {
+  const socket = useSocket(`https://${process.env.REACT_APP_SOCKET_URI}`, {
     reconnectionAttempts: 5,
     reconnectionDelay: 3000,
     autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
