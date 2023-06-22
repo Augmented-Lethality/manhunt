@@ -82,20 +82,20 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
 
     // user disconnected event
-    socket.on('user_disconnected', (uid: string) => {
+    socket.on('user_disconnected', (authId: string) => {
       console.info('user disconnected')
-      SocketDispatch({ type: 'remove_user', payload: uid })
+      SocketDispatch({ type: 'remove_user', payload: authId })
       // remove name
     });
 
     // created a game event
-    socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
+    socket.on('game_created', (games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => {
       // console.info('game created, new game list received')
       SocketDispatch({ type: 'update_games', payload: games })
     });
 
     // updated a game event
-    socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
+    socket.on('update_games', (games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => {
       // console.info('games updated, new game list received')
       SocketDispatch({ type: 'update_games', payload: games })
     });
@@ -107,7 +107,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
 
     // update the names state
-    socket.on('update_names', (names: { [uid: string]: string }) => {
+    socket.on('update_names', (names: { [authId: string]: string }) => {
       // console.info('names updated, new name list received')
       SocketDispatch({ type: 'update_names', payload: names })
     });
@@ -128,10 +128,10 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
     // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
     // on the handshake and it gets the cb from the server on handshake
-    socket.emit('handshake', user, (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string } },
-      names: { [uid: string]: string }) => {
+    socket.emit('handshake', user, (authId: string, users: string[], games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } },
+      names: { [authId: string]: string }) => {
       // console.log('We shook, let\'s trade info xoxo');
-      SocketDispatch({ type: 'update_uid', payload: uid });
+      SocketDispatch({ type: 'update_authId', payload: authId });
       SocketDispatch({ type: 'update_users', payload: users });
       SocketDispatch({ type: 'update_games', payload: games });
       SocketDispatch({ type: 'update_names', payload: names });
@@ -145,7 +145,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   const CreateGame = () => {
     // console.info('Client wants to create a game...');
 
-    socket.emit('create_game', user, (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
+    socket.emit('create_game', user, (authId: string, games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => {
       SocketDispatch({ type: 'update_games', payload: games })
     });
   }
@@ -153,7 +153,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   const AddLocation = (gameId: string, longitude: number, latitude: number, user: any) => {
     console.info(`User ${user.sub} wants to add a location: ${longitude} ${latitude}`);
 
-    socket.emit('add_location', gameId, longitude, latitude, user, (uid: string, locations: { [uid: string]: { longitude: number, latitude: number } }) => {
+    socket.emit('add_location', gameId, longitude, latitude, user, (authId: string, locations: { [authId: string]: { longitude: number, latitude: number } }) => {
       SocketDispatch({ type: 'updated_locations', payload: locations });
     });
   };
@@ -162,7 +162,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   const JoinGame = (host: string) => {
     // console.info('Client wants to join a game...');
 
-    socket.emit('join_game', host, (games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
+    socket.emit('join_game', host, (games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => {
       SocketDispatch({ type: 'update_games', payload: games });
     });
   };
@@ -172,14 +172,14 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.emit('nav_to_endpoint', host, endpoint);
   };
 
-  const SetHunted = (host: string, uid: string) => {
-    // console.info(`Setting Hunted, ${host} picked ${ uid }`);
-    socket.emit('set_hunted', host, uid);
+  const SetHunted = (host: string, authId: string) => {
+    // console.info(`Setting Hunted, ${host} picked ${ authId }`);
+    socket.emit('set_hunted', host, authId);
   };
 
-  const AddName = (name: string, uid: string) => {
+  const AddName = (name: string, authId: string) => {
     // console.info('Adding name');
-    socket.emit('add_name', name, uid, (names: { [uid: string]: string }) => {
+    socket.emit('add_name', name, authId, (names: { [authId: string]: string }) => {
       SocketDispatch({ type: 'update_names', payload: names });
     });
   }

@@ -25,18 +25,18 @@ export class ServerSocket {
 
   // dictionary object of connected users
   // key is the user id and the value is the socket id to send messages to the correct clients
-  public users: { [uid: string]: string };
+  public users: { [authId: string]: string };
 
-  // names object, stores the uid as the string
-  public names: { [uid: string]: string }
+  // names object, stores the authId as the string
+  public names: { [authId: string]: string }
 
   // dictionary object of connected games
   // key is the host (the user id of who created the game)
-  // the object holds the game id, and uidList which is the list of connected users
-  public games: { [host: string]: { gameId: string, uidList: string[], hunted: string } };
+  // the object holds the game id, and authIdList which is the list of connected users
+  public games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } };
 
   // new locations object, key is the user id, stores the long and lat as number values
-  public locations: { [gameId: string]: { [uid: string]: { longitude: number, latitude: number } } };
+  public locations: { [gameId: string]: { [authId: string]: { longitude: number, latitude: number } } };
 
 
   // constructor automatically called when an instance of a class is created, meaning when the server starts, this socket server
@@ -79,10 +79,14 @@ export class ServerSocket {
 
 
     // client is asking to make a socket connection to the server, also known as a handshake
-    socket.on('handshake', async (user, callback: (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[] } },
-      names: { [uid: string]: string }) => void) => {
+    socket.on('handshake', async (user, callback: (authId: string, users: string[], games: { [host: string]: { gameId: string, authIdList: string[] } },
+      names: { [authId: string]: string }) => void) => {
 
       socket.join('users');
+
+      if (socket.rooms.has('users')) {
+        console.log('A client reconnected');
+      }
 
       // console.log("backend user:", user)
       // is this a reconnection attempt?
@@ -96,7 +100,7 @@ export class ServerSocket {
         const existingUser = await User.findOne({ where: { authId: user.sub } });
 
         if (existingUser) {
-          // If the user exists, update the socket.id if it doesn't match the current socket.id
+          // If the user exists, update the socket.id
           await User.update(
             { socketId: socket.id },
             { where: { authId: user.sub } }
@@ -113,34 +117,34 @@ export class ServerSocket {
       if (reconnected) {
         // console.info('User reconnected.');
 
-        const uid = this.GetUidFromSocketID(socket.id);
+        const authId = this.GetUidFromSocketID(socket.id);
         const users = Object.values(this.users);
 
-        // if the uid obtained is valid and cool, send the client the uid and users
-        if (uid) {
+        // if the authId obtained is valid and cool, send the client the authId and users
+        if (authId) {
           // console.info('Sending info for reconnect ...');
-          callback(uid, users, this.games, this.names);
+          callback(authId, users, this.games, this.names);
           return;
         }
       }
 
-      // generate new user, using uuid module to generate a unique uid
-      const uid = v4();
+      // generate new user, using authId module to generate a unique authId
+      const authId = user.sub;
 
       // add this to the users dictionary object
-      this.users[uid] = socket.id;
+      this.users[authId] = socket.id;
 
       // storing all of the users from the users object into an array
       const users = Object.values(this.users);
       // console.info('Sending new user info ...');
-      callback(uid, users, this.games, this.names);
+      callback(authId, users, this.games, this.names);
 
       // send new user to all connected users to update their state
       this.io.to('users').emit('user_connected', users)
     });
 
     // when client emits a createGame event, make the new game
-    socket.on('create_game', async (user, callback: (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => void) => {
+    socket.on('create_game', async (user, callback: (authId: string, games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => void) => {
 
       // does the game exist?
       const host = this.GetUidFromSocketID(socket.id);
@@ -182,7 +186,7 @@ export class ServerSocket {
         const gameId = v4();
 
         // add this to the games dictionary object
-        this.games[host] = { gameId: gameId, uidList: [host], hunted: '' };
+        this.games[host] = { gameId: gameId, authIdList: [host], hunted: '' };
         socket.join(gameId);
 
 
@@ -209,13 +213,13 @@ export class ServerSocket {
 
     // Adding a user to a game
     socket.on('join_game', (host, callback) => {
-      const uid = this.GetUidFromSocketID(socket.id);
+      const authId = this.GetUidFromSocketID(socket.id);
 
-      if (uid) {
+      if (authId) {
         if (Object.keys(this.games).includes(host)) {
 
-          if (!this.games[host].uidList.includes(uid)) {
-            this.games[host].uidList.push(uid);
+          if (!this.games[host].authIdList.includes(authId)) {
+            this.games[host].authIdList.push(authId);
             const users = Object.values(this.users);
 
             // update the games for everyone
@@ -235,14 +239,14 @@ export class ServerSocket {
       // game ID exists in the locations object?
       if (Object.keys(this.locations).includes(gameId)) {
 
-        const uid = this.GetUidFromSocketID(socket.id);
+        const authId = this.GetUidFromSocketID(socket.id);
 
-        if (uid) {
+        if (authId) {
           // add the location to the user in that game
-          this.locations[gameId][uid] = { longitude: longitude, latitude: latitude };
+          this.locations[gameId][authId] = { longitude: longitude, latitude: latitude };
 
           // send back the updated locations to the specific player
-          callback(uid, this.locations[gameId]);
+          callback(authId, this.locations[gameId]);
 
           // Emit the updated locations to all players in the game except the sender
           socket.to(gameId).emit('updated_locations', this.locations[gameId]);
@@ -263,12 +267,12 @@ export class ServerSocket {
       }
     });
 
-    socket.on('set_hunted', (host, uid) => {
+    socket.on('set_hunted', (host, authId) => {
 
-      console.log(`received set hunted to ${uid} from ${host}`)
+      console.log(`received set hunted to ${authId} from ${host}`)
       if (Object.keys(this.games).includes(host)) {
 
-        this.games[host].hunted = uid;
+        this.games[host].hunted = authId;
         // const gameId = this.games[host].gameId
 
         const users = Object.values(this.users);
@@ -277,12 +281,12 @@ export class ServerSocket {
     });
 
     // adding/updating a name
-    socket.on('add_name', (name, uid, callback) => {
+    socket.on('add_name', (name, authId, callback) => {
 
-      // uid is not in the names object?
-      if (!this.names[uid]) {
+      // authId is not in the names object?
+      if (!this.names[authId]) {
 
-        this.names[uid] = name;
+        this.names[authId] = name;
 
         const users = Object.values(this.users);
 
@@ -296,8 +300,8 @@ export class ServerSocket {
     // when the disconnect occurs
     socket.on('disconnect', async () => {
 
-      // gets the user uid from the users at the specific socket id
-      const uid = this.GetUidFromSocketID(socket.id);
+      // gets the user authId from the users at the specific socket id
+      const authId = this.GetUidFromSocketID(socket.id);
 
       /////////// NEW //////////////////
       try {
@@ -327,17 +331,17 @@ export class ServerSocket {
       }
       //////////////////////////////////
 
-      // if there was a valid uid returned, delete that user from the users object and send the updated array to the client
-      if (uid) {
-        delete this.users[uid];
+      // if there was a valid authId returned, delete that user from the users object and send the updated array to the client
+      if (authId) {
+        delete this.users[authId];
 
         const users = Object.values(this.users);
 
         this.io.to('users').emit('user_disconnected', users, socket.id)
 
-        if (this.games[uid]) {
+        if (this.games[authId]) {
 
-          delete this.games[uid];
+          delete this.games[authId];
 
           this.io.to('users').emit('update_games', users, this.games);
         }
@@ -349,7 +353,7 @@ export class ServerSocket {
 
   // inserting socket id of type string and finding the user within the users dictionary object
   GetUidFromSocketID = (id: string) => {
-    return Object.keys(this.users).find((uid) => this.users[uid] === id);
+    return Object.keys(this.users).find((authId) => this.users[authId] === id);
   };
 
   // name is name of socket, users is list of socket ids, payload is information needed by the user for state updates
