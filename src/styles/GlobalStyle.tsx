@@ -34,6 +34,20 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
   }
 
+  .react-icon{
+    font-size: 3rem;
+  }
+
+  .react-icon-large{
+    font-size: 3rem;
+    padding: 18px;
+    border-radius: 50%;
+    background-color: rgb(48 48 58);
+    color: #6e6b8c;
+    border: 2px solid #6e6b8c;
+    box-shadow: 0 0 0 3px #1b1b1b;
+  }
+
   // p {
   //   font-size: 1rem;
   //   color: #979fd0;

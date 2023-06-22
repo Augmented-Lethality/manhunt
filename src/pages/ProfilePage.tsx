@@ -4,8 +4,10 @@ import axios from 'axios';
 import { ButtonToHome } from '../components/Buttons';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
 import { Container } from '../styles/Container';
-import { Header } from '../styles/Header';
+import { Header, Footer } from '../styles/Header';
 import { Main } from '../styles/Main';
+import { AiFillCloseCircle } from 'react-icons/ai'
+import {IoSave, IoCamera} from 'react-icons/io5'
 
 export type UserData = {
   username: string;
@@ -21,7 +23,7 @@ export type UserData = {
 const ProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [isVerifying, setIsVerifying] = useState(false);
+  const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -47,13 +49,19 @@ const ProfilePage: React.FC = () => {
     return null;
   }
 
-  if (isVerifying) {
+  if (photoStatus === 'camera') {
     return (
-      <CreateFaceDescriptions
-        setIsVerifying={setIsVerifying}
-        username={user.name}
-        userID={user.sub}
-        setUser={setUserData} />
+      <Container>
+        <Header>
+          <h1>BioData</h1>
+          <AiFillCloseCircle className='react-icon' onClick={()=>{setPhotoStatus('profile')}}/>
+        </Header>
+        <CreateFaceDescriptions
+          setPhotoStatus={setPhotoStatus}
+          username={user.name}
+          userID={user.sub}
+          setUser={setUserData} />
+      </Container>
     )
   }
 
@@ -87,13 +95,13 @@ const ProfilePage: React.FC = () => {
                 <p style={{ textAlign: 'start', margin: '3vh' }}>
                   Citizen has been verified. The CorpoVerse thanks you for your cooperation.
                 </p>
-                <button onClick={() => setIsVerifying(true)}>Feeling Patriotic? Reverify</button>
+                <button onClick={() => setPhotoStatus('camera')}>Feeling Patriotic? Reverify</button>
               </div>
             ) : (
               <div className='profile_verification'>
                 <h3>Citizen has not been processed by the CorpoReality Police.</h3>
                 <h3>Please send in Biodata to participate in SOCIETY™.</h3>
-                <button style={{ background: '#6e6b8c', color: 'white' }} onClick={() => setIsVerifying(true)}>Send BioData</button>
+                <button style={{ background: '#6e6b8c', color: 'white' }} onClick={() => setPhotoStatus('camera')}>Send BioData</button>
               </div>
             )}
             <div className='profile__details'>
