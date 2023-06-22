@@ -89,7 +89,7 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
     case 'update_lobby_users':
       return { ...state, users: action.payload as User[] };
     case 'update_lobby_games':
-      return { ...state, users: action.payload as Game[] };
+      return { ...state, games: action.payload as Game[] };
 
     default:
       return { ...state };

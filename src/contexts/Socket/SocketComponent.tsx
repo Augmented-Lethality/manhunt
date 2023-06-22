@@ -107,10 +107,10 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
 
     // update the names state
-    socket.on('update_names', (names: { [authId: string]: string }) => {
-      // console.info('names updated, new name list received')
-      SocketDispatch({ type: 'update_names', payload: names })
-    });
+    // socket.on('update_names', (names: { [authId: string]: string }) => {
+    //   // console.info('names updated, new name list received')
+    //   SocketDispatch({ type: 'update_names', payload: names })
+    // });
 
 
   }
@@ -137,9 +137,9 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   const AddLocation = (gameId: string, longitude: number, latitude: number, user: any) => {
     console.info(`User ${user.sub} wants to add a location: ${longitude} ${latitude}`);
 
-    socket.emit('add_location', gameId, longitude, latitude, user, (authId: string, locations: { [authId: string]: { longitude: number, latitude: number } }) => {
-      SocketDispatch({ type: 'updated_locations', payload: locations });
-    });
+    // socket.emit('add_location', gameId, longitude, latitude, user, (authId: string, locations: { [authId: string]: { longitude: number, latitude: number } }) => {
+    //   SocketDispatch({ type: 'updated_locations', payload: locations });
+    // });
   };
 
   // sending join game to the server, host identifies game to join
@@ -167,9 +167,9 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   const AddName = (name: string, authId: string) => {
     // console.info('Adding name');
-    socket.emit('add_name', name, authId, (names: { [authId: string]: string }) => {
-      SocketDispatch({ type: 'update_names', payload: names });
-    });
+    // socket.emit('add_name', name, authId, (names: { [authId: string]: string }) => {
+    //   SocketDispatch({ type: 'update_names', payload: names });
+    // });
   }
 
 
