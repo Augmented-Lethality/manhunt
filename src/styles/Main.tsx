@@ -3,12 +3,7 @@ import styled from 'styled-components';
 export const Main = styled.main`
 display: flex;
 flex-direction: column;
-gap: 1.5rem;
-padding: 1rem;
-width: 100%;
 height: 100%;
-margin: 0 auto;
+margin: 1.2rem;
 overflow: auto;
-color: white;
-
 `;
