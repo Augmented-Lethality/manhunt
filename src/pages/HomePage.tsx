@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   ButtonToProfile,
@@ -8,8 +7,11 @@ import {
   ButtonToHostGame,
   LogoutButton,
 } from '../components/Buttons';
-
+import DropDownMenu from '../components/DropDownMenu';
 import SocketContext from '../contexts/Socket/SocketContext';
+import { Container } from '../styles/Container';
+import { Header } from '../styles/Header';
+import { Main } from '../styles/Main';
 
 type UserData = {
   username: string;
@@ -26,7 +28,7 @@ const HomePage = () => {
 
   useEffect(() => {
 
-    console.log("users in socket state:", users, users.length)
+    // console.log("users in socket state:", users, users.length)
     const fetchUserData = async () => {
       try {
         // Check if the user exists by sending a POST request instead of a GET request
@@ -57,24 +59,29 @@ const HomePage = () => {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1.5rem',
-        maxWidth: '400px',
-        margin: 0,
-      }}
-    >
-      <h1 style={{ color: '#6e6b8c' }}>Welcome Home, {user.name}</h1>
-      Users Online: {users.length}
-      <br />
-      <br />
-      <ButtonToProfile />
-      <ButtonToHostGame />
-      <ButtonToFindGame />
-      <LogoutButton />
-    </div>
+    <Container>
+      <Header>
+        <h1 className='logo'>Man Hunt</h1>
+        <img
+          src={user.picture}
+          alt='Profile'
+          className='profile__avatar'
+          style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
+        <h1>Users Online: {users.length}</h1>
+          <DropDownMenu>
+            <div>profile</div>
+            <div>friends</div>
+            <div>settings</div>
+            <div>logout</div>
+          </DropDownMenu>
+      </Header>
+      <Main>
+        <ButtonToProfile />
+        <ButtonToHostGame />
+        <ButtonToFindGame />
+        <LogoutButton />
+      </Main>
+    </Container>
   );
 };
 

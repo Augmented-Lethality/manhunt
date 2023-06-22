@@ -1,18 +1,25 @@
+import {
+  FaceMatcher,
+  loadSsdMobilenetv1Model,
+  loadFaceLandmarkModel,
+  loadFaceRecognitionModel,
+  LabeledFaceDescriptors
+} from 'face-api.js';
 import React, { useState, useContext, useEffect } from 'react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { WebcamProvider } from '../contexts/WebcamProvider'
 import axios from 'axios';
-import * as faceapi from 'face-api.js';
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
 import { ButtonToHome } from '../components/Buttons';
-
+import Countdown from '../components/countdown';
+import { Container } from '../styles/Container';
 const GamePage: React.FC = () => {
 
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
-  const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
-  const { authId, games, names } = useContext(SocketContext).SocketState;
+  const [faceMatcher, setFaceMatcher] = useState<FaceMatcher | null>(null);
+  const { games } = useContext(SocketContext).SocketState;
   const [currentGame, setUserGame] = useState();
 
 
@@ -22,9 +29,9 @@ const GamePage: React.FC = () => {
 
   const loadTensorFlowFaceMatcher = async () => {
     try {
-      await faceapi.loadSsdMobilenetv1Model('/models')
-      await faceapi.loadFaceLandmarkModel('/models')
-      await faceapi.loadFaceRecognitionModel('/models')
+      await loadSsdMobilenetv1Model('/models')
+      await loadFaceLandmarkModel('/models')
+      await loadFaceRecognitionModel('/models')
       createFaceMatcher();
     } catch (err) {
       console.error(err);
@@ -38,9 +45,9 @@ const GamePage: React.FC = () => {
     const labeledFaceDescriptors = users.map((user) => {
       // Convert each user's description array back to a Float32Array
       const descriptions = [new Float32Array(user.facialDescriptions)];
-      return new faceapi.LabeledFaceDescriptors(user.username, descriptions);
+      return new LabeledFaceDescriptors(user.username, descriptions);
     });
-    setFaceMatcher(new faceapi.FaceMatcher(labeledFaceDescriptors, 0.5));
+    setFaceMatcher(new FaceMatcher(labeledFaceDescriptors, 0.5));
   }
 
   const handleGameChange = () => {
@@ -52,14 +59,9 @@ const GamePage: React.FC = () => {
   }
 
   return (
-    <div>
+    <Container>
       <ButtonToHome />
-      {/* <p>Players in this game:</p>
-      <ul>
-        {currentGame?.authIdList.map((playerAuthId) => (
-          <li key={playerAuthId}>{names[playerAuthId]}</li>
-        ))}
-      </ul> */}
+      <Countdown initialCount={5*60}/>
       <button onClick={handleGameChange}>{gameMode === 'Chase' ? 'Go in For the Kill' : 'Return to the Chase'}</button>
       {gameMode === 'Chase' && <ChaseCam />}
       {gameMode === 'Kill' && (
@@ -69,7 +71,7 @@ const GamePage: React.FC = () => {
           </WebcamProvider>
         </div>
       )}
-    </div>
+    </Container>
   );
 }
 

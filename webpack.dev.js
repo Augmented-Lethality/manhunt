@@ -4,7 +4,6 @@ const Dotenv = require('dotenv-webpack');
 
 const srcDir = path.resolve(__dirname, "src");
 const distDir = path.resolve(__dirname, "dist/client");
-console.log(distDir)
 
 module.exports = {
   mode: "development",

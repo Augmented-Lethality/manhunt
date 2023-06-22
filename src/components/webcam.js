@@ -57,7 +57,7 @@ class WebcamRendererLocal {
       navigator.mediaDevices
         .getUserMedia(constraints)
         .then((stream) => {
-          console.log(`using the webcam successfully...`);
+          // console.log(`using the webcam successfully...`);
           video.srcObject = stream;
           video.play();
         })
@@ -221,7 +221,7 @@ class LocationBasedLocal {
       try {
         this.setWorldPosition(object, lon, lat, elev);
         this._scene.add(object);
-        console.log('added object!');
+        // console.log('added object!');
         resolve();
       } catch (error) {
         console.error('An error occurred while adding the object:', error);
