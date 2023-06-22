@@ -7,7 +7,7 @@ import {
   ButtonToHostGame,
   LogoutButton,
 } from '../components/Buttons';
-
+import DropDownMenu from '../components/DropDownMenu';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
 import { Header } from '../styles/Header';
@@ -65,6 +65,12 @@ const HomePage = () => {
           alt='Profile'
           className='profile__avatar'
           style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
+          <DropDownMenu>
+            <div>profile</div>
+            <div>friends</div>
+            <div>settings</div>
+            <div>logout</div>
+          </DropDownMenu>
       </Header>
       <Main>
         <ButtonToProfile />
