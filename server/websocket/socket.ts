@@ -163,6 +163,23 @@ export class ServerSocket {
       }
     });
 
+    socket.on('join_lobby', async (host, user) => {
+      try {
+        const game = await Game.findOne({ where: { host: host } });
+        if (game) {
+          if (game.dataValues.users.includes(user.sub)) {
+            console.log('user in game we good, updating the game lobby')
+            this.io.to(user.gameId).emit('update_lobby_users');
+            this.io.to(user.gameId).emit('update_lobby_games');
+          }
+        } else {
+          console.log('no game with that host exists')
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
 
 
     // adding/updating a location

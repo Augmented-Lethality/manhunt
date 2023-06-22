@@ -55,7 +55,8 @@ export const defaultSocketContextState: ISocketContextState = {
 
 // these actions will each have their own functions in the reducer
 export type TSocketContextActions = 'update_socket' | 'update_authId' |
-  'update_users' | 'remove_user' | 'update_games' | 'updated_locations' | 'update_names'
+  'update_users' | 'remove_user' | 'update_games' | 'updated_locations' | 'update_names' | 'update_lobby_users'
+  | 'update_lobby_games'
 
 // payload represents the data that is associated with each action that is within this context
 export type TSocketContextPayload = string | User | Socket | Game
@@ -87,6 +88,11 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
       return { ...state, locations: action.payload as { [authId: string]: { longitude: number, latitude: number } } };
     case 'update_names':
       return { ...state, names: { ...state.names, ...action.payload as { [authId: string]: string } } };
+    case 'update_lobby_users':
+      return { ...state, users: [action.payload as User] };
+    case 'update_lobby_games':
+      return { ...state, games: [action.payload as Game] };
+
     default:
       return { ...state };
   }

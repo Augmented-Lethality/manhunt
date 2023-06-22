@@ -2,6 +2,7 @@ import React, { PropsWithChildren, useReducer, useState, useEffect } from 'react
 import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 import { useAuth0 } from '@auth0/auth0-react';
+import { User } from './SocketContext';
 
 import axios from 'axios';
 
@@ -76,13 +77,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       // alert('Unable to connect to web socket')
     })
 
-    // user disconnected event
-    socket.on('user_disconnected', (authId: string) => {
-      console.info('user disconnected')
-      SocketDispatch({ type: 'remove_user', payload: authId })
-      // remove name
-    });
-
     // updating games
     socket.on('update_games', async () => {
       try {
@@ -134,7 +128,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   };
 
 
-
   // sending createRoom to the server
   const CreateGame = () => {
     socket.emit('create_game', user, () => {
@@ -151,11 +144,15 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   };
 
   // sending join game to the server, host identifies game to join
-  const JoinGame = (host: string) => {
+  const JoinGame = (host: string, user: User) => {
     // console.info('Client wants to join a game...');
 
     socket.emit('join_game', host, user, () => {
       console.log('joining game')
+    });
+
+    socket.emit('join_lobby', host, user, () => {
+      console.log('joining lobby')
     });
   };
 
