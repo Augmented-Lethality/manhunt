@@ -15,7 +15,6 @@ export interface ISocketComponentProps extends PropsWithChildren { }
 
 // functional component that has ISocketComponentProps as its children/props
 const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) => {
-  const { user, isAuthenticated } = useAuth0();
   // nested elements within SocketComponent, rendered in the context provider
   const { children } = props;
 

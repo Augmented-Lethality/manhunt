@@ -18,8 +18,8 @@ const GamePage: React.FC = () => {
 
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
-  const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
-  const { authId, games, names } = useContext(SocketContext).SocketState;
+  const [faceMatcher, setFaceMatcher] = useState<FaceMatcher | null>(null);
+  const { games } = useContext(SocketContext).SocketState;
   const [currentGame, setUserGame] = useState();
 
 

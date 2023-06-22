@@ -35,8 +35,7 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ }) => {
   const killers = new Mesh(geom, killMtl); // blueprint, will need to clone
   const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
   const hardCodeMarker = new Mesh(geom, hardCodeMtl);
-
-  const { locations, authId, names, } = useContext(SocketContext).SocketState;
+  
   const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
