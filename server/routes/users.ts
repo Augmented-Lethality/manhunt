@@ -100,7 +100,7 @@ Users.patch("/face-description/:authId", async (req, res) => {
 // GET USERS WITH socketId NOT EQUAL TO ''
 Users.get("/sockets", async (req, res) => {
   try {
-    // Fetch users from the database where socketId is not empty
+    // socketId is not empty
     const users = await User.findAll({
       where: {
         socketId: {

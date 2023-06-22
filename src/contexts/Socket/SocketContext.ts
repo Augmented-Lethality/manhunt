@@ -39,8 +39,8 @@ export interface ISocketContextState {
   authId: string,
   users: User[],
   games: Game[],
-  locations: { [authId: string]: { longitude: number, latitude: number } },
-  names: { [authId: string]: string }
+  // locations: { [authId: string]: { longitude: number, latitude: number } },
+  // names: { [authId: string]: string }
 };
 
 // initial context state, will be overwritten eventually, but need the default state
@@ -49,8 +49,8 @@ export const defaultSocketContextState: ISocketContextState = {
   authId: '',
   users: [],
   games: [],
-  locations: {},
-  names: {}
+  // locations: {},
+  // names: {}
 };
 
 // these actions will each have their own functions in the reducer
@@ -59,8 +59,7 @@ export type TSocketContextActions = 'update_socket' | 'update_authId' |
   | 'update_lobby_games'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = string | User | Socket | Game | User[] | Game[]
-  | { [authId: string]: { longitude: number, latitude: number } } | { [authId: string]: string };
+export type TSocketContextPayload = Socket | User[] | Game[] | string;
 
 // describes the shape of the actions in this context
 export type ISocketContextActions = {
@@ -71,27 +70,26 @@ export type ISocketContextActions = {
 // reducer, accepts the current state and returns the new state depending on the action that is passed in and hits the switch case
 // has a default case in case the actions don't match
 export const SocketReducer = (state: ISocketContextState, action: ISocketContextActions) => {
-  // console.log(`Message Received - Action: ${action.type} - Payload: `, action.payload);
 
   switch (action.type) {
     case 'update_socket':
       return { ...state, socket: action.payload as Socket };
-    case 'update_authId':
-      return { ...state, authId: action.payload as string };
+    // case 'update_authId':
+    //   return { ...state, authId: action.payload as string };
     case 'update_users':
       return { ...state, users: action.payload as User[] };
-    case 'remove_user':
-      return { ...state, users: state.users.filter((user) => user.authId !== action.payload) };
+    // case 'remove_user':
+    //   return { ...state, users: state.users.filter((user) => user.authId !== action.payload) };
     case 'update_games':
       return { ...state, games: action.payload as Game[] };
-    case 'updated_locations':
-      return { ...state, locations: action.payload as { [authId: string]: { longitude: number, latitude: number } } };
-    case 'update_names':
-      return { ...state, names: { ...state.names, ...action.payload as { [authId: string]: string } } };
+    // case 'updated_locations':
+    //   return { ...state, locations: action.payload as { [authId: string]: { longitude: number, latitude: number } } };
+    // case 'update_names':
+    //   return { ...state, names: { ...state.names, ...action.payload as { [authId: string]: string } } };
     case 'update_lobby_users':
-      return { ...state, users: [action.payload as User] };
+      return { ...state, users: action.payload as User[] };
     case 'update_lobby_games':
-      return { ...state, games: [action.payload as Game] };
+      return { ...state, users: action.payload as Game[] };
 
     default:
       return { ...state };

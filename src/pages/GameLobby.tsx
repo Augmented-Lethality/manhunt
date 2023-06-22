@@ -14,8 +14,6 @@ const GameLobby: React.FunctionComponent = (props) => {
   // const [host, setHost] = useState<string>('');
 
   const [hunted, setHunted] = useState<string>('');
-
-  // This eventually will be changed into storing the name in the Game in DB, for now local to get this PR in
   const [huntedName, setHuntedName] = useState<string>('');
 
   useEffect(() => {
@@ -26,6 +24,7 @@ const GameLobby: React.FunctionComponent = (props) => {
 
   }, [hunted])
 
+  // HUNTED IS NOT SET UP
   return (
     <div>
       {users.length > 0 ? (
@@ -35,7 +34,7 @@ const GameLobby: React.FunctionComponent = (props) => {
           <br />
           <br />
           {users.map((player) => (
-            <PlayerListItem player={player} />
+            <PlayerListItem key={player.id} player={player} />
           ))}
         </>
       ) : (

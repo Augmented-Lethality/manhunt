@@ -11,9 +11,9 @@ export const PlayerListItem: React.FC<{ player: User }> = ({ player }) => {
 
   return (
     <div>
-      <strong>Player: {player[0].username}</strong>
+      <strong>Player: {player.username}</strong>
       <br />
-      <strong>Games Won: {player[0].gamesWon}</strong>
+      <strong>Games Won: {player.gamesWon}</strong>
       <br />
     </div>
   );

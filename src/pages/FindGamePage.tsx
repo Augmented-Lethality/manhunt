@@ -21,7 +21,7 @@ const FindGamePage: React.FC = () => {
         <>
           <strong>Available Games:</strong>
           {games.map((game) => (
-            <GameListItem game={game} />
+            <GameListItem key={game.gameId} game={game} />
           ))}
         </>
       ) : (

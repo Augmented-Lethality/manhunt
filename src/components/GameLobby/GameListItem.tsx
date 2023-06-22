@@ -22,10 +22,10 @@ export const GameListItem: React.FC<{ game: Game }> = ({ game }) => {
     console.log(game)
   }, [])
   return (
-    <div onClick={() => handleJoinGame(game[0].host, user)}>
-      <strong>Host: {game[0].hostName}</strong>
+    <div onClick={() => handleJoinGame(game.host, user)}>
+      <strong>Host: {game.hostName}</strong>
       <br />
-      <strong>Number of Players: {game[0].users.length}</strong>
+      <strong>Number of Players: {game.users.length}</strong>
     </div>
   );
 
