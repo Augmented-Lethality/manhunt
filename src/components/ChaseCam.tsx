@@ -175,69 +175,69 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
       AddLocation(currentGame.gameId, userLongitude, userLatitude, user);
 
       // hardcoded marker to test if the user location is working, should render right in front of them
-      // arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
+      arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
     }
 
   }, [userLatitude, userLongitude])
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    // getting the user locations from the locations of the current socket state
-    // this route I am emitting correctly, won't need to change this on
-    // the refactor of socket codes
-    const userLocations = Object.values(locations);
+  //   // getting the user locations from the locations of the current socket state
+  //   // this route I am emitting correctly, won't need to change this on
+  //   // the refactor of socket codes
+  //   const userLocations = Object.values(locations);
 
-    if (userLocations.length === 0) {
-      console.log('There are no locations to plot.');
-      return;
-    }
+  //   if (userLocations.length === 0) {
+  //     console.log('There are no locations to plot.');
+  //     return;
+  //   }
 
-    // markers that have been added are stored in this array
-    const addedMarkers: Array<Mesh<BoxGeometry, MeshBasicMaterial>> = [];
+  //   // markers that have been added are stored in this array
+  //   const addedMarkers: Array<Mesh<BoxGeometry, MeshBasicMaterial>> = [];
 
-    // iterating through the locations of the current locations state
-    for (const userLocation of userLocations) {
-      const { latitude, longitude } = userLocation;
-      console.log(Object.keys(userLocations))
-      const markerLong = longitude;
-      const markerLat = latitude;
+  //   // iterating through the locations of the current locations state
+  //   for (const userLocation of userLocations) {
+  //     const { latitude, longitude } = userLocation;
+  //     console.log(Object.keys(userLocations))
+  //     const markerLong = longitude;
+  //     const markerLat = latitude;
 
-      arjsRef.current?._scene.children.forEach((child) => {
-        console.log(child.userData.id, authId);
-      })
+  //     arjsRef.current?._scene.children.forEach((child) => {
+  //       console.log(child.userData.id, authId);
+  //     })
 
-      // checking if there's a marker that exists already for the user
-      const existingMarker = addedMarkers.find((marker) => marker.userData.id === authId);
+  //     // checking if there's a marker that exists already for the user
+  //     const existingMarker = addedMarkers.find((marker) => marker.userData.id === authId);
 
-      // if it exists, then just change the location, don't make a new one
-      if (existingMarker) {
-        console.log(`Changing marker position for ${names[authId]}`)
-        arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
-      } else {
-        // store the first round of markers into the markers array/add them to the list
-        for (let player of currentGame.authIdList) {
-          if (player === currentGame.hunted) {
-            victim.userData.id = player;
-            arjsRef.current?.add(victim, markerLong, markerLat, 10);
-            console.log(`Added marker for ${names[player]}`)
-            addedMarkers.push(victim);
-          } else {
-            const clonedKiller = killers.clone();
-            clonedKiller.userData.id = player;
-            arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
-            console.log(`Added marker for ${names[player]}`)
-            // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
-            addedMarkers.push(clonedKiller);
-          }
-        }
-      }
-    }
-    console.log(arjsRef.current?._scene.children[0].userData.id);
-    arjsRef.current?._scene.children.forEach((child) => {
-      console.log(child.userData.id, authId);
-    })
+  //     // if it exists, then just change the location, don't make a new one
+  //     if (existingMarker) {
+  //       console.log(`Changing marker position for ${names[authId]}`)
+  //       arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
+  //     } else {
+  //       // store the first round of markers into the markers array/add them to the list
+  //       for (let player of currentGame.authIdList) {
+  //         if (player === currentGame.hunted) {
+  //           victim.userData.id = player;
+  //           arjsRef.current?.add(victim, markerLong, markerLat, 10);
+  //           console.log(`Added marker for ${names[player]}`)
+  //           addedMarkers.push(victim);
+  //         } else {
+  //           const clonedKiller = killers.clone();
+  //           clonedKiller.userData.id = player;
+  //           arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
+  //           console.log(`Added marker for ${names[player]}`)
+  //           // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
+  //           addedMarkers.push(clonedKiller);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   console.log(arjsRef.current?._scene.children[0].userData.id);
+  //   arjsRef.current?._scene.children.forEach((child) => {
+  //     console.log(child.userData.id, authId);
+  //   })
 
-  }, [locations]);
+  // }, [locations]);
 
   //   const fakeLocations =
   //   [

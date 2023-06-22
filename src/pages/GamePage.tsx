@@ -15,10 +15,10 @@ const GamePage: React.FC = () => {
   const { authId, games, names } = useContext(SocketContext).SocketState;
   const [currentGame, setUserGame] = useState<{ gameId: string; authIdList: string[], hunted: string }>({ gameId: '', authIdList: [], hunted: '' });
 
-  useEffect(() => {
-    const foundUserGame = Object.values(games).find((game) => game.authIdList.includes(authId));
-    setUserGame(foundUserGame || { gameId: '', authIdList: [], hunted: '' });
-  }, [authId]);
+  // useEffect(() => {
+  //   const foundUserGame = Object.values(games).find((game) => game.authIdList.includes(authId));
+  //   setUserGame(foundUserGame || { gameId: '', authIdList: [], hunted: '' });
+  // }, [authId]);
 
   useEffect(() => {
     loadTensorFlowFaceMatcher();
@@ -58,12 +58,12 @@ const GamePage: React.FC = () => {
   return (
     <div>
       <ButtonToHome />
-      <p>Players in this game:</p>
+      {/* <p>Players in this game:</p>
       <ul>
         {currentGame?.authIdList.map((playerAuthId) => (
           <li key={playerAuthId}>{names[playerAuthId]}</li>
         ))}
-      </ul>
+      </ul> */}
       <button onClick={handleGameChange}>{gameMode === 'Chase' ? 'Go in For the Kill' : 'Return to the Chase'}</button>
       {gameMode === 'Chase' && currentGame.hunted.length > 0 && <ChaseCam currentGame={currentGame} />}
       {gameMode === 'Kill' && currentGame.hunted.length > 0 && (

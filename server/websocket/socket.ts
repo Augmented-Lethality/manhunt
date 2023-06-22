@@ -77,35 +77,41 @@ export class ServerSocket {
   // takes in the socket object sent from the client
   StartListeners = (socket: Socket) => {
 
-
     // client is asking to make a socket connection to the server, also known as a handshake
     socket.on('handshake', async (user) => {
 
+      // joining the users room on the server connection
       socket.join('users');
 
       if (socket.rooms.has('users')) {
         console.log('A client reconnected');
       }
 
-      ///////////// NEW ///////////////////
-
       try {
 
+        // if the user exists, update the new socket connection
         const existingUser = await User.findOne({ where: { authId: user.sub } });
-
         if (existingUser) {
           // If the user exists, update the socket.id
-          await User.update(
-            { socketId: socket.id },
-            { where: { authId: user.sub } }
-          )
+          await User.update({ socketId: socket.id }, { where: { authId: user.sub } })
           console.log('updated db user connection')
+
+          // now see if they were part of the game
+          const existingGame = await Game.findOne({ where: { gameId: existingUser.dataValues.gameId } })
+
+          // if the game exists on their model and the user isn't in the game list, add them back
+          if (existingGame) {
+            if (!existingGame.dataValues.users.includes(existingUser.dataValues.authId)) {
+              await Game.update({ users: [...existingGame.users, existingUser.dataValues.authId] }, { where: { gameId: existingUser.dataValues.gameId } });
+              console.log('put user back in game')
+            }
+
+          }
         }
 
       } catch (err) {
         console.error(err);
       }
-      ////////////////////////////////////////
 
       // send new user to all connected users to update their state
       this.io.to('users').emit('update_users');
