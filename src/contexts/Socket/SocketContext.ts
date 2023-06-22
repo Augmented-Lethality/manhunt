@@ -3,13 +3,25 @@
 import { Socket } from 'socket.io-client';
 import { createContext } from 'react';
 
+export interface Game {
+  createdAt: string;
+  gameId: string;
+  host: string;
+  hostName: string;
+  status: string;
+  timeConstraints: string;
+  updatedAt: string;
+  users: string[];
+  winnerId: string;
+}
+
 // syntax that the context state must conform to, gives properties and types of those properties
 // server will be passing this information back and forth with client as needed
 export interface ISocketContextState {
   socket: Socket | undefined;
   authId: string,
   users: string[],
-  games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } },
+  games: Game[],
   locations: { [authId: string]: { longitude: number, latitude: number } },
   names: { [authId: string]: string }
 };
@@ -19,7 +31,7 @@ export const defaultSocketContextState: ISocketContextState = {
   socket: undefined,
   authId: '',
   users: [],
-  games: {},
+  games: [],
   locations: {},
   names: {}
 };
@@ -29,7 +41,7 @@ export type TSocketContextActions = 'update_socket' | 'update_authId' |
   'update_users' | 'remove_user' | 'update_games' | 'updated_locations' | 'update_names'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = string | string[] | Socket | { [host: string]: { gameId: string, authIdList: string[], hunted: string } }
+export type TSocketContextPayload = string | string[] | Socket | Game
   | { [authId: string]: { longitude: number, latitude: number } } | { [authId: string]: string };
 
 // describes the shape of the actions in this context
@@ -53,7 +65,7 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
     case 'remove_user':
       return { ...state, users: state.users.filter((authId) => authId !== (action.payload as string)) };
     case 'update_games':
-      return { ...state, games: { ...state.games, ...action.payload as { [host: string]: { gameId: string, authIdList: string[], hunted: string } } } };
+      return { ...state, games: [action.payload as Game] };
     case 'updated_locations':
       return { ...state, locations: action.payload as { [authId: string]: { longitude: number, latitude: number } } };
     case 'update_names':

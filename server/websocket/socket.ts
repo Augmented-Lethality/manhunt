@@ -144,70 +144,29 @@ export class ServerSocket {
     });
 
     // when client emits a createGame event, make the new game
-    socket.on('create_game', async (user, callback: (authId: string, games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => void) => {
-
-      // does the game exist?
-      const host = this.GetAuthIdFromSocketID(socket.id);
+    socket.on('create_game', async (user) => {
 
       ////////// NEW ////////////////
 
       try {
-        const existingGame = await Game.findOne({ where: { host: user.sub } });
-        // console.log(existingGame)
-        if (existingGame) {
-          // const allGames = await Game.findAll();
+        const hostingGame = await Game.findOne({ where: { host: user.sub } });
+        if (hostingGame) {
           console.log('already hosting a game');
         } else {
           const gameId = v4();
-          const newGame = await Game.create({ gameId: gameId, host: user.sub, status: 'lobby', users: [user.sub] });
-          const updatedUser = await User.update(
-            { gameId: gameId },
-            { where: { authId: user.sub } }
-          )
+          const hostName = user.name;
+          await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub] });
+          await User.update({ gameId: gameId }, { where: { authId: user.sub } })
           socket.join(gameId);
-          console.log(newGame, updatedUser);
+
         }
+        // send new user to all connected users to update their games lists
+        this.io.to('users').emit('update_games');
 
       } catch (err) {
         console.log(err);
       }
       /////////////////////////////////////////////////////
-
-      if (host) {
-        // now that we have the hostid, do the games have the host id?
-        if (Object.keys(this.games).includes(host)) {
-
-          // if they do, send back all of the games
-          callback(host, this.games);
-          return;
-        }
-
-        // game doesn't exist, make a new one:
-        const gameId = v4();
-
-        // add this to the games dictionary object
-        this.games[host] = { gameId: gameId, authIdList: [host], hunted: '' };
-        socket.join(gameId);
-
-
-        const users = Object.values(this.users);
-
-        if (!this.locations[gameId]) {
-          this.locations[gameId] = {};
-        }
-
-        this.locations[gameId][host] = { longitude: 0, latitude: 0 };
-
-        // now send back the updated list of games
-        callback(host, this.games);
-
-        // update the list of games
-        this.SendMessage('update_games', users, this.games);
-
-        // emit the updated locations to all players in the game EXCEPT the sender
-        socket.to(gameId).emit('updated_locations', this.locations[gameId]);
-
-      }
 
     });
 

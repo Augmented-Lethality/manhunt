@@ -36,12 +36,10 @@ User.init({
   socketId: {
     type: DataTypes.STRING,
     allowNull: true,
-    unique: true
   },
   gameId: {
     type: DataTypes.STRING,
     allowNull: true,
-    unique: true
   },
   location: {
     type: DataTypes.STRING,
@@ -120,6 +118,10 @@ Game.init({
       model: User,
       key: 'authId'
     },
+    allowNull: false,
+  },
+  hostName: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
   status: {

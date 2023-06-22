@@ -3,6 +3,8 @@ import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 import { useAuth0 } from '@auth0/auth0-react';
 
+import axios from 'axios';
+
 
 // THIS CAN BE REUSED TO PASS THE SOCKET INFORMATION AROUND THE CLIENT SIDE
 
@@ -89,16 +91,24 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
 
     // created a game event
-    socket.on('game_created', (games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => {
+    socket.on('game_created', () => {
       // console.info('game created, new game list received')
-      SocketDispatch({ type: 'update_games', payload: games })
+      // SocketDispatch({ type: 'update_games', payload: games })
     });
 
     // updated a game event
-    socket.on('update_games', (games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => {
-      // console.info('games updated, new game list received')
-      SocketDispatch({ type: 'update_games', payload: games })
+    socket.on('update_games', async () => {
+      try {
+        const response = await axios.get('/games');
+        const games = response.data;
+        console.log('updating game state', games)
+        SocketDispatch({ type: 'update_games', payload: games });
+      } catch (error) {
+        console.error('Error fetching games:', error);
+      }
     });
+
+
 
     // update locations event
     socket.on('updated_locations', (locations) => {
@@ -124,8 +134,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // sending the handshake to the server, meaning it's trying to establish a connection to the server using websocket
   const SendHandshake = () => {
-    // console.info('Client wants a handshake...');
-
     // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
     // on the handshake and it gets the cb from the server on handshake
     socket.emit('handshake', user, (authId: string, users: string[], games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } },
@@ -143,10 +151,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // sending createRoom to the server
   const CreateGame = () => {
-    // console.info('Client wants to create a game...');
-
-    socket.emit('create_game', user, (authId: string, games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => {
-      SocketDispatch({ type: 'update_games', payload: games })
+    socket.emit('create_game', user, () => {
+      console.log('creating game client side');
     });
   }
 
@@ -163,7 +169,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     // console.info('Client wants to join a game...');
 
     socket.emit('join_game', host, (games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } }) => {
-      SocketDispatch({ type: 'update_games', payload: games });
+      // SocketDispatch({ type: 'update_games', payload: games });
     });
   };
 
