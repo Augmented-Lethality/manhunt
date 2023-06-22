@@ -1,34 +1,12 @@
-const { Router } = require("express");
-const Users = Router();
-const { User } = require("../database/models");
+import { Router } from "express";
+export const Users = Router();
+// const { User } = require("../database/models");
+import { User } from '../database/models'
+import { Op } from "sequelize";
 
-// GET ALL USERS
-Users.get("/", async (req, res) => {
-  try {
-    // Fetch all users from the database
-    const users = await User.findAll();
 
-    res.status(200).json(users);
-  } catch (err) {
-    console.warn(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 
-// GET SPECIFIC USER
-Users.get("/:authId", async (req, res) => {
-  try {
-    // Fetch the user's data from the database based on their google auth ID
-    const user = await User.findOne({ where: { authId: req.params.authId } });
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    res.status(200).json(user);
-  } catch (err) {
-    console.warn(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+
 
 // POST NEW USER, checks if user exists first, returns existing if so
 Users.post("/", async (req, res) => {
@@ -118,4 +96,50 @@ Users.patch("/face-description/:authId", async (req, res) => {
   }
 });
 
-module.exports = { Users };
+// GET USERS WITH socketId NOT EQUAL TO ''
+Users.get("/sockets", async (req, res) => {
+  try {
+    // socketId is not empty
+    const users = await User.findAll({
+      where: {
+        socketId: {
+          [Op.not]: ''
+        }
+      }
+    });
+
+    res.status(200).send(users);
+  } catch (err) {
+    console.warn(err);
+    res.sendStatus(500);
+  }
+});
+
+
+// GET ALL USERS
+Users.get("/", async (req, res) => {
+  try {
+    // Fetch all users from the database
+    const users = await User.findAll();
+
+    res.status(200).json(users);
+  } catch (err) {
+    console.warn(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// GET SPECIFIC USER
+Users.get("/:authId", async (req, res) => {
+  try {
+    // Fetch the user's data from the database based on their google auth ID
+    const user = await User.findOne({ where: { authId: req.params.authId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    console.warn(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});

@@ -7,7 +7,7 @@ import fs from 'fs';
 
 import { ServerSocket } from './websocket/socket';
 const { Users } = require("./routes/users");
-//import { Games } from './routes/game';
+import { Games } from './routes/game';
 
 dotenv.config();
 
@@ -39,7 +39,7 @@ app.use('/assets', express.static(path.join(__dirname, '..', '..', 'public/asset
 app.use('/models', express.static(path.join(__dirname, '..', '..', 'public/models')))
 
 app.use('/users', Users);
-//app.use('/games', Games);
+app.use('/games', Games);
 
 
 app.get('*', (req, res) => {
@@ -52,7 +52,7 @@ app.get('*', (req, res) => {
 
 
 // httpServer.listen(port, () => {
-//   console.log(Server listening on port ${port});
+//   console.log(`Server listening on port ${port}`);
 // });
 
 httpsServer.listen(port, () => {

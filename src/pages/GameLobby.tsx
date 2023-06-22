@@ -2,42 +2,32 @@ import React, { useContext, useEffect, useState } from 'react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { ButtonToHome, ButtonToGame } from '../components/Buttons';
 import WhosHunting from '../components/WhosHunting';
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 import { Container } from '../styles/Container';
 import { Header } from '../styles/Header'
 import { Main } from '../styles/Main'
+import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
 
 const GameLobby: React.FunctionComponent = (props) => {
-  const { user, isAuthenticated } = useAuth0();
-  const { socket, uid, games, users, names } = useContext(SocketContext).SocketState;
-  const [showHunting, setShowHunting] = useState(false);
-  const [currentGame, setCurrentGame] = useState<{gameId: string, uidList: string[], hunted: string }>({gameId: '', uidList: [], hunted: ''});
-  const [host, setHost] = useState<string>('');
 
+  const { games, users } = useContext(SocketContext).SocketState;
+  // const [showHunting, setShowHunting] = useState(false);
+  // const [currentGame, setCurrentGame] = useState<{ gameId: string, authIdList: string[], hunted: string }>({ gameId: '', authIdList: [], hunted: '' });
+  // const [host, setHost] = useState<string>('');
 
-  // this is so time complex, will need to edit socket emits on server side when I have time
-  // I HATE IT
+  const [hunted, setHunted] = useState<string>('');
+  const [huntedName, setHuntedName] = useState<string>('');
+
   useEffect(() => {
-    const currGame = Object.values(games).find((game) =>
-    game.uidList.includes(uid)
-    );
-
-    if(currGame) {
-      setCurrentGame(currGame);
-
-      if(currGame.hunted.length > 0) {
-        setShowHunting(true);
-      }
-    }
-
-    setHost(currentGame?.uidList[0]);
-
+    console.log("games state should be one game:", games, "users state should be only users in that one game", users)
   }, [games])
 
-  if(!isAuthenticated ){
-    return null;
-  }
+  useEffect(() => {
 
+  }, [hunted])
+
+
+  // HUNTED IS NOT SET UP
   return (
     <Container>
       <Header>
@@ -45,28 +35,21 @@ const GameLobby: React.FunctionComponent = (props) => {
         <ButtonToHome />
       </Header>
       <Main>
-        {currentGame ? (
-          <div>
-            {showHunting && <WhosHunting users={currentGame.uidList} host={ host } hunted={ currentGame.hunted }/>}
-            {host === uid && !showHunting && (
-              <button onClick={() => setShowHunting(!showHunting)}>
-                Pick the Victim
-              </button>
-            )}
-            <p>Players:</p>
-            <ul>
-              {currentGame.uidList.map((playerUid) => (
-                <li key={playerUid}>{names[playerUid]}</li>
-              ))}
-            </ul>
-          </div>
-        ) : (
+        {users.length > 0 ? (
           <>
+            <strong>Players in Lobby:</strong>
+            {hunted.length > 0 ? (<div>Player {hunted}, You're Being Hunted</div>) : (<WhosHunting players={games} setHunted={setHunted} />)}
+            <br />
+            <br />
+            {users.map((player) => (
+              <PlayerListItem key={player.id} player={player} />
+            ))}
           </>
+        ) : (
+          <p>No Players</p>
         )}
-        { showHunting && <ButtonToGame />}
+        <ButtonToGame />
       </Main>
-      
     </Container>
   );
 };
