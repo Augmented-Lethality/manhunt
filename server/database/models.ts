@@ -1,7 +1,14 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from './index';
 
-class User extends Model { }
+
+////////////////////////////////////////////////
+class User extends Model {
+  gamesPlayed: any;
+  gamesWon: any;
+  killsConfirmed: any;
+  facialDescriptions: any;
+}
 User.init({
   id: {
     type: DataTypes.INTEGER,
@@ -30,20 +37,13 @@ User.init({
     type: DataTypes.ARRAY(DataTypes.FLOAT),
     allowNull: true
   },
-  uid: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    unique: true
-  },
   socketId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: true,
-    unique: true
   },
   gameId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: true,
-    unique: true
   },
   location: {
     type: DataTypes.STRING,
@@ -66,6 +66,8 @@ User.init({
     allowNull: true
   }
 }, { sequelize });
+
+////////////////////////////////////////////////
 
 class Friends extends Model { }
 Friends.init({
@@ -103,20 +105,31 @@ Friends.init({
   }
 }, { sequelize });
 
-class Game extends Model { }
+////////////////////////////////////////////////
+
+
+class Game extends Model {
+  gameId: any;
+  users: any;
+}
 Game.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+  gameId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
     primaryKey: true
   },
   host: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     references: {
       model: User,
-      key: 'id'
+      key: 'authId'
     },
-    allowNull: true
+    allowNull: false,
+  },
+  hostName: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   status: {
     type: DataTypes.ENUM('lobby', 'ongoing', 'complete'),
@@ -128,14 +141,20 @@ Game.init({
     allowNull: true
   },
   winnerId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     references: {
       model: User,
-      key: 'id'
+      key: 'authId'
     },
     allowNull: true
-  }
+  },
+  users: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false,
+  },
 }, { sequelize });
+
+////////////////////////////////////////////////
 
 class Trophy extends Model { }
 Trophy.init({
@@ -192,9 +211,6 @@ User.hasMany(Friends, { foreignKey: 'userId' });
 Friends.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Friends, { foreignKey: 'friendId' });
 Friends.belongsTo(User, { foreignKey: 'friendId' });
-
-User.belongsTo(Game, { foreignKey: 'gameId' });
-Game.hasMany(User, { foreignKey: 'gameId' });
 
 export { User, Friends, Game, Trophy, UserTrophy };
 

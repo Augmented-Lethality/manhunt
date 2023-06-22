@@ -1,17 +1,9 @@
 import { withAuthenticationRequired } from "@auth0/auth0-react";
-import React, { ReactNode } from "react";
+import React from "react";
 import PageLoader from "./Loading";
 
-interface AuthenticationGuardProps {
-  children: ReactNode;
-}
-
-export const AuthenticationGuard = ({
-  children,
-}: AuthenticationGuardProps) => {
-  const ComponentWithAuthentication = withAuthenticationRequired(() => (
-    <>{children}</>
-  ), {
+export const AuthenticationGuard = ({ component }) => {
+  const Component = withAuthenticationRequired(component, {
     onRedirecting: () => (
       <div className="page-layout">
         <PageLoader />
@@ -19,5 +11,5 @@ export const AuthenticationGuard = ({
     ),
   });
 
-  return <ComponentWithAuthentication />;
+  return <Component />;
 };

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import {
   WebcamRendererLocal,
@@ -8,19 +9,34 @@ import {
   WebGLRenderer,
   BoxGeometry,
   MeshBasicMaterial,
-  Mesh, } from "./webcam.js"
+  Mesh,
+  DeviceOrientationControls,
+} from "./webcam.js"
 
-  import SocketContext from '../contexts/Socket/SocketContext';
+import SocketContext from '../contexts/Socket/SocketContext';
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
 type ChaseCamProps = {
-  currentGame: { gameId: string; uidList: string[], hunted: string },
+  // currentGame: { gameId: string; authIdList: string[], hunted: string },
 };
 
-const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
 
-  const { locations, uid, names } = useContext(SocketContext).SocketState;
+
+const ChaseCam: React.FC<ChaseCamProps> = ({ }) => {
+
+  const { user } = useAuth0();
+
+  // create markers to render on the screen that stays in the defined location
+  const geom = new BoxGeometry(20, 20, 20);
+  const killMtl = new MeshBasicMaterial({ color: 0xff0000 }); // red
+  const vicMtl = new MeshBasicMaterial({ color: 0x476930 }); // victim
+  const hardCodeMtl = new MeshBasicMaterial({ color: 0x993399 });
+  const killers = new Mesh(geom, killMtl); // blueprint, will need to clone
+  const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
+  const hardCodeMarker = new Mesh(geom, hardCodeMtl);
+
+  const { locations, authId, names, } = useContext(SocketContext).SocketState;
   const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
@@ -61,13 +77,16 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     // new scene, camera, and renderer
     const scene = new Scene();
     const camera = new PerspectiveCamera(60, 1.33, 0.00000001, 100000000000000);
-    const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
+    const renderer = new WebGLRenderer({ canvas: canvas });
 
     // LocationBased object for AR, takes scene and camera
     arjsRef.current = new LocationBasedLocal(scene, camera);
 
     // renders the webcam stream as the background for the scene
-    const cam = new WebcamRendererLocal(renderer, '#video1');
+    const cam = new WebcamRendererLocal(renderer);
+
+    // start the device orientation controls for mobile
+    const deviceOrientationControls = new DeviceOrientationControls(camera);
 
     // start the location
     arjsRef.current.startGps();
@@ -78,6 +97,8 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     // sets size of canvas, renders the scene but with the camera, and
     // requests the next animation frame
     function render() {
+
+      // setting the camera width of the device
       if (
         canvas.width !== canvas.clientWidth ||
         canvas.height !== canvas.clientHeight
@@ -87,17 +108,22 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
       }
+
+      // send updates when the phone tilts
+      deviceOrientationControls.update();
+      // update the camera's feed
       cam.update();
       renderer.render(scene, camera);
       frameIdRef.current = requestAnimationFrame(render);
+
 
       const userPositions = arjsRef.current?.getUserPosition();
 
       // testing if the userPositions are the same as the old ones
       // if not, update the state
-      if(userLatitude !== userPositions?.latitude || userLongitude !== userPositions?.longitude) {
-          setUserLatitude(userPositions?.latitude);
-          setUserLongitude(userPositions?.longitude);
+      if (userLatitude !== userPositions?.latitude || userLongitude !== userPositions?.longitude) {
+        setUserLatitude(userPositions?.latitude);
+        setUserLongitude(userPositions?.longitude);
       }
 
     }
@@ -105,8 +131,7 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     // kick starts the loop of rendering the canvas
     frameIdRef.current = requestAnimationFrame(render);
 
-    // all of this below handles the fake movement in desktop, got most of it from the
-    // AR.js docs but needed to edit it a little bit
+    /////// FOR DESKTOP TESTING //////
     const handleMouseDown = () => {
       mousedownRef.current = true;
     };
@@ -144,84 +169,93 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
-
-  // create markers to render on the screen that stays in the defined location
-  const geom = new BoxGeometry(20, 20, 20);
-  const killMtl = new MeshBasicMaterial({ color: 0xff0000 }); // red
-  const vicMtl = new MeshBasicMaterial({ color: 0x476930 }); // victim
-  const hardCodeMtl = new MeshBasicMaterial({ color: 0x993399 });
-  const killers = new Mesh(geom, killMtl); // blueprint, will need to clone
-  const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
-  const hardCodeMarker = new Mesh(geom, hardCodeMtl);
-
+  /////// /////////////////////////////////// //////
 
   useEffect(() => {
 
-  AddLocation(currentGame.gameId, userLongitude, userLatitude);
+    if (userLongitude && userLatitude) {
+      AddLocation(user?.gameId, userLongitude, userLatitude, user);
+      console.log('added userLong and userLat');
 
-  arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
-
-
+      // hardcoded marker to test if the user location is working, should render right in front of them
+      arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
+    }
 
   }, [userLatitude, userLongitude])
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    // getting the user locations from the locations of the current socket state
-    // this route I am emitting correctly, won't need to change this on
-    // the refactor of socket codes
-    const userLocations = Object.values(locations);
+  //   // getting the user locations from the locations of the current socket state
+  //   // this route I am emitting correctly, won't need to change this on
+  //   // the refactor of socket codes
+  //   const userLocations = Object.values(locations);
 
-    if (userLocations.length === 0) {
-      console.log('There are no locations to plot.');
-      return;
-    }
+  //   if (userLocations.length === 0) {
+  //     console.log('There are no locations to plot.');
+  //     return;
+  //   }
 
-    // markers that have been added are stored in this array
-    const addedMarkers: Array<Mesh<BoxGeometry, MeshBasicMaterial>> = [];
+  //   // markers that have been added are stored in this array
+  //   const addedMarkers: Array<Mesh<BoxGeometry, MeshBasicMaterial>> = [];
 
-    // iterating through the locations of the current locations state
-    for (const userLocation of userLocations) {
-      const { latitude, longitude } = userLocation;
-      const markerLong = longitude;
-      const markerLat = latitude;
+  //   // iterating through the locations of the current locations state
+  //   for (const userLocation of userLocations) {
+  //     const { latitude, longitude } = userLocation;
+  //     console.log(Object.keys(userLocations))
+  //     const markerLong = longitude;
+  //     const markerLat = latitude;
 
-      // checking if there's a marker that exists already for the user
-      const existingMarker = addedMarkers.find((marker) => marker.userData.id === uid);
+  //     arjsRef.current?._scene.children.forEach((child) => {
+  //       console.log(child.userData.id, authId);
+  //     })
 
-      // if it exists, then just change the location, don't make a new one
-      if (existingMarker) {
-        console.log(`Changing marker position for ${ names[uid]}`)
-        arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
-      } else {
-        // store the first round of markers into the markers array/add them to the list
-        for(let player of currentGame.uidList) {
-          if(player === currentGame.hunted) {
-            victim.userData.id = player;
-            arjsRef.current?.add(victim, markerLong, markerLat, 10);
-            console.log(`Added marker for ${ names[player]}`)
-            addedMarkers.push(victim);
-          } else {
-            const clonedKiller = killers.clone();
-            clonedKiller.userData.id = player;
-            arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
-            console.log(`Added marker for ${ names[player]}`)
-            // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
-            addedMarkers.push(clonedKiller);
-          }
-        }
-      }
-    }
-  }, [locations]);
+  //     // checking if there's a marker that exists already for the user
+  //     const existingMarker = addedMarkers.find((marker) => marker.userData.id === authId);
 
+  //     // if it exists, then just change the location, don't make a new one
+  //     if (existingMarker) {
+  //       console.log(`Changing marker position for ${names[authId]}`)
+  //       arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
+  //     } else {
+  //       // store the first round of markers into the markers array/add them to the list
+  //       for (let player of currentGame.authIdList) {
+  //         if (player === currentGame.hunted) {
+  //           victim.userData.id = player;
+  //           arjsRef.current?.add(victim, markerLong, markerLat, 10);
+  //           console.log(`Added marker for ${names[player]}`)
+  //           addedMarkers.push(victim);
+  //         } else {
+  //           const clonedKiller = killers.clone();
+  //           clonedKiller.userData.id = player;
+  //           arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
+  //           console.log(`Added marker for ${names[player]}`)
+  //           // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
+  //           addedMarkers.push(clonedKiller);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   console.log(arjsRef.current?._scene.children[0].userData.id);
+  //   arjsRef.current?._scene.children.forEach((child) => {
+  //     console.log(child.userData.id, authId);
+  //   })
+
+  // }, [locations]);
+
+  //   const fakeLocations =
+  //   [
+  //     [-73.9932334, 44.205],
+  //     [-73.9932334, 44.202],
+  //   ]
+
+  // fakeLocations.forEach(coordinates => {
+  //   console.log('logging coordinates:', coordinates[0], coordinates[1])
+  //   arjsRef.current?.add(hardCodeMarker, coordinates[0], coordinates[1]);
+  // });
 
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-      <video
-        id='video1'
-        style={{ width: '100%', height: '100%', position: 'absolute' }}
-      />
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: '100%', position: 'absolute' }}

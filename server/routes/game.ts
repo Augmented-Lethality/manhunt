@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { Game } from "../database/models";
-const Games = Router();
+export const Games = Router();
 
 // GET all games
 Games.get("/", async (req, res) => {
@@ -48,3 +48,4 @@ Games.post("/", async (req, res) => {
   }
 });
 
+module.exports = { Games };

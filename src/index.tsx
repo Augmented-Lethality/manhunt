@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Auth0ProviderWithNavigate } from "./Auth0/auth0-provider-with-navigate";
-import { AuthenticationGuard } from './Auth0/authentication-guard';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import GlobalStyle from './styles/GlobalStyle';
@@ -19,10 +18,8 @@ root.render(
   // <React.StrictMode>
   <BrowserRouter>
     <Auth0ProviderWithNavigate>
-      <AuthenticationGuard>
-        <GlobalStyle />
-        <App />
-      </AuthenticationGuard>
+      <GlobalStyle />
+      <App />
     </Auth0ProviderWithNavigate>
   </BrowserRouter>
   // </React.StrictMode>

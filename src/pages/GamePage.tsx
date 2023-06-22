@@ -12,13 +12,9 @@ const GamePage: React.FC = () => {
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
   const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
-  const { uid, games, names } = useContext(SocketContext).SocketState;
-  const [currentGame, setUserGame] = useState<{ gameId: string; uidList: string[], hunted: string }>({ gameId: '', uidList: [], hunted: '' });
+  const { authId, games, names } = useContext(SocketContext).SocketState;
+  const [currentGame, setUserGame] = useState();
 
-  useEffect(() => {
-    const foundUserGame = Object.values(games).find((game) => game.uidList.includes(uid));
-    setUserGame(foundUserGame || { gameId: '', uidList: [], hunted: '' });
-  }, [uid]);
 
   useEffect(() => {
     loadTensorFlowFaceMatcher();
@@ -48,7 +44,7 @@ const GamePage: React.FC = () => {
   }
 
   const handleGameChange = () => {
-    if(gameMode === 'Chase') {
+    if (gameMode === 'Chase') {
       setGameMode('Kill')
     } else {
       setGameMode('Chase')
@@ -58,18 +54,18 @@ const GamePage: React.FC = () => {
   return (
     <div>
       <ButtonToHome />
-      <p>Players in this game:</p>
-    <ul>
-      {currentGame?.uidList.map((playerUid) => (
-        <li key={playerUid}>{names[playerUid]}</li>
-      ))}
-    </ul>
-    <button onClick={ handleGameChange }>{gameMode === 'Chase' ? 'Go in For the Kill' : 'Return to the Chase'}</button>
-      {gameMode === 'Chase' && currentGame.hunted.length > 0 && <ChaseCam currentGame={ currentGame }/>}
-      {gameMode === 'Kill' && currentGame.hunted.length > 0 && (
+      {/* <p>Players in this game:</p>
+      <ul>
+        {currentGame?.authIdList.map((playerAuthId) => (
+          <li key={playerAuthId}>{names[playerAuthId]}</li>
+        ))}
+      </ul> */}
+      <button onClick={handleGameChange}>{gameMode === 'Chase' ? 'Go in For the Kill' : 'Return to the Chase'}</button>
+      {gameMode === 'Chase' && <ChaseCam />}
+      {gameMode === 'Kill' && (
         <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
           <WebcamProvider>
-            <KillCam faceMatcher={faceMatcher}/>
+            <KillCam faceMatcher={faceMatcher} />
           </WebcamProvider>
         </div>
       )}
