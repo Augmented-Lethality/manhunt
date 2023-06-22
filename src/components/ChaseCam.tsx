@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import {
   WebcamRendererLocal,
@@ -17,12 +18,14 @@ import SocketContext from '../contexts/Socket/SocketContext';
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
 type ChaseCamProps = {
-  currentGame: { gameId: string; uidList: string[], hunted: string },
+  currentGame: { gameId: string; authIdList: string[], hunted: string },
 };
 
 
 
 const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
+
+  const { user } = useAuth0();
 
   // create markers to render on the screen that stays in the defined location
   const geom = new BoxGeometry(20, 20, 20);
@@ -33,7 +36,7 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
   const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
   const hardCodeMarker = new Mesh(geom, hardCodeMtl);
 
-  const { locations, uid, names } = useContext(SocketContext).SocketState;
+  const { locations, authId, names } = useContext(SocketContext).SocketState;
   const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
@@ -169,11 +172,10 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
   useEffect(() => {
 
     if (userLongitude && userLatitude) {
-      AddLocation(currentGame.gameId, userLongitude, userLatitude);
+      AddLocation(currentGame.gameId, userLongitude, userLatitude, user);
 
       // hardcoded marker to test if the user location is working, should render right in front of them
       // arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
-
     }
 
   }, [userLatitude, userLongitude])
@@ -196,19 +198,24 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
     // iterating through the locations of the current locations state
     for (const userLocation of userLocations) {
       const { latitude, longitude } = userLocation;
+      console.log(Object.keys(userLocations))
       const markerLong = longitude;
       const markerLat = latitude;
 
+      arjsRef.current?._scene.children.forEach((child) => {
+        console.log(child.userData.id, authId);
+      })
+
       // checking if there's a marker that exists already for the user
-      const existingMarker = addedMarkers.find((marker) => marker.userData.id === uid);
+      const existingMarker = addedMarkers.find((marker) => marker.userData.id === authId);
 
       // if it exists, then just change the location, don't make a new one
       if (existingMarker) {
-        console.log(`Changing marker position for ${names[uid]}`)
+        console.log(`Changing marker position for ${names[authId]}`)
         arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
       } else {
         // store the first round of markers into the markers array/add them to the list
-        for (let player of currentGame.uidList) {
+        for (let player of currentGame.authIdList) {
           if (player === currentGame.hunted) {
             victim.userData.id = player;
             arjsRef.current?.add(victim, markerLong, markerLat, 10);
@@ -225,25 +232,22 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ currentGame }) => {
         }
       }
     }
+    console.log(arjsRef.current?._scene.children[0].userData.id);
+    arjsRef.current?._scene.children.forEach((child) => {
+      console.log(child.userData.id, authId);
+    })
+
   }, [locations]);
 
-  // arjsRef.current.on("gpsupdate", async (pos) => {
-  //   console.log('gps update!');
-  //   // if (!fetched) {
-
   //   const fakeLocations =
-  //     [
-  //       [-73.9932334, 44.205],
-  //       [-73.9932334, 44.202],
-  //     ]
+  //   [
+  //     [-73.9932334, 44.205],
+  //     [-73.9932334, 44.202],
+  //   ]
 
-  //   fakeLocations.forEach(coordinates => {
-  //     console.log('logging coordinates:', coordinates[0], coordinates[1])
-  //     arjsRef.current?.add(hardCodeMarker, coordinates[0], coordinates[1]);
-  //   });
-
-  //   fetched = true;
-  //   // }
+  // fakeLocations.forEach(coordinates => {
+  //   console.log('logging coordinates:', coordinates[0], coordinates[1])
+  //   arjsRef.current?.add(hardCodeMarker, coordinates[0], coordinates[1]);
   // });
 
 
