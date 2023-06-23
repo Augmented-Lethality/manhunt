@@ -155,3 +155,19 @@ Users.get("/:authId", async (req, res) => {
     res.sendStatus(500);
   }
 });
+
+// GET SPECIFIC USER
+Users.get("/games/:authId", async (req, res) => {
+  try {
+    // Fetch the user's data from the database based on their google auth ID
+    const user = await User.findOne({ where: { authId: req.params.authId } });
+    if (!user) {
+      res.sendStatus(404);
+    }
+
+    const users = await User.findAll({ where: { gameId: user?.dataValues.gameId } })
+    res.status(200).send(users);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});

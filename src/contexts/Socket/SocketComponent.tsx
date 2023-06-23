@@ -105,7 +105,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     // updating users in lobby
     socket.on('update_lobby_users', async () => {
       try {
-        const response = await axios.get(`/users/${user?.sub}`);
+        const response = await axios.get(`/users/games/${user?.sub}`);
         const users = response.data;
         console.log('updating lobby users state:', users)
         SocketDispatch({ type: 'update_lobby_users', payload: users });

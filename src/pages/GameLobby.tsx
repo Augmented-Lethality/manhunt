@@ -13,7 +13,7 @@ const GameLobby: React.FunctionComponent = () => {
   const { games, users } = useContext(SocketContext).SocketState;
 
   useEffect(() => {
-  }, [games])
+  }, [games, users])
 
 
   return (
@@ -25,8 +25,8 @@ const GameLobby: React.FunctionComponent = () => {
       <Main>
         {users.length > 0 ? (
           <>
-            <strong>Players in Lobby:</strong>
             <WhosHunting />
+            <strong>Players in Lobby:</strong>
             <br />
             <br />
             {users.map((player) => (
