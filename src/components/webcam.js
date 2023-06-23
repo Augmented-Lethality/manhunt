@@ -13,6 +13,8 @@ import {
   PerspectiveCamera,
   WebGLRenderer,
   BoxGeometry,
+  Sprite,
+  SpriteMaterial
 } from 'three';
 
 
@@ -592,4 +594,6 @@ export {
   PerspectiveCamera,
   WebGLRenderer,
   BoxGeometry,
+  Sprite,
+  SpriteMaterial,
 };

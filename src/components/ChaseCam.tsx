@@ -7,10 +7,9 @@ import {
   PerspectiveCamera,
   Scene,
   WebGLRenderer,
-  BoxGeometry,
-  MeshBasicMaterial,
-  Mesh,
   DeviceOrientationControls,
+  Sprite,
+  SpriteMaterial,
 } from "./webcam.js"
 
 import SocketContext from '../contexts/Socket/SocketContext';
@@ -25,15 +24,25 @@ const ChaseCam: React.FC = () => {
   const { users, games, locations } = useContext(SocketContext).SocketState;
 
 
-  // create markers to render on the screen that stays in the defined location
-  const geom = new BoxGeometry(20, 20, 20);
-  const killMtl = new MeshBasicMaterial({ color: 0xff0000 }); // red
-  const vicMtl = new MeshBasicMaterial({ color: 0x476930 }); // victim
-  const hardCodeMtl = new MeshBasicMaterial({ color: 0x993399 });
-  const killers = new Mesh(geom, killMtl); // blueprint, will need to clone
-  const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
-  const hardCodeMarker = new Mesh(geom, hardCodeMtl);
+  ////////// create markers to render on the screen that stays in the defined location ///////////
+  // create sprite materials
+  const killMtl = new SpriteMaterial({ color: 0xff0000, sizeAttenuation: false }); // red
+  const vicMtl = new SpriteMaterial({ color: 0x476930, sizeAttenuation: false }); // victim
+  const hardCodeMtl = new SpriteMaterial({ color: 0x993399, sizeAttenuation: false });
 
+  // create sprites
+  const killers = new Sprite(killMtl);
+  const victim = new Sprite(vicMtl);
+  const hardCodeMarker = new Sprite(hardCodeMtl);
+
+  // set size of sprites
+  const spriteSize = 0.1;
+  killers.scale.set(spriteSize, spriteSize, 1);
+  victim.scale.set(spriteSize, spriteSize, 1);
+  hardCodeMarker.scale.set(spriteSize, spriteSize, 1);
+  //////////////////////////////////////////////////////////////////
+
+  // this will add the location to the DB
   const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
@@ -72,13 +81,17 @@ const ChaseCam: React.FC = () => {
 
     // new scene, camera, and renderer
     const scene = new Scene();
-    const camera = new PerspectiveCamera(60, 1.33, 0.00000001, 100000000000000);
+
+    // camera to view the markers
+    const camera = new PerspectiveCamera(80, 2, 0.1, 50000);
+
+    // rendering the scene
     const renderer = new WebGLRenderer({ canvas: canvas });
 
     // LocationBased object for AR, takes scene and camera
     arjsRef.current = new LocationBasedLocal(scene, camera);
 
-    // renders the webcam stream as the background for the scene
+    // renders the webcam stream as the background for the scene, this is an AR.js class that I edited
     const cam = new WebcamRendererLocal(renderer);
 
     // start the device orientation controls for mobile
@@ -94,7 +107,7 @@ const ChaseCam: React.FC = () => {
     // requests the next animation frame
     function render() {
 
-      // setting the camera width of the device
+      // setting the camera width/height, determined by device and canvas on the page
       if (
         canvas.width !== canvas.clientWidth ||
         canvas.height !== canvas.clientHeight
@@ -113,10 +126,12 @@ const ChaseCam: React.FC = () => {
       frameIdRef.current = requestAnimationFrame(render);
 
 
+      // getting the user position determined by AR.js LocationBasedLocal
+      // this is only for the user, not all of the players
       const userPositions = arjsRef.current?.getUserPosition();
 
       // testing if the userPositions are the same as the old ones
-      // if not, update the state
+      // if not, update the local user's state
       if (userLatitude !== userPositions?.latitude || userLongitude !== userPositions?.longitude) {
         setUserLatitude(userPositions?.latitude);
         setUserLongitude(userPositions?.longitude);
@@ -168,17 +183,15 @@ const ChaseCam: React.FC = () => {
   /////// /////////////////////////////////// //////
 
   useEffect(() => {
-    console.log('inserting into AddLocation:', typeof userLongitude, userLongitude)
+    // console.log('inserting into AddLocation:', typeof userLongitude, userLongitude)
 
+    // if it isn't 0 (the default), store it into the DB using the socket.io function I made/imported
     if (userLongitude) {
       AddLocation(user, games[0].gameId, userLongitude, userLatitude);
-      console.log('added userLong and userLat', typeof userLongitude);
-
-      // hardcoded marker to test if the user location is working, should render right in front of them
-      // arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
+      // console.log('added userLong and userLat', typeof userLongitude);
     }
 
-  }, [userLatitude, userLongitude])
+  }, [userLatitude, userLongitude]) // happens every time the userLat and userLong is updated by the AR.js LocationBasedLocal
 
   useEffect(() => {
 
@@ -187,43 +200,40 @@ const ChaseCam: React.FC = () => {
       return;
     }
 
-    // iterating through the locations of the current locations state
-    for (const userLocation of locations) {
-      const markerLong = userLocation.longitude;
-      const markerLat = userLocation.latitude;
-      console.log('markerLong and markerLat:', typeof (markerLong), typeof markerLat)
+    // iterating through the locations of the current locations state in socket.io (all locations of players in the current game)
+    for (const playerLocation of locations) {
+      // these will be the marker's long and lat for that player
+      const markerLong = playerLocation.longitude;
+      const markerLat = playerLocation.latitude;
 
-      arjsRef.current?._scene.children.forEach((child) => {
-        console.log(child);
-      })
-
-      // console.log(users)
-      users.forEach((player) => {
-        if (player.authId === games[0].hunted) {
-          victim.userData.id = player.authId;
+      // if the current player in the locations state's authId matches the current user's authId,
+      // don't place a marker because there's no point in a marker being on top of you
+      if (playerLocation.authId !== user?.sub) {
+        // if the player is being hunted
+        if (playerLocation.authId === games[0].hunted) {
+          // make the marker's id = the the player's authId
+          victim.userData.id = playerLocation.authId;
+          // add the marker to the scene at their long/lat and an elevation of 10 so it's mid height
           arjsRef.current?.add(victim, markerLong, markerLat, 10);
-          console.log(`Added victim marker for ${player.username}`)
+          console.log(`Added victim marker`);
         } else {
+          // make another killer marker to place and add to the scene
           const clonedKiller = killers.clone();
-          clonedKiller.userData.id = player.authId;
+          clonedKiller.userData.id = playerLocation.authId;
           arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
-          console.log(`Added killer marker for ${player.username}`)
+          console.log(`Added killer marker`);
         }
-      })
+
+      } else {
+        // USE THIS IF YOU NEED TO TEST A MARKER RENDERING
+
+        // arjsRef.current?.add(victim, markerLong, markerLat + 0.01, 10);
+        // console.log('added a fake marker for player 0.1 away')
+      }
+
     }
 
-  }, [locations]);
-
-  //   const fakeLocations =
-  //   [
-  //     [-73.9932334, 44.205],
-  //     [-73.9932334, 44.202],
-  //   ]
-
-  // fakeLocations.forEach(coordinates => {
-  //   console.log('logging coordinates:', coordinates[0], coordinates[1])
-  //   arjsRef.current?.add(hardCodeMarker, coordinates[0], coordinates[1]);
-  // });
+  }, [locations]); // happens every time a new location is read
 
 
   return (
