@@ -193,6 +193,8 @@ const ChaseCam: React.FC = () => {
 
   }, [userLatitude, userLongitude]) // happens every time the userLat and userLong is updated by the AR.js LocationBasedLocal
 
+
+  // NOTE: THIS IS VERY TIME COMPLEX SO I WILL BE POLISHING THIS IN POLISH WEEK
   useEffect(() => {
 
     if (locations.length === 0) {
@@ -200,29 +202,52 @@ const ChaseCam: React.FC = () => {
       return;
     }
 
+
     // iterating through the locations of the current locations state in socket.io (all locations of players in the current game)
     for (const playerLocation of locations) {
       // these will be the marker's long and lat for that player
       const markerLong = playerLocation.longitude;
       const markerLat = playerLocation.latitude;
 
+      const existingMarkers: string[] = [];
+
+      if (arjsRef.current !== null) {
+        arjsRef.current._scene.children.forEach((child: { userData: { id: string } }) => {
+          if (!existingMarkers.includes(child.userData.id)) {
+            existingMarkers.push(child.userData.id);
+          }
+        });
+      }
+      // console.log(existingMarkers)
+
+
       // if the current player in the locations state's authId matches the current user's authId,
       // don't place a marker because there's no point in a marker being on top of you
       if (playerLocation.authId !== user?.sub) {
-        // if the player is being hunted
-        if (playerLocation.authId === games[0].hunted) {
-          // make the marker's id = the the player's authId
-          victim.userData.id = playerLocation.authId;
-          // add the marker to the scene at their long/lat and an elevation of 10 so it's mid height
-          arjsRef.current?.add(victim, markerLong, markerLat, 10);
-          console.log(`Added victim marker`);
+        // if a marker has not been placed for the player yet
+        if (!existingMarkers.includes(playerLocation.authId)) {
+          // if the player is being hunted
+          if (playerLocation.authId === games[0].hunted) {
+            // make the marker's id = the the player's authId
+            victim.userData.id = playerLocation.authId;
+            // add the marker to the scene at their long/lat and an elevation of 10 so it's mid height
+            arjsRef.current?.add(victim, markerLong, markerLat, 10);
+            // console.log(`Added NEW victim marker`);
+          } else {
+            // make another killer marker to place and add to the scene
+            const clonedKiller = killers.clone();
+            clonedKiller.userData.id = playerLocation.authId;
+            arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
+            // console.log(`Added NEW killer marker`);
+          }
         } else {
-          // make another killer marker to place and add to the scene
-          const clonedKiller = killers.clone();
-          clonedKiller.userData.id = playerLocation.authId;
-          arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
-          console.log(`Added killer marker`);
+          // find the existing marker
+          const markerToUpdate = arjsRef.current?._scene.children.find((child) => child.userData.id === playerLocation.authId);
+          // a marker has already been added so only updating the world position
+          arjsRef.current?.setWorldPosition(markerToUpdate, markerLong, markerLat, 10);
+          // console.log('updated the location of an existing marker')
         }
+
 
       } else {
         // USE THIS IF YOU NEED TO TEST A MARKER RENDERING
