@@ -282,6 +282,11 @@ export class ServerSocket {
               { where: { gameId: user.dataValues.gameId } }
             )
             socket.leave(user.dataValues.gameId);
+            // send new games to all connected users to update their games lists
+            this.io.to(user.dataValues.gameId).emit('update_games');
+            // send new user to all connected users to update their state
+            this.io.to(user.dataValues.gameId).emit('update_users');
+
 
           }
 
