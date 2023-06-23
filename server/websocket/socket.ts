@@ -262,6 +262,44 @@ export class ServerSocket {
 
     });
 
+    socket.on('leave_game', async (user) => {
+      try {
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const game = await Game.findByPk(existingUser?.dataValues.gameId);
+
+        if (game) {
+          if (game.dataValues.users.includes(user.sub)) {
+
+            await User.update({ gameId: '' }, { where: { authId: user.sub } });
+
+            const updatedUserList = game.dataValues.users.filter((authId: string) => authId !== existingUser?.dataValues.authId);
+
+            await Game.update(
+              { users: updatedUserList },
+              { where: { gameId: game.dataValues.gameId } }
+            )
+
+            socket.leave(game.dataValues.gameId);
+            socket.join('users');
+
+            this.io.to(game.dataValues.gameId).emit('update_lobby_users');
+            this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+            this.io.to('users').emit('update_games');
+            this.io.to('users').emit('update_users');
+
+
+          } else {
+            console.log('game did not have that user');
+          }
+
+        } else {
+          console.log('no game like that exists')
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
 
     // when the disconnect occurs
     socket.on('disconnect', async () => {

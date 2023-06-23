@@ -184,6 +184,15 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
   };
 
+  // sending join game to the server
+  const LeaveGame = (user: User) => {
+
+    socket.emit('leave_game', user, () => {
+      console.log('leaving game')
+    });
+
+  };
+
   const Redirect = (host: string, endpoint: string) => {
     // console.info(`Redirect from ${host} to ${endpoint}`);
     socket.emit('nav_to_endpoint', host, endpoint);
@@ -202,7 +211,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, }}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, LeaveGame }}>
       {children}
     </SocketContextProvider>
   )
