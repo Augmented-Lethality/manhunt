@@ -1,11 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { User } from '../contexts/Socket/SocketContext';
+
 export interface IWhosHuntingProps {
-  // host: string
-  // hunted: string
-  players: any
-  // users: User[]
-  setHunted: (victim: string) => void
+  hunted: string;
+  setHunted: (victim: string) => void;
 }
 
 import SocketContext from '../contexts/Socket/SocketContext';
@@ -13,22 +11,22 @@ import SocketContext from '../contexts/Socket/SocketContext';
 
 const WhosHunting: React.FunctionComponent<IWhosHuntingProps> = (props) => {
 
-  const { players, setHunted } = props;
+  const { users } = useContext(SocketContext).SocketState;
+  const { setHunted, hunted } = props;
 
   useEffect(() => {
-    // console.log(players[0])
+    // console.log(users)
   }, [])
 
-  // // randomly pick a user
-  // const pickVictim = () => {
-  //   const victim = players[0].users[Math.floor(Math.random() * players.length)];
-  //   setHunted(victim);
-
-  // }
+  // randomly pick a user
+  const pickVictim = () => {
+    const victim = users[Math.floor(Math.random() * users.length)];
+    setHunted(victim.username);
+  }
 
   return (
     <div>
-      {/* <button onClick={pickVictim}>Who's Being Hunted?</button> */}
+      {hunted.length > 0 ? (<></>) : <button onClick={pickVictim}>Who's Being Hunted?</button>}
     </div>
   );
 

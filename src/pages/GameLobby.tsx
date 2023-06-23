@@ -11,20 +11,11 @@ import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
 const GameLobby: React.FunctionComponent = (props) => {
 
   const { games, users } = useContext(SocketContext).SocketState;
-  // const [showHunting, setShowHunting] = useState(false);
-  // const [currentGame, setCurrentGame] = useState<{ gameId: string, authIdList: string[], hunted: string }>({ gameId: '', authIdList: [], hunted: '' });
-  // const [host, setHost] = useState<string>('');
-
   const [hunted, setHunted] = useState<string>('');
-  const [huntedName, setHuntedName] = useState<string>('');
 
   useEffect(() => {
-    console.log("games state should be one game:", games, "users state should be only users in that one game", users)
+    // console.log("games state should be one game:", games, "users state should be only users in that one game", users)
   }, [games])
-
-  useEffect(() => {
-
-  }, [hunted])
 
 
   // HUNTED IS NOT SET UP
@@ -38,7 +29,7 @@ const GameLobby: React.FunctionComponent = (props) => {
         {users.length > 0 ? (
           <>
             <strong>Players in Lobby:</strong>
-            {hunted.length > 0 ? (<div>Player {hunted}, You're Being Hunted</div>) : (<WhosHunting players={games} setHunted={setHunted} />)}
+            {hunted.length > 0 ? (<div>Player {hunted}, You're Being Hunted</div>) : (<WhosHunting setHunted={setHunted} hunted={hunted} />)}
             <br />
             <br />
             {users.map((player) => (
