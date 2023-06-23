@@ -17,15 +17,13 @@ import SocketContext from '../contexts/Socket/SocketContext';
 
 // had to add this in the decs.d.ts file to use in typescript. currently set as any
 
-type ChaseCamProps = {
-  // currentGame: { gameId: string; authIdList: string[], hunted: string },
-};
 
-
-
-const ChaseCam: React.FC<ChaseCamProps> = ({ }) => {
+const ChaseCam: React.FC = () => {
 
   const { user } = useAuth0();
+
+  const { users, games, locations } = useContext(SocketContext).SocketState;
+
 
   // create markers to render on the screen that stays in the defined location
   const geom = new BoxGeometry(20, 20, 20);
@@ -35,7 +33,7 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ }) => {
   const killers = new Mesh(geom, killMtl); // blueprint, will need to clone
   const victim = new Mesh(geom, vicMtl); // only one, don't need to clone
   const hardCodeMarker = new Mesh(geom, hardCodeMtl);
-  
+
   const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
@@ -171,9 +169,10 @@ const ChaseCam: React.FC<ChaseCamProps> = ({ }) => {
   /////// /////////////////////////////////// //////
 
   useEffect(() => {
+    console.log(user)
 
     if (userLongitude && userLatitude) {
-      AddLocation(user?.gameId, userLongitude, userLatitude, user);
+      AddLocation(user, games[0].gameId, userLongitude, userLatitude);
       console.log('added userLong and userLat');
 
       // hardcoded marker to test if the user location is working, should render right in front of them

@@ -80,14 +80,6 @@ export class ServerSocket {
     // client is asking to make a socket connection to the server, also known as a handshake
     socket.on('handshake', async (user) => {
 
-      if (socket.rooms.has('users')) {
-        console.log('A client reconnected');
-      } else {
-        // joining the users room on the server connection
-        socket.join('users');
-      }
-
-
       try {
 
         // if the user exists, update the new socket connection
@@ -97,19 +89,24 @@ export class ServerSocket {
           await User.update({ socketId: socket.id }, { where: { authId: user.sub } })
           console.log('updated db user connection')
 
-          if (socket.rooms.has(user.gameId)) {
-            console.log('Client Reconnected to Game');
-          } else {
-            // now see if they were part of the game
-            const existingGame = await Game.findOne({ where: { gameId: existingUser.dataValues.gameId } })
-            // if the game exists on their model and the user isn't in the game list, add them back
-            if (existingGame) {
-              if (!existingGame.dataValues.users.includes(existingUser.dataValues.authId)) {
-                await Game.update({ users: [...existingGame.dataValues.users, existingUser.dataValues.authId] },
-                  { where: { gameId: existingUser.dataValues.gameId } });
-                console.log('put user back in game')
-              }
+
+          // now see if they were part of the game
+          const existingGame = await Game.findOne({ where: { gameId: existingUser.dataValues.gameId } })
+          // if the game exists on their model and the user isn't in the game list, add them back
+          if (existingGame) {
+            if (!existingGame.dataValues.users.includes(existingUser.dataValues.authId)) {
+              await Game.update({ users: [...existingGame.dataValues.users, existingUser.dataValues.authId] },
+                { where: { gameId: existingUser.dataValues.gameId } });
             }
+            console.log('put user back in game')
+            socket.join(existingUser.dataValues.gameId);
+            console.log(existingUser.dataValues.gameId)
+            this.io.to(existingUser.dataValues.gameId).emit('update_lobby_users');
+            this.io.to(existingUser.dataValues.gameId).emit('update_lobby_games');
+
+          } else {
+            console.log('joined users')
+            socket.join('users');
           }
 
         }
@@ -131,6 +128,7 @@ export class ServerSocket {
       try {
         const hostingGame = await Game.findOne({ where: { host: user.sub } });
         if (hostingGame) {
+          socket.leave('users');
           console.log('already hosting a game');
         } else {
           const gameId = v4();
@@ -141,6 +139,7 @@ export class ServerSocket {
 
         }
         // send new user to all connected users to update their games lists
+        socket.leave('users');
         this.io.to('users').emit('update_games');
 
       } catch (err) {
@@ -159,6 +158,7 @@ export class ServerSocket {
             await User.update({ gameId: game.gameId }, { where: { authId: user.sub } });
             await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
             socket.join(game.gameId);
+            socket.leave('users');
 
             this.io.to('users').emit('update_games');
           }
@@ -177,6 +177,8 @@ export class ServerSocket {
         if (game) {
           if (game.dataValues.users.includes(user.sub)) {
             console.log('user in game we good, updating the game lobby')
+            socket.leave('users');
+
             this.io.to(user.gameId).emit('update_lobby_users');
             this.io.to(user.gameId).emit('update_lobby_games');
           }
@@ -211,17 +213,17 @@ export class ServerSocket {
 
 
     // adding/updating a location
-    socket.on('add_location', async (user, longitude, latitude) => {
+    socket.on('add_location', async (user, gameId, longitude, latitude) => {
       try {
-        const location = await Locations.findOne({ where: { gameId: user.gameId } });
+        const location = await Locations.findOne({ where: { authId: user.sub } });
         if (location) {
-          await Locations.update({ longitude: longitude, latitude: latitude }, { where: { gameId: user.gameId } });
+          await Locations.update({ longitude: longitude, latitude: latitude }, { where: { gameId: gameId } });
           console.log('updated user location')
-          this.io.to(user.gameId).emit('update_locations');
+          this.io.to(gameId).emit('update_locations');
         } else {
-          await Locations.create({ authId: user.authId, gameId: user.gameId, longitude: longitude, latitude: latitude })
+          await Locations.create({ authId: user.sub, gameId: gameId, longitude: longitude, latitude: latitude })
           console.log('made new location')
-          this.io.to(user.gameId).emit('update_locations');
+          this.io.to(gameId).emit('update_locations');
         }
       } catch (err) {
         console.log(err);

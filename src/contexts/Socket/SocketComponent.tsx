@@ -103,6 +103,30 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       }
     });
 
+    // updating users in lobby
+    socket.on('update_lobby_users', async () => {
+      try {
+        const response = await axios.get(`/users/${user?.sub}`);
+        const users = response.data;
+        console.log('updating lobby users state:', users)
+        SocketDispatch({ type: 'update_lobby_users', payload: users });
+      } catch (error) {
+        console.error('Error fetching lobby users:', error);
+      }
+    });
+
+    // updating games in lobby
+    socket.on('update_lobby_games', async () => {
+      try {
+        const response = await axios.get(`/games/user/${user?.sub}`);
+        const games = response.data;
+        console.log('updating lobby games state:', games)
+        SocketDispatch({ type: 'update_lobby_games', payload: games });
+      } catch (error) {
+        console.error('Error fetching lobby games:', error);
+      }
+    });
+
     // update locations event
     socket.on('update_locations', async () => {
       try {
@@ -137,13 +161,13 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
   }
 
-  const AddLocation = (user: User, longitude: number, latitude: number) => {
-    socket.emit('add_location', user, longitude, latitude, () => {
+  const AddLocation = (user: any, gameId: string, longitude: number, latitude: number) => {
+    socket.emit('add_location', user, gameId, longitude, latitude, () => {
       console.log('adding location');
     });
   };
 
-  // sending join game to the server, host identifies game to join
+  // sending join game to the server
   const JoinGame = (host: string, user: User) => {
     // console.info('Client wants to join a game...');
 

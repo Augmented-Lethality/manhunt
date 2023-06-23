@@ -22,8 +22,7 @@ type UserData = {
 
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
-  const { AddName } = useContext(SocketContext);
-  const { authId, users, socket } = useContext(SocketContext).SocketState;
+  const { users } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
@@ -47,12 +46,8 @@ const HomePage = () => {
 
     if (isAuthenticated && user) {
       fetchUserData();
-      const insertName = `${user.given_name || ''} ${user.family_name?.charAt(
-        0
-      )}`;
-      AddName(insertName || '', authId);
     }
-  }, [user, isAuthenticated, AddName, authId, users]);
+  }, [user, isAuthenticated, users]);
 
   if (!isAuthenticated || !user) {
     return null;
@@ -66,14 +61,14 @@ const HomePage = () => {
           src={user.picture}
           alt='Profile'
           className='profile__avatar'
-          style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
+          style={{ height: '10vw', width: '10vw', borderRadius: '50%' }} />
         <h1>Users Online: {users.length}</h1>
-          <DropDownMenu>
-            <div>profile</div>
-            <div>friends</div>
-            <div>settings</div>
-            <div>logout</div>
-          </DropDownMenu>
+        <DropDownMenu>
+          <div>profile</div>
+          <div>friends</div>
+          <div>settings</div>
+          <div>logout</div>
+        </DropDownMenu>
       </Header>
       <Main>
         <ButtonToProfile />
