@@ -110,7 +110,7 @@ Locations.init({
     primaryKey: true,
   },
   gameId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
   },
   longitude: {
     type: DataTypes.DECIMAL,

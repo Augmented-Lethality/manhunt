@@ -281,6 +281,8 @@ export class ServerSocket {
               { users: updatedUserList },
               { where: { gameId: user.dataValues.gameId } }
             )
+            socket.leave(user.dataValues.gameId);
+
           }
 
           // delete the socket id from the user since they're not connected anymore

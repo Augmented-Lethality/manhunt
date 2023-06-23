@@ -129,7 +129,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     // update locations event
     socket.on('update_locations', async () => {
       try {
-        const response = await axios.get(`/locations/${user?.gameId}`);
+        const response = await axios.get(`/locations/${user?.sub}`);
         const locations = response.data;
         console.log('updating locations state:', locations)
         SocketDispatch({ type: 'update_locations', payload: locations });
