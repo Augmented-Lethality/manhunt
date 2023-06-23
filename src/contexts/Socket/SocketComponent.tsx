@@ -57,10 +57,9 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     // reconnect
     socket.io.on('reconnect', (attempt) => {
       console.info('Reconnected on attempt: ' + attempt);
-      if (user?.gameId.length > 1) {
-        socket.emit('reconnect_in_game', user, () => {
-        });
-      }
+      socket.emit('reconnect_in_game', user, () => {
+      });
+
     })
 
     // trying to reconnect

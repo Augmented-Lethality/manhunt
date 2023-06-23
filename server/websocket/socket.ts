@@ -136,6 +136,8 @@ export class ServerSocket {
           await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub] });
           await User.update({ gameId: gameId }, { where: { authId: user.sub } })
           socket.join(gameId);
+          this.io.to(gameId).emit('update_lobby_users');
+          this.io.to(gameId).emit('update_lobby_games');
 
         }
         // send new user to all connected users to update their games lists
@@ -159,6 +161,8 @@ export class ServerSocket {
             await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
             socket.join(game.gameId);
             socket.leave('users');
+            this.io.to(game.gameId).emit('update_lobby_users');
+            this.io.to(game.gameId).emit('update_lobby_games');
 
             this.io.to('users').emit('update_games');
           }
@@ -191,21 +195,27 @@ export class ServerSocket {
     });
 
     socket.on('reconnect_in_game', async (user) => {
-      socket.join(user.gameId);
 
       try {
-        const game = await Game.findOne({ where: { gameId: user.gameId } });
-        if (game) {
-          if (!game.dataValues.users.includes(user.sub)) {
-            await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: user.gameId } });
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
 
-            console.log('user in game again, updating the game lobby')
-            this.io.to(user.gameId).emit('update_lobby_users');
-            this.io.to(user.gameId).emit('update_lobby_games');
+        if (existingUser) {
+          const game = await Game.findOne({ where: { gameId: existingUser.dataValues.gameId } });
+
+          if (game) {
+            if (!game.dataValues.users.includes(user.sub)) {
+              await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: existingUser.dataValues.gameId } });
+              socket.join(existingUser.dataValues.gameId);
+
+              console.log('user in game again, updating the game lobby')
+              this.io.to(user.gameId).emit('update_lobby_users');
+              this.io.to(user.gameId).emit('update_lobby_games');
+            }
+          } else {
+            console.log('no game with that host exists')
           }
-        } else {
-          console.log('no game with that host exists')
         }
+
       } catch (err) {
         console.log(err);
       }
