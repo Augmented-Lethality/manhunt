@@ -45,23 +45,25 @@ const ProfilePage: React.FC = () => {
 
     const fetchTrophyData = async () => {
       try {
-        const response = await axios.get(`/trophies/${user?.sub}`, {});
+        const response = await axios.get(`/trophies/${user?.id}`, {});
         setTrophyData(response.data);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error fetching trophy data:', error);
       }
     };
 
     if (isAuthenticated && user) {
       fetchUserData();
       fetchTrophyData();
-      console.log(trophyData);
     }
-  }, []);
 
-  // if (!user) {
-  //   return null;
-  // }
+    console.log('userData:', userData);
+    console.log('trophyData:', trophyData);
+  }, [user, isAuthenticated]);
+
+  if (!user) {
+    return null;
+  }
 
   if (photoStatus === 'camera') {
     return (
@@ -87,12 +89,12 @@ const ProfilePage: React.FC = () => {
 
   return (
     <Container>
-      <div style={{ width: '300px', height: '300px' }}>
+      {/* <div style={{ width: '300px', height: '300px' }}>
         <TrophyGenerator />
-      </div>
-      <div style={{ width: '300px', height: '300px' }}>
+      </div> */}
+      {/* <div style={{ width: '300px', height: '300px' }}>
         <SavedTrophy />
-      </div>
+      </div> */}
 
       <Header>
         <h1>Profile</h1>

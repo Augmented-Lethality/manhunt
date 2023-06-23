@@ -7,14 +7,14 @@ const Trophies = Router();
 // POST NEW Trophy
 Trophies.post('/', async (req, res) => {
   try {
-    const { name, description, generationConditions, filePath, ownersId } = req.body;
+    const { name, description, generationConditions, filePath, ownerId } = req.body;
     console.log(name);
     const newTrophy = await Trophy.create({
       name,
       description,
       generationConditions,
       filePath,
-      ownersId,
+      ownerId,
     });
 
     res.status(201).json(newTrophy);
@@ -30,13 +30,12 @@ module.exports = { Trophies };
 
 //THESE HAVNT BEEN TESTED
 // // GET ALL TROPHIES Of Specific User
-Trophies.get('/:authId', async (req, res) => {
+Trophies.get('/:ownerId', async (req, res) => {
   try {
-    const { authId } = req.params;
-
+    const { ownerId } = req.params;
     // Fetch all trophies associated with the provided authId
     const userTrophies = await Trophy.findAll({
-      where: { ownersId: authId },
+      where: { ownerId: ownerId },
     });
 
     res.status(200).json(userTrophies);
@@ -48,16 +47,15 @@ Trophies.get('/:authId', async (req, res) => {
 
 
 
-// // GET  Trophy
-// Trophies.get('/:authId', async (req, res) => {
-//   try {
-//     const Trophy = await User.findOne({ where: { authId: req.params.authId } });
-//     if (!Trophy) {
-//       return res.status(404).json({ error: 'User not found' });
-//     }
-//     res.status(200).json(Trophy);
-//   } catch (err) {
-//     console.warn(err);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+// GET  Trophy
+Trophies.get("/", async (req, res) => {
+  try {
+    // Fetch all users from the database
+    const users = await Trophy.findAll();
+
+    res.status(200).json(Trophies);
+  } catch (err) {
+    console.warn(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
