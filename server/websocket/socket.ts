@@ -94,7 +94,6 @@ export class ServerSocket {
             }
             console.log('put user back in game')
             socket.join(existingUser.dataValues.gameId);
-            console.log(existingUser.dataValues.gameId)
             this.io.to(existingUser.dataValues.gameId).emit('update_lobby_users');
             this.io.to(existingUser.dataValues.gameId).emit('update_lobby_games');
 
@@ -232,7 +231,7 @@ export class ServerSocket {
       try {
         const location = await Locations.findOne({ where: { authId: user.sub } });
         if (location) {
-          await Locations.update({ longitude: longitude, latitude: latitude }, { where: { gameId: gameId } });
+          await Locations.update({ longitude: longitude, latitude: latitude }, { where: { authId: user.sub } });
           console.log('updated user location')
           this.io.to(gameId).emit('update_locations');
         } else {

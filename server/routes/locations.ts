@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Locations, User } from "../database/models";
 export const Location = Router();
 
-// GET all games
+// GET all locatinos
 Location.get("/:authId", async (req, res) => {
   try {
     const user = await User.findOne({ where: { authId: req.params.authId } });
