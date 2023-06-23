@@ -181,64 +181,47 @@ const ChaseCam: React.FC = () => {
 
   }, [userLatitude, userLongitude])
 
-  // useEffect(() => {
+  useEffect(() => {
+    if (locations.length === 0) {
+      console.log('There are no locations to plot.');
+      return;
+    }
 
-  //   // getting the user locations from the locations of the current socket state
-  //   // this route I am emitting correctly, won't need to change this on
-  //   // the refactor of socket codes
-  //   const userLocations = Object.values(locations);
+    for (const userLocation of locations) {
+      const markerLong = userLocation.longitude;
+      const markerLat = userLocation.latitude;
 
-  //   if (userLocations.length === 0) {
-  //     console.log('There are no locations to plot.');
-  //     return;
-  //   }
+      let playerExists = false; // Flag to check if player exists in the scene
 
-  //   // markers that have been added are stored in this array
-  //   const addedMarkers: Array<Mesh<BoxGeometry, MeshBasicMaterial>> = [];
+      // Iterate through the children of the AR scene to check if the player already exists
+      arjsRef.current?._scene.children.forEach((child) => {
+        if (child.userData.id === player.authId) {
+          // Player already exists, so set its position instead of adding it
+          child.setWorldPosition(markerLong, markerLat, 10);
+          playerExists = true;
+          console.log(`Updated position for ${player.username}`);
+          return; // Exit the forEach loop
+        }
+      });
 
-  //   // iterating through the locations of the current locations state
-  //   for (const userLocation of userLocations) {
-  //     const { latitude, longitude } = userLocation;
-  //     console.log(Object.keys(userLocations))
-  //     const markerLong = longitude;
-  //     const markerLat = latitude;
+      if (!playerExists) {
+        // Player doesn't exist in the scene, so add it
+        for (let player of users) {
+          if (player.authId === games[0].hunted) {
+            victim.userData.id = player.authId;
+            arjsRef.current?.add(victim, markerLong, markerLat, 10);
+            console.log(`Added marker for ${player.username}`);
+          } else {
+            const clonedKiller = killers.clone();
+            clonedKiller.userData.id = player.authId;
+            arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
+            console.log(`Added marker for ${player.username}`);
+          }
+        }
+      }
+    }
+  }, [locations]);
 
-  //     arjsRef.current?._scene.children.forEach((child) => {
-  //       console.log(child.userData.id, authId);
-  //     })
-
-  //     // checking if there's a marker that exists already for the user
-  //     const existingMarker = addedMarkers.find((marker) => marker.userData.id === authId);
-
-  //     // if it exists, then just change the location, don't make a new one
-  //     if (existingMarker) {
-  //       console.log(`Changing marker position for ${names[authId]}`)
-  //       arjsRef.current?.setWorldPosition(existingMarker, markerLong, markerLat);
-  //     } else {
-  //       // store the first round of markers into the markers array/add them to the list
-  //       for (let player of currentGame.authIdList) {
-  //         if (player === currentGame.hunted) {
-  //           victim.userData.id = player;
-  //           arjsRef.current?.add(victim, markerLong, markerLat, 10);
-  //           console.log(`Added marker for ${names[player]}`)
-  //           addedMarkers.push(victim);
-  //         } else {
-  //           const clonedKiller = killers.clone();
-  //           clonedKiller.userData.id = player;
-  //           arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
-  //           console.log(`Added marker for ${names[player]}`)
-  //           // add the marker to the addedMarkers array so it can be checked if it was already put onto the map
-  //           addedMarkers.push(clonedKiller);
-  //         }
-  //       }
-  //     }
-  //   }
-  //   console.log(arjsRef.current?._scene.children[0].userData.id);
-  //   arjsRef.current?._scene.children.forEach((child) => {
-  //     console.log(child.userData.id, authId);
-  //   })
-
-  // }, [locations]);
 
   //   const fakeLocations =
   //   [
