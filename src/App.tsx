@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import PageLoader from './Auth0/Loading';
 import { useAuth0 } from '@auth0/auth0-react';
+import { AuthenticationGuard } from './Auth0/authentication-guard';
 import NotFoundPage from './pages/NotFoundPage';
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
@@ -27,17 +28,54 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/home" element={<SocketComponent><HomePage /></SocketComponent>} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/test" element={<TestPage />} />
-      <Route path="/findGame" element={<SocketComponent><FindGamePage /></SocketComponent>} />
-      <Route path="/onthehunt" element={<SocketComponent><GamePage /></SocketComponent>} />
-      <Route path="/gameover" element={<SocketComponent><EndGame /></SocketComponent>} />
-      <Route path="/lobby" element={<SocketComponent><GameLobby /></SocketComponent>} />
+      <Route
+        path="/home"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={HomePage} />
+          </SocketComponent>}
+      />
+      <Route
+        path="/profile"
+        element={<AuthenticationGuard component={ProfilePage} />}
+      />
+      <Route
+        path="/test"
+        element={<AuthenticationGuard component={TestPage} />}
+      />
+      <Route
+        path="/findGame"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={FindGamePage} />
+          </SocketComponent>}
+      />
+
+      <Route
+        path="/onthehunt"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={GamePage} />
+          </SocketComponent>} />
+
+      <Route
+        path="/gameover"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={EndGame} />
+          </SocketComponent>} />
+
+      <Route
+        path="/lobby"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={GameLobby} />
+          </SocketComponent>
+        }
+      />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
-
 };
 
 export default App;

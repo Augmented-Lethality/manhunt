@@ -2,6 +2,9 @@ import React, { PropsWithChildren, useReducer, useState, useEffect } from 'react
 import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 import { useAuth0 } from '@auth0/auth0-react';
+import { User } from './SocketContext';
+
+import axios from 'axios';
 
 
 // THIS CAN BE REUSED TO PASS THE SOCKET INFORMATION AROUND THE CLIENT SIDE
@@ -12,11 +15,10 @@ export interface ISocketComponentProps extends PropsWithChildren { }
 
 // functional component that has ISocketComponentProps as its children/props
 const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) => {
-
   // nested elements within SocketComponent, rendered in the context provider
   const { children } = props;
 
-  const { user, isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
 
 
   // making a local state to store the created reducer and the default socket context state
@@ -25,8 +27,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // if loading, let's show the loading message so it doesn't break
   const [loading, setLoading] = useState(true);
 
-  // this is a custom hook I made to create a socket connection
-  const socket = useSocket(`ws://${process.env.REACT_APP_SOCKET_URI}`, {
+  const socket = useSocket(`https://${process.env.REACT_APP_SOCKET_URI}`, {
     reconnectionAttempts: 5,
     reconnectionDelay: 3000,
     autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
@@ -72,33 +73,31 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     // reconnect failed
     socket.io.on('reconnect_failed', () => {
       console.info('Reconnection failure');
-      alert('Unable to connect to web socket')
+      // alert('Unable to connect to web socket')
     })
 
-    // user connected event
-    socket.on('user_connected', (users: string[]) => {
-      console.info('user connected, new user list received')
-      SocketDispatch({ type: 'update_users', payload: users })
-      // update names
+    // updating games
+    socket.on('update_games', async () => {
+      try {
+        const response = await axios.get('/games');
+        const games = response.data;
+        console.log('updating game state', games)
+        SocketDispatch({ type: 'update_games', payload: games });
+      } catch (error) {
+        console.error('Error fetching games:', error);
+      }
     });
 
-    // user disconnected event
-    socket.on('user_disconnected', (uid: string) => {
-      console.info('user disconnected')
-      SocketDispatch({ type: 'remove_user', payload: uid })
-      // remove name
-    });
-
-    // created a game event
-    socket.on('game_created', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
-      // console.info('game created, new game list received')
-      SocketDispatch({ type: 'update_games', payload: games })
-    });
-
-    // updated a game event
-    socket.on('update_games', (games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
-      // console.info('games updated, new game list received')
-      SocketDispatch({ type: 'update_games', payload: games })
+    // updating users
+    socket.on('update_users', async () => {
+      try {
+        const response = await axios.get('/users/sockets');
+        const users = response.data;
+        console.log('updating users state:', users)
+        SocketDispatch({ type: 'update_users', payload: users });
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
     });
 
     // update locations event
@@ -108,63 +107,51 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
 
     // update the names state
-    socket.on('update_names', (names: { [uid: string]: string }) => {
+    socket.on('update_names', (names: { [authId: string]: string }) => {
       // console.info('names updated, new name list received')
       SocketDispatch({ type: 'update_names', payload: names })
     });
-
-    // redirect users event
-    // socket.on('redirect', (endpoint) => {
-    //   console.info(`redirecting to ${ endpoint }`);
-    //   const navigate = useNavigate();
-    //   navigate(endpoint);
-    // });
 
 
   }
 
   // sending the handshake to the server, meaning it's trying to establish a connection to the server using websocket
   const SendHandshake = () => {
-    // console.info('Client wants a handshake...');
-
-    // the cb on the same message so don't have to create a handshake_reply emit for connection, it'll just happen when they connect
-    // on the handshake and it gets the cb from the server on handshake
-    socket.emit('handshake', user, (uid: string, users: string[], games: { [host: string]: { gameId: string, uidList: string[], hunted: string } },
-      names: { [uid: string]: string }) => {
-      // console.log('We shook, let\'s trade info xoxo');
-      SocketDispatch({ type: 'update_uid', payload: uid });
-      SocketDispatch({ type: 'update_users', payload: users });
-      SocketDispatch({ type: 'update_games', payload: games });
-      SocketDispatch({ type: 'update_names', payload: names });
-
-      // not loading anymore since it connected
+    socket.emit('handshake', user, () => {
       setLoading(false);
     });
-  }
+
+    socket.on('handshake_reply', (response) => {
+      setLoading(false);
+    });
+  };
+
 
   // sending createRoom to the server
   const CreateGame = () => {
-    // console.info('Client wants to create a game...');
-
-    socket.emit('create_game', (uid: string, games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
-      SocketDispatch({ type: 'update_games', payload: games })
+    socket.emit('create_game', user, () => {
+      // console.log('creating game client side');
     });
   }
 
-  const AddLocation = (gameId: string, longitude: number, latitude: number) => {
-    console.info(`Someone from game ${gameId} wants to add a location...`);
+  const AddLocation = (gameId: string, longitude: number, latitude: number, user: any) => {
+    console.info(`User ${user.sub} wants to add a location: ${longitude} ${latitude}`);
 
-    socket.emit('add_location', gameId, longitude, latitude, (uid: string, locations: { [uid: string]: { longitude: number, latitude: number } }) => {
+    socket.emit('add_location', gameId, longitude, latitude, user, (authId: string, locations: { [authId: string]: { longitude: number, latitude: number } }) => {
       SocketDispatch({ type: 'updated_locations', payload: locations });
     });
   };
 
   // sending join game to the server, host identifies game to join
-  const JoinGame = (host: string) => {
+  const JoinGame = (host: string, user: User) => {
     // console.info('Client wants to join a game...');
 
-    socket.emit('join_game', host, (games: { [host: string]: { gameId: string, uidList: string[], hunted: string } }) => {
-      SocketDispatch({ type: 'update_games', payload: games });
+    socket.emit('join_game', host, user, () => {
+      console.log('joining game')
+    });
+
+    socket.emit('join_lobby', host, user, () => {
+      console.log('joining lobby')
     });
   };
 
@@ -173,14 +160,14 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.emit('nav_to_endpoint', host, endpoint);
   };
 
-  const SetHunted = (host: string, uid: string) => {
-    // console.info(`Setting Hunted, ${host} picked ${ uid }`);
-    socket.emit('set_hunted', host, uid);
+  const SetHunted = (host: string, authId: string) => {
+    // console.info(`Setting Hunted, ${host} picked ${ authId }`);
+    socket.emit('set_hunted', host, authId);
   };
 
-  const AddName = (name: string, uid: string) => {
+  const AddName = (name: string, authId: string) => {
     // console.info('Adding name');
-    socket.emit('add_name', name, uid, (names: { [uid: string]: string }) => {
+    socket.emit('add_name', name, authId, (names: { [authId: string]: string }) => {
       SocketDispatch({ type: 'update_names', payload: names });
     });
   }
