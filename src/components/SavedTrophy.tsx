@@ -91,9 +91,7 @@ const Trophy: React.FC<TrophyData> = () => {
     []
   );
   
-
-  // POST request to POST Trophy to database goes Here.
-  // axios.post();
+//GET users trophy data from database
   const fetchUserData = async () => {
     try {
       const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
