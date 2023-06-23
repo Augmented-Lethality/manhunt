@@ -130,13 +130,18 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.on('update_locations', async () => {
       try {
         const response = await axios.get(`/locations/${user?.sub}`);
-        const locations = response.data;
+        const locations = response.data.map(location => ({
+          ...location,
+          latitude: parseFloat(location.latitude),
+          longitude: parseFloat(location.longitude)
+        }));
         console.log('updating locations state:', locations)
         SocketDispatch({ type: 'update_locations', payload: locations });
       } catch (error) {
         console.error('Error fetching locations:', error);
       }
     });
+
 
 
   }

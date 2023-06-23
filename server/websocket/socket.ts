@@ -233,12 +233,11 @@ export class ServerSocket {
         if (location) {
           await Locations.update({ longitude: longitude, latitude: latitude }, { where: { authId: user.sub } });
           console.log('updated user location')
-          this.io.to(gameId).emit('update_locations');
         } else {
           await Locations.create({ authId: user.sub, gameId: gameId, longitude: longitude, latitude: latitude })
           console.log('made new location')
-          this.io.to(gameId).emit('update_locations');
         }
+        this.io.to(gameId).emit('update_locations');
       } catch (err) {
         console.log(err);
       }

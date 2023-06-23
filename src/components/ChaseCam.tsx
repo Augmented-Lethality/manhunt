@@ -37,9 +37,8 @@ const ChaseCam: React.FC = () => {
   const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
-  const [userLatitude, setUserLatitude] = useState<number | any>(null);
-  const [userLongitude, setUserLongitude] = useState<number | any>(null);
-  const [firstPosition, setFirstPosition] = useState<boolean | null>(false);
+  const [userLatitude, setUserLatitude] = useState<number>(0);
+  const [userLongitude, setUserLongitude] = useState<number>(0);
 
   // the canvas element to render the scene
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -169,59 +168,51 @@ const ChaseCam: React.FC = () => {
   /////// /////////////////////////////////// //////
 
   useEffect(() => {
-    console.log(user)
+    console.log('inserting into AddLocation:', typeof userLongitude, userLongitude)
 
-    if (userLongitude && userLatitude) {
+    if (userLongitude) {
       AddLocation(user, games[0].gameId, userLongitude, userLatitude);
-      console.log('added userLong and userLat');
+      console.log('added userLong and userLat', typeof userLongitude);
 
       // hardcoded marker to test if the user location is working, should render right in front of them
-      arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
+      // arjsRef.current?.add(hardCodeMarker, userLongitude, userLatitude + 0.001, 10);
     }
 
   }, [userLatitude, userLongitude])
 
   useEffect(() => {
+
     if (locations.length === 0) {
       console.log('There are no locations to plot.');
       return;
     }
 
+    // iterating through the locations of the current locations state
     for (const userLocation of locations) {
       const markerLong = userLocation.longitude;
       const markerLat = userLocation.latitude;
+      console.log('markerLong and markerLat:', typeof (markerLong), typeof markerLat)
 
-      let playerExists = false; // Flag to check if player exists in the scene
-
-      // Iterate through the children of the AR scene to check if the player already exists
       arjsRef.current?._scene.children.forEach((child) => {
-        if (child.userData.id === player.authId) {
-          // Player already exists, so set its position instead of adding it
-          child.setWorldPosition(markerLong, markerLat, 10);
-          playerExists = true;
-          console.log(`Updated position for ${player.username}`);
-          return; // Exit the forEach loop
-        }
-      });
+        console.log(child);
+      })
 
-      if (!playerExists) {
-        // Player doesn't exist in the scene, so add it
-        for (let player of users) {
-          if (player.authId === games[0].hunted) {
-            victim.userData.id = player.authId;
-            arjsRef.current?.add(victim, markerLong, markerLat, 10);
-            console.log(`Added marker for ${player.username}`);
-          } else {
-            const clonedKiller = killers.clone();
-            clonedKiller.userData.id = player.authId;
-            arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
-            console.log(`Added marker for ${player.username}`);
-          }
+      // console.log(users)
+      users.forEach((player) => {
+        if (player.authId === games[0].hunted) {
+          victim.userData.id = player.authId;
+          arjsRef.current?.add(victim, markerLong, markerLat, 10);
+          console.log(`Added victim marker for ${player.username}`)
+        } else {
+          const clonedKiller = killers.clone();
+          clonedKiller.userData.id = player.authId;
+          arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
+          console.log(`Added killer marker for ${player.username}`)
         }
-      }
+      })
     }
-  }, [locations]);
 
+  }, [locations]);
 
   //   const fakeLocations =
   //   [

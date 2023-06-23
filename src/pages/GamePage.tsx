@@ -63,10 +63,10 @@ const GamePage: React.FC = () => {
     <Container>
       <ButtonToHome />
       <Countdown initialCount={5 * 60} />
-      <strong>Users in Game:</strong>
+      {/* <strong>Users in Game:</strong>
       {users.map((player) => (
         <PlayerListItem key={player.id} player={player} />
-      ))}
+      ))} */}
       <button onClick={handleGameChange}>{gameMode === 'Chase' ? 'Go in For the Kill' : 'Return to the Chase'}</button>
       {gameMode === 'Chase' && <ChaseCam />}
       {
