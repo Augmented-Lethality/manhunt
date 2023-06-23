@@ -104,16 +104,16 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
 
     // update locations event
-    socket.on('updated_locations', (locations) => {
-      console.info('location created, new location list received');
-      SocketDispatch({ type: 'updated_locations', payload: locations });
+    socket.on('update_locations', async () => {
+      try {
+        const response = await axios.get(`/locations/${user?.gameId}`);
+        const locations = response.data;
+        console.log('updating locations state:', locations)
+        SocketDispatch({ type: 'update_locations', payload: locations });
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      }
     });
-
-    // update the names state
-    // socket.on('update_names', (names: { [authId: string]: string }) => {
-    //   // console.info('names updated, new name list received')
-    //   SocketDispatch({ type: 'update_names', payload: names })
-    // });
 
 
   }
@@ -137,12 +137,10 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
   }
 
-  const AddLocation = (gameId: string, longitude: number, latitude: number, user: any) => {
-    console.info(`User ${user.sub} wants to add a location: ${longitude} ${latitude}`);
-
-    // socket.emit('add_location', gameId, longitude, latitude, user, (authId: string, locations: { [authId: string]: { longitude: number, latitude: number } }) => {
-    //   SocketDispatch({ type: 'updated_locations', payload: locations });
-    // });
+  const AddLocation = (user: User, longitude: number, latitude: number) => {
+    socket.emit('add_location', user, longitude, latitude, () => {
+      console.log('adding location');
+    });
   };
 
   // sending join game to the server, host identifies game to join
@@ -167,13 +165,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.emit('set_hunted', victim);
   };
 
-  const AddName = (name: string, authId: string) => {
-    // console.info('Adding name');
-    // socket.emit('add_name', name, authId, (names: { [authId: string]: string }) => {
-    //   SocketDispatch({ type: 'update_names', payload: names });
-    // });
-  }
-
 
   // showing this on client side while socket isn't connected
   if (loading) {
@@ -183,7 +174,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, AddName }}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, }}>
       {children}
     </SocketContextProvider>
   )

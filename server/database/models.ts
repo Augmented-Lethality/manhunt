@@ -45,10 +45,6 @@ User.init({
     type: DataTypes.STRING,
     allowNull: true,
   },
-  location: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
   tfModelPath: {
     type: DataTypes.STRING,
     allowNull: true
@@ -107,6 +103,25 @@ Friends.init({
 
 ////////////////////////////////////////////////
 
+class Locations extends Model { }
+Locations.init({
+  authId: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+  },
+  gameId: {
+    type: DataTypes.INTEGER,
+  },
+  longitude: {
+    type: DataTypes.DECIMAL,
+    allowNull: true,
+  },
+  latitude: {
+    type: DataTypes.DECIMAL,
+    allowNull: true
+  },
+}, { sequelize });
+///////////////////////////
 
 class Game extends Model {
   gameId: any;
@@ -217,7 +232,7 @@ Friends.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Friends, { foreignKey: 'friendId' });
 Friends.belongsTo(User, { foreignKey: 'friendId' });
 
-export { User, Friends, Game, Trophy, UserTrophy };
+export { User, Friends, Game, Trophy, UserTrophy, Locations };
 
 /*** THE FOLLOWING EXISTS INCASE YOU NEED TO DROP INDIVIDUAL TABLES ***/
 /*** JUST UNCOMMENT THE TABLE FROM THE LIST BELOW ***/

@@ -1,7 +1,7 @@
 import { Server as HttpServer } from 'http';
 import { Socket, Server } from 'socket.io';
 import { v4 } from 'uuid';
-import { User, Game } from '../database/models';
+import { User, Game, Locations } from '../database/models';
 
 /***** TYPESCRIPT NOTES****
 
@@ -128,8 +128,6 @@ export class ServerSocket {
     // when client emits a createGame event, make the new game
     socket.on('create_game', async (user) => {
 
-      ////////// NEW ////////////////
-
       try {
         const hostingGame = await Game.findOne({ where: { host: user.sub } });
         if (hostingGame) {
@@ -148,7 +146,6 @@ export class ServerSocket {
       } catch (err) {
         console.log(err);
       }
-      /////////////////////////////////////////////////////
 
     });
 
@@ -213,28 +210,21 @@ export class ServerSocket {
     });
 
 
-
     // adding/updating a location
-    socket.on('add_location', (gameId, longitude, latitude, user, callback) => {
-      console.log(user.sub)
-
-
-
-      // game ID exists in the locations object?
-      if (Object.keys(this.locations).includes(gameId)) {
-
-        const authId = this.GetAuthIdFromSocketID(socket.id);
-
-        if (authId) {
-          // add the location to the user in that game
-          this.locations[gameId][authId] = { longitude: longitude, latitude: latitude };
-
-          // send back the updated locations to the specific player
-          callback(authId, this.locations[gameId]);
-
-          // Emit the updated locations to all players in the game except the sender
-          socket.to(gameId).emit('updated_locations', this.locations[gameId]);
+    socket.on('add_location', async (user, longitude, latitude) => {
+      try {
+        const location = await Locations.findOne({ where: { gameId: user.gameId } });
+        if (location) {
+          await Locations.update({ longitude: longitude, latitude: latitude }, { where: { gameId: user.gameId } });
+          console.log('updated user location')
+          this.io.to(user.gameId).emit('update_locations');
+        } else {
+          await Locations.create({ authId: user.authId, gameId: user.gameId, longitude: longitude, latitude: latitude })
+          console.log('made new location')
+          this.io.to(user.gameId).emit('update_locations');
         }
+      } catch (err) {
+        console.log(err);
       }
     });
 
@@ -267,22 +257,6 @@ export class ServerSocket {
         console.log(err);
       }
 
-    });
-
-    // adding/updating a name
-    socket.on('add_name', (name, authId, callback) => {
-
-      // authId is not in the names object?
-      if (!this.names[authId]) {
-
-        this.names[authId] = name;
-
-        const users = Object.values(this.users);
-
-        callback(this.names);
-
-        this.SendMessage('update_names', users, this.names);
-      }
     });
 
 
@@ -324,24 +298,6 @@ export class ServerSocket {
       }
 
     });
-  };
-
-  //// HELPER FUNCTIONS ////
-
-  // inserting socket id of type string and finding the user within the users dictionary object
-  GetAuthIdFromSocketID = (id: string) => {
-    return Object.keys(this.users).find((authId) => this.users[authId] === id);
-  };
-
-  // name is name of socket, users is list of socket ids, payload is information needed by the user for state updates
-  SendMessage = (name: string, users: string[], payload?: Object) => {
-    console.info('Emitting event: ' + name + ' to', users);
-    users.forEach((id) => (payload ? this.io.to(id).emit(name, payload) : this.io.to(id).emit(name)));
-  };
-
-  SendGames = (name: string, users: string[], payload?: Object) => {
-    console.info('Emitting event: ' + name + ' to', users, 'payload', payload);
-    users.forEach((id) => (payload ? this.io.to(id).emit(name, payload) : this.io.to(id).emit(name)));
   };
 
 
