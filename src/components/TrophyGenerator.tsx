@@ -10,7 +10,7 @@ type TrophyData = {
   shape: string;
   tubularSegments: number;
   tubeWidth: number;
-}
+};
 
 export type UserData = {
   id: number;
@@ -31,6 +31,19 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
   const [prevMouseY, setPrevMouseY] = useState(0);
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setUserData(response.data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
@@ -61,57 +74,30 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
     return array[randomIndex];
   };
 
-  // Generate these Trophy properies randomly from given arrays
-  const dimension = useMemo(() => getRandomElement([1, 2, 3]), []);
-  const color = useMemo(
-    () =>
-      getRandomElement([
-        'darkred',
-        'lightgreen',
-        '#3d6cb8',
-        'yellow',
-        'orange',
-        '#19191a',
-        'pink',
-        'aquamarine',
-      ]),
-    []
-  );
-  const shape = useMemo(
-    () => getRandomElement(['box', 'polyhedron', 'torus']),
-    []
-  );
-  const tubularSegments = useMemo(
-    () => getRandomElement([3, 4, 5, 6, 7, 8, 100]),
-    []
-  );
-  const tubeWidth = useMemo(
-    () => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]),
-    []
-  );
-  
-
-  // POST request to POST Trophy to database goes Here.
-  // axios.post();
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`
-        }
-      });
-      setUserData(response.data);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
   const trophyData: TrophyData = {
-    dimension,
-    color,
-    shape,
-    tubularSegments,
-    tubeWidth,
+    dimension: useMemo(() => getRandomElement([1, 2, 3]), []),
+    color: useMemo(
+      () =>
+        getRandomElement([
+          'darkred',
+          'lightgreen',
+          '#3d6cb8',
+          'yellow',
+          'orange',
+          '#19191a',
+          'pink',
+          'aquamarine',
+        ]),
+      []
+    ),
+    shape: useMemo(() => getRandomElement(['box', 'polyhedron', 'torus']), []),
+    tubularSegments: useMemo(
+      () => getRandomElement([3, 4, 5, 6, 7, 8, 100]),
+      []
+    ),
+    tubeWidth: useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []),
   };
+
   const postTrophyData = async () => {
     try {
       await axios.post('/trophies', {
@@ -119,19 +105,18 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
         description: 'A randomly generated trophy',
         generationConditions: JSON.stringify(trophyData),
         filePath: '',
-        ownersId: null,
+        ownerId: 1,
       });
     } catch (error) {
       console.error('Error posting trophy data:', error);
     }
   };
 
-  
   useEffect(() => {
-    postTrophyData();
+    fetchUserData(); 
+  }, []);
 
-  }, [])
-    
+
   return (
     <div
       onMouseDown={handleMouseDown}
@@ -142,38 +127,47 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
       <Canvas>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
-        {shape === 'box' && (
+        {trophyData.shape === 'box' && (
           <Box
             ref={trophyRef}
-            args={[dimension, dimension, dimension]}
+            args={[
+              trophyData.dimension,
+              trophyData.dimension,
+              trophyData.dimension,
+            ]}
             position={[0, 0, 0]}
             rotation={[0, 0.4, 0]}
           >
-            <meshStandardMaterial attach='material' color={color} />
+            <meshStandardMaterial attach='material' color={trophyData.color} />
           </Box>
         )}
-        {shape === 'polyhedron' && (
+        {trophyData.shape === 'polyhedron' && (
           <Dodecahedron
             ref={trophyRef}
-            args={[dimension, 0]}
+            args={[trophyData.dimension, 0]}
             position={[0, 0, 0]}
             rotation={[0, 0.4, 0]}
           >
-            <meshStandardMaterial attach='material' color={color} />
+            <meshStandardMaterial attach='material' color={trophyData.color} />
           </Dodecahedron>
         )}
-        {shape === 'torus' && (
+        {trophyData.shape === 'torus' && (
           <Torus
             ref={trophyRef}
-            args={[dimension, tubeWidth, 16, tubularSegments]}
+            args={[
+              trophyData.dimension,
+              trophyData.tubeWidth,
+              16,
+              trophyData.tubularSegments,
+            ]}
             position={[0, 0, 0]}
             rotation={[0, 0.4, 0]}
           >
-            <meshStandardMaterial attach='material' color={color} />
+            <meshStandardMaterial attach='material' color={trophyData.color} />
           </Torus>
         )}
       </Canvas>
-      <h3>Thanks for playing.</h3>
+      <button onClick={postTrophyData}> claim trophy</button>
     </div>
   );
 };
