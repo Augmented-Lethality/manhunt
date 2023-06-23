@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   ButtonToProfile,
@@ -25,9 +24,7 @@ const HomePage = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
-
-    console.log(user)
-    const fetchUserData = async () => {
+    const postUserData = async () => {
       try {
         // Check if the user exists by sending a POST request instead of a GET request
         const response = await axios.post<UserData>('/Users', {
@@ -37,14 +34,13 @@ const HomePage = () => {
           // Include other user data properties you want to save
         });
         setUserData(response.data);
-        // console.log(response);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
 
     if (isAuthenticated && user) {
-      fetchUserData();
+      postUserData();
       const insertName = `${user.given_name || ''} ${user.family_name?.charAt(
         0
       )}`;

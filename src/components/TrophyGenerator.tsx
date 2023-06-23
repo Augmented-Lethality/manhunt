@@ -24,12 +24,11 @@ export type UserData = {
   // Add other user data properties as needed
 };
 
-const Trophy: React.FC<TrophyData> = () => {
+const TrophyGenerator: React.FC<TrophyData> = () => {
   const trophyRef = useRef<THREE.Mesh>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [prevMouseX, setPrevMouseX] = useState(0);
   const [prevMouseY, setPrevMouseY] = useState(0);
-  const [trophies, setTrophies] = useState([]);
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
 
@@ -106,6 +105,32 @@ const Trophy: React.FC<TrophyData> = () => {
       console.error('Error fetching user data:', error);
     }
   };
+  const trophyData: TrophyData = {
+    dimension,
+    color,
+    shape,
+    tubularSegments,
+    tubeWidth,
+  };
+  const postTrophyData = async () => {
+    try {
+      await axios.post('/trophies', {
+        name: 'Generated Trophy4',
+        description: 'A randomly generated trophy',
+        generationConditions: JSON.stringify(trophyData),
+        filePath: '',
+        ownersId: null,
+      });
+    } catch (error) {
+      console.error('Error posting trophy data:', error);
+    }
+  };
+
+  
+  useEffect(() => {
+    postTrophyData();
+
+  }, [])
     
   return (
     <div
@@ -113,7 +138,7 @@ const Trophy: React.FC<TrophyData> = () => {
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      <h1>Trophy from database</h1>
+      <h1>You win this!</h1>
       <Canvas>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
@@ -148,9 +173,9 @@ const Trophy: React.FC<TrophyData> = () => {
           </Torus>
         )}
       </Canvas>
-      <h3>more trophies can be shown here</h3>
+      <h3>Thanks for playing.</h3>
     </div>
   );
 };
 
-export default Trophy;
+export default TrophyGenerator;
