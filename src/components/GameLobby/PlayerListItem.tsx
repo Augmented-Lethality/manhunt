@@ -13,7 +13,7 @@ export const PlayerListItem: React.FC<{ player: User }> = ({ player }) => {
     <div>
       <strong>Player: {player.username}</strong>
       <br />
-      <strong>Games Won: {player.gamesWon}</strong>
+      {/* <strong>Games Won: {player.gamesWon}</strong> */}
       <br />
     </div>
   );
