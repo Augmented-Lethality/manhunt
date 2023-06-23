@@ -16,7 +16,6 @@ const GameLobby: React.FunctionComponent = () => {
   }, [games])
 
 
-  // HUNTED IS NOT SET UP
   return (
     <Container>
       <Header>
