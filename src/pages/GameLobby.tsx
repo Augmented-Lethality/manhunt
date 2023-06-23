@@ -8,13 +8,11 @@ import { Header } from '../styles/Header'
 import { Main } from '../styles/Main'
 import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
 
-const GameLobby: React.FunctionComponent = (props) => {
+const GameLobby: React.FunctionComponent = () => {
 
   const { games, users } = useContext(SocketContext).SocketState;
-  const [hunted, setHunted] = useState<string>('');
 
   useEffect(() => {
-    // console.log("games state should be one game:", games, "users state should be only users in that one game", users)
   }, [games])
 
 
@@ -29,7 +27,7 @@ const GameLobby: React.FunctionComponent = (props) => {
         {users.length > 0 ? (
           <>
             <strong>Players in Lobby:</strong>
-            {hunted.length > 0 ? (<div>Player {hunted}, You're Being Hunted</div>) : (<WhosHunting setHunted={setHunted} hunted={hunted} />)}
+            <WhosHunting />
             <br />
             <br />
             {users.map((player) => (

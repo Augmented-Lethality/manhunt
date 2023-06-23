@@ -4,6 +4,7 @@ import { Socket } from 'socket.io-client';
 import { createContext } from 'react';
 
 export interface Game {
+  hunted: string;
   createdAt: string;
   gameId: string;
   host: string;
@@ -104,7 +105,7 @@ export interface ISocketContextProps {
   AddLocation: (gameId: string, longitude: number, latitude: number, user: any) => void;
   JoinGame: (host: string, user: User) => void;
   Redirect: (host: string, endpoint: string) => void;
-  SetHunted: (host: string, authId: string) => void;
+  SetHunted: (victim: User) => void;
   AddName: (name: string, authId: string) => void;
 }
 

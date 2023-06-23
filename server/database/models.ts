@@ -131,6 +131,11 @@ Game.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
+  hunted: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: ''
+  },
   status: {
     type: DataTypes.ENUM('lobby', 'ongoing', 'complete'),
     allowNull: false,

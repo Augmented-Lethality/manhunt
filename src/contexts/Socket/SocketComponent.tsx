@@ -160,9 +160,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.emit('nav_to_endpoint', host, endpoint);
   };
 
-  const SetHunted = (host: string, authId: string) => {
-    // console.info(`Setting Hunted, ${host} picked ${ authId }`);
-    socket.emit('set_hunted', host, authId);
+  const SetHunted = (victim: User) => {
+    socket.emit('set_hunted', victim);
   };
 
   const AddName = (name: string, authId: string) => {

@@ -41,9 +41,9 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-<StyledButton label={label} primary={!primary} onClick={handleClick} route={route}>
-  {label}
-</StyledButton>
+    <StyledButton label={label} primary={!primary} onClick={handleClick} route={route}>
+      {label}
+    </StyledButton>
 
   );
 };
@@ -130,6 +130,20 @@ export const SignupButton = () => {
       route='/home'
       onClick={handleSignUp}
       className='button__logibutton__sign-up'
+    />
+  );
+};
+
+export const LeaveLobbyButton = () => {
+  const handleLeave = () => {
+    // add a socket function to emit "leave game"
+  };
+  return (
+    <Button
+      label='Leave'
+      route='/home'
+      onClick={handleLeave}
+      className='button__logout'
     />
   );
 };

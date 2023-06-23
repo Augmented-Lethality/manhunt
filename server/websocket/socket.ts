@@ -226,17 +226,22 @@ export class ServerSocket {
       }
     });
 
-    socket.on('set_hunted', (host, authId) => {
+    socket.on('set_hunted', async (victim) => {
 
-      console.log(`received set hunted to ${authId} from ${host}`)
-      if (Object.keys(this.games).includes(host)) {
+      try {
+        const game = await Game.findOne({ where: { gameId: victim.gameId } });
+        if (game) {
+          await Game.update({ hunted: victim.authId }, { where: { gameId: victim.gameId } });
+          console.log('hunter set');
+          this.io.to(victim.gameId).emit('update_lobby_games');
 
-        this.games[host].hunted = authId;
-        // const gameId = this.games[host].gameId
-
-        const users = Object.values(this.users);
-        this.SendMessage('update_games', users, this.games);
+        } else {
+          console.log('no game like that exists')
+        }
+      } catch (err) {
+        console.log(err);
       }
+
     });
 
     // adding/updating a name

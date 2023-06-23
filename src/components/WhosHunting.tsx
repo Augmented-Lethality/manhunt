@@ -1,35 +1,33 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { User } from '../contexts/Socket/SocketContext';
+import React, { useContext, useEffect } from 'react';
+import SocketContext, { User } from '../contexts/Socket/SocketContext';
 
-export interface IWhosHuntingProps {
-  hunted: string;
-  setHunted: (victim: string) => void;
-}
+const pickVictim = (users: User[], SetHunted: (user: User) => void) => {
+  const victim = users[Math.floor(Math.random() * users.length)];
+  SetHunted(victim);
+};
 
-import SocketContext from '../contexts/Socket/SocketContext';
-
-
-const WhosHunting: React.FunctionComponent<IWhosHuntingProps> = (props) => {
-
-  const { users } = useContext(SocketContext).SocketState;
-  const { setHunted, hunted } = props;
+const WhosHunting: React.FunctionComponent = () => {
+  const { SetHunted } = useContext(SocketContext);
+  const { users, games } = useContext(SocketContext).SocketState;
 
   useEffect(() => {
-    // console.log(users)
-  }, [])
-
-  // randomly pick a user
-  const pickVictim = () => {
-    const victim = users[Math.floor(Math.random() * users.length)];
-    setHunted(victim.username);
-  }
+    if (games.length > 0 && games[0].hunted.length === 0) {
+      pickVictim(users, SetHunted);
+    }
+  }, [games, SetHunted, users]);
 
   return (
     <div>
-      {hunted.length > 0 ? (<></>) : <button onClick={pickVictim}>Who's Being Hunted?</button>}
+      {games.length > 0 && games[0].hunted.length > 0 ? (
+        <div>
+          <div>Player {games[0].hunted}, You're Being Hunted</div>
+          <button onClick={() => pickVictim(users, SetHunted)}>Pick Again</button>
+        </div>
+      ) : (
+        <button onClick={() => pickVictim(users, SetHunted)}>Who's Being Hunted?</button>
+      )}
     </div>
   );
-
 };
 
 export default WhosHunting;
