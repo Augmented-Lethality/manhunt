@@ -56,8 +56,8 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
 
   // whenever targetCounter is updated, if it's at 10, navigate the users
   useEffect(() => {
-    if (targetCounter === 10) {
-      console.log('made it to 10')
+    if (targetCounter === 5) {
+      console.log('made it to 5')
       UpdateGameStatus(user, 'complete')
     }
   }, [targetCounter])
