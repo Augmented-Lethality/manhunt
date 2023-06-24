@@ -180,7 +180,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
                   )}
                 </Canvas>
                 <button onClick={togglePropsView}>
-                  {showProps ? 'X' : 'Just View It'}
+                  {showProps ? 'X' : 'View Properties'}
                 </button>
               </div>
               <div>
