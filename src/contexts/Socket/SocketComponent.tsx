@@ -184,7 +184,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
   };
 
-  // sending join game to the server
+  // sending leave game to the server
   const LeaveGame = (user: User) => {
 
     socket.emit('leave_game', user, () => {

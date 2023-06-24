@@ -264,24 +264,46 @@ export class ServerSocket {
 
     socket.on('leave_game', async (user) => {
       try {
+        // get the user so that can get the game
         const existingUser = await User.findOne({ where: { authId: user.sub } });
         const game = await Game.findByPk(existingUser?.dataValues.gameId);
 
+        // if that game exists
         if (game) {
+          // if the game has this user within the users array
           if (game.dataValues.users.includes(user.sub)) {
 
+            // update the user so that they don't have the gameId anymore
             await User.update({ gameId: '' }, { where: { authId: user.sub } });
 
+            // update the users list to not have the user in there anymore so the game list can be updated
             const updatedUserList = game.dataValues.users.filter((authId: string) => authId !== existingUser?.dataValues.authId);
 
+            // if there's no more users in the game, destroy the game
+            if (updatedUserList.length === 0) {
+              await Game.destroy({ where: { gameId: game.dataValues.gameId } });
+              console.log('Game deleted');
+            }
+
+            // the host is the current host
+            let host = game.dataValues.host;
+
+            // if the host was the user leaving the game, set the new host as the person in the first index of the users array
+            if (game.dataValues.host === user.sub) {
+              host = updatedUserList[0];
+            }
+
+            // update the game with the new users list and either new host or same host
             await Game.update(
-              { users: updatedUserList },
+              { users: updatedUserList, host: host },
               { where: { gameId: game.dataValues.gameId } }
             )
 
+            // put that user back into the users room and leave the game room
             socket.leave(game.dataValues.gameId);
             socket.join('users');
 
+            // update everyone on the new players and games
             this.io.to(game.dataValues.gameId).emit('update_lobby_users');
             this.io.to(game.dataValues.gameId).emit('update_lobby_games');
             this.io.to('users').emit('update_games');
