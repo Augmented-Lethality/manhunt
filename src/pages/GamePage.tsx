@@ -20,13 +20,17 @@ const GamePage: React.FC = () => {
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
   const [faceMatcher, setFaceMatcher] = useState<FaceMatcher | null>(null);
-  const { users } = useContext(SocketContext).SocketState;
+  const { users, games } = useContext(SocketContext).SocketState;
   const [currentGame, setUserGame] = useState();
 
 
   useEffect(() => {
     loadTensorFlowFaceMatcher();
   }, []);
+
+  useEffect(() => {
+    console.log('game status:', games[0].status)
+  }, [games])
 
   const loadTensorFlowFaceMatcher = async () => {
     try {
