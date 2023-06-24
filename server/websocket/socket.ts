@@ -276,38 +276,63 @@ export class ServerSocket {
             // update the user so that they don't have the gameId anymore
             await User.update({ gameId: '' }, { where: { authId: user.sub } });
 
+            const location = await Locations.findByPk(user.sub);
+
+            if (location) {
+              await Locations.destroy({ where: { authId: user.sub } });
+            }
+
             // update the users list to not have the user in there anymore so the game list can be updated
             const updatedUserList = game.dataValues.users.filter((authId: string) => authId !== existingUser?.dataValues.authId);
 
             // if there's no more users in the game, destroy the game
             if (updatedUserList.length === 0) {
               await Game.destroy({ where: { gameId: game.dataValues.gameId } });
+              await Locations.destroy({ where: { gameId: game.dataValues.gameId } });
               console.log('Game deleted');
+              console.log('Locations deleted')
+
+            } else {
+              // the host is the current host
+              let host = game.dataValues.host;
+              let hostName = game.dataValues.hostName;
+              let victim = game.dataValues.hunted;
+
+              // if the host was the user leaving the game, set the new host as the person in the first index of the users array
+              if (game.dataValues.host === user.sub) {
+                const newHost = await User.findOne({ where: { authId: updatedUserList[0] } });
+                if (newHost) {
+                  host = newHost.dataValues.authId;
+                  hostName = newHost.dataValues.username;
+
+                }
+                host = updatedUserList[0];
+
+              }
+
+              if (game.dataValues.hunted === user.sub) {
+                victim = updatedUserList[Math.floor(Math.random() * updatedUserList.length)];
+
+              }
+
+              // update the game with the new users list and either new host or same host
+              await Game.update(
+                { users: updatedUserList, host: host, hostName: hostName, hunted: victim },
+                { where: { gameId: game.dataValues.gameId } }
+              )
+
             }
 
-            // the host is the current host
-            let host = game.dataValues.host;
-
-            // if the host was the user leaving the game, set the new host as the person in the first index of the users array
-            if (game.dataValues.host === user.sub) {
-              host = updatedUserList[0];
-            }
-
-            // update the game with the new users list and either new host or same host
-            await Game.update(
-              { users: updatedUserList, host: host },
-              { where: { gameId: game.dataValues.gameId } }
-            )
-
-            // put that user back into the users room and leave the game room
-            socket.leave(game.dataValues.gameId);
-            socket.join('users');
 
             // update everyone on the new players and games
             this.io.to(game.dataValues.gameId).emit('update_lobby_users');
             this.io.to(game.dataValues.gameId).emit('update_lobby_games');
             this.io.to('users').emit('update_games');
             this.io.to('users').emit('update_users');
+
+            // put that user back into the users room and leave the game room
+            socket.leave(game.dataValues.gameId);
+            socket.join('users');
 
 
           } else {
@@ -339,6 +364,13 @@ export class ServerSocket {
               { users: updatedUserList },
               { where: { gameId: user.dataValues.gameId } }
             )
+            const location = await Locations.findByPk(user.dataValues.authId);
+
+            if (location) {
+              await Locations.destroy({ where: { gameId: game.dataValues.gameId } });
+              console.log('deleted locations')
+            }
+
             socket.leave(user.dataValues.gameId);
             // send new games to all connected users to update their games lists
             this.io.to(user.dataValues.gameId).emit('update_games');

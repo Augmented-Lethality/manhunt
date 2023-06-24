@@ -11,9 +11,9 @@ const FindGamePage: React.FC = () => {
 
   const { games } = useContext(SocketContext).SocketState;
 
-  // useEffect(() => {
-  //   console.log(games)
-  // }, [games])
+  useEffect(() => {
+    console.log(games)
+  }, [games])
 
   return (
     <div>
