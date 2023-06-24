@@ -13,7 +13,7 @@ type ButtonProps = {
   className?: string;
 };
 
-const StyledButton = styled.button<ButtonProps>`
+const StyledButton1 = styled.button<ButtonProps>`
   /* Adapt the colors based on primary prop */
   background: ${(props) => (props.primary ? '#6e6b8c' : 'white')};
   color: ${(props) => (props.primary ? 'white' : '#6e6b8c')};
@@ -24,6 +24,24 @@ const StyledButton = styled.button<ButtonProps>`
   border: 2px solid #6e6b8c;
   border-radius: 3px;
 `;
+
+const StyledButton2 = styled.button<ButtonProps>`
+  /* Adapt the colors based on primary prop */
+  background: ${(props) => (props.primary ? '#6e6b8c' : 'white')};
+  color: ${(props) => (props.primary ? 'white' : '#6e6b8c')};
+
+  color: #292932;
+  background: #d7a13c;
+  font-family: Source Code Pro;
+  font-size: 1em;
+  font-weight: 1000;
+  margin: 4em;
+  padding: 2.25em;
+  border: 2px solid #e5bd75;
+  border-radius: 35px;
+  box-shadow: 0 0 0 2.5px #1a1a20, 0 0.625em 0 0 #0f0f16cf;
+`;
+
 
 export const Button: React.FC<ButtonProps> = ({
   label,
@@ -41,9 +59,32 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <StyledButton label={label} primary={!primary} onClick={handleClick} route={route}>
-      {label}
-    </StyledButton>
+  <StyledButton1 label={label} primary={!primary} onClick={handleClick} route={route}>
+    {label}
+  </StyledButton1>
+
+  );
+};
+
+export const LargeButton: React.FC<ButtonProps> = ({
+  label,
+  route,
+  onClick,
+  primary,
+}) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(route);
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  return (
+  <StyledButton2 label={label} primary={!primary} onClick={handleClick} route={route}>
+    {label}
+  </StyledButton2>
 
   );
 };
@@ -61,7 +102,7 @@ export const ButtonToProfile: React.FC = () => {
 };
 
 export const ButtonToFindGame: React.FC = () => {
-  return <Button label='Find a Game' route='/findGame' />;
+  return <LargeButton label='Find a Game' route='/findGame' />;
 };
 
 export const ButtonToJoinLobby: React.FC = () => {
@@ -70,7 +111,7 @@ export const ButtonToJoinLobby: React.FC = () => {
 
 export const ButtonToHostGame: React.FC = () => {
   const { CreateGame } = useContext(SocketContext);
-  return <Button label='Host a Game' route='/lobby' onClick={CreateGame} />;
+  return <LargeButton label='Host a Game' route='/lobby' onClick={CreateGame} />;
 };
 
 export const LogoutButton = () => {

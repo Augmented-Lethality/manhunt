@@ -1,17 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
-import {
-  ButtonToProfile,
-  ButtonToFindGame,
-  ButtonToHostGame,
-  LogoutButton,
-} from '../components/Buttons';
+import { ButtonToFindGame, ButtonToHostGame } from '../components/Buttons';
 import DropDownMenu from '../components/DropDownMenu';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
+import { BsPersonSquare } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 
 type UserData = {
   username: string;
@@ -21,6 +18,7 @@ type UserData = {
 };
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth0();
   const { users } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -46,6 +44,9 @@ const HomePage = () => {
 
     if (isAuthenticated && user) {
       fetchUserData();
+      const insertName = `${user.given_name || ''} ${user.family_name?.charAt(
+        0
+      )}`;
     }
   }, [user, isAuthenticated, users]);
 
@@ -57,24 +58,20 @@ const HomePage = () => {
     <Container>
       <Header>
         <h1 className='logo'>Man Hunt</h1>
+        <p>Users Online: {users.length}</p>
         <img
           src={user.picture}
           alt='Profile'
           className='profile__avatar'
-          style={{ height: '10vw', width: '10vw', borderRadius: '50%' }} />
-        <h1>Users Online: {users.length}</h1>
-        <DropDownMenu>
-          <div>profile</div>
-          <div>friends</div>
-          <div>settings</div>
-          <div>logout</div>
-        </DropDownMenu>
+          onClick={()=>{navigate('/profile')}}
+          style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
+          <DropDownMenu>
+            <div onClick={()=>{navigate('/profile')}}><BsPersonSquare/>profile</div>
+          </DropDownMenu>
       </Header>
       <Main>
-        <ButtonToProfile />
         <ButtonToHostGame />
         <ButtonToFindGame />
-        <LogoutButton />
       </Main>
     </Container>
   );
