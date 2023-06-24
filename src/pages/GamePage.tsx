@@ -5,7 +5,7 @@ import {
   loadFaceRecognitionModel,
   LabeledFaceDescriptors
 } from 'face-api.js';
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { WebcamProvider } from '../contexts/WebcamProvider'
 import axios from 'axios';
@@ -15,17 +15,27 @@ import { ButtonToHome } from '../components/Buttons';
 import Countdown from '../components/countdown';
 import { Container } from '../styles/Container';
 import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
+
+interface ChaseCamRefType { // declaring type for child method
+  turnOffCamera: () => void;
+}
+
 const GamePage: React.FC = () => {
+
+  // passing this to the ChaseCam.tsx child so that the method can be used in this parent component
+  const chaseCamRef = useRef<ChaseCamRefType>(null);
 
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
   const [faceMatcher, setFaceMatcher] = useState<FaceMatcher | null>(null);
   const { users, games } = useContext(SocketContext).SocketState;
-  const [currentGame, setUserGame] = useState();
 
 
   useEffect(() => {
     loadTensorFlowFaceMatcher();
+    return () => {
+      handleTurnOffCamera(); // turns off all cameras when this component is unmounted
+    };
   }, []);
 
   useEffect(() => {
@@ -63,6 +73,15 @@ const GamePage: React.FC = () => {
     }
   }
 
+  // the turnOffCamera() is from the ChaseCam child component, passed
+  // using the useRef and useImperativeHandle
+  const handleTurnOffCamera = () => {
+    if (chaseCamRef.current) {
+      chaseCamRef.current.turnOffCamera();
+    }
+  };
+
+
   return (
     <Container>
       <ButtonToHome />
@@ -72,7 +91,7 @@ const GamePage: React.FC = () => {
         <PlayerListItem key={player.id} player={player} />
       ))} */}
       <button onClick={handleGameChange}>{gameMode === 'Chase' ? 'Go in For the Kill' : 'Return to the Chase'}</button>
-      {gameMode === 'Chase' && <ChaseCam />}
+      {gameMode === 'Chase' && <ChaseCam ref={chaseCamRef} />}
       {
         gameMode === 'Kill' && (
           <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
