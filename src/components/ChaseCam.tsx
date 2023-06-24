@@ -200,6 +200,8 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
       window.removeEventListener('mousemove', handleMouseMove);
 
       turnOffCamera();
+
+      arjsRef.current?.stopGps();
     };
   }, []);
   /////// /////////////////////////////////// //////
