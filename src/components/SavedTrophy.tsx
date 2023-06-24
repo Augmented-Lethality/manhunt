@@ -31,7 +31,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
   const [prevMouseY, setPrevMouseY] = useState(0);
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [userTrophyData, setUserTrophyData] = useState<TrophyData | null>(null);
+  const [userTrophyData, setUserTrophyData] = useState<TrophyData[]>([]);
 
   const fetchUserData = async () => {
     try {
@@ -48,18 +48,31 @@ const SavedTrophy: React.FC<TrophyData> = () => {
 
   const fetchUserTrophyData = async () => {
     try {
-      const response = await axios.get<TrophyData>(`/trophies/${userData?.id}`, {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-      });
-      setUserTrophyData(response.data);
-      console.log(response.data)
+      if (userData) {
+        const response = await axios.get<{ generationConditions: string }[]>(
+          `/trophies/${userData.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+          }
+        );
+        const parsedTrophyData: TrophyData[] = response.data.map((trophy) => {
+          const generationConditions = JSON.parse(trophy.generationConditions);
+          return {
+            dimension: generationConditions.dimension,
+            color: generationConditions.color,
+            shape: generationConditions.shape,
+            tubularSegments: generationConditions.tubularSegments,
+            tubeWidth: generationConditions.tubeWidth,
+          };
+        });
+        setUserTrophyData(parsedTrophyData);
+      }
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error('Error fetching user trophy data:', error);
     }
   };
-  
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
@@ -87,14 +100,13 @@ const SavedTrophy: React.FC<TrophyData> = () => {
 
   useEffect(() => {
     fetchUserData();
+  }, []); // Fetch user data only once on component mount
 
+  useEffect(() => {
     if (userData) {
       fetchUserTrophyData();
     }
-    console.log('USER DATA', userData)
-    console.log('USER TROPHY DATA', userTrophyData)
   }, [userData]);
-
 
   return (
     <div
@@ -103,12 +115,75 @@ const SavedTrophy: React.FC<TrophyData> = () => {
       onMouseMove={handleMouseMove}
     >
       <h1>Your most recent Trophies </h1>
-      
-      <Canvas>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} />
-        
-      </Canvas>
+      {true ? (
+        userTrophyData.map((trophy, index) => (
+          <div key={index}>
+            <div>
+              <h1>You win this!</h1>
+              <Canvas>
+                <ambientLight intensity={0.5} />
+                <pointLight position={[10, 10, 10]} />
+                {trophy.shape === 'box' && (
+                  <Box
+                    ref={trophyRef}
+                    args={[
+                      trophy.dimension,
+                      trophy.dimension,
+                      trophy.dimension,
+                    ]}
+                    position={[0, 0, 0]}
+                    rotation={[0, 0.4, 0]}
+                  >
+                    <meshStandardMaterial
+                      attach='material'
+                      color={trophy.color}
+                    />
+                  </Box>
+                )}
+                {trophy.shape === 'polyhedron' && (
+                  <Dodecahedron
+                    ref={trophyRef}
+                    args={[trophy.dimension, 0]}
+                    position={[0, 0, 0]}
+                    rotation={[0, 0.4, 0]}
+                  >
+                    <meshStandardMaterial
+                      attach='material'
+                      color={trophy.color}
+                    />
+                  </Dodecahedron>
+                )}
+                {trophy.shape === 'torus' && (
+                  <Torus
+                    ref={trophyRef}
+                    args={[
+                      trophy.dimension,
+                      trophy.tubeWidth,
+                      16,
+                      trophy.tubularSegments,
+                    ]}
+                    position={[0, 0, 0]}
+                    rotation={[0, 0.4, 0]}
+                  >
+                    <meshStandardMaterial
+                      attach='material'
+                      color={trophy.color}
+                    />
+                  </Torus>
+                )}
+              </Canvas>
+              <button> just do it </button>
+            </div>
+            <h6>Dimension: {trophy.dimension}</h6>
+            <h6>Color: {trophy.color}</h6>
+            <h6>Shape: {trophy.shape}</h6>
+            <h6>Tubular Segments: {trophy.tubularSegments}</h6>
+            <h6>Tube Width: {trophy.tubeWidth}</h6>
+          </div>
+        ))
+      ) : (
+        <p>Loading trophy data...</p>
+      )}
     </div>
   );
 };

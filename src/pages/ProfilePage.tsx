@@ -43,18 +43,18 @@ const ProfilePage: React.FC = () => {
       }
     };
 
-    const fetchTrophyData = async () => {
-      try {
-        const response = await axios.get(`/trophies/${user?.id}`, {});
-        setTrophyData(response.data);
-      } catch (error) {
-        console.error('Error fetching trophy data:', error);
-      }
-    };
+    // const fetchTrophyData = async () => {
+    //   try {
+    //     const response = await axios.get(`/trophies/${user?.id}`, {});
+    //     setTrophyData(response.data);
+    //   } catch (error) {
+    //     console.error('Error fetching trophy data:', error);
+    //   }
+    // };
 
     if (isAuthenticated && user) {
       fetchUserData();
-      fetchTrophyData();
+      // fetchTrophyData();
     }
 
     console.log('userData:', userData);
@@ -89,13 +89,6 @@ const ProfilePage: React.FC = () => {
 
   return (
     <Container>
-      {/* <div style={{ width: '300px', height: '300px' }}>
-        <TrophyGenerator />
-      </div> */}
-      {/* <div style={{ width: '300px', height: '300px' }}>
-        <SavedTrophy />
-      </div> */}
-
       <Header>
         <h1>Profile</h1>
         <ButtonToHome></ButtonToHome>
@@ -126,8 +119,23 @@ const ProfilePage: React.FC = () => {
                 </span>
               </div>
             </div>
-
-            {userData?.facialDescriptions ? (
+            {/* //map here instead of in savedTrophy */}
+            <div style={{ width: '300px', height: '300px' }}>
+              <TrophyGenerator />
+            </div>
+            <div style={{ width: '300px', height: '300px' }}>
+              <SavedTrophy userData={userData} />
+            </div>
+            <div className='profile__details'>
+              <br />
+              <br />
+              {/* <h2>Games Played: {userData?.gamesPlayed}</h2>
+              <h2>Games Won: {userData?.gamesWon}</h2>
+              <h2>Kills Confirmed: {userData?.killsConfirmed}</h2> */}
+            </div>
+          </div>
+        </div>
+        {/* {userData?.facialDescriptions ? (
               <div className='profile_verification'>
                 <p style={{ textAlign: 'start', margin: '3vh' }}>
                   Citizen has been verified. The CorpoVerse thanks you for your
@@ -150,16 +158,7 @@ const ProfilePage: React.FC = () => {
                   Send BioData
                 </button>
               </div>
-            )}
-            <div className='profile__details'>
-              <br />
-              <br />
-              <h2>Games Played: {userData?.gamesPlayed}</h2>
-              <h2>Games Won: {userData?.gamesWon}</h2>
-              <h2>Kills Confirmed: {userData?.killsConfirmed}</h2>
-            </div>
-          </div>
-        </div>
+            )} */}
       </Main>
     </Container>
   );

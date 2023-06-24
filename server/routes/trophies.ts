@@ -24,15 +24,15 @@ Trophies.post('/', async (req, res) => {
   }
 });
 
-module.exports = { Trophies };
 
 
 
 //THESE HAVNT BEEN TESTED
-// // GET ALL TROPHIES Of Specific User
+// // GET trophies Of Specific User
 Trophies.get('/:ownerId', async (req, res) => {
   try {
     const { ownerId } = req.params;
+    console.log(ownerId)
     // Fetch all trophies associated with the provided authId
     const userTrophies = await Trophy.findAll({
       where: { ownerId: ownerId },
@@ -46,16 +46,5 @@ Trophies.get('/:ownerId', async (req, res) => {
 });
 
 
+module.exports = { Trophies };
 
-// GET  Trophy
-Trophies.get("/", async (req, res) => {
-  try {
-    // Fetch all users from the database
-    const users = await Trophy.findAll();
-
-    res.status(200).json(Trophies);
-  } catch (err) {
-    console.warn(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
