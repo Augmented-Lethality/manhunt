@@ -20,7 +20,6 @@ type UserData = {
 const HomePage = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth0();
-  const { AddName } = useContext(SocketContext);
   const { authId, users, socket } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
 
@@ -48,9 +47,8 @@ const HomePage = () => {
       const insertName = `${user.given_name || ''} ${user.family_name?.charAt(
         0
       )}`;
-      AddName(insertName || '', authId);
     }
-  }, [user, isAuthenticated, AddName, authId, users]);
+  }, [user, isAuthenticated, authId, users]);
 
   if (!isAuthenticated || !user) {
     return null;
