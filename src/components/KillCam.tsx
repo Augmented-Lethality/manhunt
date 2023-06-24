@@ -10,7 +10,7 @@ import {
 } from 'face-api.js';
 import { useWebcam } from '../contexts/WebcamProvider';
 import TargetRecognition from './KillProgress';
-import { User } from '../contexts/Socket/SocketContext';
+import { useAuth0 } from "@auth0/auth0-react";
 
 import SocketContext from '../contexts/Socket/SocketContext';
 
@@ -30,33 +30,53 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   let [targetCounter, setTargetCounter] = useState(0);
   let wasBountyDetected = false;
+  const { user } = useAuth0();
+
+  // socket contexts
   const { games, users } = useContext(SocketContext).SocketState;
+  const { UpdateGameStatus } = useContext(SocketContext);
 
-  const [huntedUsername, setHuntedUsername] = useState<any>('');
+  // storing username of hunted so tensor can compare
+  const [huntedUsername, setHuntedUsername] = useState<string>('');
 
 
+  // creating the canvas when the component mounts
   useEffect(() => {
     createCanvas()
   }, [])
 
+  // if faceMatcher and huntedUsername are both set, start the handleVideoPlay()
   useEffect(() => {
-    if (faceMatcher) {
+    if (faceMatcher && huntedUsername) {
       handleVideoOnPlay();
       const intervalId = setInterval(updateCounter, 500);
       return () => clearInterval(intervalId);
     }
-  }, [faceMatcher])
+  }, [faceMatcher, huntedUsername])
 
+  // whenever targetCounter is updated, if it's at 10, navigate the users
   useEffect(() => {
-    console.log('targetCount', targetCounter)
+    if (targetCounter === 10) {
+      console.log('made it to 10')
+      UpdateGameStatus(user, 'complete')
+    }
   }, [targetCounter])
 
+  // setting the huntedUsername based on the authID in the hunted column of the game
   useEffect(() => {
     if (games.length > 0) {
       const huntedUser = users.filter(user => user.authId === games[0].hunted)[0];
       setHuntedUsername(huntedUser.username);
     }
   }, [users])
+
+  // whenever the games state changes, if the status is complete, navigate to /gameover endpoint
+  useEffect(() => {
+    if (games[0].status === 'complete') {
+      navigate('/gameover');
+    }
+  }, [games])
+
 
   const createCanvas = () => {
     if (videoStarted && webcamRef?.current?.video) {
@@ -71,11 +91,7 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
     } else {
       setTargetCounter(prevCounter => Math.max(prevCounter - 1, 0));
     }
-    // COMMENTED OUT FOR TESTING
-    // if (targetCounter === 10) {
-    //   console.log('Win condition met!');
-    //   navigate('/gameover');
-    // }
+
   };
 
   const handleVideoOnPlay = () => {
@@ -98,7 +114,9 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
           const name = result.toString()
           const sliceIndex = name.indexOf(' (')
           const detectedFace = name.slice(0, sliceIndex)
+          console.log('detected Face:', detectedFace, 'hunted:', huntedUsername, typeof detectedFace, typeof huntedUsername)
           if (detectedFace === huntedUsername) {
+            console.log('they are the same')
             wasBountyDetected = true;
           }
           const box = resizedDetections[i].detection.box

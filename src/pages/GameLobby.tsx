@@ -3,14 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { ButtonToHome, ButtonToGame } from '../components/Buttons';
 import WhosHunting from '../components/WhosHunting';
-import { useAuth0 } from "@auth0/auth0-react";
 import { Container } from '../styles/Container';
 import { Header } from '../styles/Header'
 import { Main } from '../styles/Main'
 import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
 
 const GameLobby: React.FunctionComponent = () => {
-  const { user } = useAuth0();
   const { games, users } = useContext(SocketContext).SocketState;
   const [showLobby, setShowLobby] = useState(false);
 
