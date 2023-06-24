@@ -13,6 +13,8 @@ import {
   PerspectiveCamera,
   WebGLRenderer,
   BoxGeometry,
+  Sprite,
+  SpriteMaterial
 } from 'three';
 
 
@@ -143,7 +145,7 @@ class LocationBasedLocal {
             console.log('did not get the positions');
           } else {
             console.log('my position: ', parseFloat(position.coords.longitude.toFixed(3)), parseFloat(position.coords.latitude.toFixed(3)))
-            this.setUserPosition(position.coords.longitude, position.coords.latitude)
+            this.setUserPosition(parseFloat(position.coords.longitude), parseFloat(position.coords.latitude))
           }
         },
         (error) => {
@@ -165,7 +167,7 @@ class LocationBasedLocal {
 
   setUserPosition = (longitude, latitude,) => {
 
-    // console.log('box position: ', longitude, latitude + 0.001, )
+    // console.log('long and lat in web.js', typeof longitude, typeof latitude + 0.001,)
 
     this.userLatitude = latitude;
     this.userLongitude = longitude;
@@ -592,4 +594,6 @@ export {
   PerspectiveCamera,
   WebGLRenderer,
   BoxGeometry,
+  Sprite,
+  SpriteMaterial,
 };

@@ -57,7 +57,9 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     // reconnect
     socket.io.on('reconnect', (attempt) => {
       console.info('Reconnected on attempt: ' + attempt);
-      // socket.emit('user_connected', some global state variable)
+      socket.emit('reconnect_in_game', user, () => {
+      });
+
     })
 
     // trying to reconnect
@@ -100,17 +102,46 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       }
     });
 
-    // update locations event
-    socket.on('updated_locations', (locations) => {
-      console.info('location created, new location list received');
-      SocketDispatch({ type: 'updated_locations', payload: locations });
+    // updating users in lobby
+    socket.on('update_lobby_users', async () => {
+      try {
+        const response = await axios.get(`/users/games/${user?.sub}`);
+        const users = response.data;
+        console.log('updating lobby users state:', users)
+        SocketDispatch({ type: 'update_lobby_users', payload: users });
+      } catch (error) {
+        console.error('Error fetching lobby users:', error);
+      }
     });
 
-    // update the names state
-    socket.on('update_names', (names: { [authId: string]: string }) => {
-      // console.info('names updated, new name list received')
-      SocketDispatch({ type: 'update_names', payload: names })
+    // updating games in lobby
+    socket.on('update_lobby_games', async () => {
+      try {
+        const response = await axios.get(`/games/user/${user?.sub}`);
+        const games = response.data;
+        console.log('updating lobby games state:', games)
+        SocketDispatch({ type: 'update_lobby_games', payload: games });
+      } catch (error) {
+        console.error('Error fetching lobby games:', error);
+      }
     });
+
+    // update locations event
+    socket.on('update_locations', async () => {
+      try {
+        const response = await axios.get(`/locations/${user?.sub}`);
+        const locations = response.data.map(location => ({
+          ...location,
+          latitude: parseFloat(location.latitude),
+          longitude: parseFloat(location.longitude)
+        }));
+        console.log('updating locations state:', locations)
+        SocketDispatch({ type: 'update_locations', payload: locations });
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      }
+    });
+
 
 
   }
@@ -134,15 +165,13 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
   }
 
-  const AddLocation = (gameId: string, longitude: number, latitude: number, user: any) => {
-    console.info(`User ${user.sub} wants to add a location: ${longitude} ${latitude}`);
-
-    socket.emit('add_location', gameId, longitude, latitude, user, (authId: string, locations: { [authId: string]: { longitude: number, latitude: number } }) => {
-      SocketDispatch({ type: 'updated_locations', payload: locations });
+  const AddLocation = (user: any, gameId: string, longitude: number, latitude: number) => {
+    socket.emit('add_location', user, gameId, longitude, latitude, () => {
+      console.log('adding location');
     });
   };
 
-  // sending join game to the server, host identifies game to join
+  // sending join game to the server
   const JoinGame = (host: string, user: User) => {
     // console.info('Client wants to join a game...');
 
@@ -155,22 +184,23 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
   };
 
+  // sending join game to the server
+  const LeaveGame = (user: User) => {
+
+    socket.emit('leave_game', user, () => {
+      console.log('leaving game')
+    });
+
+  };
+
   const Redirect = (host: string, endpoint: string) => {
     // console.info(`Redirect from ${host} to ${endpoint}`);
     socket.emit('nav_to_endpoint', host, endpoint);
   };
 
-  const SetHunted = (host: string, authId: string) => {
-    // console.info(`Setting Hunted, ${host} picked ${ authId }`);
-    socket.emit('set_hunted', host, authId);
+  const SetHunted = (victim: User) => {
+    socket.emit('set_hunted', victim);
   };
-
-  const AddName = (name: string, authId: string) => {
-    // console.info('Adding name');
-    socket.emit('add_name', name, authId, (names: { [authId: string]: string }) => {
-      SocketDispatch({ type: 'update_names', payload: names });
-    });
-  }
 
 
   // showing this on client side while socket isn't connected
@@ -181,7 +211,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // provides the socket context to the nested components
   // this will be placed around the components in index.tsx so all of the components can use this socket connection
   return (
-    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, AddName }}>
+    <SocketContextProvider value={{ SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, LeaveGame }}>
       {children}
     </SocketContextProvider>
   )

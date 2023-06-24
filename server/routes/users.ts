@@ -129,17 +129,45 @@ Users.get("/", async (req, res) => {
   }
 });
 
+// // GET SPECIFIC USER
+// Users.get("/:gameId", async (req, res) => {
+//   try {
+//     const users = await User.findAll({ where: { authId: req.params.gameId } });
+//     if (!users) {
+//       return res.sendStatus(404);
+//     }
+//     res.status(200).send(users);
+//   } catch (err) {
+//     res.sendStatus(500);
+//   }
+// });
+
 // GET SPECIFIC USER
 Users.get("/:authId", async (req, res) => {
   try {
     // Fetch the user's data from the database based on their google auth ID
+    const user = await User.findAll({ where: { authId: req.params.authId } });
+    if (!user) {
+      return res.sendStatus(404);
+    }
+    res.status(200).send(user);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+// GET SPECIFIC USER
+Users.get("/games/:authId", async (req, res) => {
+  try {
+    // Fetch the user's data from the database based on their google auth ID
     const user = await User.findOne({ where: { authId: req.params.authId } });
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      res.sendStatus(404);
     }
-    res.status(200).json(user);
+
+    const users = await User.findAll({ where: { gameId: user?.dataValues.gameId } })
+    res.status(200).send(users);
   } catch (err) {
-    console.warn(err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.sendStatus(500);
   }
 });
