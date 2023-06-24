@@ -97,6 +97,21 @@ class WebcamRendererLocal {
       document.body.appendChild(errorPopup);
     }
   }
+
+  // created my own method to turn off the camera
+  turnOffCamera() {
+    const video = document.querySelector("video");
+    if (video && video.srcObject) {
+      const stream = video.srcObject;
+      const tracks = stream.getTracks();
+
+      tracks.forEach((track) => {
+        track.stop();
+      });
+
+      video.srcObject = null;
+    }
+  }
 }
 
 class LocationBasedLocal {
