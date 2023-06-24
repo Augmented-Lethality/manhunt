@@ -59,9 +59,9 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-  <StyledButton1 label={label} primary={!primary} onClick={handleClick} route={route}>
-    {label}
-  </StyledButton1>
+    <StyledButton1 label={label} primary={!primary} onClick={handleClick} route={route}>
+      {label}
+    </StyledButton1>
 
   );
 };
@@ -82,9 +82,9 @@ export const LargeButton: React.FC<ButtonProps> = ({
   };
 
   return (
-  <StyledButton2 label={label} primary={!primary} onClick={handleClick} route={route}>
-    {label}
-  </StyledButton2>
+    <StyledButton2 label={label} primary={!primary} onClick={handleClick} route={route}>
+      {label}
+    </StyledButton2>
 
   );
 };
@@ -108,7 +108,7 @@ export const ButtonToGame: React.FC = () => {
     UpdateGameStatus(user, 'ongoing');
   }
 
-  return <Button label='Game Time' route='/onthehunt' onClick={handleToGame} />;
+  return <Button label='Game Time' route='' onClick={handleToGame} />;
 };
 
 export const ButtonToProfile: React.FC = () => {

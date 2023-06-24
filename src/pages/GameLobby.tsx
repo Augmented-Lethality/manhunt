@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { ButtonToHome, ButtonToGame } from '../components/Buttons';
 import WhosHunting from '../components/WhosHunting';
@@ -13,13 +14,22 @@ const GameLobby: React.FunctionComponent = () => {
   const { games, users } = useContext(SocketContext).SocketState;
   const [showLobby, setShowLobby] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (games.length > 0 && users.length > 0) {
       setShowLobby(true);
+      redirectToGame();
     } else {
       setShowLobby(false);
     }
   }, [games, users]);
+
+  const redirectToGame = () => {
+    if (games[0].status === 'ongoing') {
+      navigate('/onthehunt');
+    }
+  }
 
   return (
     <Container>

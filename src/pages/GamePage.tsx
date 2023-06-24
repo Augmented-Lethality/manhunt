@@ -122,10 +122,6 @@ const GamePage: React.FC = () => {
     <Container>
       <GameHeader>
         <Countdown initialCount={5 * 60} />
-        {/* <strong>Users in Game:</strong>
-        {users.map((player) => (
-          <PlayerListItem key={player.id} player={player} />
-        ))} */}
         <DropDownMenu>
           <div onClick={handleHomeDrop}><FaHome className='react-icon' />home</div>
         </DropDownMenu>
