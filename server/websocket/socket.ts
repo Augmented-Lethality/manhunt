@@ -1,7 +1,7 @@
 import { Server as HttpServer } from 'http';
 import { Socket, Server } from 'socket.io';
 import { v4 } from 'uuid';
-import { User, Game } from '../database/models';
+import { User, Game, Locations } from '../database/models';
 
 /***** TYPESCRIPT NOTES****
 
@@ -23,20 +23,16 @@ export class ServerSocket {
   // public property io of type server
   public io: Server;
 
-  // dictionary object of connected users
-  // key is the user id and the value is the socket id to send messages to the correct clients
-  public users: { [authId: string]: string };
+  public users: [];
 
-  // names object, stores the authId as the string
-  public names: { [authId: string]: string }
 
   // dictionary object of connected games
   // key is the host (the user id of who created the game)
   // the object holds the game id, and authIdList which is the list of connected users
-  public games: { [host: string]: { gameId: string, authIdList: string[], hunted: string } };
+  public games: [];
 
   // new locations object, key is the user id, stores the long and lat as number values
-  public locations: { [gameId: string]: { [authId: string]: { longitude: number, latitude: number } } };
+  public locations: [];
 
 
   // constructor automatically called when an instance of a class is created, meaning when the server starts, this socket server
@@ -44,16 +40,14 @@ export class ServerSocket {
   constructor(server: HttpServer) {
     // the only server connection to socket.io is to this instance's STATIC ServerSocket
     ServerSocket.instance = this;
-    // initializing the empty users object
-    this.users = {};
-    // initializing the empty games object
-    this.games = {};
+    // initializing the empty users
+    this.users = [];
+    // initializing the empty games
+    this.games = [];
 
-    // initializing the empty locations object
-    this.locations = {};
+    // initializing the empty locations
+    this.locations = [];
 
-    // initializing the empty names object
-    this.names = {}
 
     // new instance of the server class from socket.io, has basic options from socket.io website
     this.io = new Server(server, {
@@ -80,14 +74,6 @@ export class ServerSocket {
     // client is asking to make a socket connection to the server, also known as a handshake
     socket.on('handshake', async (user) => {
 
-      if (socket.rooms.has('users')) {
-        console.log('A client reconnected');
-      } else {
-        // joining the users room on the server connection
-        socket.join('users');
-      }
-
-
       try {
 
         // if the user exists, update the new socket connection
@@ -97,17 +83,25 @@ export class ServerSocket {
           await User.update({ socketId: socket.id }, { where: { authId: user.sub } })
           console.log('updated db user connection')
 
+
           // now see if they were part of the game
           const existingGame = await Game.findOne({ where: { gameId: existingUser.dataValues.gameId } })
-
           // if the game exists on their model and the user isn't in the game list, add them back
           if (existingGame) {
             if (!existingGame.dataValues.users.includes(existingUser.dataValues.authId)) {
-              await Game.update({ users: [...existingGame.dataValues.users, existingUser.dataValues.authId] }, { where: { gameId: existingUser.dataValues.gameId } });
-              console.log('put user back in game')
+              await Game.update({ users: [...existingGame.dataValues.users, existingUser.dataValues.authId] },
+                { where: { gameId: existingUser.dataValues.gameId } });
             }
+            console.log('put user back in game')
+            socket.join(existingUser.dataValues.gameId);
+            this.io.to(existingUser.dataValues.gameId).emit('update_lobby_users');
+            this.io.to(existingUser.dataValues.gameId).emit('update_lobby_games');
 
+          } else {
+            console.log('joined users')
+            socket.join('users');
           }
+
         }
 
       } catch (err) {
@@ -124,11 +118,10 @@ export class ServerSocket {
     // when client emits a createGame event, make the new game
     socket.on('create_game', async (user) => {
 
-      ////////// NEW ////////////////
-
       try {
         const hostingGame = await Game.findOne({ where: { host: user.sub } });
         if (hostingGame) {
+          socket.leave('users');
           console.log('already hosting a game');
         } else {
           const gameId = v4();
@@ -136,31 +129,38 @@ export class ServerSocket {
           await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub] });
           await User.update({ gameId: gameId }, { where: { authId: user.sub } })
           socket.join(gameId);
+          this.io.to(gameId).emit('update_lobby_users');
+          this.io.to(gameId).emit('update_lobby_games');
 
         }
         // send new user to all connected users to update their games lists
+        socket.leave('users');
         this.io.to('users').emit('update_games');
 
       } catch (err) {
         console.log(err);
       }
-      /////////////////////////////////////////////////////
 
     });
 
     socket.on('join_game', async (host, user) => {
+      console.log(host)
       try {
         const game = await Game.findOne({ where: { host: host } });
         if (game) {
           if (game.dataValues.users.includes(user.sub)) {
             console.log('user already in that game')
           } else {
-            await User.update({ gameId: game.gameId }, { where: { authId: user.sub } });
-            await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
-            socket.join(game.gameId);
-
-            this.io.to('users').emit('update_games');
+            await User.update({ gameId: game.dataValues.gameId }, { where: { authId: user.sub } });
+            await Game.update({ users: [...game.dataValues.users, user.sub] }, { where: { host: host } });
           }
+
+          socket.join(game.dataValues.gameId);
+          socket.leave('users');
+          this.io.to(game.dataValues.gameId).emit('update_lobby_users');
+          this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+
+          this.io.to('users').emit('update_games');
 
         } else {
           console.log('no game with that host exists')
@@ -176,82 +176,127 @@ export class ServerSocket {
         if (game) {
           if (game.dataValues.users.includes(user.sub)) {
             console.log('user in game we good, updating the game lobby')
-            this.io.to(user.gameId).emit('update_lobby_users');
-            this.io.to(user.gameId).emit('update_lobby_games');
+          } else {
+            await User.update({ gameId: game.dataValues.gameId }, { where: { authId: user.sub } });
+            await Game.update({ users: [...game.dataValues.users, user.sub] }, { where: { host: host } });
+
+            this.io.to('users').emit('update_games');
+
           }
+
+          socket.leave('users');
+          socket.join(game.dataValues.gameId);
+
+          this.io.to(game.dataValues.gameId).emit('update_lobby_users');
+          this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+
         } else {
-          console.log('no game with that host exists')
+
         }
       } catch (err) {
         console.log(err);
       }
     });
 
+    socket.on('reconnect_in_game', async (user) => {
+
+      try {
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+
+        if (existingUser) {
+          const game = await Game.findOne({ where: { gameId: existingUser.dataValues.gameId } });
+
+          if (game) {
+            if (!game.dataValues.users.includes(user.sub)) {
+              await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: existingUser.dataValues.gameId } });
+              socket.join(existingUser.dataValues.gameId);
+
+              console.log('user in game again, updating the game lobby')
+              this.io.to(existingUser.dataValues.gameId).emit('update_lobby_users');
+              this.io.to(existingUser.dataValues.gameId).emit('update_lobby_games');
+            }
+          } else {
+            console.log('no game with that host exists')
+          }
+        }
+
+      } catch (err) {
+        console.log(err);
+      }
+    });
 
 
     // adding/updating a location
-    socket.on('add_location', (gameId, longitude, latitude, user, callback) => {
-      console.log(user.sub)
-
-
-
-      // game ID exists in the locations object?
-      if (Object.keys(this.locations).includes(gameId)) {
-
-        const authId = this.GetAuthIdFromSocketID(socket.id);
-
-        if (authId) {
-          // add the location to the user in that game
-          this.locations[gameId][authId] = { longitude: longitude, latitude: latitude };
-
-          // send back the updated locations to the specific player
-          callback(authId, this.locations[gameId]);
-
-          // Emit the updated locations to all players in the game except the sender
-          socket.to(gameId).emit('updated_locations', this.locations[gameId]);
+    socket.on('add_location', async (user, gameId, longitude, latitude) => {
+      try {
+        const location = await Locations.findOne({ where: { authId: user.sub } });
+        if (location) {
+          await Locations.update({ longitude: longitude, latitude: latitude }, { where: { authId: user.sub } });
+          console.log('updated user location')
+        } else {
+          await Locations.create({ authId: user.sub, gameId: gameId, longitude: longitude, latitude: latitude })
+          console.log('made new location')
         }
+        this.io.to(gameId).emit('update_locations');
+      } catch (err) {
+        console.log(err);
       }
     });
 
-    socket.on('nav_to_endpoint', (host, endpoint) => {
 
-      // console.log(`received redirect to ${endpoint} from ${host}`)
-      if (Object.keys(this.games).includes(host)) {
+    socket.on('set_hunted', async (victim) => {
 
-        // console.log('host is in games list')
-        const gameId = this.games[host].gameId
+      try {
+        const game = await Game.findOne({ where: { gameId: victim.gameId } });
+        if (game) {
+          await Game.update({ hunted: victim.authId }, { where: { gameId: victim.gameId } });
+          console.log('hunter set');
+          this.io.to(victim.gameId).emit('update_lobby_games');
 
-        // redirects all of the users within this game
-        this.io.in(gameId).emit('redirect', endpoint);
+        } else {
+          console.log('no game like that exists')
+        }
+      } catch (err) {
+        console.log(err);
       }
+
     });
 
-    socket.on('set_hunted', (host, authId) => {
+    socket.on('leave_game', async (user) => {
+      try {
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const game = await Game.findByPk(existingUser?.dataValues.gameId);
 
-      console.log(`received set hunted to ${authId} from ${host}`)
-      if (Object.keys(this.games).includes(host)) {
+        if (game) {
+          if (game.dataValues.users.includes(user.sub)) {
 
-        this.games[host].hunted = authId;
-        // const gameId = this.games[host].gameId
+            await User.update({ gameId: '' }, { where: { authId: user.sub } });
 
-        const users = Object.values(this.users);
-        this.SendMessage('update_games', users, this.games);
-      }
-    });
+            const updatedUserList = game.dataValues.users.filter((authId: string) => authId !== existingUser?.dataValues.authId);
 
-    // adding/updating a name
-    socket.on('add_name', (name, authId, callback) => {
+            await Game.update(
+              { users: updatedUserList },
+              { where: { gameId: game.dataValues.gameId } }
+            )
 
-      // authId is not in the names object?
-      if (!this.names[authId]) {
+            socket.leave(game.dataValues.gameId);
+            socket.join('users');
 
-        this.names[authId] = name;
+            this.io.to(game.dataValues.gameId).emit('update_lobby_users');
+            this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+            this.io.to('users').emit('update_games');
+            this.io.to('users').emit('update_users');
 
-        const users = Object.values(this.users);
 
-        callback(this.names);
+          } else {
+            console.log('game did not have that user');
+          }
 
-        this.SendMessage('update_names', users, this.names);
+        } else {
+          console.log('no game like that exists')
+        }
+      } catch (err) {
+        console.log(err);
       }
     });
 
@@ -272,6 +317,13 @@ export class ServerSocket {
               { users: updatedUserList },
               { where: { gameId: user.dataValues.gameId } }
             )
+            socket.leave(user.dataValues.gameId);
+            // send new games to all connected users to update their games lists
+            this.io.to(user.dataValues.gameId).emit('update_games');
+            // send new user to all connected users to update their state
+            this.io.to(user.dataValues.gameId).emit('update_users');
+
+
           }
 
           // delete the socket id from the user since they're not connected anymore
@@ -294,24 +346,6 @@ export class ServerSocket {
       }
 
     });
-  };
-
-  //// HELPER FUNCTIONS ////
-
-  // inserting socket id of type string and finding the user within the users dictionary object
-  GetAuthIdFromSocketID = (id: string) => {
-    return Object.keys(this.users).find((authId) => this.users[authId] === id);
-  };
-
-  // name is name of socket, users is list of socket ids, payload is information needed by the user for state updates
-  SendMessage = (name: string, users: string[], payload?: Object) => {
-    console.info('Emitting event: ' + name + ' to', users);
-    users.forEach((id) => (payload ? this.io.to(id).emit(name, payload) : this.io.to(id).emit(name)));
-  };
-
-  SendGames = (name: string, users: string[], payload?: Object) => {
-    console.info('Emitting event: ' + name + ' to', users, 'payload', payload);
-    users.forEach((id) => (payload ? this.io.to(id).emit(name, payload) : this.io.to(id).emit(name)));
   };
 
 

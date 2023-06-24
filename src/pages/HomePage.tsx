@@ -19,8 +19,8 @@ type UserData = {
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated, logout } = useAuth0();
-  const { authId, users, socket } = useContext(SocketContext).SocketState;
+  const { user, isAuthenticated } = useAuth0();
+  const { users } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const HomePage = () => {
         0
       )}`;
     }
-  }, [user, isAuthenticated, authId, users]);
+  }, [user, isAuthenticated, users]);
 
   if (!isAuthenticated || !user) {
     return null;

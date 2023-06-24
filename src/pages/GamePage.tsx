@@ -14,6 +14,7 @@ import KillCam from '../components/KillCam';
 import { ButtonToHome } from '../components/Buttons';
 import Countdown from '../components/countdown';
 import { Container } from '../styles/Container';
+import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
 import { Main } from '../styles/Main';
 import { GameHeader } from '../styles/Header';
 import { FaSkull, FaEye } from 'react-icons/fa';
@@ -41,7 +42,7 @@ const GamePage: React.FC = () => {
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
   const [faceMatcher, setFaceMatcher] = useState<FaceMatcher | null>(null);
-  const { games, users } = useContext(SocketContext).SocketState;
+  const { users } = useContext(SocketContext).SocketState;
   const [currentGame, setUserGame] = useState();
 
 
@@ -84,7 +85,10 @@ const GamePage: React.FC = () => {
       <GameHeader>
         <ButtonToHome />
         <Countdown id='boop' initialCount={5*60}/>
-        
+        {/* <strong>Users in Game:</strong>
+        {users.map((player) => (
+          <PlayerListItem key={player.id} player={player} />
+        ))} */}
       </GameHeader>
       <Main>
       {gameMode === 'Chase' && <ChaseCam />}
@@ -100,7 +104,26 @@ const GamePage: React.FC = () => {
           </div>
         </CrosshairContainer>
       </Main>
+
     </Container>
+    //   <ButtonToHome />
+    //   <Countdown initialCount={5 * 60} />
+    //   {/* <strong>Users in Game:</strong>
+    //   {users.map((player) => (
+    //     <PlayerListItem key={player.id} player={player} />
+    //   ))} */}
+    //   <button onClick={handleGameChange}>{gameMode === 'Chase' ? 'Go in For the Kill' : 'Return to the Chase'}</button>
+    //   {gameMode === 'Chase' && <ChaseCam />}
+    //   {
+    //     gameMode === 'Kill' && (
+    //       <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+    //         <WebcamProvider>
+    //           <KillCam faceMatcher={faceMatcher} />
+    //         </WebcamProvider>
+    //       </div>
+    //     )
+    //   }
+    // </Container >
   );
 }
 

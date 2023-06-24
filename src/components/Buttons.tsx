@@ -174,3 +174,17 @@ export const SignupButton = () => {
     />
   );
 };
+
+export const LeaveLobbyButton = () => {
+  const handleLeave = () => {
+    // add a socket function to emit "leave game"
+  };
+  return (
+    <Button
+      label='Leave'
+      route='/home'
+      onClick={handleLeave}
+      className='button__logout'
+    />
+  );
+};
