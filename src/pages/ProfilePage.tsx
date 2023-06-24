@@ -27,7 +27,6 @@ const ProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
-  const [trophyData, setTrophyData] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -43,22 +42,9 @@ const ProfilePage: React.FC = () => {
       }
     };
 
-    // const fetchTrophyData = async () => {
-    //   try {
-    //     const response = await axios.get(`/trophies/${user?.id}`, {});
-    //     setTrophyData(response.data);
-    //   } catch (error) {
-    //     console.error('Error fetching trophy data:', error);
-    //   }
-    // };
-
     if (isAuthenticated && user) {
       fetchUserData();
-      // fetchTrophyData();
     }
-
-    console.log('userData:', userData);
-    console.log('trophyData:', trophyData);
   }, [user, isAuthenticated]);
 
   if (!user) {
@@ -108,34 +94,33 @@ const ProfilePage: React.FC = () => {
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  margin: '2vh',
+                  margin: '6vh',
                   alignItems: 'start',
                 }}
               >
-                <h2 className='profile__title'>{user?.name}</h2>
+                <h6 className='profile__title'>{user?.name}</h6>
                 <span className='profile__description'>
                   {user?.email}
                   {/* <ButtonToUpdateEmail /> */}
                 </span>
               </div>
             </div>
-            {/* //map here instead of in savedTrophy */}
+            <div className='profile__details'>
+              <h6>Games Played: {userData?.gamesPlayed}</h6>
+              <h6>Games Won: {userData?.gamesWon}</h6>
+              <h6>Kills Confirmed: {userData?.killsConfirmed}</h6>
+            </div>
             <div style={{ width: '300px', height: '300px' }}>
               <TrophyGenerator />
             </div>
             <div style={{ width: '300px', height: '300px' }}>
-              <SavedTrophy userData={userData} />
-            </div>
-            <div className='profile__details'>
-              <br />
-              <br />
-              {/* <h2>Games Played: {userData?.gamesPlayed}</h2>
-              <h2>Games Won: {userData?.gamesWon}</h2>
-              <h2>Kills Confirmed: {userData?.killsConfirmed}</h2> */}
+              <SavedTrophy />
             </div>
           </div>
         </div>
-        {/* {userData?.facialDescriptions ? (
+        
+      </Main>
+      {/* {userData?.facialDescriptions ? (
               <div className='profile_verification'>
                 <p style={{ textAlign: 'start', margin: '3vh' }}>
                   Citizen has been verified. The CorpoVerse thanks you for your
@@ -159,7 +144,6 @@ const ProfilePage: React.FC = () => {
                 </button>
               </div>
             )} */}
-      </Main>
     </Container>
   );
 };

@@ -1,10 +1,10 @@
-import React, { useRef, useState, useMemo, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Canvas } from 'react-three-fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
-type TrophyData = {
+export type TrophyData = {
   dimension: number;
   color: string;
   shape: string;
@@ -32,6 +32,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userTrophyData, setUserTrophyData] = useState<TrophyData[]>([]);
+  const [showProps, setShowProps] = useState(false);
 
   const fetchUserData = async () => {
     try {
@@ -98,6 +99,10 @@ const SavedTrophy: React.FC<TrophyData> = () => {
     }
   };
 
+  const togglePropsView = () => {
+    setShowProps(!showProps);
+  };
+
   useEffect(() => {
     fetchUserData();
   }, []); // Fetch user data only once on component mount
@@ -116,71 +121,81 @@ const SavedTrophy: React.FC<TrophyData> = () => {
     >
       <h1>Your most recent Trophies </h1>
       {true ? (
-        userTrophyData.map((trophy, index) => (
-          <div key={index}>
-            <div>
-              <h1>You win this!</h1>
-              <Canvas>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} />
-                {trophy.shape === 'box' && (
-                  <Box
-                    ref={trophyRef}
-                    args={[
-                      trophy.dimension,
-                      trophy.dimension,
-                      trophy.dimension,
-                    ]}
-                    position={[0, 0, 0]}
-                    rotation={[0, 0.4, 0]}
-                  >
-                    <meshStandardMaterial
-                      attach='material'
-                      color={trophy.color}
-                    />
-                  </Box>
+        userTrophyData
+          .slice(0)
+          .reverse()
+          .map((trophy, index) => (
+            <div key={index}>
+              <div>
+                <Canvas>
+                  <ambientLight intensity={0.5} />
+                  <pointLight position={[10, 10, 10]} />
+                  {trophy.shape === 'box' && (
+                    <Box
+                      ref={trophyRef}
+                      args={[
+                        trophy.dimension,
+                        trophy.dimension,
+                        trophy.dimension,
+                      ]}
+                      position={[0, 0, 0]}
+                      rotation={[0, 0.4, 0]}
+                    >
+                      <meshStandardMaterial
+                        attach='material'
+                        color={trophy.color}
+                      />
+                    </Box>
+                  )}
+                  {trophy.shape === 'polyhedron' && (
+                    <Dodecahedron
+                      ref={trophyRef}
+                      args={[trophy.dimension, 0]}
+                      position={[0, 0, 0]}
+                      rotation={[0, 0.4, 0]}
+                    >
+                      <meshStandardMaterial
+                        attach='material'
+                        color={trophy.color}
+                      />
+                    </Dodecahedron>
+                  )}
+                  {trophy.shape === 'torus' && (
+                    <Torus
+                      ref={trophyRef}
+                      args={[
+                        trophy.dimension,
+                        trophy.tubeWidth,
+                        16,
+                        trophy.tubularSegments,
+                      ]}
+                      position={[0, 0, 0]}
+                      rotation={[0, 0.4, 0]}
+                    >
+                      <meshStandardMaterial
+                        attach='material'
+                        color={trophy.color}
+                      />
+                    </Torus>
+                  )}
+                </Canvas>
+                <button onClick={togglePropsView}>
+                  {showProps ? 'X' : 'Just View It'}
+                </button>
+              </div>
+              <div>
+                {showProps && (
+                  <>
+                    <h6>Dimension: {trophy.dimension}</h6>
+                    <h6>Color: {trophy.color}</h6>
+                    <h6>Shape: {trophy.shape}</h6>
+                    <h6>Tubular Segments: {trophy.tubularSegments}</h6>
+                    <h6>Tube Width: {trophy.tubeWidth}</h6>
+                  </>
                 )}
-                {trophy.shape === 'polyhedron' && (
-                  <Dodecahedron
-                    ref={trophyRef}
-                    args={[trophy.dimension, 0]}
-                    position={[0, 0, 0]}
-                    rotation={[0, 0.4, 0]}
-                  >
-                    <meshStandardMaterial
-                      attach='material'
-                      color={trophy.color}
-                    />
-                  </Dodecahedron>
-                )}
-                {trophy.shape === 'torus' && (
-                  <Torus
-                    ref={trophyRef}
-                    args={[
-                      trophy.dimension,
-                      trophy.tubeWidth,
-                      16,
-                      trophy.tubularSegments,
-                    ]}
-                    position={[0, 0, 0]}
-                    rotation={[0, 0.4, 0]}
-                  >
-                    <meshStandardMaterial
-                      attach='material'
-                      color={trophy.color}
-                    />
-                  </Torus>
-                )}
-              </Canvas>
-              <button> just do it </button>
+              </div>
             </div>
-            <h6>Dimension: {trophy.dimension}</h6>
-            <h6>Color: {trophy.color}</h6>
-            <h6>Shape: {trophy.shape}</h6>
-            <h6>Tubular Segments: {trophy.tubularSegments}</h6>
-            <h6>Tube Width: {trophy.tubeWidth}</h6>
-          </div>
-        ))
+          ))
       ) : (
         <p>Loading trophy data...</p>
       )}
