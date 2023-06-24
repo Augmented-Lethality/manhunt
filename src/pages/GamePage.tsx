@@ -88,9 +88,7 @@ const GamePage: React.FC = () => {
   };
 
   const createFaceMatcher = async () => {
-    // get All users. AFTER MVP CHANGE TO GET ONLY RELEVANT USERS
     const labeledFaceDescriptors = users.map((user) => {
-      console.log('user', user);
       // Convert each user's description array back to a Float32Array
       const descriptions = [new Float32Array(user.facialDescriptions)];
       return new LabeledFaceDescriptors(user.username, descriptions);

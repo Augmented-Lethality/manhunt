@@ -10,6 +10,7 @@ import {
 } from 'face-api.js';
 import { useWebcam } from '../contexts/WebcamProvider';
 import TargetRecognition from './KillProgress';
+import { User } from '../contexts/Socket/SocketContext';
 
 import SocketContext from '../contexts/Socket/SocketContext';
 
@@ -29,7 +30,9 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   let [targetCounter, setTargetCounter] = useState(0);
   let wasBountyDetected = false;
-  const { games } = useContext(SocketContext).SocketState;
+  const { games, users } = useContext(SocketContext).SocketState;
+
+  const [huntedUsername, setHuntedUsername] = useState<any>('');
 
 
   useEffect(() => {
@@ -47,6 +50,13 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   useEffect(() => {
     console.log('targetCount', targetCounter)
   }, [targetCounter])
+
+  useEffect(() => {
+    if (games.length > 0) {
+      const huntedUser = users.filter(user => user.authId === games[0].hunted)[0];
+      setHuntedUsername(huntedUser.username);
+    }
+  }, [users])
 
   const createCanvas = () => {
     if (videoStarted && webcamRef?.current?.video) {
@@ -88,7 +98,7 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
           const name = result.toString()
           const sliceIndex = name.indexOf(' (')
           const detectedFace = name.slice(0, sliceIndex)
-          if (detectedFace === games[0].hostName) {
+          if (detectedFace === huntedUsername) {
             wasBountyDetected = true;
           }
           const box = resizedDetections[i].detection.box
