@@ -126,7 +126,7 @@ export class ServerSocket {
         } else {
           const gameId = v4();
           const hostName = user.name;
-          await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub] });
+          await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub], hunted: '' });
           await User.update({ gameId: gameId }, { where: { authId: user.sub } })
           socket.join(gameId);
           this.io.to(gameId).emit('update_lobby_users');
