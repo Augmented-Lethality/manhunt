@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   FaceMatcher,
@@ -6,18 +6,22 @@ import {
   matchDimensions,
   detectAllFaces,
   resizeResults,
-  draw } from 'face-api.js';
+  draw
+} from 'face-api.js';
 import { useWebcam } from '../contexts/WebcamProvider';
 import TargetRecognition from './KillProgress';
+
+import SocketContext from '../contexts/Socket/SocketContext';
+
 
 type KillCamProps = {
   faceMatcher: (FaceMatcher | null)
 }
 
-const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
+const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   const webcamContext = useWebcam();
   const webcamRef = webcamContext?.webcamRef;
-  const  videoStarted = webcamContext?.videoStarted;
+  const videoStarted = webcamContext?.videoStarted;
   const navigate = useNavigate();
   const videoHeight = window.innerHeight;
   const videoWidth = window.innerWidth;
@@ -25,7 +29,9 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   let [targetCounter, setTargetCounter] = useState(0);
   let wasBountyDetected = false;
-  
+  const { games } = useContext(SocketContext).SocketState;
+
+
   useEffect(() => {
     createCanvas()
   }, [])
@@ -38,12 +44,12 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
     }
   }, [faceMatcher])
 
-  useEffect(()=> {
+  useEffect(() => {
     console.log('targetCount', targetCounter)
   }, [targetCounter])
 
   const createCanvas = () => {
-    if (videoStarted && webcamRef?.current?.video){
+    if (videoStarted && webcamRef?.current?.video) {
       canvasRef.current = createCanvasFromMedia(webcamRef.current.video);
     }
   };
@@ -82,7 +88,7 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
           const name = result.toString()
           const sliceIndex = name.indexOf(' (')
           const detectedFace = name.slice(0, sliceIndex)
-          if (detectedFace === 'Cat Cat McGee') {
+          if (detectedFace === games[0].hostName) {
             wasBountyDetected = true;
           }
           const box = resizedDetections[i].detection.box
@@ -98,9 +104,9 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
   };
 
   return (
-    <div>      
-      <canvas ref={canvasRef} style={{ position: 'absolute', top:0, left:0 }} />
-     <TargetRecognition progress={targetCounter}/>
+    <div>
+      <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0 }} />
+      <TargetRecognition progress={targetCounter} />
     </div>
   );
 }

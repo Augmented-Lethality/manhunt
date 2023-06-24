@@ -19,6 +19,8 @@ import { GiCrosshair } from 'react-icons/gi';
 import { styled } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import DropDownMenu from '../components/DropDownMenu';
+import { useAuth0 } from '@auth0/auth0-react';
+
 
 const CrosshairContainer = styled.div`
   position: absolute;
@@ -50,15 +52,22 @@ const GamePage: React.FC = () => {
   const [gameMode, setGameMode] = useState<string>('Chase');
   const [faceMatcher, setFaceMatcher] = useState<FaceMatcher | null>(null);
   const { users, games } = useContext(SocketContext).SocketState;
+  const { LeaveGame } = useContext(SocketContext);
+
+  const { user } = useAuth0();
+
+
 
 
   useEffect(() => {
     loadTensorFlowFaceMatcher();
+    console.log('use effect happened')
   }, [users]);
 
   useEffect(() => {
     return () => {
       handleTurnOffCamera(); // turns off all cameras when this component is unmounted
+      console.log('should have turned the camera off');
     };
   }, []);
 
@@ -72,6 +81,7 @@ const GamePage: React.FC = () => {
       await loadFaceLandmarkModel('/models')
       await loadFaceRecognitionModel('/models')
       createFaceMatcher();
+      console.log('did the face success')
     } catch (err) {
       console.error(err);
     }
@@ -104,6 +114,11 @@ const GamePage: React.FC = () => {
     }
   };
 
+  const handleHomeDrop = () => {
+    LeaveGame(user);
+    navigate('/home')
+  }
+
 
   return (
     <Container>
@@ -114,7 +129,7 @@ const GamePage: React.FC = () => {
           <PlayerListItem key={player.id} player={player} />
         ))} */}
         <DropDownMenu>
-          <div onClick={() => { navigate('/home') }}><FaHome className='react-icon' />home</div>
+          <div onClick={handleHomeDrop}><FaHome className='react-icon' />home</div>
         </DropDownMenu>
       </GameHeader>
       {gameMode === 'Chase' && <ChaseCam ref={chaseCamRef} />}
