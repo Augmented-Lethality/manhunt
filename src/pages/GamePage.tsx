@@ -41,7 +41,7 @@ const GamePage: React.FC = () => {
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
   const [faceMatcher, setFaceMatcher] = useState<FaceMatcher | null>(null);
-  const { games } = useContext(SocketContext).SocketState;
+  const { games, users } = useContext(SocketContext).SocketState;
   const [currentGame, setUserGame] = useState();
 
 
@@ -62,9 +62,8 @@ const GamePage: React.FC = () => {
 
   const createFaceMatcher = async () => {
     // get All users. AFTER MVP CHANGE TO GET ONLY RELEVANT USERS
-    const res = await axios.get('/users');
-    const users = res.data.filter(user => user.facialDescriptions);
     const labeledFaceDescriptors = users.map((user) => {
+      console.log('user', user);
       // Convert each user's description array back to a Float32Array
       const descriptions = [new Float32Array(user.facialDescriptions)];
       return new LabeledFaceDescriptors(user.username, descriptions);
@@ -94,11 +93,11 @@ const GamePage: React.FC = () => {
           <KillCam faceMatcher={faceMatcher} />
         </WebcamProvider>
       )}
-        <CrosshairContainer>
+        <CrosshairContainer onClick={handleGameChange}>
           <GiCrosshair style={{ position: 'absolute', fontSize: '9rem' }}/>
-          <button onClick={handleGameChange} style={{background: 'none', border: 'none'}}>
-            {gameMode === 'Chase' ? <FaSkull /> : <FaEye />}
-          </button>
+          <div style={{background: 'none', border: 'none'}}>
+            {gameMode === 'Chase' ? <FaSkull className='react-icon-large'/> : <FaEye className='react-icon-large'/>}
+          </div>
         </CrosshairContainer>
       </Main>
     </Container>
