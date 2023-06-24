@@ -2,3 +2,12 @@
   from { height: 0% }
   to { height: 100% }
 }
+
+@keyframes progress-bar-animation {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 100; }
+}
+
+.progress-bar {
+  animation: progress-bar-animation 5s linear infinite;
+}
