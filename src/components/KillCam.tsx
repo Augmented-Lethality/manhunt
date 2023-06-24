@@ -1,27 +1,33 @@
-import { FaceMatcher, createCanvasFromMedia, matchDimensions, detectAllFaces, resizeResults, draw } from 'face-api.js';
-import React, { useEffect, useRef } from 'react';
-import { useWebcam } from '../contexts/WebcamProvider';
+import React, {useEffect, useState, useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
-import TargetRecognition from './TargetRecognition'
+import {
+  FaceMatcher,
+  createCanvasFromMedia,
+  matchDimensions,
+  detectAllFaces,
+  resizeResults,
+  draw } from 'face-api.js';
+import { useWebcam } from '../contexts/WebcamProvider';
+import TargetRecognition from './KillProgress';
+
 type KillCamProps = {
-  faceMatcher: FaceMatcher | null;
+  faceMatcher: (FaceMatcher | null)
 }
 
-const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
+const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
   const webcamContext = useWebcam();
   const webcamRef = webcamContext?.webcamRef;
-  const videoStarted = webcamContext?.videoStarted;
+  const  videoStarted = webcamContext?.videoStarted;
   const navigate = useNavigate();
   const videoHeight = window.innerHeight;
   const videoWidth = window.innerWidth;
   const displaySize = { width: videoWidth, height: videoHeight };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  const targetCounterRef = useRef<number>(0);
-  const wasCatCatMcGeeDetectedRef = useRef<boolean>(false);
-
+  let [targetCounter, setTargetCounter] = useState(0);
+  let wasBountyDetected = false;
+  
   useEffect(() => {
-    createCanvas();
+    createCanvas()
   }, [])
 
   useEffect(() => {
@@ -32,30 +38,34 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
     }
   }, [faceMatcher])
 
+  useEffect(()=> {
+    console.log('targetCount', targetCounter)
+  }, [targetCounter])
+
   const createCanvas = () => {
-    if (videoStarted && webcamRef?.current?.video) {
+    if (videoStarted && webcamRef?.current?.video){
       canvasRef.current = createCanvasFromMedia(webcamRef.current.video);
-      if (canvasRef.current) {
-        matchDimensions(canvasRef.current, displaySize);
-      }
     }
   };
 
   const updateCounter = () => {
-    if (wasCatCatMcGeeDetectedRef.current) {
-      targetCounterRef.current = Math.min(targetCounterRef.current + 1, 10);
-      wasCatCatMcGeeDetectedRef.current = false;
+    if (wasBountyDetected) {
+      setTargetCounter(prevCounter => Math.min(prevCounter + 1, 10));
+      wasBountyDetected = false;
     } else {
-      targetCounterRef.current = Math.max(targetCounterRef.current - 1, 0);
+      setTargetCounter(prevCounter => Math.max(prevCounter - 1, 0));
     }
-    console.log('targetCount', targetCounterRef.current)
-    if (targetCounterRef.current === 10) {
-      console.log('Win condition met!');
-      navigate('/gameover');
-    }
+    // COMMENTED OUT FOR TESTING
+    // if (targetCounter === 10) {
+    //   console.log('Win condition met!');
+    //   navigate('/gameover');
+    // }
   };
 
   const handleVideoOnPlay = () => {
+    if (canvasRef.current && webcamRef?.current) {
+      matchDimensions(canvasRef.current, displaySize);
+    }
     const processVideoFrame = async () => {
       if (faceMatcher && webcamRef?.current?.video && canvasRef.current) {
         const detections = await detectAllFaces(webcamRef.current.video)
@@ -73,7 +83,7 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
           const sliceIndex = name.indexOf(' (')
           const detectedFace = name.slice(0, sliceIndex)
           if (detectedFace === 'Cat Cat McGee') {
-            wasCatCatMcGeeDetectedRef.current = true;
+            wasBountyDetected = true;
           }
           const box = resizedDetections[i].detection.box
           const drawBox = new draw.DrawBox(box, { label: name })
@@ -88,9 +98,9 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   };
 
   return (
-    <div style={{ textAlign: 'center', padding: '10px', display: 'flex', justifyContent: 'center' }}>      
-      <canvas ref={canvasRef} style={{ position: 'absolute' }} />
-      {/* <TargetRecognition target/> */}
+    <div>      
+      <canvas ref={canvasRef} style={{ position: 'absolute', top:0, left:0 }} />
+     <TargetRecognition progress={targetCounter}/>
     </div>
   );
 }
