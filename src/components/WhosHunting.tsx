@@ -10,11 +10,11 @@ const WhosHunting: React.FunctionComponent = () => {
   const { SetHunted } = useContext(SocketContext);
   const { users, games } = useContext(SocketContext).SocketState;
 
-  useEffect(() => {
-    if (games.length > 0 && games[0].hunted.length === 0) {
-      pickVictim(users, SetHunted);
-    }
-  }, [games, SetHunted, users]);
+  // useEffect(() => {
+  //   if (games.length > 0 && games[0].hunted.length === 0) {
+  //     pickVictim(users, SetHunted);
+  //   }
+  // }, [games, SetHunted, users]);
 
   return (
     <div>
