@@ -49,7 +49,14 @@ export const Button: React.FC<ButtonProps> = ({
 };
 
 export const ButtonToHome: React.FC = () => {
-  return <Button label='Home' route='/home' />;
+  const { LeaveGame } = useContext(SocketContext);
+  const { user } = useAuth0();
+
+  const handleHome = () => {
+    LeaveGame(user);
+  }
+
+  return <Button label='Home' route='/home' onClick={handleHome} />;
 };
 
 export const ButtonToGame: React.FC = () => {

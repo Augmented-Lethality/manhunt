@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { ButtonToHome, ButtonToGame } from '../components/Buttons';
 import WhosHunting from '../components/WhosHunting';
@@ -11,27 +10,18 @@ import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
 
 const GameLobby: React.FunctionComponent = () => {
 
-  const navigate = useNavigate();
-
   const { user } = useAuth0();
 
-  const { LeaveGame } = useContext(SocketContext);
   const { games, users } = useContext(SocketContext).SocketState;
 
   useEffect(() => {
   }, [games, users])
-
-  const handleLeaveGame = () => {
-    LeaveGame(user);
-    navigate('/home');
-  }
 
 
   return (
     <Container>
       <Header>
         <h2>Game Lobby</h2>
-        <button onClick={handleLeaveGame}>Leave Game</button>
         <ButtonToHome />
       </Header>
       <Main>
