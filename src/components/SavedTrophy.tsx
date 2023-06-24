@@ -5,6 +5,10 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
 export type TrophyData = {
+  id: number;
+  name: string;
+  description: string;
+  createdAt: string;
   dimension: number;
   color: string;
   shape: string;
@@ -50,17 +54,27 @@ const SavedTrophy: React.FC<TrophyData> = () => {
   const fetchUserTrophyData = async () => {
     try {
       if (userData) {
-        const response = await axios.get<{ generationConditions: string }[]>(
-          `/trophies/${userData.id}`,
+        const response = await axios.get<
           {
-            headers: {
-              Authorization: `Bearer ${user?.token}`,
-            },
-          }
-        );
+            id: number;
+            name: string;
+            description: string;
+            createdAt: string;
+            generationConditions: string;
+          }[]
+        >(`/trophies/${userData.id}`, {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+
         const parsedTrophyData: TrophyData[] = response.data.map((trophy) => {
           const generationConditions = JSON.parse(trophy.generationConditions);
           return {
+            id: trophy.id,
+            name: trophy.name,
+            description: trophy.description,
+            createdAt: trophy.createdAt,
             dimension: generationConditions.dimension,
             color: generationConditions.color,
             shape: generationConditions.shape,
@@ -120,6 +134,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
       onMouseMove={handleMouseMove}
     >
       <h1>Your most recent Trophies </h1>
+      <button onClick={togglePropsView}>{showProps ? 'X' : 'Details'}</button>
       {true ? (
         userTrophyData
           .slice(0)
@@ -179,18 +194,15 @@ const SavedTrophy: React.FC<TrophyData> = () => {
                     </Torus>
                   )}
                 </Canvas>
-                <button onClick={togglePropsView}>
-                  {showProps ? 'X' : 'View Properties'}
-                </button>
               </div>
               <div>
                 {showProps && (
                   <>
-                    <h6>Dimension: {trophy.dimension}</h6>
+                    <h6>Name: {trophy.name}</h6>
+                    <p>Description: {trophy.description}</p>
+                    <p>Earned at: {trophy.createdAt}</p>
+                    <h6>Size: {trophy.dimension}</h6>
                     <h6>Color: {trophy.color}</h6>
-                    <h6>Shape: {trophy.shape}</h6>
-                    <h6>Tubular Segments: {trophy.tubularSegments}</h6>
-                    <h6>Tube Width: {trophy.tubeWidth}</h6>
                   </>
                 )}
               </div>
