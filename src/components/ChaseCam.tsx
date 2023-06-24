@@ -199,6 +199,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
 
+      turnOffCamera();
     };
   }, []);
   /////// /////////////////////////////////// //////
