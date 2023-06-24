@@ -61,13 +61,11 @@ const GamePage: React.FC = () => {
 
   useEffect(() => {
     loadTensorFlowFaceMatcher();
-    console.log('use effect happened')
   }, [users]);
 
   useEffect(() => {
     return () => {
       handleTurnOffCamera(); // turns off all cameras when this component is unmounted
-      console.log('should have turned the camera off');
     };
   }, []);
 

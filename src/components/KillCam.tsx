@@ -114,9 +114,7 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
           const name = result.toString()
           const sliceIndex = name.indexOf(' (')
           const detectedFace = name.slice(0, sliceIndex)
-          console.log('detected Face:', detectedFace, 'hunted:', huntedUsername, typeof detectedFace, typeof huntedUsername)
           if (detectedFace === huntedUsername) {
-            console.log('they are the same')
             wasBountyDetected = true;
           }
           const box = resizedDetections[i].detection.box
