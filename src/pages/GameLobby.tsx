@@ -9,14 +9,17 @@ import { Main } from '../styles/Main'
 import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
 
 const GameLobby: React.FunctionComponent = () => {
-
   const { user } = useAuth0();
-
   const { games, users } = useContext(SocketContext).SocketState;
+  const [showLobby, setShowLobby] = useState(false);
 
   useEffect(() => {
-  }, [games, users])
-
+    if (games.length > 0 && users.length > 0) {
+      setShowLobby(true);
+    } else {
+      setShowLobby(false);
+    }
+  }, [games, users]);
 
   return (
     <Container>
@@ -25,20 +28,18 @@ const GameLobby: React.FunctionComponent = () => {
         <ButtonToHome />
       </Header>
       <Main>
-        {users.length > 0 ? (
+        {showLobby ? (
           <>
             <WhosHunting />
-            <strong>Players in Lobby:</strong>
-            <br />
             <br />
             {users.map((player) => (
               <PlayerListItem key={player.id} player={player} />
             ))}
+            {games.length > 0 && games[0].hunted.length > 0 && <ButtonToGame />}
           </>
         ) : (
           <p>No Players</p>
         )}
-        <ButtonToGame />
       </Main>
     </Container>
   );
