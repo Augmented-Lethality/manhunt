@@ -45,28 +45,12 @@ const Menu = styled.div<{ isOpen: boolean }>`
   }
 `;
 
-interface DropDownMenuProps {
-  children: React.ReactNode;
-}
-
-
-const DropDownMenu: FC<DropDownMenuProps> = ({ children }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const { logout } = useAuth0();
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const Dots = styled(BsThreeDots)`
-  height: 10vw;
-  width: 10vw;
-  margin-left: 10px;
-  border-radius: 50%;
-  border: 2px solid #5E5E63;
-  padding: 3px;
-  box-sizing: border-box;
+const Dots = styled(BsThreeDots)`
+height: 10vw;
+width: 10vw;
+border-radius: 50%;
+border: 2px solid #5E5E63;
+box-sizing: border-box;
 `;
 
 const Close = styled(IoIosCloseCircle)`
@@ -78,8 +62,23 @@ position: absolute;
 top: 0;
 right: 0;
 `;
+
+interface DropDownMenuProps {
+  children: React.ReactNode;
+}
+
+const DropDownMenu: FC<DropDownMenuProps> = ({ children }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { logout } = useAuth0();
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+
   return (
-    <>
+    <div className='dropdown'>
       <Dots onClick={toggleMenu} />
       <Backdrop isOpen={isMenuOpen} onClick={toggleMenu}/>
       <Menu isOpen={isMenuOpen}>
@@ -90,7 +89,7 @@ right: 0;
         <div onClick={()=>{logout({logoutParams: {returnTo: window.location.origin}})}}><FiLogOut/>logout</div>
       </Menu>
 
-    </>
+    </div>
   );
 };
 
