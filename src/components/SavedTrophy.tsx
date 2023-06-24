@@ -122,10 +122,8 @@ const SavedTrophy: React.FC<TrophyData> = () => {
   }, []); // Fetch user data only once on component mount
 
   useEffect(() => {
-    if (userData) {
       fetchUserTrophyData();
-    }
-  }, [userData]);
+  }, []);
 
   return (
     <div
