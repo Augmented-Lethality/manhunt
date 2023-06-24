@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SocketContext, { User } from '../contexts/Socket/SocketContext';
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -12,8 +12,14 @@ const WhosHunting: React.FunctionComponent = () => {
   const { SetHunted } = useContext(SocketContext);
   const { users, games } = useContext(SocketContext).SocketState;
 
+  const [huntedName, setHuntedName] = useState('');
+
   useEffect(() => {
     // console.log(games);
+    if (games[0].hunted.length > 0 && users) {
+      const matchingUser = users.filter(user => user.authId === games[0].hunted);
+      setHuntedName(matchingUser[0].username)
+    }
   }, [games, SetHunted, users]);
 
   if (!games || games.length === 0) {
@@ -36,7 +42,7 @@ const WhosHunting: React.FunctionComponent = () => {
 
   return (
     <div>
-      <div>Player {game.hunted}, You're Being Hunted</div>
+      <div>{huntedName}, You're Being Hunted</div>
       {user?.sub === game.host && (
         <button onClick={() => pickVictim(users, SetHunted)}>Pick Again</button>
       )}
