@@ -79,6 +79,7 @@ const ProfilePage: React.FC = () => {
         <h1>Profile</h1>
         <ButtonToHome></ButtonToHome>
       </Header>
+
       <Main>
         <div className='content__body'>
           <div className='profile-grid'>
@@ -104,29 +105,6 @@ const ProfilePage: React.FC = () => {
                 </span>
               </div>
             </div>
-            {true ? (
-        <div className='profile_verification'>
-          <p style={{ textAlign: 'start', margin: '3vh' }}>
-            Citizen has been verified. The CorpoVerse thanks you for your
-            cooperation.
-            <button onClick={() => setPhotoStatus('camera')}>
-            Feeling Patriotic? Reverify
-          </button>
-          </p>
-         
-        </div>
-      ) : (
-        <div className='profile_verification'>
-          <h3>Citizen has not been processed by the CorpoReality Police.</h3>
-          <h3>Please send in Biodata to participate in SOCIETY™.</h3>
-          <button
-            style={{ background: '#6e6b8c', color: 'white' }}
-            onClick={() => setPhotoStatus('camera')}
-          >
-            Send BioData
-          </button>
-        </div>
-      )}
             <div className='profile__details'>
               <h6>Games Played: {userData?.gamesPlayed}</h6>
               <h6>Games Won: {userData?.gamesWon}</h6>
@@ -140,7 +118,32 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
         </div>
+        
       </Main>
+      {/* {userData?.facialDescriptions ? (
+              <div className='profile_verification'>
+                <p style={{ textAlign: 'start', margin: '3vh' }}>
+                  Citizen has been verified. The CorpoVerse thanks you for your
+                  cooperation.
+                </p>
+                <button onClick={() => setPhotoStatus('camera')}>
+                  Feeling Patriotic? Reverify
+                </button>
+              </div>
+            ) : (
+              <div className='profile_verification'>
+                <h3>
+                  Citizen has not been processed by the CorpoReality Police.
+                </h3>
+                <h3>Please send in Biodata to participate in SOCIETY™.</h3>
+                <button
+                  style={{ background: '#6e6b8c', color: 'white' }}
+                  onClick={() => setPhotoStatus('camera')}
+                >
+                  Send BioData
+                </button>
+              </div>
+            )} */}
     </Container>
   );
 };

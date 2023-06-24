@@ -192,6 +192,9 @@ const SavedTrophy: React.FC<TrophyData> = () => {
                     </Torus>
                   )}
                 </Canvas>
+                <button onClick={togglePropsView}>
+                  {showProps ? 'X' : 'Just View It'}
+                </button>
               </div>
               <div>
                 {showProps && (
