@@ -262,6 +262,25 @@ export class ServerSocket {
 
     });
 
+    socket.on('update_game_status', async (user, status) => {
+      console.log(status);
+      try {
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const game = await Game.findOne({ where: { gameId: existingUser?.dataValues.gameId } });
+        if (game) {
+          await Game.update({ status: status }, { where: { gameId: existingUser?.dataValues.gameId } });
+          console.log('game status updated to:', status);
+          this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+
+        } else {
+          console.log('no game like that exists')
+        }
+      } catch (err) {
+        console.log(err);
+      }
+
+    });
+
     socket.on('leave_game', async (user) => {
       try {
         // get the user so that can get the game
