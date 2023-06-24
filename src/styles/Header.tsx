@@ -5,6 +5,7 @@ export const Header = styled.header`
   display: flex;
   padding: 1rem;
   height: 10vh;
+  width: 100%;
   background-color: #2a2a32;
   border-bottom: 1px solid #202026;
   justify-content: space-between;
@@ -24,8 +25,9 @@ export const Footer = styled.footer`
 `;
 
 const GameHeaderContainer = styled.header`
-position: relative;
+height: 0;
 width: 100%;
+z-index: 1;
 & > svg {
     width: 100%;
 }
@@ -37,22 +39,29 @@ interface GameHeaderProps {
 
 const TransparentOval = styled.div`
   position: absolute;
-  width: 44%;
-  height: 13.25%;
-  top: 3.8vh;
+  width: 50%;
+  height: 17%;
+  top: 20px;
   left: 50%;
+  z-index: -1;
   transform: translateX(-50%);
   border-radius: 50%;
-  background-color: rgb(255 173 22 / 50%);
+  background-color: #d7951dcc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   & > #game-timer {
     color: white;
   }
+  & > DropDownMenu {
+    z-index:1;
+  }
 `;
 
-
+const viewBox = `0 0 1100 600`;
 export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => (
   <GameHeaderContainer>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1126 2435.5">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox={viewBox} style={{width:'100%'}}>
       <defs>
         <filter id="uuid-364a1b21-ff76-46ea-9649-0ffd94dc9e32" filterUnits="userSpaceOnUse">
           <feOffset dx="0" dy="14"/>
