@@ -65,8 +65,12 @@ User.init({
 
 ////////////////////////////////////////////////
 
-class Friends extends Model { }
-Friends.init({
+class Friend extends Model {
+  status!: string;
+  userId!: number;
+  friendId!: number;
+}
+Friend.init({
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -227,12 +231,12 @@ UserTrophy.init({
 User.belongsToMany(Trophy, { through: UserTrophy });
 Trophy.belongsToMany(User, { through: UserTrophy });
 
-User.hasMany(Friends, { foreignKey: 'userId' });
-Friends.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(Friends, { foreignKey: 'friendId' });
-Friends.belongsTo(User, { foreignKey: 'friendId' });
+User.hasMany(Friend, { foreignKey: 'userId' });
+Friend.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Friend, { foreignKey: 'friendId' });
+Friend.belongsTo(User, { foreignKey: 'friendId' });
 
-export { User, Friends, Game, Trophy, UserTrophy, Locations };
+export { User, Friend, Game, Trophy, UserTrophy, Locations };
 
 /*** THE FOLLOWING EXISTS INCASE YOU NEED TO DROP INDIVIDUAL TABLES ***/
 /*** JUST UNCOMMENT THE TABLE FROM THE LIST BELOW ***/
@@ -243,7 +247,7 @@ export { User, Friends, Game, Trophy, UserTrophy, Locations };
 //     // Drop the tables in reverse order of their dependencies
 //     await UserTrophy.drop();
 //     await Trophy.drop();
-//     await Friends.drop();
+//     await Friend.drop();
 //     await Game.drop();
 //     await User.drop();
 
