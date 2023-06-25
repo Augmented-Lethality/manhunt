@@ -74,7 +74,7 @@ const App = () => {
         }
       />
       <Route
-        path="/friends"
+        path="/yourcompetition"
         element={
           <SocketComponent>
             <AuthenticationGuard component={FriendsPage} />
