@@ -1,7 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from './index';
 
-
 ////////////////////////////////////////////////
 class User extends Model {
   gamesPlayed: any;
@@ -32,6 +31,10 @@ User.init({
     type: DataTypes.STRING,
     allowNull: true,
     unique: true
+  },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   facialDescriptions: {
     type: DataTypes.ARRAY(DataTypes.FLOAT),
