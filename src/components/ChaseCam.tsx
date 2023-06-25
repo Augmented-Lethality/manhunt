@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, { forwardRef, useRef, useEffect, useState, useContext, useImperativeHandle, } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 
 import {
@@ -14,14 +14,19 @@ import {
 
 import SocketContext from '../contexts/Socket/SocketContext';
 
-// had to add this in the decs.d.ts file to use in typescript. currently set as any
+// forwardRef requires props so don't delete even though it's not being used
+interface ChaseCamProps { }
+
+// passing the turnOffCamera method to the GamePage.tsx parent component
+type ChaseCamRefType = {
+  turnOffCamera: () => void;
+};
 
 
-const ChaseCam: React.FC = () => {
+const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
 
   const { user } = useAuth0();
-
-  const { users, games, locations } = useContext(SocketContext).SocketState;
+  const { games, locations } = useContext(SocketContext).SocketState;
 
 
   ////////// create markers to render on the screen that stays in the defined location ///////////
@@ -71,7 +76,21 @@ const ChaseCam: React.FC = () => {
   const arjsRef = useRef<LocationBasedLocal | null>(null);
 
 
+  // webcam ref
+  const webcamRendererRef = useRef<WebcamRendererLocal | null>(null);
+
+
+  // function that turns off the camera, will be sent to the parent component (GamePage.tsx)
+  // so that it turns off both this camera and Kalypso's camera on dismount
+  const turnOffCamera = () => {
+    if (webcamRendererRef.current) {
+      webcamRendererRef.current.turnOffCamera();
+    }
+    console.log('camera turned off yay!!!');
+  };
+
   useEffect(() => {
+
     // checks if the canvas HTML element is there, otherwise return and don't touch
     // the rest of the code
     if (!canvasRef.current) return;
@@ -93,6 +112,7 @@ const ChaseCam: React.FC = () => {
 
     // renders the webcam stream as the background for the scene, this is an AR.js class that I edited
     const cam = new WebcamRendererLocal(renderer);
+    webcamRendererRef.current = cam;
 
     // start the device orientation controls for mobile
     const deviceOrientationControls = new DeviceOrientationControls(camera);
@@ -178,9 +198,20 @@ const ChaseCam: React.FC = () => {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
+
+      turnOffCamera();
+
+      arjsRef.current?.stopGps();
     };
   }, []);
   /////// /////////////////////////////////// //////
+
+  // ref is an object, turnOffCamera is a method on the object
+  // parent component will get this method and be able to call it instead of trying
+  // to pass it around with props
+  useImperativeHandle(ref, () => ({
+    turnOffCamera: turnOffCamera
+  }));
 
   useEffect(() => {
     // console.log('inserting into AddLocation:', typeof userLongitude, userLongitude)
@@ -269,6 +300,6 @@ const ChaseCam: React.FC = () => {
       />
     </div >
   );
-};
+});
 
 export default ChaseCam;

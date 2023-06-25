@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   FaceMatcher,
@@ -6,18 +6,23 @@ import {
   matchDimensions,
   detectAllFaces,
   resizeResults,
-  draw } from 'face-api.js';
+  draw
+} from 'face-api.js';
 import { useWebcam } from '../contexts/WebcamProvider';
 import TargetRecognition from './KillProgress';
+import { useAuth0 } from "@auth0/auth0-react";
+
+import SocketContext from '../contexts/Socket/SocketContext';
+
 
 type KillCamProps = {
   faceMatcher: (FaceMatcher | null)
 }
 
-const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
+const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   const webcamContext = useWebcam();
   const webcamRef = webcamContext?.webcamRef;
-  const  videoStarted = webcamContext?.videoStarted;
+  const videoStarted = webcamContext?.videoStarted;
   const navigate = useNavigate();
   const videoHeight = window.innerHeight;
   const videoWidth = window.innerWidth;
@@ -25,25 +30,56 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   let [targetCounter, setTargetCounter] = useState(0);
   let wasBountyDetected = false;
-  
+  const { user } = useAuth0();
+
+  // socket contexts
+  const { games, users } = useContext(SocketContext).SocketState;
+  const { UpdateGameStatus } = useContext(SocketContext);
+
+  // storing username of hunted so tensor can compare
+  const [huntedUsername, setHuntedUsername] = useState<string>('');
+
+
+  // creating the canvas when the component mounts
   useEffect(() => {
     createCanvas()
   }, [])
 
+  // if faceMatcher and huntedUsername are both set, start the handleVideoPlay()
   useEffect(() => {
-    if (faceMatcher) {
+    if (faceMatcher && huntedUsername) {
       handleVideoOnPlay();
       const intervalId = setInterval(updateCounter, 500);
       return () => clearInterval(intervalId);
     }
-  }, [faceMatcher])
+  }, [faceMatcher, huntedUsername])
 
-  useEffect(()=> {
-    console.log('targetCount', targetCounter)
+  // whenever targetCounter is updated, if it's at 10, navigate the users
+  useEffect(() => {
+    if (targetCounter === 5) {
+      console.log('made it to 5')
+      UpdateGameStatus(user, 'complete')
+    }
   }, [targetCounter])
 
+  // setting the huntedUsername based on the authID in the hunted column of the game
+  useEffect(() => {
+    if (games.length > 0) {
+      const huntedUser = users.filter(user => user.authId === games[0].hunted)[0];
+      setHuntedUsername(huntedUser.username);
+    }
+  }, [users])
+
+  // whenever the games state changes, if the status is complete, navigate to /gameover endpoint
+  useEffect(() => {
+    if (games[0].status === 'complete') {
+      navigate('/gameover');
+    }
+  }, [games])
+
+
   const createCanvas = () => {
-    if (videoStarted && webcamRef?.current?.video){
+    if (videoStarted && webcamRef?.current?.video) {
       canvasRef.current = createCanvasFromMedia(webcamRef.current.video);
     }
   };
@@ -55,11 +91,7 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
     } else {
       setTargetCounter(prevCounter => Math.max(prevCounter - 1, 0));
     }
-    // COMMENTED OUT FOR TESTING
-    // if (targetCounter === 10) {
-    //   console.log('Win condition met!');
-    //   navigate('/gameover');
-    // }
+
   };
 
   const handleVideoOnPlay = () => {
@@ -82,7 +114,7 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
           const name = result.toString()
           const sliceIndex = name.indexOf(' (')
           const detectedFace = name.slice(0, sliceIndex)
-          if (detectedFace === 'Cat Cat McGee') {
+          if (detectedFace === huntedUsername) {
             wasBountyDetected = true;
           }
           const box = resizedDetections[i].detection.box
@@ -98,9 +130,9 @@ const KillCam: React.FC<KillCamProps> = ({faceMatcher}) => {
   };
 
   return (
-    <div>      
-      <canvas ref={canvasRef} style={{ position: 'absolute', top:0, left:0 }} />
-     <TargetRecognition progress={targetCounter}/>
+    <div>
+      <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0 }} />
+      <TargetRecognition progress={targetCounter} />
     </div>
   );
 }
