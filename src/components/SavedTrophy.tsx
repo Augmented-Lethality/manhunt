@@ -45,33 +45,28 @@ const SavedTrophy: React.FC<TrophyData> = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      console.log('User Data:', response.data); // Log the response data
-      setUserData(response.data);
+      console.log('User Data:', response.data[0]); // Log the response data
+      setUserData(response.data[0]);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
   };
   
-
-  
-
   const fetchUserTrophyData = async () => {
     try {
       if (userData) {
-        const response = await axios.get<
-          {
-            id: number;
-            name: string;
-            description: string;
-            createdAt: string;
-            generationConditions: string;
-          }[]
-        >(`/trophies/${userData.id}`, {
+        const response = await axios.get<{
+          id: number;
+          name: string;
+          description: string;
+          createdAt: string;
+          generationConditions: string;
+        }[]>(`/trophies/${userData.id}`, {
           headers: {
             Authorization: `Bearer ${user?.token}`,
           },
         });
-
+  
         const parsedTrophyData: TrophyData[] = response.data.map((trophy) => {
           const generationConditions = JSON.parse(trophy.generationConditions);
           return {
@@ -79,19 +74,22 @@ const SavedTrophy: React.FC<TrophyData> = () => {
             name: trophy.name,
             description: trophy.description,
             createdAt: trophy.createdAt,
-            dimension: generationConditions.dimension,
-            color: generationConditions.color,
-            shape: generationConditions.shape,
-            tubularSegments: generationConditions.tubularSegments,
-            tubeWidth: generationConditions.tubeWidth,
+            dimension: generationConditions.dimension || 0, // Provide default value
+            color: generationConditions.color || '', // Provide default value
+            shape: generationConditions.shape || '', // Provide default value
+            tubularSegments: generationConditions.tubularSegments || 0, // Provide default value
+            tubeWidth: generationConditions.tubeWidth || 0, // Provide default value
           };
         });
+  
         setUserTrophyData(parsedTrophyData);
+        console.log('userTrophiezzzzzzzzz', parsedTrophyData);
       }
     } catch (error) {
       console.error('Error fetching user trophy data:', error);
     }
   };
+  
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
@@ -123,9 +121,11 @@ const SavedTrophy: React.FC<TrophyData> = () => {
 
   useEffect(() => {
     fetchUserData();
-    fetchUserTrophyData();
   }, []);
   
+  useEffect(() => {
+    fetchUserTrophyData();
+  }, []);
 
   return (
     <div
@@ -134,6 +134,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
       onMouseMove={handleMouseMove}
     >
       <h1>Your most recent Trophies </h1>
+      <button onClick={fetchUserTrophyData}>see trophies</button>
       <button onClick={togglePropsView}>{showProps ? 'X' : 'Details'}</button>
       {true ? (
         userTrophyData

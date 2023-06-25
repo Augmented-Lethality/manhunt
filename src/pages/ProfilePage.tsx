@@ -36,9 +36,7 @@ const ProfilePage: React.FC = () => {
             Authorization: `Bearer ${user?.token}`,
           },
         });
-        console.log('User Data:', response.data); // Log the response data
         setUserData(response.data[0]);
-        console.log('userDATA SET:', userData);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
