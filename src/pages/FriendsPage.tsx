@@ -1,50 +1,60 @@
-import React, { useContext, useEffect, useState } from 'react';
-import SocketContext from '../contexts/Socket/SocketContext';
-import { ButtonToHome } from '../components/Buttons';
-import { useAuth0 } from "@auth0/auth0-react";
-import { Container } from '../styles/Container';
-import { Header } from '../styles/Header'
-import { Main } from '../styles/Main'
-import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
-import { HiUserAdd } from 'react-icons/hi';
-import axios from 'axios';
-import { UserData } from './ProfilePage';
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import UsersList from '../components/UsersList';
+import { IoSearchCircle, IoCloseCircle } from 'react-icons/io5';
+import Loading from '../components/Loading';
 
-const FriendsPage: React.FunctionComponent = (props) => {
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const { user, isAuthenticated } = useAuth0();
-  const { games, users } = useContext(SocketContext).SocketState;
-  
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
-          headers: {
-            Authorization: `Bearer ${user?.token}`
-          }
-        });
-        setUserData(response.data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-    if (isAuthenticated && user) {
-      fetchUserData();
-    }
-  }, []);
+const Container = styled.div`
+  background-color: #333;
+  padding: 10px;
+  margin: 10px;
+`;
 
+const SearchInput = styled.input`
+  background-color: #222;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  width: 100%;
+`;
 
-  
+const SearchIcon = styled(IoSearchCircle)`
+  color: #fff;
+`;
+
+const CloseIcon = styled(IoCloseCircle)`
+  color: #fff;
+`;
+
+interface FriendsPageProps {
+  onlineFriends: Array<{ image: string; username: string }>;
+  offlineFriends: Array<{ image: string; username: string }>;
+  // Adjust the type of searchUsers based on your implementation
+  searchUsers: Array<{ image: string; username: string }>;
+}
+
+const FriendsPage: React.FC<FriendsPageProps> = ({ onlineFriends, offlineFriends, searchUsers }) => {
+  const [searchText, setSearchText] = useState('');
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
   return (
     <Container>
-      <Header>
-        <h2>Friends</h2>
-        <div onClick={()=>{}}><HiUserAdd/>Friends</div>
-        <ButtonToHome />
-      </Header>
-      <Main>
-        {/* {user} */}
-      </Main>
+      <SearchInput placeholder="Search" value={searchText} onChange={handleSearchChange} />
+      {searchText === '' ? <CloseIcon /> : <SearchIcon />}
+
+      {searchText === '' ? (
+        <>
+          <UsersList users={onlineFriends} header={`Online • ${onlineFriends.length}`} />
+          <UsersList users={offlineFriends} header={`Offline • ${offlineFriends.length}`} />
+        </>
+      ) : searchUsers.length === 0 ? (
+        <Loading />
+      ) : (
+        <UsersList users={searchUsers} />
+      )}
     </Container>
   );
 };
