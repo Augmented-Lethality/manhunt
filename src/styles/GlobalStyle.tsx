@@ -10,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
     height: 100vh;
     width: 100vw;
     box-sizing: border-box;
-    background: rgb(48 48 58);
+    background: #4C4E61;
     color: #6e6b8c;
     font-family: 'Source Code Pro';
     font-size: 1rem;
@@ -69,6 +69,15 @@ const GlobalStyle = createGlobalStyle`
   // h3 {
   //   font-size: 1.5rem;
   // }
+
+  input {
+    border: none;
+    background: none;
+    height: 100%;
+    width: 100%;
+    font-size: 1rem;
+    color: #979fd0;
+  }
 `;
 
 export default GlobalStyle;
