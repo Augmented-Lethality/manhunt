@@ -36,7 +36,9 @@ const ProfilePage: React.FC = () => {
             Authorization: `Bearer ${user?.token}`,
           },
         });
-        setUserData(response.data);
+        console.log('User Data:', response.data); // Log the response data
+        setUserData(response.data[0]);
+        console.log('userDATA SET:', userData);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -45,7 +47,7 @@ const ProfilePage: React.FC = () => {
     if (isAuthenticated && user) {
       fetchUserData();
     }
-  }, [user, isAuthenticated]);
+  }, []);
 
   if (!user) {
     return null;
@@ -120,7 +122,7 @@ const ProfilePage: React.FC = () => {
         </div>
         
       </Main>
-      {/* {userData?.facialDescriptions ? (
+      {userData?.facialDescriptions ? (
               <div className='profile_verification'>
                 <p style={{ textAlign: 'start', margin: '3vh' }}>
                   Citizen has been verified. The CorpoVerse thanks you for your
@@ -143,7 +145,7 @@ const ProfilePage: React.FC = () => {
                   Send BioData
                 </button>
               </div>
-            )} */}
+            )}
     </Container>
   );
 };

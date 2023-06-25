@@ -45,11 +45,15 @@ const SavedTrophy: React.FC<TrophyData> = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
+      console.log('User Data:', response.data); // Log the response data
       setUserData(response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
   };
+  
+
+  
 
   const fetchUserTrophyData = async () => {
     try {
@@ -119,11 +123,9 @@ const SavedTrophy: React.FC<TrophyData> = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, []); // Fetch user data only once on component mount
-
-  useEffect(() => {
-      fetchUserTrophyData();
+    fetchUserTrophyData();
   }, []);
+  
 
   return (
     <div
