@@ -129,19 +129,6 @@ Users.get("/", async (req, res) => {
   }
 });
 
-// // GET SPECIFIC USER
-// Users.get("/:gameId", async (req, res) => {
-//   try {
-//     const users = await User.findAll({ where: { authId: req.params.gameId } });
-//     if (!users) {
-//       return res.sendStatus(404);
-//     }
-//     res.status(200).send(users);
-//   } catch (err) {
-//     res.sendStatus(500);
-//   }
-// });
-
 // GET SPECIFIC USER
 Users.get("/:authId", async (req, res) => {
   try {
@@ -168,6 +155,23 @@ Users.get("/games/:authId", async (req, res) => {
     const users = await User.findAll({ where: { gameId: user?.dataValues.gameId } })
     res.status(200).send(users);
   } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+// SEARCH FOR USERS
+Users.get("/search/:terms", async (req, res) => {
+  try {
+    const users = await User.findAll({ 
+      where: {
+        username: {
+          [Op.like]: `%${req.params.terms}%`
+        } 
+      } 
+    });
+    res.status(200).send(users);
+  } catch (err) {
+    console.error(err);
     res.sendStatus(500);
   }
 });
