@@ -161,7 +161,25 @@ class LocationBasedLocal {
 
   startGps(maximumAge = 0) {
     if (this._watchPositionId === null) {
-      navigator.geolocation.getCurrentPosition(function () { }, function (err) { console.log('error on getting location', error) }, {});
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            if (!position.coords.longitude && !position.coords.latitude) {
+              console.log('did not get the positions');
+            } else {
+              console.log('got the positions');
+            }
+          },
+          (error) => {
+            console.log('error on getting location', error);
+          },
+          {}
+        );
+      } else {
+        console.log('Geolocation is not supported by the browser');
+        // Handle the absence of geolocation functionality
+      }
+
       this._watchPositionId = navigator.geolocation.watchPosition(
         (position) => {
           this._gpsReceived(position);
