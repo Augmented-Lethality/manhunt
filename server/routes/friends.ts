@@ -44,7 +44,8 @@ Friends.get('/', async (req, res) => {
       if (relationship.User.id === Number(userId)) {
         return {
           id: relationship.Friend.id,
-          username: relationship.Friend.username
+          username: relationship.Friend.username,
+          gameId: relationship.Friend.gameId
         };
       } else {
         return {
