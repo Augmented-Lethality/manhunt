@@ -14,6 +14,8 @@ import EndGame from './pages/EndGame';
 import FindGamePage from './pages/FindGamePage';
 import FriendsPage from './pages/FriendsPage';
 import SocketComponent from './contexts/Socket/SocketComponent';
+import Settings from './pages/Settings';
+
 const App = () => {
   const { isLoading } = useAuth0();
 
@@ -78,6 +80,14 @@ const App = () => {
         element={
           <SocketComponent>
             <AuthenticationGuard component={FriendsPage} />
+          </SocketComponent>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={Settings} />
           </SocketComponent>
         }
       />
