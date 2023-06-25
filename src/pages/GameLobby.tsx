@@ -29,11 +29,7 @@ const GameLobby: React.FunctionComponent = () => {
 
   return (
     <Container>
-      <Header>
-        <h2>Game Lobby</h2>
-        <button onClick={handleLeaveGame}>Leave Game</button>
-        <ButtonToHome />
-      </Header>
+      <Header page='Lobby'/>
       <Main>
         {users.length > 0 ? (
           <>
