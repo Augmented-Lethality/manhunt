@@ -1,8 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-  @import url(https://fonts.googleapis.com/css?family=Source+Code+Pro);
-  @import url(https://fonts.googleapis.com/css?family=Source+Code+Pro);
 
   body {
     margin: 0;
@@ -25,6 +23,35 @@ const GlobalStyle = createGlobalStyle`
     padding: 0.25em 1em;
     border: 2px solid #6e6b8c;
     border-radius: 3px;
+  }
+
+  .alt-user-pic {
+    background: #6854bb;
+    color: #e0dfe5;
+    font-size: 2rem;
+    font-family: 'Open Sans';
+    font-weight: 400;
+    border-radius: 50%;
+    margin-right: 15px;
+    width: 10vw;
+    height: 10vw;
+    display: flex;
+    justify-content: center;
+  }
+
+  .alt-user-pic-large {
+    background: #6854bb;
+    color: #e0dfe5;
+    font-size: 5rem;
+    font-family: 'Open Sans';
+    font-weight: 400;
+    border-radius: 50%;
+    padding: 40px;
+    width: 10vw;
+    height: 10vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .logo{
