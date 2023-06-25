@@ -52,22 +52,24 @@ const SavedTrophy: React.FC<TrophyData> = () => {
       console.error('Error fetching user data:', error);
     }
   };
-  
+
   const fetchUserTrophyData = async () => {
     try {
       if (userData) {
-        const response = await axios.get<{
-          id: number;
-          name: string;
-          description: string;
-          createdAt: string;
-          generationConditions: string;
-        }[]>(`/trophies/${userData.id}`, {
+        const response = await axios.get<
+          {
+            id: number;
+            name: string;
+            description: string;
+            createdAt: string;
+            generationConditions: string;
+          }[]
+        >(`/trophies/${userData.id}`, {
           headers: {
             Authorization: `Bearer ${user?.token}`,
           },
         });
-  
+
         const parsedTrophyData: TrophyData[] = response.data.map((trophy) => {
           const generationConditions = JSON.parse(trophy.generationConditions);
           return {
@@ -75,21 +77,20 @@ const SavedTrophy: React.FC<TrophyData> = () => {
             name: trophy.name,
             description: trophy.description,
             createdAt: trophy.createdAt,
-            dimension: generationConditions.dimension || 0, 
-            color: generationConditions.color || '', 
-            shape: generationConditions.shape || '', 
-            tubularSegments: generationConditions.tubularSegments || 0, 
-            tubeWidth: generationConditions.tubeWidth || 0, 
+            dimension: generationConditions.dimension || 0,
+            color: generationConditions.color || '',
+            shape: generationConditions.shape || '',
+            tubularSegments: generationConditions.tubularSegments || 0,
+            tubeWidth: generationConditions.tubeWidth || 0,
           };
         });
-  
+
         setUserTrophyData(parsedTrophyData);
       }
     } catch (error) {
       console.error('Error fetching user trophy data:', error);
     }
   };
-  
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
@@ -124,14 +125,19 @@ const SavedTrophy: React.FC<TrophyData> = () => {
   };
 
   const handleClick = () => {
-    fetchUserTrophyData();
     toggleTrophies();
   };
 
   useEffect(() => {
+    if (showTrophies && userTrophyData.length === 0) {
+      fetchUserTrophyData();
+    }
+  }, [showTrophies]);
+
+  useEffect(() => {
     fetchUserData();
   }, []);
-  
+
   useEffect(() => {
     fetchUserTrophyData();
   }, []);
@@ -143,9 +149,17 @@ const SavedTrophy: React.FC<TrophyData> = () => {
       onMouseMove={handleMouseMove}
     >
       <h1>Your most recent Trophies </h1>
-      <button onClick={handleClick} >{showTrophies ? 'X' : 'See Trophies'}</button>
-      <button onClick={togglePropsView}>{showProps ? 'X' : 'Trophy Details'}</button>
-      {true ? (
+      <button onClick={handleClick}>
+        {showTrophies ? 'X' : 'See Trophies'}
+      </button>
+      <button
+        onClick={togglePropsView}
+        style={{ display: showTrophies ? 'block' : 'none' }}
+      >
+        {showProps ? 'X' : 'Trophy Details'}
+      </button>
+
+      {showTrophies &&
         userTrophyData
           .slice(0)
           .reverse()
@@ -217,10 +231,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
                 )}
               </div>
             </div>
-          ))
-      ) : (
-        <p>Loading trophy data...</p>
-      )}
+          ))}
     </div>
   );
 };
