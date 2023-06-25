@@ -36,6 +36,7 @@ const GlobalStyle = createGlobalStyle`
 
   .react-icon{
     font-size: 3rem;
+    color: #6e6b8c;
   }
 
   .react-icon-large{
@@ -46,6 +47,15 @@ const GlobalStyle = createGlobalStyle`
     color: #6e6b8c;
     border: 2px solid #6e6b8c;
     box-shadow: 0 0 0 3px #1b1b1b;
+  }
+  
+  .react-icon-logo{
+  font-size: 3rem;
+  color: black;
+  background: #e6a733;
+  border-radius: 50%;
+  padding: 2vw;
+  border: 2px solid black;
   }
 
   // p {
