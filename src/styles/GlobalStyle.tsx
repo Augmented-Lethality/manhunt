@@ -67,13 +67,15 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .react-icon-large{
-    font-size: 3rem;
-    padding: 18px;
+    position: relative;
+    top: -11px;
+    font-size: 2rem;
+    padding: 10px;
     border-radius: 50%;
     background-color: rgb(48 48 58);
     color: #6e6b8c;
-    border: 2px solid #6e6b8c;
-    box-shadow: 0 0 0 3px #1b1b1b;
+    border: 3px solid #6e6b8c;
+    box-shadow: 0 0 0 4px #1b1b1b;
   }
   
   .react-icon-logo{
@@ -99,13 +101,11 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
   }
 
-  // h2 {
-  //   font-size: 1.75rem;
-  // }
-
-  // h3 {
-  //   font-size: 1.5rem;
-  // }
+  h3 {
+    font-size: 1.5rem;
+    color: #b8b8b8;
+    font-weight: 400;    
+  }
 
   input {
     border: none;
