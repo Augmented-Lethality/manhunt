@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Route, Routes } from 'react-router-dom';
 import PageLoader from './components/Loading';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -15,9 +15,15 @@ import FindGamePage from './pages/FindGamePage';
 import FriendsPage from './pages/FriendsPage';
 import SocketComponent from './contexts/Socket/SocketComponent';
 import Settings from './pages/Settings';
+import { useFontSize } from './contexts/FontSize';
 
 const App = () => {
   const { isLoading } = useAuth0();
+  const [fontSize] = useFontSize();
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--font-size', `${fontSize}px`);
+  }, [fontSize]);
 
   if (isLoading) {
     return (
