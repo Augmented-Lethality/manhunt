@@ -105,22 +105,7 @@ const ProfilePage: React.FC = () => {
                 </span>
               </div>
             </div>
-            <div className='profile__details'>
-              <h6>Games Played: {userData?.gamesPlayed}</h6>
-              <h6>Games Won: {userData?.gamesWon}</h6>
-              <h6>Kills Confirmed: {userData?.killsConfirmed}</h6>
-            </div>
-            <div style={{ width: '300px', height: '300px' }}>
-              <TrophyGenerator />
-            </div>
-            <div style={{ width: '300px', height: '300px' }}>
-              <SavedTrophy />
-            </div>
-          </div>
-        </div>
-        
-      </Main>
-      {userData?.facialDescriptions ? (
+            {userData?.facialDescriptions ? (
               <div className='profile_verification'>
                 <p style={{ textAlign: 'start', margin: '3vh' }}>
                   Citizen has been verified. The CorpoVerse thanks you for your
@@ -144,6 +129,21 @@ const ProfilePage: React.FC = () => {
                 </button>
               </div>
             )}
+            <div className='profile__details'>
+              <h6>Games Played: {userData?.gamesPlayed}</h6>
+              <h6>Games Won: {userData?.gamesWon}</h6>
+              <h6>Kills Confirmed: {userData?.killsConfirmed}</h6>
+            </div>
+            <div style={{ width: '300px', height: '300px' }}>
+              <TrophyGenerator />
+            </div>
+            <div style={{ width: '300px', height: '300px' }}>
+              <SavedTrophy />
+            </div>
+          </div>
+        </div>
+        
+      </Main>
     </Container>
   );
 };

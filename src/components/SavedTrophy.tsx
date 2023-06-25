@@ -37,6 +37,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userTrophyData, setUserTrophyData] = useState<TrophyData[]>([]);
   const [showProps, setShowProps] = useState(false);
+  const [showTrophies, setShowTrophies] = useState(false);
 
   const fetchUserData = async () => {
     try {
@@ -74,16 +75,15 @@ const SavedTrophy: React.FC<TrophyData> = () => {
             name: trophy.name,
             description: trophy.description,
             createdAt: trophy.createdAt,
-            dimension: generationConditions.dimension || 0, // Provide default value
-            color: generationConditions.color || '', // Provide default value
-            shape: generationConditions.shape || '', // Provide default value
-            tubularSegments: generationConditions.tubularSegments || 0, // Provide default value
-            tubeWidth: generationConditions.tubeWidth || 0, // Provide default value
+            dimension: generationConditions.dimension || 0, 
+            color: generationConditions.color || '', 
+            shape: generationConditions.shape || '', 
+            tubularSegments: generationConditions.tubularSegments || 0, 
+            tubeWidth: generationConditions.tubeWidth || 0, 
           };
         });
   
         setUserTrophyData(parsedTrophyData);
-        console.log('userTrophiezzzzzzzzz', parsedTrophyData);
       }
     } catch (error) {
       console.error('Error fetching user trophy data:', error);
@@ -119,6 +119,15 @@ const SavedTrophy: React.FC<TrophyData> = () => {
     setShowProps(!showProps);
   };
 
+  const toggleTrophies = () => {
+    setShowTrophies(!showTrophies);
+  };
+
+  const handleClick = () => {
+    fetchUserTrophyData();
+    toggleTrophies();
+  };
+
   useEffect(() => {
     fetchUserData();
   }, []);
@@ -134,8 +143,8 @@ const SavedTrophy: React.FC<TrophyData> = () => {
       onMouseMove={handleMouseMove}
     >
       <h1>Your most recent Trophies </h1>
-      <button onClick={fetchUserTrophyData}>see trophies</button>
-      <button onClick={togglePropsView}>{showProps ? 'X' : 'Details'}</button>
+      <button onClick={handleClick} >{showTrophies ? 'X' : 'See Trophies'}</button>
+      <button onClick={togglePropsView}>{showProps ? 'X' : 'Trophy Details'}</button>
       {true ? (
         userTrophyData
           .slice(0)
@@ -195,9 +204,6 @@ const SavedTrophy: React.FC<TrophyData> = () => {
                     </Torus>
                   )}
                 </Canvas>
-                <button onClick={togglePropsView}>
-                  {showProps ? 'X' : 'Just View It'}
-                </button>
               </div>
               <div>
                 {showProps && (
