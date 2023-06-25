@@ -21,18 +21,14 @@ import DropDownMenu from '../components/DropDownMenu';
 
 const CrosshairContainer = styled.div`
   position: absolute;
-  top: 80%;
+  top: 85%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-  background: black;
-  cursor: pointer;
-  width: 28vw;
-  height: 28vw;
-  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 7rem;
 `;
 
 const GamePage: React.FC = () => {
@@ -97,8 +93,8 @@ const GamePage: React.FC = () => {
         </WebcamProvider>
       )}
         <CrosshairContainer onClick={handleGameChange}>
-          <GiCrosshair style={{ position: 'absolute', fontSize: '9rem' }}/>
-          <div style={{background: 'none', border: 'none', position:'relative', top:'2px'}}>
+          <GiCrosshair style={{ position: 'absolute' }}/>
+          <div style={{position:'relative', top:'2px'}}>
             {gameMode === 'Chase' ? <FaSkull className='react-icon-large'/> : <FaEye className='react-icon-large'/>}
           </div>
         </CrosshairContainer>
