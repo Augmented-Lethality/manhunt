@@ -103,18 +103,6 @@ const FriendsPage: React.FC = () => {
     return null;
   }
 
-  if(!onlineFriends || !offlineFriends){
-    return (
-      <Container>
-        <Header page='Friends'/>
-        <Main style={{marginBottom: 0}}>
-          <FriendsContainer>
-            <Loading/>
-          </FriendsContainer>
-        </Main>
-      </Container>
-    )
-  }
 
   return (
     <Container>
@@ -127,7 +115,9 @@ const FriendsPage: React.FC = () => {
             value={searchText}
             onChange={handleInputChange}
             />
-        {searchText === '' ? <SearchIcon className='react-icon'/> : <CloseIcon className='react-icon'/>}
+        {searchText === '' ?
+        <SearchIcon className='react-icon'/>
+        : <CloseIcon onClick={() => {setSearchText('')}} className='react-icon'/>}
        </SearchBar>
         <FriendsContainer>
           {searchText === '' ? (
@@ -136,7 +126,7 @@ const FriendsPage: React.FC = () => {
               <UsersList users={offlineFriends} header={`Offline • ${offlineFriends.length}`} />
             </>
           ) : searchResults.length === 0 ? (
-            <Loading />
+            <p>no users found</p>
           ) : (
             <UsersList users={searchResults} />
           )}
