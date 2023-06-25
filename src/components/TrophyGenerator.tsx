@@ -167,7 +167,7 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
           </Torus>
         )}
       </Canvas>
-      <button onClick={postTrophyData}> claim trophy</button>
+      <button onClick={postTrophyData}> Claim Trophy</button>
     </div>
   );
 };

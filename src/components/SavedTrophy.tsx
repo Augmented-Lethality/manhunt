@@ -148,7 +148,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      <h1>Your most recent Trophies </h1>
+      <h1>Recent Trophies </h1>
       <button onClick={handleClick}>
         {showTrophies ? 'X' : 'See Trophies'}
       </button>
@@ -225,6 +225,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
                     <h6>Name: {trophy.name}</h6>
                     <p>Description: {trophy.description}</p>
                     <p>Earned at: {trophy.createdAt}</p>
+                    <h6>Class: {trophy.shape}</h6>
                     <h6>Size: {trophy.dimension}</h6>
                     <h6>Color: {trophy.color}</h6>
                   </>
