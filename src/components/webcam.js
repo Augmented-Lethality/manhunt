@@ -149,6 +149,15 @@ class LocationBasedLocal {
     }
   }
 
+  createErrorPopup(msg) {
+    if (!document.getElementById("error-popup")) {
+      var errorPopup = document.createElement("div");
+      errorPopup.innerHTML = msg;
+      errorPopup.setAttribute("id", "error-popup");
+      document.body.appendChild(errorPopup);
+    }
+  }
+
 
   startGps(maximumAge = 0) {
     if (this._watchPositionId === null) {
@@ -167,7 +176,7 @@ class LocationBasedLocal {
           if (this._eventHandlers["gpserror"]) {
             this._eventHandlers["gpserror"](error.code);
           } else {
-            // alert(`GPS error: code ${error.code}`);
+            alert(`GPS error: code ${error.code}, allow access to location on your browser`);
           }
         },
         {

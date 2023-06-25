@@ -90,7 +90,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
     console.log('camera turned off yay!!!');
   };
 
-  const handlePermissionClick = () => {
+  const handlePermission = () => {
     if (deviceOrientationControlsRef.current) {
       deviceOrientationControlsRef.current.connect();
     }
@@ -123,6 +123,8 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
 
     // start the device orientation controls for mobile
     deviceOrientationControlsRef.current = new DeviceOrientationControls(camera);
+
+    handlePermission();
 
 
     // start the location
@@ -302,7 +304,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-      <button onClick={handlePermissionClick}>Request Permission</button>
+      {/* <button onClick={handlePermission}>Request Orientation Permission</button> */}
 
       <canvas
         ref={canvasRef}
