@@ -6,11 +6,6 @@ const ListContainer = styled.div`
   margin-bottom: 30px;
 `;
 
-// const Header = styled.h1`
-//   font-size: 24px;
-//   color: #000;
-// `;
-
 interface UsersListProps {
   users: Array<{ image: string; username: string }>;
   header?: string | null;
