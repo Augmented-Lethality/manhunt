@@ -9,6 +9,8 @@ import { ServerSocket } from './websocket/socket';
 const { Users } = require("./routes/users");
 import { Games } from './routes/game';
 import { Location } from './routes/locations';
+import { Friends } from './routes/friends'
+
 
 dotenv.config();
 
@@ -42,6 +44,7 @@ app.use('/models', express.static(path.join(__dirname, '..', '..', 'public/model
 app.use('/users', Users);
 app.use('/games', Games);
 app.use('/locations', Location);
+app.use('/friends', Friends);
 
 
 app.get('*', (req, res) => {
