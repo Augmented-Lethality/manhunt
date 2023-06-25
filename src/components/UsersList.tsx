@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import UserListItem from './UserListItem';
 
 const ListContainer = styled.div`
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
+  margin-bottom: 30px;
 `;
 
 // const Header = styled.h1`
