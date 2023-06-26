@@ -3,6 +3,7 @@ import { Header } from '../styles/Header';
 import { Container } from '../styles/Container';
 import { Main } from '../styles/Main';
 import styled from 'styled-components';
+import { useFontSize } from '../contexts/FontSize';
 
 const SwitchInput = styled.input`
   opacity: 0;
@@ -60,11 +61,21 @@ const Switch = ({ ...props }) => (
 
 
 const Settings: React.FC = () => {
+  const [fontSize, setFontSize] = useFontSize();
+
+  const toggleLargeFont = () => {
+    if(fontSize === 16) {
+      setFontSize(20);
+    } else {
+      setFontSize(16);
+    }
+  }
+
   return (
     <Container>
       <Header page='Settings'/>
       <Main style={{flexDirection:'row', alignItems:'baseline'}}>
-        <Switch onChange={()=>{}}/>
+        <Switch onChange={toggleLargeFont}/>
         <h3>Larger Font</h3>
       </Main>
     </Container>
