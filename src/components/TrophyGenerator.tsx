@@ -31,6 +31,7 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
   const [prevMouseY, setPrevMouseY] = useState(0);
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [isClaimed, setIsClaimed] = useState(false);
 
   const fetchUserData = async () => {
     try {
@@ -101,6 +102,7 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
   const postTrophyData = async () => {
     try {
       if (userData && userData.id) {
+        setIsClaimed(true);
         console.log('userData.id:', userData.id); // Check the value of userData.id
         await axios.post('/trophies', {
           name: 'Generated Trophy4',
@@ -172,7 +174,7 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
         )}
       </Canvas>
       {userData && userData.id !== null && (
-        <button onClick={postTrophyData}>Claim Trophy</button>
+        <button onClick={postTrophyData} disabled={isClaimed}> {isClaimed ? 'Claimed' : 'Claim Trophy'}</button>
       )}
     </div>
   );
