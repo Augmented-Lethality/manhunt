@@ -4,6 +4,7 @@ import { Auth0ProviderWithNavigate } from "./Auth0/auth0-provider-with-navigate"
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import GlobalStyle from './styles/GlobalStyle';
+import { FontSizeProvider } from './contexts/FontSize';
 
 const rootElement = document.getElementById('app');
 
@@ -16,11 +17,13 @@ const root = ReactDOM.createRoot(rootElement);
 
 root.render(
   // <React.StrictMode>
-  <BrowserRouter>
-    <Auth0ProviderWithNavigate>
-      <GlobalStyle />
-      <App />
-    </Auth0ProviderWithNavigate>
-  </BrowserRouter>
+    <BrowserRouter>
+      <Auth0ProviderWithNavigate>
+        <FontSizeProvider>
+          <GlobalStyle />
+          <App />
+        </FontSizeProvider>
+      </Auth0ProviderWithNavigate>
+    </BrowserRouter>
   // </React.StrictMode>
 );

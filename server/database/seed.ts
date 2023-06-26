@@ -1,6 +1,7 @@
 const { Client } = require('pg');
 const dotenv = require('dotenv'); 
 dotenv.config();
+//const { User } = require('./models')
 
 // Create a new client instance
 const client = new Client({
@@ -30,7 +31,46 @@ async function setupDatabase() {
   }
 }
 
+
+// async function addTestUsers() {
+//   try {
+//     const users = [
+//       {
+//         "username": "Dummy Face",
+//         "email": "bopbopbop.com",
+//         "authId": "google-oauth2|112537847009419548967",
+//         "gamesPlayed": 1002,
+//         "gamesWon": 27,
+//         "killsConfirmed": 27,
+//       },
+//       {
+//         "username": "Slimmy J",
+//         "email": "ddd.com",
+//         "authId": "google-oauth2|112537847009419548968",
+//         "gamesPlayed": 500000,
+//         "gamesWon": 0,
+//         "killsConfirmed": 0,
+//       },
+//       {
+//         "username": "One More Dummy Face",
+//         "email": "bopbopbop.com",
+//         "authId": "google-oauth2|112537847009419548969",
+//         "gamesPlayed": 100,
+//         "gamesWon": 100,
+//         "killsConfirmed": 100,
+//       }
+//     ];
+
+//     await User.bulkCreate(users);
+
+//     console.log('Users seeded successfully!');
+//   } catch (err) {
+//     console.error('Error seeding users:', err);
+//   } finally {
+//     await User.sequelize.close();
+//   }
+// }
+
+
+// addTestUsers();
 setupDatabase();
-
-
-

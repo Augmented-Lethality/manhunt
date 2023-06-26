@@ -5,7 +5,7 @@ import { ButtonToFindGame, ButtonToHostGame } from '../components/Buttons';
 import DropDownMenu from '../components/DropDownMenu';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
-import { Header } from '../styles/Header';
+import { HomeHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { BsPersonSquare } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
@@ -53,19 +53,7 @@ const HomePage = () => {
 
   return (
     <Container>
-      <Header>
-        <h1 className='logo'>Man Hunt</h1>
-        <p>Users Online: {users.length}</p>
-        <img
-          src={user.picture}
-          alt='Profile'
-          className='profile__avatar'
-          onClick={()=>{navigate('/profile')}}
-          style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
-          <DropDownMenu>
-            <div onClick={()=>{navigate('/profile')}}><BsPersonSquare/>profile</div>
-          </DropDownMenu>
-      </Header>
+      <HomeHeader users={users}/>
       <Main>
         <ButtonToHostGame />
         <ButtonToFindGame />

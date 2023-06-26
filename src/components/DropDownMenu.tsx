@@ -84,9 +84,9 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ children }) => {
       <Menu isOpen={isMenuOpen}>
         <Close onClick={toggleMenu} />
         {children}
-        <div onClick={()=>{navigate('/friends')}}><FaUserFriends/>friends</div>
-        <div onClick={()=>{navigate('/settings')}}><FiSettings/>settings</div>
-        <div onClick={()=>{logout({logoutParams: {returnTo: window.location.origin}})}}><FiLogOut/>logout</div>
+        <p onClick={()=>{navigate('/yourcompetition')}}><FaUserFriends/>friends</p>
+        <p onClick={()=>{navigate('/settings')}}><FiSettings/>settings</p>
+        <p onClick={()=>{logout({logoutParams: {returnTo: window.location.origin}})}}><FiLogOut/>logout</p>
       </Menu>
 
     </div>

@@ -1,16 +1,74 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import styled from 'styled-components';
+import DropDownMenu from '../components/DropDownMenu';
+import { useNavigate } from 'react-router-dom';
+import { BsPersonSquare } from 'react-icons/bs';
+import { AiFillHome } from 'react-icons/ai';
+import { IoHome } from 'react-icons/io5';
+import { useAuth0 } from '@auth0/auth0-react';
+import { ButtonToHome } from '../components/Buttons';
+import SocketContext from '../contexts/Socket/SocketContext';
 
-export const Header = styled.header`
+
+export const StyledHeader = styled.header`
   display: flex;
   padding: 1rem;
   height: 100px;
-  background-color: #2a2a32;
+  background-color: #3F404F;
   border-bottom: 1px solid #202026;
   justify-content: space-between;
   align-items: end;
   z-index: 1;
 `;
+
+export function HomeHeader({ users }) {
+  const navigate = useNavigate();
+  const { user } = useAuth0();
+  return (
+    <StyledHeader>
+      <h1 className='logo'>Man Hunt</h1>
+      <p>Users Online: {users.length}</p>
+      <img
+        src={user?.picture}
+        alt='Profile'
+        className='profile__avatar'
+        onClick={() => { navigate('/profile') }}
+        style={{ height: '10vw', width: '10vw', borderRadius: '50%' }} />
+      <DropDownMenu>
+        <p onClick={() => { navigate('/profile') }}><BsPersonSquare />profile</p>
+      </DropDownMenu>
+    </StyledHeader>
+  );
+}
+
+// PLEASE KEEP THIS SOCKET FUNCTION WHEN USING A GOING HOME BUTTON
+export function Header({ page }) {
+  const navigate = useNavigate();
+  const { user } = useAuth0();
+  const { LeaveGame } = useContext(SocketContext);
+
+  const handleHome = () => {
+    LeaveGame(user);
+    navigate('/home');
+  }
+
+  return (
+    <StyledHeader>
+      <IoHome className='react-icon-logo' onClick={handleHome} />
+      <h1>{page}</h1>
+      <img
+        src={user?.picture}
+        alt='Profile'
+        className='profile__avatar'
+        onClick={() => { navigate('/profile') }}
+        style={{ height: '10vw', width: '10vw', borderRadius: '50%' }} />
+      <DropDownMenu>
+        <p onClick={handleHome}><AiFillHome />home</p>
+      </DropDownMenu>
+    </StyledHeader>
+  );
+}
+
 
 export const Footer = styled.footer`
   display: flex;
@@ -32,7 +90,7 @@ const GameHeaderContainer = styled.header`
   position: relative;
   top: 0;
   padding: 1rem;
-  height: 95vw;
+  height: 50vw;
   left: -21px;
   width: 100%;
   border-bottom: 1px solid #202026;
@@ -61,7 +119,7 @@ const TransparentOval = styled.div`
 
 export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => (
   <GameHeaderContainer>
-    <TransparentOval className='timer-background'/>
+    <TransparentOval className='timer-background' />
     {children}
   </GameHeaderContainer>
 );

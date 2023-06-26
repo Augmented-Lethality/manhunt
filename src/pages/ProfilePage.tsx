@@ -1,16 +1,13 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ButtonToHome } from '../components/Buttons';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
 import TrophyGenerator from '../components/TrophyGenerator';
 import SavedTrophy from '../components/SavedTrophy';
 import { Container } from '../styles/Container';
-import { Header, Footer } from '../styles/Header';
+import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
-import { AiFillCloseCircle } from 'react-icons/ai';
-import { IoSave, IoCamera } from 'react-icons/io5';
-
+import { AiFillCloseCircle } from 'react-icons/ai'
 export type UserData = {
   userId: number;
   username: string;
@@ -54,15 +51,10 @@ const ProfilePage: React.FC = () => {
   if (photoStatus === 'camera') {
     return (
       <Container>
-        <Header>
+        <StyledHeader>
           <h1>BioData</h1>
-          <AiFillCloseCircle
-            className='react-icon'
-            onClick={() => {
-              setPhotoStatus('profile');
-            }}
-          />
-        </Header>
+          <AiFillCloseCircle className='react-icon' onClick={()=>{setPhotoStatus('profile')}}/>
+        </StyledHeader>
         <CreateFaceDescriptions
           setPhotoStatus={setPhotoStatus}
           username={user?.name}
@@ -75,21 +67,22 @@ const ProfilePage: React.FC = () => {
 
   return (
     <Container>
-      <Header>
-        <h1>Profile</h1>
-        <ButtonToHome></ButtonToHome>
-      </Header>
-
+      <Header page='Profile' />
       <Main>
         <div className='content__body'>
           <div className='profile-grid'>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <img
-                src={user?.picture}
-                alt='Profile'
-                className='profile__avatar'
-                style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
-              />
+              {user.picter ? (
+                <img
+                  src={user?.picture}
+                  className='profile__avatar'
+                  style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
+                />
+              ) : (
+                <h1 className='alt-user-pic-large'>
+                  {user.name?.slice(0, 1)}
+                </h1>
+              )}
               <div
                 style={{
                   display: 'flex',

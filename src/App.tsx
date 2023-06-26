@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Route, Routes } from 'react-router-dom';
-import PageLoader from './Auth0/Loading';
+import PageLoader from './components/Loading';
 import { useAuth0 } from '@auth0/auth0-react';
 import { AuthenticationGuard } from './Auth0/authentication-guard';
 import NotFoundPage from './pages/NotFoundPage';
@@ -14,8 +14,16 @@ import EndGame from './pages/EndGame';
 import FindGamePage from './pages/FindGamePage';
 import FriendsPage from './pages/FriendsPage';
 import SocketComponent from './contexts/Socket/SocketComponent';
+import Settings from './pages/Settings';
+import { useFontSize } from './contexts/FontSize';
+
 const App = () => {
   const { isLoading } = useAuth0();
+  const [fontSize] = useFontSize();
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--font-size', `${fontSize}px`);
+  }, [fontSize]);
 
   if (isLoading) {
     return (
@@ -74,10 +82,18 @@ const App = () => {
         }
       />
       <Route
-        path="/friends"
+        path="/yourcompetition"
         element={
           <SocketComponent>
             <AuthenticationGuard component={FriendsPage} />
+          </SocketComponent>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={Settings} />
           </SocketComponent>
         }
       />

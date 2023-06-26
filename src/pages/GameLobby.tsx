@@ -31,10 +31,7 @@ const GameLobby: React.FunctionComponent = () => {
 
   return (
     <Container>
-      <Header>
-        <h2>Game Lobby</h2>
-        <ButtonToHome />
-      </Header>
+      <Header page='Lobby'/>
       <Main>
         {showLobby ? (
           <>
