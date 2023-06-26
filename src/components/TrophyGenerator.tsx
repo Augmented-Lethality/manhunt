@@ -117,23 +117,6 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
     }
   };
   
-
-
-  // const updateGameData = async () => {
-  //   try {
-  //     await axios.post('/users', {
-  //       {
-  //         "facialDescriptions": 10,
-  //         "gamesPlayed": 99,
-  //         "gamesWon": 13,
-  //         "killsConfirmed": 12
-  //     }
-  //     });
-  //   } catch (error) {
-  //     console.error('Error posting trophy data:', error);
-  //   }
-  // };
-
   useEffect(() => {
     fetchUserData();
   }, []);
