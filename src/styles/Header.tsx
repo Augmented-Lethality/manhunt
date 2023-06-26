@@ -32,7 +32,7 @@ export function HomeHeader({ users }) {
         onClick={()=>{navigate('/profile')}}
         style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
         <DropDownMenu>
-          <div onClick={()=>{navigate('/profile')}}><BsPersonSquare/>profile</div>
+          <p onClick={()=>{navigate('/profile')}}><BsPersonSquare/>profile</p>
         </DropDownMenu>
     </StyledHeader>
   );
@@ -52,7 +52,7 @@ export function Header({ page }) {
         onClick={()=>{navigate('/profile')}}
         style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
         <DropDownMenu>
-          <div onClick={()=>{navigate('/home')}}><AiFillHome/>home</div>
+          <p onClick={()=>{navigate('/home')}}><AiFillHome/>home</p>
         </DropDownMenu>
     </StyledHeader>
   );
@@ -79,7 +79,7 @@ const GameHeaderContainer = styled.header`
   position: relative;
   top: 0;
   padding: 1rem;
-  height: 95vw;
+  height: 50vw;
   left: -21px;
   width: 100%;
   border-bottom: 1px solid #202026;
