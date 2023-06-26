@@ -6,11 +6,14 @@
 # ManHunt
 
 In the shadowy underbelly of a civilization lost to corruption, you are the last line against the encroaching darkness. Or, at least, you would be if all of these other bounty hunters would stop getting in the way. The task ahead of you is simple: track down the scum that law enforcement can't - or won't - touch. Your path will be fraught with the dim cascade of neon lights, the the hazey fog of moral ambiguity, and danger! Do you have what it takes to tread the line between right and wrong, and more importantly, can you find your mark before someone else gets them?
-
+ 
 <br>
 
 ## An Augmented Reality Game of Tag
-Man Hunt is a mobile facing web app where users can play games of AR Tag. Upon the start of a game, a single user is randomly selected to be the bounty. All other users become the bounty hunters, and must try to track down the bounty while racing against a clock. A hunter wins by using facial recognition technology on their phone's cameras to confirm that they have captured their mark. If the bounty's face is recognized, the hunter who captured the mark wins the game. If the bounty escapes capture and the timer runs out, the bounty wins the game. Phone will display hints about the other users's locations to aid players to victory.
+Man Hunt is a mobile facing web app where users can play games of AR Tag. 
+*augmented reality, facial recognition, graphical 3D rendering, AND websockets together*
+
+Upon the start of a game, a single user is randomly selected to be the bounty. All other users become the bounty hunters, and must try to track down the bounty while racing against a clock. A hunter wins by using facial recognition technology on their phone's cameras to confirm that they have captured their mark. If the bounty's face is recognized, the hunter who captured the mark wins the game. If the bounty escapes capture and the timer runs out, the bounty wins the game. Phone will display hints about the other users's locations to aid players to victory.
 
 To play Man Hunt, go to [production link here](productionlinkhere).
 

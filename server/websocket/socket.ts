@@ -225,6 +225,39 @@ export class ServerSocket {
       }
     });
 
+    socket.on('reconnect_user', async (user) => {
+
+      try {
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+
+        if (existingUser) {
+          const game = await Game.findOne({ where: { gameId: existingUser.dataValues.gameId } });
+
+          if (game) {
+            if (!game.dataValues.users.includes(user.sub)) {
+              await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: existingUser.dataValues.gameId } });
+              socket.join(existingUser.dataValues.gameId);
+
+              console.log('user in game again, updating the game lobby')
+              this.io.to(existingUser.dataValues.gameId).emit('update_lobby_users');
+              this.io.to(existingUser.dataValues.gameId).emit('update_lobby_games');
+            }
+          }
+        } else {
+          console.log('no game with that host exists, reconnecting to users room')
+          await User.update({ socketId: socket.id }, { where: { authId: user.sub } })
+          if (!socket.rooms.has('users')) {
+            socket.join('users');
+          }
+          this.io.to('users').emit('update_users');
+          this.io.to('users').emit('update_games');
+        }
+
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
 
     // adding/updating a location
     socket.on('add_location', async (user, gameId, longitude, latitude) => {
@@ -285,6 +318,7 @@ export class ServerSocket {
       try {
         // get the user so that can get the game
         const existingUser = await User.findOne({ where: { authId: user.sub } });
+        console.log('gameId in question:', existingUser?.dataValues.gameId)
         const game = await Game.findByPk(existingUser?.dataValues.gameId);
 
         // if that game exists
@@ -293,7 +327,7 @@ export class ServerSocket {
           if (game.dataValues.users.includes(user.sub)) {
 
             // update the user so that they don't have the gameId anymore
-            await User.update({ gameId: '' }, { where: { authId: user.sub } });
+            await User.update({ gameId: null }, { where: { authId: user.sub } });
 
             const location = await Locations.findByPk(user.sub);
 
