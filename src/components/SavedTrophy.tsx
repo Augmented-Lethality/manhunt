@@ -86,6 +86,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
         });
 
         setUserTrophyData(parsedTrophyData);
+        console.log(userTrophyData, parsedTrophyData)
       }
     } catch (error) {
       console.error('Error fetching user trophy data:', error);

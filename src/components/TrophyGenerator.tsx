@@ -39,7 +39,7 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      setUserData(response.data);
+      setUserData(response.data[0]);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -100,22 +100,43 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
 
   const postTrophyData = async () => {
     try {
-      await axios.post('/trophies', {
-        name: 'Generated Trophy4',
-        description: 'A randomly generated trophy',
-        generationConditions: JSON.stringify(trophyData),
-        filePath: '',
-        ownerId: 1,
-      });
+      if (userData && userData.id) {
+        console.log('userData.id:', userData.id); // Check the value of userData.id
+        await axios.post('/trophies', {
+          name: 'Generated Trophy4',
+          description: 'A randomly generated trophy',
+          generationConditions: JSON.stringify(trophyData),
+          filePath: '',
+          ownerId: userData.id
+        });
+      } else {
+        console.log('userData is not available');
+      }
     } catch (error) {
       console.error('Error posting trophy data:', error);
     }
   };
+  
+
+
+  // const updateGameData = async () => {
+  //   try {
+  //     await axios.post('/users', {
+  //       {
+  //         "facialDescriptions": 10,
+  //         "gamesPlayed": 99,
+  //         "gamesWon": 13,
+  //         "killsConfirmed": 12
+  //     }
+  //     });
+  //   } catch (error) {
+  //     console.error('Error posting trophy data:', error);
+  //   }
+  // };
 
   useEffect(() => {
-    fetchUserData(); 
+    fetchUserData();
   }, []);
-
 
   return (
     <div
@@ -167,7 +188,9 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
           </Torus>
         )}
       </Canvas>
-      <button onClick={postTrophyData}> Claim Trophy</button>
+      {userData && userData.id !== null && (
+        <button onClick={postTrophyData}>Claim Trophy</button>
+      )}
     </div>
   );
 };

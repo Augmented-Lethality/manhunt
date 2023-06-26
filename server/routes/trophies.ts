@@ -25,14 +25,11 @@ Trophies.post('/', async (req, res) => {
 });
 
 
-
-
-//THESE HAVNT BEEN TESTED
 // // GET trophies Of Specific User
 Trophies.get('/:ownerId', async (req, res) => {
   try {
     const { ownerId } = req.params;
-    console.log(ownerId)
+    console.log('got all trophies for user with Id:', ownerId)
     // Fetch all trophies associated with the provided authId
     const userTrophies = await Trophy.findAll({
       where: { ownerId: ownerId },
