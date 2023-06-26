@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, { forwardRef, useRef, useEffect, useState, useContext, useImperativeHandle, } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 
 import {
@@ -14,14 +14,19 @@ import {
 
 import SocketContext from '../contexts/Socket/SocketContext';
 
-// had to add this in the decs.d.ts file to use in typescript. currently set as any
+// forwardRef requires props so don't delete even though it's not being used
+interface ChaseCamProps { }
+
+// passing the turnOffCamera method to the GamePage.tsx parent component
+type ChaseCamRefType = {
+  turnOffCamera: () => void;
+};
 
 
-const ChaseCam: React.FC = () => {
+const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
 
   const { user } = useAuth0();
-
-  const { users, games, locations } = useContext(SocketContext).SocketState;
+  const { games, locations } = useContext(SocketContext).SocketState;
 
 
   ////////// create markers to render on the screen that stays in the defined location ///////////
@@ -36,7 +41,7 @@ const ChaseCam: React.FC = () => {
   const hardCodeMarker = new Sprite(hardCodeMtl);
 
   // set size of sprites
-  const spriteSize = 0.1;
+  const spriteSize = 0.5;
   killers.scale.set(spriteSize, spriteSize, 1);
   victim.scale.set(spriteSize, spriteSize, 1);
   hardCodeMarker.scale.set(spriteSize, spriteSize, 1);
@@ -71,7 +76,28 @@ const ChaseCam: React.FC = () => {
   const arjsRef = useRef<LocationBasedLocal | null>(null);
 
 
+  // webcam ref
+  const webcamRendererRef = useRef<WebcamRendererLocal | null>(null);
+
+  const deviceOrientationControlsRef = useRef<DeviceOrientationControls | null>(null);
+
+  // function that turns off the camera, will be sent to the parent component (GamePage.tsx)
+  // so that it turns off both this camera and Kalypso's camera on dismount
+  const turnOffCamera = () => {
+    if (webcamRendererRef.current) {
+      webcamRendererRef.current.turnOffCamera();
+    }
+    console.log('camera turned off yay!!!');
+  };
+
+  const handlePermission = () => {
+    if (deviceOrientationControlsRef.current) {
+      deviceOrientationControlsRef.current.connect();
+    }
+  }
+
   useEffect(() => {
+
     // checks if the canvas HTML element is there, otherwise return and don't touch
     // the rest of the code
     if (!canvasRef.current) return;
@@ -93,9 +119,13 @@ const ChaseCam: React.FC = () => {
 
     // renders the webcam stream as the background for the scene, this is an AR.js class that I edited
     const cam = new WebcamRendererLocal(renderer);
+    webcamRendererRef.current = cam;
 
     // start the device orientation controls for mobile
-    const deviceOrientationControls = new DeviceOrientationControls(camera);
+    deviceOrientationControlsRef.current = new DeviceOrientationControls(camera);
+
+    handlePermission();
+
 
     // start the location
     arjsRef.current.startGps();
@@ -119,7 +149,7 @@ const ChaseCam: React.FC = () => {
       }
 
       // send updates when the phone tilts
-      deviceOrientationControls.update();
+      deviceOrientationControlsRef.current?.update();
       // update the camera's feed
       cam.update();
       renderer.render(scene, camera);
@@ -178,9 +208,20 @@ const ChaseCam: React.FC = () => {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
+
+      // turnOffCamera();
+
+      arjsRef.current?.stopGps();
     };
   }, []);
   /////// /////////////////////////////////// //////
+
+  // ref is an object, turnOffCamera is a method on the object
+  // parent component will get this method and be able to call it instead of trying
+  // to pass it around with props
+  useImperativeHandle(ref, () => ({
+    turnOffCamera: turnOffCamera
+  }));
 
   useEffect(() => {
     // console.log('inserting into AddLocation:', typeof userLongitude, userLongitude)
@@ -232,13 +273,13 @@ const ChaseCam: React.FC = () => {
             victim.userData.id = playerLocation.authId;
             // add the marker to the scene at their long/lat and an elevation of 10 so it's mid height
             arjsRef.current?.add(victim, markerLong, markerLat, 10);
-            // console.log(`Added NEW victim marker`);
+            console.log(`Added NEW victim marker`);
           } else {
             // make another killer marker to place and add to the scene
             const clonedKiller = killers.clone();
             clonedKiller.userData.id = playerLocation.authId;
             arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
-            // console.log(`Added NEW killer marker`);
+            console.log(`Added NEW killer marker`);
           }
         } else {
           // find the existing marker
@@ -263,12 +304,14 @@ const ChaseCam: React.FC = () => {
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+      {/* <button onClick={handlePermission}>Request Orientation Permission</button> */}
+
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: '100%', position: 'absolute' }}
       />
     </div >
   );
-};
+});
 
 export default ChaseCam;
