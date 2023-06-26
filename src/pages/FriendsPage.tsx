@@ -59,7 +59,7 @@ const FriendsPage: React.FC = () => {
     try {
       const res = await axios.get('/friends', {
         params: {
-          userId: user?.authId,
+          userId: user?.sub,
           status: 'accepted'
         }
      });
