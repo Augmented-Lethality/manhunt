@@ -10,7 +10,7 @@ class User extends Model {
 }
 User.init({
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.NUMBER,
     autoIncrement: true,
     primaryKey: true
   },
@@ -194,8 +194,8 @@ Trophy.init({
   description: DataTypes.STRING,
   generationConditions: DataTypes.TEXT, // This can be a stringified function or JSON
   filePath: DataTypes.STRING,
-  ownersId: {
-    type: DataTypes.INTEGER,
+  ownerId: {
+    type: DataTypes.NUMBER,
     references: {
       model: User,
       key: 'id'
