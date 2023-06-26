@@ -54,15 +54,18 @@ User.init({
   },
   gamesPlayed: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    defaultValue: 0,
   },
   gamesWon: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    defaultValue: 0,
   },
   killsConfirmed: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    defaultValue: 0,
   }
 }, { sequelize });
 

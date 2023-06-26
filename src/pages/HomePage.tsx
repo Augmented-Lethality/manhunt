@@ -33,10 +33,9 @@ const HomePage = () => {
           username: user?.name,
           email: user?.email,
           authId: user?.sub,
-          // Include other user data properties you want to save
+          image: user?.picture,
         });
         setUserData(response.data);
-        // console.log(response);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -48,7 +47,7 @@ const HomePage = () => {
         0
       )}`;
     }
-  }, [user, isAuthenticated, users]);
+  }, [user, isAuthenticated]);
 
   if (!isAuthenticated || !user) {
     return null;
@@ -56,7 +55,7 @@ const HomePage = () => {
 
   return (
     <Container>
-      <HomeHeader users={users}/>
+      <HomeHeader users={users} />
       <Main>
         <ButtonToHostGame />
         <ButtonToFindGame />

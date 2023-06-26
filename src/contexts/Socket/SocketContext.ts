@@ -17,6 +17,7 @@ export interface Game {
 }
 
 export interface User {
+  image: string;
   authId: string;
   createdAt: string;
   email: string;

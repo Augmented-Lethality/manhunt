@@ -51,7 +51,7 @@ const ProfilePage: React.FC = () => {
       <Container>
         <StyledHeader>
           <h1>BioData</h1>
-          <AiFillCloseCircle className='react-icon' onClick={()=>{setPhotoStatus('profile')}}/>
+          <AiFillCloseCircle className='react-icon' onClick={() => { setPhotoStatus('profile') }} />
         </StyledHeader>
         <CreateFaceDescriptions
           setPhotoStatus={setPhotoStatus}
@@ -69,11 +69,11 @@ const ProfilePage: React.FC = () => {
         <div className='content__body'>
           <div className='profile-grid'>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {user.picter ? (
+              {user.picture ? (
                 <img
                   src={user.picture}
                   className='profile__avatar'
-                  style={{ height: '14vh', width: '14vh', borderRadius:'50%'}}
+                  style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
                 />
               ) : (
                 <h1 className='alt-user-pic-large'>
@@ -113,7 +113,7 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </Main>
-      
+
     </Container>
   );
 };
