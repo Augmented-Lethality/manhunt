@@ -4,7 +4,6 @@ import { useFontSize } from '../contexts/FontSize';
 import { Header } from '../styles/Header';
 import { Container } from '../styles/Container';
 import { Main } from '../styles/Main';
-import Switch from 'react-switch';
 
 // const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
 //   height: 0;
