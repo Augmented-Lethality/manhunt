@@ -128,10 +128,10 @@ const ProfilePage: React.FC = () => {
               <h6>Kills Confirmed: {userData?.killsConfirmed}</h6>
             </div>
             <div style={{ width: '300px', height: '300px' }}>
-              <TrophyGenerator />
+              <TrophyGenerator dimension={0} color={''} shape={''} tubularSegments={0} tubeWidth={0} />
             </div>
             <div style={{ width: '300px', height: '300px' }}>
-              <SavedTrophy />
+              <SavedTrophy id={0} name={''} description={''} createdAt={''} dimension={0} color={''} shape={''} tubularSegments={0} tubeWidth={0} />
             </div>
           </div>
         </div>
