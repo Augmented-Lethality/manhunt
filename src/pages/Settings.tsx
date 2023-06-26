@@ -1,9 +1,11 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { Header } from '../styles/Header';
 import { Container } from '../styles/Container';
 import { Main } from '../styles/Main';
 import styled from 'styled-components';
 import { useFontSize } from '../contexts/FontSize';
+import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const SwitchInput = styled.input`
   opacity: 0;
@@ -61,21 +63,52 @@ const Switch = ({ ...props }) => (
 
 
 const Settings: React.FC = () => {
+  const { user, isAuthenticated } = useAuth0();
   const [fontSize, setFontSize] = useFontSize();
+  const [checked, setChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const toggleLargeFont = () => {
-    if(fontSize === 16) {
-      setFontSize(20);
-    } else {
-      setFontSize(16);
+  useEffect(() => {
+    getUserSetting().then(() => setIsLoading(false));
+  }, [])
+
+  const getUserSetting = async () => {
+    try {
+      const res = await axios.get(`/users/${user?.sub}`);
+      if(res.status === 200) {
+        const largeFont = res.data[0].largeFont
+        console.log(largeFont)
+        setChecked(largeFont);
+        largeFont ? setFontSize(20) : setFontSize(16);
+      }
+    } catch (err) {
+      console.log(err);
     }
+  }
+
+  const toggleLargeFont = async () => {
+    const newFontSetting = !checked;
+    try {
+      const res = await axios.patch(`/users/largeFont/${user?.sub}`, {largeFont: newFontSetting});
+      const resSetting = res.data.largeFont
+      if (res.status === 200) {
+        setChecked(resSetting);
+        resSetting ? setFontSize(20) : setFontSize(16);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  if(isLoading || !user || !isAuthenticated){
+    return null;
   }
 
   return (
     <Container>
       <Header page='Settings'/>
       <Main style={{flexDirection:'row', alignItems:'baseline'}}>
-        <Switch onChange={toggleLargeFont}/>
+        <Switch onChange={toggleLargeFont} checked={checked}/>
         <h3>Larger Font</h3>
       </Main>
     </Container>
