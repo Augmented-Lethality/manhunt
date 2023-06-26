@@ -27,17 +27,16 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // if loading, let's show the loading message so it doesn't break
   const [loading, setLoading] = useState(true);
 
-  //CHANGED TO HTTP TEMPORARILY CAUSE HTTPS WASNT WORKING
-  // const socket = useSocket(`https://${process.env.REACT_APP_SOCKET_URI}`, {
-  //   reconnectionAttempts: 5,
-  //   reconnectionDelay: 3000,
-  //   autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
-  // });
-  const socket = useSocket(`http://${process.env.REACT_APP_SOCKET_URI}`, {
+  const socket = useSocket(`https://${process.env.REACT_APP_SOCKET_URI}`, {
     reconnectionAttempts: 5,
     reconnectionDelay: 3000,
     autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
   });
+  // const socket = useSocket(`http://${process.env.REACT_APP_SOCKET_URI}`, {
+  //   reconnectionAttempts: 5,
+  //   reconnectionDelay: 3000,
+  //   autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
+  // });
 
   // when the component mounts, aka the user visits a react component surrounded by this socket component, these functions are called
   useEffect(() => {
