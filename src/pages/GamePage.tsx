@@ -24,18 +24,14 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 const CrosshairContainer = styled.div`
   position: absolute;
-  top: 80%;
+  top: 85%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-  background: black;
-  cursor: pointer;
-  width: 28vw;
-  height: 28vw;
-  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 7rem;
 `;
 
 
@@ -130,12 +126,12 @@ const GamePage: React.FC = () => {
           <KillCam faceMatcher={faceMatcher} />
         </WebcamProvider>
       )}
-      <CrosshairContainer onClick={handleGameChange}>
-        <GiCrosshair style={{ position: 'absolute', fontSize: '9rem' }} />
-        <div style={{ background: 'none', border: 'none', position: 'relative', top: '2px' }}>
-          {gameMode === 'Chase' ? <FaSkull className='react-icon-large' /> : <FaEye className='react-icon-large' />}
-        </div>
-      </CrosshairContainer>
+        <CrosshairContainer onClick={handleGameChange}>
+          <GiCrosshair style={{ position: 'absolute' }}/>
+          <div style={{position:'relative', top:'2px'}}>
+            {gameMode === 'Chase' ? <FaSkull className='react-icon-large'/> : <FaEye className='react-icon-large'/>}
+          </div>
+        </CrosshairContainer>
 
     </Container>
   );

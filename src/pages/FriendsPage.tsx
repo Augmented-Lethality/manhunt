@@ -1,52 +1,139 @@
-import React, { useContext, useEffect, useState } from 'react';
-import SocketContext from '../contexts/Socket/SocketContext';
-import { ButtonToHome } from '../components/Buttons';
-import { useAuth0 } from "@auth0/auth0-react";
-import { Container } from '../styles/Container';
-import { Header } from '../styles/Header'
-import { Main } from '../styles/Main'
-import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
-import { HiUserAdd } from 'react-icons/hi';
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import UsersList from '../components/UsersList';
+import { IoSearchCircle, IoCloseCircle } from 'react-icons/io5';
+import Loading from '../components/Loading';
+import {Container} from '../styles/Container';
+import {Main} from '../styles/Main';
+import {Header} from '../styles/Header';
 import axios from 'axios';
-import { UserData } from './ProfilePage';
+import { useAuth0 } from '@auth0/auth0-react';
 
-const FriendsPage: React.FunctionComponent = (props) => {
-  const [userData, setUserData] = useState<UserData | null>(null);
+const FriendsContainer = styled.div`
+  background-color: #3C3E49;
+  padding: 20px;
+  margin: 20px;
+  margin-bottom: 0;
+  flex-grow: 1;
+`;
+
+const SearchBar = styled.div`
+  display: flex;
+  align-items: center;
+  margin-inline: auto;
+  background-color: #2B2B32;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  width: 70%;
+  height: 30px;
+`;
+
+
+const SearchIcon = styled(IoSearchCircle)`
+  color: #fff;
+`;
+
+const CloseIcon = styled(IoCloseCircle)`
+  color: #fff;
+`;
+
+const FriendsPage: React.FC = () => {
+  const [searchText, setSearchText] = useState('');
+  const [onlineFriends, setOnlineFriends] = useState([]);
+  const [offlineFriends, setOfflineFriends] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const { user, isAuthenticated } = useAuth0();
-  const { games, users } = useContext(SocketContext).SocketState;
-  
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
-          headers: {
-            Authorization: `Bearer ${user?.token}`
+    if(user && isAuthenticated) {
+      getFriends();
+    }
+  }, [user, isAuthenticated]); 
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchText]); 
+
+  const getFriends = async () => {
+    try {
+      const res = await axios.get('/friends', {
+        params: {
+          userId: user?.authId,
+          status: 'accepted'
+        }
+     });
+      if (res.status === 200) {
+        let onlineFriends;
+        let offlineFriends;
+        res.data.forEach(friend => {
+          if(friend.gameId){
+            onlineFriends.push(friend);
+          } else {
+            offlineFriends.push(friend);
           }
         });
-        setUserData(response.data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+        setOnlineFriends(onlineFriends);
+        setOfflineFriends(offlineFriends);
       }
-    };
-    if (isAuthenticated && user) {
-      fetchUserData();
+    } catch(err) {
+      console.log(err);
     }
-  }, []);
+  }
+
+  const handleSearch = async () => {
+    if(!searchText.length){
+      return;
+    }
+    try {
+      const res = await axios.get(`/users/search/${searchText}`)
+      if(res.status === 200){
+        setSearchResults(res.data)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  if(!user || !isAuthenticated){
+    return null;
+  }
 
 
-  
   return (
     <Container>
-      <Header>
-        <h2>Friends</h2>
-        <div onClick={()=>{}}><HiUserAdd/>Friends</div>
-        <ButtonToHome />
-      </Header>
-      <Main>
-        {/* {user} */}
+      <Header page='Friends'/>
+      <Main style={{marginBottom: 0, display:'flex'}}>
+        <SearchBar>
+          <input
+            type='text'
+            placeholder="Search"
+            value={searchText}
+            onChange={handleInputChange}
+            />
+        {searchText === '' ?
+        <SearchIcon className='react-icon'/>
+        : <CloseIcon onClick={() => {setSearchText('')}} className='react-icon'/>}
+       </SearchBar>
+        <FriendsContainer>
+          {searchText === '' ? (
+            <>
+              <UsersList users={onlineFriends} header={`Online • ${onlineFriends.length}`} />
+              <UsersList users={offlineFriends} header={`Offline • ${offlineFriends.length}`} />
+            </>
+          ) : searchResults.length === 0 ? (
+            <p>no users found</p>
+          ) : (
+            <UsersList users={searchResults} />
+          )}
+        </FriendsContainer>
       </Main>
     </Container>
-  );
+  )
 };
 
 export default FriendsPage;
