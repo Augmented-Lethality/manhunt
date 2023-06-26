@@ -5,7 +5,7 @@ import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
 import { Container } from '../styles/Container';
 import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
-import { AiFillCloseCircle } from 'react-icons/ai'
+import XCircle from 'react-feather/dist/icons/x-circle';
 export type UserData = {
   username: string;
   email: string;
@@ -51,7 +51,7 @@ const ProfilePage: React.FC = () => {
       <Container>
         <StyledHeader>
           <h1>BioData</h1>
-          <AiFillCloseCircle className='react-icon' onClick={()=>{setPhotoStatus('profile')}}/>
+          <XCircle className='react-icon' onClick={()=>{setPhotoStatus('profile')}}/>
         </StyledHeader>
         <CreateFaceDescriptions
           setPhotoStatus={setPhotoStatus}

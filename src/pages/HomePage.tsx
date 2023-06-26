@@ -2,12 +2,10 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { ButtonToFindGame, ButtonToHostGame } from '../components/Buttons';
-import DropDownMenu from '../components/DropDownMenu';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
 import { HomeHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
-import { BsPersonSquare } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { useFontSize } from '../contexts/FontSize';
 

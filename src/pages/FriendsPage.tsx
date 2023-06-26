@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 import UsersList from '../components/UsersList';
-import { IoSearchCircle, IoCloseCircle } from 'react-icons/io5';
-import Loading from '../components/Loading';
 import {Container} from '../styles/Container';
 import {Main} from '../styles/Main';
 import {Header} from '../styles/Header';
-import axios from 'axios';
-import { useAuth0 } from '@auth0/auth0-react';
+import Search from 'react-feather/dist/icons/search';
+import XCircle from 'react-feather/dist/icons/x-circle';
 
 const FriendsContainer = styled.div`
   background-color: #3C3E49;
@@ -30,11 +30,11 @@ const SearchBar = styled.div`
 `;
 
 
-const SearchIcon = styled(IoSearchCircle)`
+const SearchIcon = styled(Search)`
   color: #fff;
 `;
 
-const CloseIcon = styled(IoCloseCircle)`
+const CloseIcon = styled(XCircle)`
   color: #fff;
 `;
 

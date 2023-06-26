@@ -10,8 +10,8 @@ import CapturePhoto from './CapturePhoto'
 import { WebcamProvider } from '../contexts/WebcamProvider';
 import axios from 'axios';
 import {UserData} from '../pages/ProfilePage'
-import { IoCameraReverseSharp } from 'react-icons/io5'
-import { GiSave} from 'react-icons/gi'
+import Save from 'react-feather/dist/icons/save'
+import Camera from 'react-feather/dist/icons/camera'
 
 
 interface CreateFaceDescriptionsProps {
@@ -81,8 +81,8 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhoto
           justifyContent: 'space-around',
           width:'100%'
           }}>
-          <IoCameraReverseSharp className='react-icon-large' onClick={()=>{setImg(null)}}/>
-          <GiSave className='react-icon-large' onClick={handleSave}/>
+          <Camera className='react-icon-large' onClick={()=>{setImg(null)}}/>
+          <Save className='react-icon-large' onClick={handleSave}/>
         </div>
       </div>
     )

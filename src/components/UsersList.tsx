@@ -12,15 +12,19 @@ interface UsersListProps {
   header?: string | null;
 }
 
+
 const UsersList: React.FC<UsersListProps> = ({ users, header }) => {
   const navigate = useNavigate();
-
+  const handleUserClick = (username: string) => {
+    navigate(`/profile/${username}`);
+  };
+  
   return (
     <ListContainer>
       {header && <h1>{header}</h1>}
       {users.map((user, index) => (
         <React.Fragment key={index}>
-          <UserListItem user={user} onClick={()=>{navigate(`/profile/${user.username}`)}}/>
+          <UserListItem user={user} onClick={() => handleUserClick(user.username)}/>
           <hr />
         </React.Fragment>
       ))}
