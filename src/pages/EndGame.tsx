@@ -18,13 +18,14 @@ const HomePage = () => {
   }, [games]);
 
 
+  // this is currently hardcoded
   return (
     <Container>
-      <h1 style={{ color: '#6e6b8c' }}>WOW {user?.username} won and this is hardcoded</h1>
+      <h1 style={{ color: '#6e6b8c' }}>WOW {user?.nickname} Won!</h1>
       <br />
       <br />
       <ButtonToHome />
-      <ButtonToHostGame />
+      {/* <ButtonToHostGame /> */}
     </Container>
   );
 };

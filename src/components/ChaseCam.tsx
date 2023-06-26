@@ -41,7 +41,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
   const hardCodeMarker = new Sprite(hardCodeMtl);
 
   // set size of sprites
-  const spriteSize = 0.1;
+  const spriteSize = 0.5;
   killers.scale.set(spriteSize, spriteSize, 1);
   victim.scale.set(spriteSize, spriteSize, 1);
   hardCodeMarker.scale.set(spriteSize, spriteSize, 1);
@@ -79,6 +79,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
   // webcam ref
   const webcamRendererRef = useRef<WebcamRendererLocal | null>(null);
 
+  const deviceOrientationControlsRef = useRef<DeviceOrientationControls | null>(null);
 
   // function that turns off the camera, will be sent to the parent component (GamePage.tsx)
   // so that it turns off both this camera and Kalypso's camera on dismount
@@ -88,6 +89,12 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
     }
     console.log('camera turned off yay!!!');
   };
+
+  const handlePermission = () => {
+    if (deviceOrientationControlsRef.current) {
+      deviceOrientationControlsRef.current.connect();
+    }
+  }
 
   useEffect(() => {
 
@@ -115,7 +122,10 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
     webcamRendererRef.current = cam;
 
     // start the device orientation controls for mobile
-    const deviceOrientationControls = new DeviceOrientationControls(camera);
+    deviceOrientationControlsRef.current = new DeviceOrientationControls(camera);
+
+    handlePermission();
+
 
     // start the location
     arjsRef.current.startGps();
@@ -139,7 +149,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
       }
 
       // send updates when the phone tilts
-      deviceOrientationControls.update();
+      deviceOrientationControlsRef.current?.update();
       // update the camera's feed
       cam.update();
       renderer.render(scene, camera);
@@ -199,7 +209,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
 
-      turnOffCamera();
+      // turnOffCamera();
 
       arjsRef.current?.stopGps();
     };
@@ -263,13 +273,13 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
             victim.userData.id = playerLocation.authId;
             // add the marker to the scene at their long/lat and an elevation of 10 so it's mid height
             arjsRef.current?.add(victim, markerLong, markerLat, 10);
-            // console.log(`Added NEW victim marker`);
+            console.log(`Added NEW victim marker`);
           } else {
             // make another killer marker to place and add to the scene
             const clonedKiller = killers.clone();
             clonedKiller.userData.id = playerLocation.authId;
             arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
-            // console.log(`Added NEW killer marker`);
+            console.log(`Added NEW killer marker`);
           }
         } else {
           // find the existing marker
@@ -294,6 +304,8 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
 
   return (
     <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+      {/* <button onClick={handlePermission}>Request Orientation Permission</button> */}
+
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: '100%', position: 'absolute' }}
