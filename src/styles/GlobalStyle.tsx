@@ -11,7 +11,7 @@ const GlobalStyle = createGlobalStyle`
     background: #4C4E61;
     color: #6e6b8c;
     font-family: 'Source Code Pro';
-    font-size: 1rem;
+    font-size: var(--font-size);
     word-wrap: break-word;
   }
 
@@ -87,10 +87,10 @@ const GlobalStyle = createGlobalStyle`
   border: 2px solid black;
   }
 
-  // p {
-  //   font-size: 1rem;
-  //   color: #979fd0;
-  // }
+  p {
+    font-size: calc(var(--font-size) * 1.5);
+    color: #6e6b8c;
+  }
 
   // h1, h2, h3, h4, h5, h6 {
   //   color: #979fd0;
@@ -102,7 +102,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   h3 {
-    font-size: 1.5rem;
+    font-size: calc(var(--font-size) * 1.5);
     color: #b8b8b8;
     font-weight: 400;    
   }
@@ -112,7 +112,7 @@ const GlobalStyle = createGlobalStyle`
     background: none;
     height: 100%;
     width: 100%;
-    font-size: 1rem;
+    font-size: calc(var(--font-size) * 1.5);
     color: #979fd0;
   }
 `;
