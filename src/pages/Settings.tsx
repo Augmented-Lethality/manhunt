@@ -77,7 +77,6 @@ const Settings: React.FC = () => {
       const res = await axios.get(`/users/${user?.sub}`);
       if(res.status === 200) {
         const largeFont = res.data[0].largeFont
-        console.log(largeFont)
         setChecked(largeFont);
         largeFont ? setFontSize(20) : setFontSize(16);
       }
