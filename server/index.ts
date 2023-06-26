@@ -1,8 +1,8 @@
 import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
- import { createServer } from "http";
-//import { createServer } from 'https';
+//  import { createServer } from "http";
+import { createServer } from 'https';
 import fs from 'fs';
 
 import { ServerSocket } from './websocket/socket';
@@ -16,20 +16,23 @@ dotenv.config();
 
 const dist = path.resolve(__dirname, '..', 'client');
 const app = express();
-const httpServer = createServer(app);
 
-// const options = {
-//   key: fs.readFileSync('localhost-key.pem'),
-//   cert: fs.readFileSync('localhost.pem')
-// };
+// HTTP SERVER
+// const httpServer = createServer(app);
 
-//const httpsServer = createServer(options, app);
+// HTTPS SERVER
+const options = {
+  key: fs.readFileSync('localhost-key.pem'),
+  cert: fs.readFileSync('localhost.pem')
+};
+// HTTPS SERVER
+const httpsServer = createServer(options, app);
 
 
-// start the socket
-new ServerSocket(httpServer);
-// start the socket
-//new ServerSocket(httpsServer);
+// start the socket HTTP
+// new ServerSocket(httpServer);
+// start the socket HTTPS
+new ServerSocket(httpsServer);
 
 
 const port = process.env.PORT || 3666;
@@ -56,11 +59,12 @@ app.get('*', (req, res) => {
   });
 });
 
-
-httpServer.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
-
-// httpsServer.listen(port, () => {
-//   console.log(`Https server listening on port ${port}`);
+// HTTP SERVER
+// httpServer.listen(port, () => {
+//   console.log(`Server listening on port ${port}`);
 // });
+
+// HTTPS SERVER
+httpsServer.listen(port, () => {
+  console.log(`Https server listening on port ${port}`);
+});
