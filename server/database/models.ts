@@ -7,6 +7,7 @@ class User extends Model {
   gamesWon: any;
   killsConfirmed: any;
   facialDescriptions: any;
+  largeFont: any;
 }
 User.init({
   id: {
@@ -63,6 +64,11 @@ User.init({
   killsConfirmed: {
     type: DataTypes.INTEGER,
     allowNull: true
+  },
+  largeFont: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 }, { sequelize });
 
