@@ -59,7 +59,7 @@ const ProfilePage: React.FC = () => {
               setPhotoStatus('profile');
             }}
           />
-        </Header>
+        </StyledHeader>
         <CreateFaceDescriptions
           setPhotoStatus={setPhotoStatus}
           username={user?.name}
