@@ -108,6 +108,7 @@ export interface ISocketContextProps {
   SetHunted: (victim: User) => void;
   LeaveGame: (user: any) => void;
   UpdateGameStatus: (user: any, status: string) => void;
+  AddGameStats: (user: any) => void;
 }
 
 // context object that creates the context using the createContext() method
@@ -124,6 +125,7 @@ const SocketContext = createContext<ISocketContextProps>({
   SetHunted: () => { },
   LeaveGame: () => { },
   UpdateGameStatus: () => { },
+  AddGameStats: () => { },
 });
 
 // shares data between components without having to pass props around (react feature):
