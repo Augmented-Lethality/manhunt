@@ -1,8 +1,7 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const BundleAnalyzerPlugin =
-  require("webpack-bundle-analyzer").BundleAnalyzerPlugin
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 
 const srcDir = path.resolve(__dirname, "src");
 const distDir = path.resolve(__dirname, "dist/client");
@@ -15,7 +14,12 @@ module.exports = {
   },
   output: {
     path: distDir,
-    filename: "bundle.js",
+    filename: "[name].bundle.js",
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
   plugins: [
     new HtmlWebPackPlugin({
@@ -45,5 +49,4 @@ module.exports = {
       "path": require.resolve("path-browserify"),
     }
   },
-
 };
