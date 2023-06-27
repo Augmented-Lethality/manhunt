@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import PageLoader from './components/Loading';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -17,6 +17,7 @@ import FriendsPage from './pages/FriendsPage';
 import SocketComponent from './contexts/Socket/SocketComponent';
 import Settings from './pages/Settings';
 import { useFontSize } from './contexts/FontSize';
+import { AccessProvider } from './contexts/AccessContext';
 
 const App = () => {
   const { isLoading } = useAuth0();
@@ -81,9 +82,12 @@ const App = () => {
       <Route
         path="/lobby"
         element={
-          <SocketComponent>
-            <AuthenticationGuard component={GameLobby} />
-          </SocketComponent>
+          <AccessProvider>
+            <SocketComponent>
+              <AuthenticationGuard component={GameLobby} />
+            </SocketComponent>
+          </AccessProvider>
+
         }
       />
       <Route
