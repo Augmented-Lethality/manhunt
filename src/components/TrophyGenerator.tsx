@@ -4,6 +4,9 @@ import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
+
+
+
 export type UserData = {
   id: number;
   username: string;
@@ -91,14 +94,15 @@ const TrophyGenerator: React.FC = () => {
     tubeWidth: useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []),
   };
 
+
   const postTrophyData = async () => {
     try {
       if (userData && userData.id) {
         setIsClaimed(true);
         console.log('userData.id:', userData.id); // Check the value of userData.id
         await axios.post('/trophies', {
-          name: 'Generated Trophy4',
-          description: 'A randomly generated trophy',
+          name: '',
+          description: '',
           generationConditions: JSON.stringify(trophyData),
           filePath: '',
           ownerId: userData.id

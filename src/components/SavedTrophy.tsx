@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
 export type TrophyData = {
-  id: number;
+  id: number
   name: string;
   description: string;
   createdAt: string;
