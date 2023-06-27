@@ -19,7 +19,30 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks: 'all',
+      cacheGroups: {
+        faceapi: {
+          test: /[\\/]node_modules[\\/]face-api\.js[\\/]/,
+          name: 'faceapi',
+          chunks: 'all',
+        },
+        reactThree: {
+          test: /[\\/]node_modules[\\/]@react-three[\\/]/,
+          name: 'react-three',
+          chunks: 'all',
+        },
+        visionBundle: {
+          test: /[\\/]node_modules[\\/]@mediapipe[\\/]/,
+          name: 'mediapipe',
+          chunks: 'all',
+        },
+        three: {
+          test: /[\\/]node_modules[\\/]three[\\/]/,
+          name: 'three',
+          chunks: 'all',
+        }
+      },
     },
+    usedExports: true,
   },
   plugins: [
     new HtmlWebPackPlugin({
@@ -28,7 +51,7 @@ module.exports = {
     }),
     new Dotenv(),
     //UNCOMMENT TO RUN BUILD ANALIZER ON NPM RUN PROD
-    // new BundleAnalyzerPlugin()
+    new BundleAnalyzerPlugin()
   ],
   module: {
     rules: [
