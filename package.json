@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
+  "sideEffects": ["*.css", "*.scss"],
   "scripts": {
     "start": "nodemon dist/server/index.js",
     "build:server": "tsc -p tsconfig-server.json",
     "build:client": "webpack -c webpack.prod.js",
-    "build": "npm run build:server && npm run build:client",
+    "build": "npm run build:server && npm run build:client --max-old-space-size=6000",
     "start:server": "tsc -p tsconfig-server.json -w",
     "start:client": "webpack -c webpack.dev.js -w",
     "dev": "concurrently \"npm run start:server\" \"npm run start:client\"",
