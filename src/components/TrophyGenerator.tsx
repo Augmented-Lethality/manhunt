@@ -1,16 +1,8 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
-import { Canvas } from 'react-three-fiber';
+import { Canvas } from '@react-three/fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
-
-type TrophyData = {
-  dimension: number;
-  color: string;
-  shape: string;
-  tubularSegments: number;
-  tubeWidth: number;
-};
 
 export type UserData = {
   id: number;
@@ -24,7 +16,7 @@ export type UserData = {
   // Add other user data properties as needed
 };
 
-const TrophyGenerator: React.FC<TrophyData> = () => {
+const TrophyGenerator: React.FC = () => {
   const trophyRef = useRef<THREE.Mesh>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [prevMouseX, setPrevMouseX] = useState(0);
@@ -75,7 +67,7 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
     return array[randomIndex];
   };
 
-  const trophyData: TrophyData = {
+  const trophyData = {
     dimension: useMemo(() => getRandomElement([1, 2, 3]), []),
     color: useMemo(
       () =>

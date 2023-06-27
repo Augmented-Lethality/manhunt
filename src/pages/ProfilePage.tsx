@@ -8,6 +8,7 @@ import { Container } from '../styles/Container';
 import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { AiFillCloseCircle } from 'react-icons/ai'
+
 export type UserData = {
   userId: number;
   username: string;
