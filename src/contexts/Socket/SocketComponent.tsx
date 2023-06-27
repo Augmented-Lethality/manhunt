@@ -32,6 +32,11 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     reconnectionDelay: 3000,
     autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
   });
+  // const socket = useSocket(`http://${process.env.REACT_APP_SOCKET_URI}`, {
+  //   reconnectionAttempts: 5,
+  //   reconnectionDelay: 3000,
+  //   autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
+  // });
 
   // IF NEED HTTP SOCKET CONNECTION
   // const socket = useSocket(`http://${process.env.REACT_APP_SOCKET_URI}`, {

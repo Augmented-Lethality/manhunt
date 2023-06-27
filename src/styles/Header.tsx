@@ -2,9 +2,8 @@ import React, { ReactNode, useContext } from 'react';
 import styled from 'styled-components';
 import DropDownMenu from '../components/DropDownMenu';
 import { useNavigate } from 'react-router-dom';
-import { BsPersonSquare } from 'react-icons/bs';
-import { AiFillHome } from 'react-icons/ai';
-import { IoHome } from 'react-icons/io5';
+import User from 'react-feather/dist/icons/user';
+import Home from 'react-feather/dist/icons/home';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ButtonToHome } from '../components/Buttons';
 import SocketContext from '../contexts/Socket/SocketContext';
@@ -33,10 +32,10 @@ export function HomeHeader({ users }) {
         alt='Profile'
         className='profile__avatar'
         onClick={() => { navigate('/profile') }}
-        style={{ height: '10vw', width: '10vw', borderRadius: '50%' }} />
-      <DropDownMenu>
-        <p onClick={() => { navigate('/profile') }}><BsPersonSquare />profile</p>
-      </DropDownMenu>
+        style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
+        <DropDownMenu>
+          <p onClick={() => { navigate('/profile') }}><User />profile</p>
+        </DropDownMenu>
     </StyledHeader>
   );
 }
@@ -54,7 +53,7 @@ export function Header({ page }) {
 
   return (
     <StyledHeader>
-      <IoHome className='react-icon-logo' onClick={handleHome} />
+      <Home className='react-icon-logo' onClick={handleHome} />
       <h1>{page}</h1>
       <img
         src={user?.picture}
@@ -63,7 +62,7 @@ export function Header({ page }) {
         onClick={() => { navigate('/profile') }}
         style={{ height: '10vw', width: '10vw', borderRadius: '50%' }} />
       <DropDownMenu>
-        <p onClick={handleHome}><AiFillHome />home</p>
+        <p onClick={handleHome}><Home />home</p>
       </DropDownMenu>
     </StyledHeader>
   );

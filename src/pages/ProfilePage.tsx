@@ -7,7 +7,7 @@ import SavedTrophy from '../components/SavedTrophy';
 import { Container } from '../styles/Container';
 import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
-import { AiFillCloseCircle } from 'react-icons/ai'
+import XCircle from 'react-feather/dist/icons/x-circle';
 export type UserData = {
   userId: number;
   username: string;
@@ -53,7 +53,7 @@ const ProfilePage: React.FC = () => {
       <Container>
         <StyledHeader>
           <h1>BioData</h1>
-          <AiFillCloseCircle className='react-icon' onClick={()=>{setPhotoStatus('profile')}}/>
+          <XCircle className='react-icon' onClick={()=>{setPhotoStatus('profile')}}/>
         </StyledHeader>
         <CreateFaceDescriptions
           setPhotoStatus={setPhotoStatus}
@@ -128,10 +128,10 @@ const ProfilePage: React.FC = () => {
               <h6>Kills Confirmed: {userData?.killsConfirmed}</h6>
             </div>
             <div style={{ width: '300px', height: '300px' }}>
-              <TrophyGenerator />
+              <TrophyGenerator dimension={0} color={''} shape={''} tubularSegments={0} tubeWidth={0} />
             </div>
             <div style={{ width: '300px', height: '300px' }}>
-              <SavedTrophy />
+              <SavedTrophy id={0} name={''} description={''} createdAt={''} dimension={0} color={''} shape={''} tubularSegments={0} tubeWidth={0} />
             </div>
           </div>
         </div>
