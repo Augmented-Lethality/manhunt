@@ -44,6 +44,7 @@ module.exports = {
     },
     usedExports: true,
   },
+  parallelism: 4,
   plugins: [
     new HtmlWebPackPlugin({
       template: path.resolve(srcDir, "index.html"),
