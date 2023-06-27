@@ -327,7 +327,7 @@ export class ServerSocket {
           if (game.dataValues.users.includes(user.sub)) {
 
             // update the user so that they don't have the gameId anymore
-            await User.update({ gameId: null }, { where: { authId: user.sub } });
+            await User.update({ gameId: '' }, { where: { authId: user.sub } });
 
             const location = await Locations.findByPk(user.sub);
 

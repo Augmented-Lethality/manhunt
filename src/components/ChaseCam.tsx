@@ -10,6 +10,7 @@ import {
   DeviceOrientationControls,
   Sprite,
   SpriteMaterial,
+  TextureLoader,
 } from "./webcam.js"
 
 import SocketContext from '../contexts/Socket/SocketContext';
@@ -26,25 +27,29 @@ type ChaseCamRefType = {
 const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
 
   const { user } = useAuth0();
-  const { games, locations } = useContext(SocketContext).SocketState;
+  const { games, locations, users } = useContext(SocketContext).SocketState;
+
+  const [userTextures, setUserTextures] = useState({});
+
+  const textureLoader = new TextureLoader();
 
 
   ////////// create markers to render on the screen that stays in the defined location ///////////
   // create sprite materials
   const killMtl = new SpriteMaterial({ color: 0xff0000, sizeAttenuation: false }); // red
   const vicMtl = new SpriteMaterial({ color: 0x476930, sizeAttenuation: false }); // victim
-  const hardCodeMtl = new SpriteMaterial({ color: 0x993399, sizeAttenuation: false });
+  // const hardCodeMtl = new SpriteMaterial({ color: 0x993399, sizeAttenuation: false });
 
   // create sprites
   const killers = new Sprite(killMtl);
   const victim = new Sprite(vicMtl);
-  const hardCodeMarker = new Sprite(hardCodeMtl);
+  // const hardCodeMarker = new Sprite(hardCodeMtl);
 
   // set size of sprites
-  const spriteSize = 0.5;
+  const spriteSize = 0.3;
   killers.scale.set(spriteSize, spriteSize, 1);
   victim.scale.set(spriteSize, spriteSize, 1);
-  hardCodeMarker.scale.set(spriteSize, spriteSize, 1);
+  // hardCodeMarker.scale.set(spriteSize, spriteSize, 1);
   //////////////////////////////////////////////////////////////////
 
   // this will add the location to the DB
@@ -95,6 +100,18 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
       deviceOrientationControlsRef.current.connect();
     }
   }
+
+  useEffect(() => {
+    const textureObject = {};
+    users.forEach(async (person) => {
+
+      if (!person.image.includes("gravatar") && person.image !== user?.sub) {
+        const texture = textureLoader.load(person.image);
+        textureObject[person.authId] = texture;
+      }
+    });
+    setUserTextures(textureObject);
+  }, [users, user])
 
   useEffect(() => {
 
@@ -209,7 +226,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
 
-      // turnOffCamera();
+      turnOffCamera();
 
       arjsRef.current?.stopGps();
     };
@@ -271,21 +288,35 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
           if (playerLocation.authId === games[0].hunted) {
             // make the marker's id = the the player's authId
             victim.userData.id = playerLocation.authId;
+            // set the user's picture as the map texture for the victim
+            const texture = userTextures[playerLocation.authId];
+            if (texture) {
+              // console.log('texture:', texture, userTextures)
+              victim.material.map = texture;
+              victim.material.needsUpdate = true; // re-process with the new material texture
+            }
             // add the marker to the scene at their long/lat and an elevation of 10 so it's mid height
-            arjsRef.current?.add(victim, markerLong, markerLat, 10);
+            arjsRef.current?.add(victim, markerLong, markerLat, 5);
             console.log(`Added NEW victim marker`);
           } else {
             // make another killer marker to place and add to the scene
             const clonedKiller = killers.clone();
             clonedKiller.userData.id = playerLocation.authId;
-            arjsRef.current?.add(clonedKiller, markerLong, markerLat, 10);
+            // set the user's picture as the map texture for the killer
+            const texture = userTextures[playerLocation.authId];
+            if (texture) {
+              console.log('texture:', texture, userTextures)
+              clonedKiller.material.map = texture;
+              clonedKiller.material.needsUpdate = true; // re-process with the new material texture
+            }
+            arjsRef.current?.add(clonedKiller, markerLong, markerLat, 5);
             console.log(`Added NEW killer marker`);
           }
         } else {
           // find the existing marker
           const markerToUpdate = arjsRef.current?._scene.children.find((child) => child.userData.id === playerLocation.authId);
           // a marker has already been added so only updating the world position
-          arjsRef.current?.setWorldPosition(markerToUpdate, markerLong, markerLat, 10);
+          arjsRef.current?.setWorldPosition(markerToUpdate, markerLong, markerLat, 5);
           // console.log('updated the location of an existing marker')
         }
 
