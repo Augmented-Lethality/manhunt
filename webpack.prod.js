@@ -51,7 +51,7 @@ module.exports = {
     }),
     new Dotenv(),
     //UNCOMMENT TO RUN BUILD ANALIZER ON NPM RUN PROD
-    new BundleAnalyzerPlugin()
+    // new BundleAnalyzerPlugin()
   ],
   module: {
     rules: [
