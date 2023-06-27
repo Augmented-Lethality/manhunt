@@ -4,10 +4,6 @@ export const Users = Router();
 import { User } from '../database/models'
 import { Op } from "sequelize";
 
-
-
-
-
 // POST NEW USER, checks if user exists first, returns existing if so
 Users.post("/", async (req, res) => {
   try {
@@ -52,7 +48,6 @@ Users.post("/", async (req, res) => {
   }
 });
 
-
 // PUT updated stats into user
 Users.put("/:authId", async (req, res) => {
   try {
@@ -92,6 +87,22 @@ Users.patch("/face-description/:authId", async (req, res) => {
     user.facialDescriptions = req.body.descriptions;
     await user.save();
     res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// PATCH largeFontSettings into user
+Users.patch("/largeFont/:authId", async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { authId: req.params.authId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    user.largeFont = req.body.largeFont;
+    await user.save();
+    res.status(200).send(user);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });

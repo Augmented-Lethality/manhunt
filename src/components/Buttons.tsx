@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios'
+
 
 type ButtonProps = {
   label: string;
@@ -11,7 +11,7 @@ type ButtonProps = {
   onClick?: () => void;
   primary?: boolean;
   className?: string;
-};
+} 
 
 const StyledButton1 = styled.button<ButtonProps>`
   /* Adapt the colors based on primary prop */
