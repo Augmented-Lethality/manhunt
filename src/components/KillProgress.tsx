@@ -1,9 +1,5 @@
 import React from 'react';
-import styled, { css, keyframes } from 'styled-components';
-
-interface TargetRecognitionProps {
-    progress: number; // Progress from 0 to 10
-}
+import styled from 'styled-components';
 
 const StyledSvg = styled.svg`
     position: absolute;
@@ -19,6 +15,10 @@ const ProgressCircle = styled.circle<{ progress: number, circumference: number }
     transition: stroke-dashoffset 0.5s ease-out;
     stroke-dashoffset: ${(props) => props.circumference - props.progress / 10 * props.circumference};
 `;
+
+interface TargetRecognitionProps {
+  progress: number; // Progress from 0 to 10
+}
 
 const TargetRecognition: React.FC<TargetRecognitionProps> = ({ progress }) => {
     const radius = 20;

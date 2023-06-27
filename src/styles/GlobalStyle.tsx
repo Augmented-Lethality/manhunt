@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
 
   body {
     margin: 0;

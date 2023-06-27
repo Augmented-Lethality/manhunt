@@ -7,10 +7,11 @@ class User extends Model {
   gamesWon: any;
   killsConfirmed: any;
   facialDescriptions: any;
+  largeFont: any;
 }
 User.init({
   id: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
   },
@@ -63,6 +64,11 @@ User.init({
   killsConfirmed: {
     type: DataTypes.INTEGER,
     allowNull: true
+  },
+  largeFont: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 }, { sequelize });
 

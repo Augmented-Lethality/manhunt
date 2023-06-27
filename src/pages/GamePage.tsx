@@ -6,34 +6,19 @@ import {
   LabeledFaceDescriptors
 } from 'face-api.js';
 import React, { useState, useContext, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { WebcamProvider } from '../contexts/WebcamProvider'
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
 import Countdown from '../components/countdown';
-import { Container } from '../styles/Container';
-import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
-import { GameHeader } from '../styles/Header';
-import { FaSkull, FaEye, FaHome } from 'react-icons/fa';
-import { GiCrosshair } from 'react-icons/gi';
-import { styled } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import DropDownMenu from '../components/DropDownMenu';
-import { useAuth0 } from '@auth0/auth0-react';
-
-
-const CrosshairContainer = styled.div`
-  position: absolute;
-  top: 85%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 7rem;
-`;
-
+import { Container } from '../styles/Container';
+import { GameHeader } from '../styles/Header';
+import Crosshair from 'react-feather/dist/icons/crosshair';
+import Home from 'react-feather/dist/icons/home';
+import Eye from 'react-feather/dist/icons/eye';
 
 interface ChaseCamRefType { // declaring type for child method
   turnOffCamera: () => void;
@@ -117,22 +102,18 @@ const GamePage: React.FC = () => {
       <GameHeader>
         <Countdown initialCount={5 * 60} />
         <DropDownMenu>
-          <div onClick={handleHomeDrop}><FaHome className='react-icon' />home</div>
+          <div onClick={handleHomeDrop}><Home className='react-icon' />home</div>
         </DropDownMenu>
       </GameHeader>
-      {gameMode === 'Chase' && <ChaseCam ref={chaseCamRef} />}
-      {gameMode === 'Kill' && (
+      {gameMode === 'Chase' ? <ChaseCam ref={chaseCamRef} />
+      : (
         <WebcamProvider>
           <KillCam faceMatcher={faceMatcher} />
         </WebcamProvider>
       )}
-        <CrosshairContainer onClick={handleGameChange}>
-          <GiCrosshair style={{ position: 'absolute' }}/>
-          <div style={{position:'relative', top:'2px'}}>
-            {gameMode === 'Chase' ? <FaSkull className='react-icon-large'/> : <FaEye className='react-icon-large'/>}
-          </div>
-        </CrosshairContainer>
-
+      {gameMode === 'Chase' 
+        ? <Crosshair className='react-icon-large' onClick={handleGameChange}/>
+        : <Eye className='react-icon-large' onClick={handleGameChange}/>}
     </Container>
   );
 }

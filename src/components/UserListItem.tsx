@@ -18,14 +18,16 @@ const Username = styled.p`
   color: #000;
 `;
 
-interface UserProps {
+interface UserListItemProps {
   user: {
     image: string;
     username: string;
   };
+  onClick: any
 }
 
-const UserListItem: React.FC<UserProps> = ({ user }) => {
+const UserListItem: React.FC<UserListItemProps> = ({ user }) => {
+
   return (
     <UserContainer>
       {user.image ? (

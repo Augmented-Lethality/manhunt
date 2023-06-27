@@ -103,19 +103,23 @@ const SavedTrophy: React.FC<TrophyData> = () => {
     setIsDragging(false);
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+  const handleMouseMove = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    index: number
+  ) => {
     if (!isDragging) return;
-
+  
     const mouseDeltaX = e.clientX - prevMouseX;
     const mouseDeltaY = e.clientY - prevMouseY;
     setPrevMouseX(e.clientX);
     setPrevMouseY(e.clientY);
-
-    if (trophyRefs.current[index].rotation) {
-      trophyRefs.current[index].rotation.y += mouseDeltaX * 0.01; // Rotate around Y-axis
-      trophyRefs.current[index].rotation.x += mouseDeltaY * 0.01; // Rotate around X-axis
+  
+    if (trophyRefs.current[index]?.rotation) {
+      trophyRefs.current[index]!.rotation.y += mouseDeltaX * 0.01; // Rotate around Y-axis
+      trophyRefs.current[index]!.rotation.x += mouseDeltaY * 0.01; // Rotate around X-axis
     }
   };
+  
 
   const togglePropsView = () => {
     setShowProps(!showProps);

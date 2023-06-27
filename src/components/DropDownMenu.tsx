@@ -1,11 +1,13 @@
 import React, { FC, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { BsThreeDots } from 'react-icons/bs/';
-import { IoIosCloseCircle } from 'react-icons/io/';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
-import { FaUserFriends } from 'react-icons/fa';
-import { FiLogOut, FiSettings } from 'react-icons/fi';
+import styled, { keyframes } from 'styled-components';
+import MoreHorizontal from 'react-feather/dist/icons/more-horizontal';
+import XCircle from 'react-feather/dist/icons/x-circle';
+import Users from 'react-feather/dist/icons/users';
+import LogOut from 'react-feather/dist/icons/log-out';
+import Settings from 'react-feather/dist/icons/settings';
+
 
 const dropdownAnimation = keyframes`
   0% { opacity: 0; transform: translateY(-10vh); }
@@ -45,7 +47,7 @@ const Menu = styled.div<{ isOpen: boolean }>`
   }
 `;
 
-const Dots = styled(BsThreeDots)`
+const Dots = styled(MoreHorizontal)`
 height: 10vw;
 width: 10vw;
 border-radius: 50%;
@@ -53,7 +55,7 @@ border: 2px solid #5E5E63;
 box-sizing: border-box;
 `;
 
-const Close = styled(IoIosCloseCircle)`
+const Close = styled(XCircle)`
 height: 10vw;
 width: 10vw;
 padding: 0;
@@ -84,9 +86,9 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ children }) => {
       <Menu isOpen={isMenuOpen}>
         <Close onClick={toggleMenu} />
         {children}
-        <p onClick={()=>{navigate('/yourcompetition')}}><FaUserFriends/>friends</p>
-        <p onClick={()=>{navigate('/settings')}}><FiSettings/>settings</p>
-        <p onClick={()=>{logout({logoutParams: {returnTo: window.location.origin}})}}><FiLogOut/>logout</p>
+        <p onClick={()=>{navigate('/yourcompetition')}}><Users/>friends</p>
+        <p onClick={()=>{navigate('/settings')}}><Settings/>settings</p>
+        <p onClick={()=>{logout({logoutParams: {returnTo: window.location.origin}})}}><LogOut/>logout</p>
       </Menu>
 
     </div>

@@ -2,18 +2,18 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { ButtonToFindGame, ButtonToHostGame } from '../components/Buttons';
-import DropDownMenu from '../components/DropDownMenu';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
 import { HomeHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
-import { BsPersonSquare } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import { useFontSize } from '../contexts/FontSize';
 
 type UserData = {
   username: string;
   email: string;
   authId: string;
+  largeFont: boolean;
   // Add other user data properties as needed
 };
 
@@ -22,6 +22,7 @@ const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
   const { users } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [fontSize, setFontSize] = useFontSize();
 
   useEffect(() => {
     const postUserData = async () => {
@@ -31,9 +32,16 @@ const HomePage = () => {
           username: user?.name,
           email: user?.email,
           authId: user?.sub,
+          image: user?.picture || null,
+          largeFont: false
           // Include other user data properties you want to save
         });
         setUserData(response.data);
+        //setLargeFontSetting
+        if(response.data.largeFont){
+          setFontSize(20);
+        }
+        // console.log(response);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
