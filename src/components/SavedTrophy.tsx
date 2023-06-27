@@ -29,7 +29,7 @@ export type UserData = {
 };
 
 const SavedTrophy: React.FC<TrophyData> = () => {
-  const trophyRef = useRef<THREE.Mesh>(null);
+  const trophyRefs = useRef<(THREE.Mesh | null)[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [prevMouseX, setPrevMouseX] = useState(0);
   const [prevMouseY, setPrevMouseY] = useState(0);
@@ -93,7 +93,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
     }
   };
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
     setIsDragging(true);
     setPrevMouseX(e.clientX);
     setPrevMouseY(e.clientY);
@@ -103,7 +103,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
     setIsDragging(false);
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
     if (!isDragging) return;
 
     const mouseDeltaX = e.clientX - prevMouseX;
@@ -111,9 +111,9 @@ const SavedTrophy: React.FC<TrophyData> = () => {
     setPrevMouseX(e.clientX);
     setPrevMouseY(e.clientY);
 
-    if (trophyRef.current) {
-      trophyRef.current.rotation.y += mouseDeltaX * 0.01; // Rotate around Y-axis
-      trophyRef.current.rotation.x += mouseDeltaY * 0.01; // Rotate around X-axis
+    if (trophyRefs.current[index].rotation) {
+      trophyRefs.current[index].rotation.y += mouseDeltaX * 0.01; // Rotate around Y-axis
+      trophyRefs.current[index].rotation.x += mouseDeltaY * 0.01; // Rotate around X-axis
     }
   };
 
@@ -144,11 +144,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
   }, []);
 
   return (
-    <div
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-    >
+    <div >
       <h1>Recent Trophies </h1>
       <button onClick={handleClick}>
         {showTrophies ? 'X' : 'See Trophies'}
@@ -166,13 +162,15 @@ const SavedTrophy: React.FC<TrophyData> = () => {
           .reverse()
           .map((trophy, index) => (
             <div key={index}>
-              <div>
+              <div onMouseDown={(e) => handleMouseDown(e, index)}
+                onMouseUp={handleMouseUp}
+                onMouseMove={(e) => handleMouseMove(e, index)}>
                 <Canvas>
                   <ambientLight intensity={0.5} />
                   <pointLight position={[10, 10, 10]} />
                   {trophy.shape === 'box' && (
                     <Box
-                      ref={trophyRef}
+                      ref={(ref) => (trophyRefs.current[index] = ref)}
                       args={[
                         trophy.dimension,
                         trophy.dimension,
@@ -189,7 +187,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
                   )}
                   {trophy.shape === 'polyhedron' && (
                     <Dodecahedron
-                      ref={trophyRef}
+                    ref={(ref) => (trophyRefs.current[index] = ref)}
                       args={[trophy.dimension, 0]}
                       position={[0, 0, 0]}
                       rotation={[0, 0.4, 0]}
@@ -202,7 +200,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
                   )}
                   {trophy.shape === 'torus' && (
                     <Torus
-                      ref={trophyRef}
+                    ref={(ref) => (trophyRefs.current[index] = ref)}
                       args={[
                         trophy.dimension,
                         trophy.tubeWidth,

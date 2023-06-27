@@ -174,7 +174,7 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
         )}
       </Canvas>
       {userData && userData.id !== null && (
-        <button onClick={postTrophyData} disabled={isClaimed}> {isClaimed ? 'Claimed' : 'Claim Trophy'}</button>
+        <button onClick={postTrophyData} disabled={isClaimed}> {isClaimed ? 'Claimed!' : 'Claim Trophy'}</button>
       )}
     </div>
   );
