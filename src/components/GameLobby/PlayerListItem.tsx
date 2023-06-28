@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 
 import { User } from '../../contexts/Socket/SocketContext';
 
+import AccessReady from './AccessReady';
+
 
 export const PlayerListItem: React.FC<{ player: User }> = ({ player }) => {
 
@@ -12,8 +14,7 @@ export const PlayerListItem: React.FC<{ player: User }> = ({ player }) => {
   return (
     <div>
       <strong>Player: {player.username}</strong>
-      <br />
-      {/* <strong>Games Won: {player.gamesWon}</strong> */}
+      <AccessReady />
       <br />
     </div>
   );

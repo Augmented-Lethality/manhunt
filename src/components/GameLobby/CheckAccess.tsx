@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { AccessContext } from '../../contexts/AccessContext';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../../contexts/Socket/SocketContext';
 import { ButtonToProfile } from '../Buttons';
@@ -7,11 +6,26 @@ import { ButtonToProfile } from '../Buttons';
 const CheckAccess: React.FC = () => {
   const { user } = useAuth0();
   const { users } = useContext(SocketContext).SocketState;
+  const { UpdateReady } = useContext(SocketContext);
+
 
   const [videoAccessError, setVideoAccessError] = useState(false);
   const [locationAccessError, setLocationAccessError] = useState(false);
   const [orientationAccessError, setOrientationAccessError] = useState(false);
   const [bioDataError, setBioDataError] = useState(false);
+
+  useEffect(() => {
+    if (user?.sub) {
+      // if any of these are true, meaning there is an error, set the user ready status as false
+      if (videoAccessError || locationAccessError ||
+        orientationAccessError || bioDataError) {
+        UpdateReady({ [user.sub]: false });
+        // otherwise the player is still ready
+      } else {
+        UpdateReady({ [user.sub]: true });
+      }
+    }
+  }, [videoAccessError, locationAccessError, orientationAccessError, bioDataError]);
 
   // turns the camera on and off
   const checkVideoAccess = () => {
@@ -76,9 +90,19 @@ const CheckAccess: React.FC = () => {
   };
 
   useEffect(() => {
+    // initially say the user isn't ready until the checks are made
+    if (user?.sub) {
+      UpdateReady({ [user.sub]: false });
+    }
     checkVideoAccess();
     checkLocationAccess();
     checkOrientationAccess();
+
+    const hasErrors = videoAccessError || locationAccessError || orientationAccessError || bioDataError;
+    if (!hasErrors && user?.sub) {
+      UpdateReady({ [user.sub]: true });
+    }
+
   }, []);
 
   useEffect(() => {
