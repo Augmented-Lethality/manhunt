@@ -12,7 +12,7 @@ import SocketContext from '../contexts/Socket/SocketContext';
 import { WebcamProvider } from '../contexts/WebcamProvider'
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
-import Countdown from '../components/countdown';
+import Countdown from '../components/Countdown';
 import DropDownMenu from '../components/DropDownMenu';
 import { Container } from '../styles/Container';
 import { GameHeader } from '../styles/Header';
