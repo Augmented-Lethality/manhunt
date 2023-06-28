@@ -16,14 +16,26 @@ const CheckAccess: React.FC = () => {
 
   useEffect(() => {
     if (user?.sub) {
-      // if any of these are true, meaning there is an error, set the user ready status as false
-      if (videoAccessError || locationAccessError ||
-        orientationAccessError || bioDataError) {
-        UpdateReady({ [user.sub]: false });
-        // otherwise the player is still ready
-      } else {
-        UpdateReady({ [user.sub]: true });
+      const errorMessages = [];
+
+      switch (true) {
+        case videoAccessError:
+          errorMessages.push('video');
+          break;
+        case locationAccessError:
+          errorMessages.push('location');
+          break;
+        case orientationAccessError:
+          errorMessages.push('orientation');
+          break;
+        case bioDataError:
+          errorMessages.push('bio');
+          break;
+        default:
+          break;
       }
+
+      UpdateReady({ [user.sub]: errorMessages });
     }
   }, [videoAccessError, locationAccessError, orientationAccessError, bioDataError]);
 
@@ -92,7 +104,7 @@ const CheckAccess: React.FC = () => {
   useEffect(() => {
     // initially say the user isn't ready until the checks are made
     if (user?.sub) {
-      UpdateReady({ [user.sub]: false });
+      UpdateReady({ [user.sub]: ['not checked'] });
     }
     checkVideoAccess();
     checkLocationAccess();
@@ -100,7 +112,7 @@ const CheckAccess: React.FC = () => {
 
     const hasErrors = videoAccessError || locationAccessError || orientationAccessError || bioDataError;
     if (!hasErrors && user?.sub) {
-      UpdateReady({ [user.sub]: true });
+      UpdateReady({ [user.sub]: [] });
     }
 
   }, []);

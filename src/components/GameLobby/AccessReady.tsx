@@ -12,7 +12,7 @@ const AccessReady: React.FunctionComponent = () => {
 
   useEffect(() => {
     console.log(ready)
-    if (user?.sub && ready[user?.sub]) {
+    if (user?.sub && ready[user?.sub].length <= 0) {
       // show green light next to their name, they're ready
       setLight(true);
     } else {

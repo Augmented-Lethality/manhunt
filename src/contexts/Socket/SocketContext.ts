@@ -42,7 +42,7 @@ export interface Locations {
 }
 
 export interface Ready {
-  [authId: string]: boolean;
+  [authId: string]: string[];
 }
 
 
