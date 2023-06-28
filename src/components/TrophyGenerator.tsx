@@ -96,14 +96,34 @@ const TrophyGenerator: React.FC = () => {
     }
   };
 
+  const generateRandomName = () => {
+    const adjectives = ['Atomic', 'Elite', 'Stellar', 'Executive Excellence', 'Corporate Compliance Champion', 'Citizenship', 'Participation'];
+    const nouns = ['Award', 'Bounty', 'Medal', 'Accolade', 'Relic', 'Heirloom', 'Souvenir', 'Jewel', 'Keepsake'];
+    const adjective = getRandomElement(adjectives);
+    const noun = getRandomElement(nouns);
+    return `${adjective} ${noun}`;
+  };
+
+  const generateRandomDescription = () => {
+    const descriptions = [
+      `Awarded to the most skilled operative in the CorpoReality Autonomy Police.`,
+      `A an extremely valuable bounty that seems to never have one owner for too long...`,
+      `An extraordinary achievement recognized by the high-tech society of the SOCIETY™.`,
+      `A trophy seized from the clutches of the CorpoReality Police, a true symbol of defiance and audacity.`,
+      `A prestigious token of recognition for exceptional espionage and cunning.`,
+      `It's dangerous to go alone! Take this.`
+    ];
+    return getRandomElement(descriptions);
+  };
+
   const postTrophyData = async () => {
     try {
       if (userData && userData.id) {
         setIsClaimed(true);
-        console.log('userData.id:', userData.id); // Check the value of userData.id
+        // console.log('userData.id:', userData.id); 
         await axios.post('/trophies', {
-          name:  '',
-          description: '',
+          name:  generateRandomName(),
+          description: generateRandomDescription(),
           generationConditions: JSON.stringify(trophyData),
           filePath: '',
           ownerId: userData.id
