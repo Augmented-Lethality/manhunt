@@ -2,19 +2,37 @@ import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import { createServer } from "http";
-
+// import { createServer } from 'https';
 import { ServerSocket } from './websocket/socket';
-const { sequelize } = require("./database/index");
 const { Users } = require("./routes/users");
+const { Trophies } = require('./routes/trophies');
+import { Games } from './routes/game';
+import { Location } from './routes/locations';
+import { Friends } from './routes/friends'
+
 
 dotenv.config();
 
 const dist = path.resolve(__dirname, '..', 'client');
 const app = express();
+
+// HTTP SERVER
 const httpServer = createServer(app);
 
-// start the socket
+// // HTTPS SERVER
+// const options = {
+//   key: fs.readFileSync('localhost-key.pem'),
+//   cert: fs.readFileSync('localhost.pem')
+// };
+// // HTTPS SERVER
+//const httpsServer = createServer(options, app);
+
+
+// start the socket HTTP
 new ServerSocket(httpServer);
+// // start the socket HTTPS
+// new ServerSocket(httpsServer);
+
 
 const port = process.env.PORT || 3666;
 
@@ -27,6 +45,11 @@ app.use('/assets', express.static(path.join(__dirname, '..', '..', 'public/asset
 app.use('/models', express.static(path.join(__dirname, '..', '..', 'public/models')))
 
 app.use('/users', Users);
+app.use('/trophies', Trophies);
+app.use('/games', Games);
+app.use('/locations', Location);
+app.use('/friends', Friends);
+
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(dist, 'index.html'), (err) => {
@@ -36,7 +59,12 @@ app.get('*', (req, res) => {
   });
 });
 
-
+// HTTP SERVER
 httpServer.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
+// // HTTPS SERVER
+// httpsServer.listen(port, () => {
+//   console.log(`Https server listening on port ${port}`);
+// });

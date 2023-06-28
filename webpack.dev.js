@@ -1,10 +1,11 @@
 const path = require('path');
-const HtmlWebPackPlugin = require("html-webpack-plugin");
 const Dotenv = require('dotenv-webpack');
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 
 const srcDir = path.resolve(__dirname, "src");
 const distDir = path.resolve(__dirname, "dist/client");
-console.log(distDir)
 
 module.exports = {
   mode: "development",
@@ -23,6 +24,8 @@ module.exports = {
       inject: "body",
     }),
     new Dotenv(),
+    //UNCOMMENT TO RUN BUILD ANALIZER ON NPM RUN DEV
+    // new BundleAnalyzerPlugin()
   ],
   module: {
     rules: [

@@ -1,40 +1,46 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {
-  ButtonToProfile,
-  ButtonToFindGame,
-  ButtonToHostGame,
-  LogoutButton,
-} from '../components/Buttons';
-
+import { ButtonToFindGame, ButtonToHostGame } from '../components/Buttons';
 import SocketContext from '../contexts/Socket/SocketContext';
+import { Container } from '../styles/Container';
+import { HomeHeader } from '../styles/Header';
+import { Main } from '../styles/Main';
+import { useNavigate } from 'react-router-dom';
+import { useFontSize } from '../contexts/FontSize';
 
 type UserData = {
   username: string;
   email: string;
   authId: string;
+  largeFont: boolean;
   // Add other user data properties as needed
 };
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth0();
-  const { AddName } = useContext(SocketContext);
-  const { uid, users } = useContext(SocketContext).SocketState;
+  const { users } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [fontSize, setFontSize] = useFontSize();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const postUserData = async () => {
       try {
         // Check if the user exists by sending a POST request instead of a GET request
         const response = await axios.post<UserData>('/Users', {
           username: user?.name,
           email: user?.email,
           authId: user?.sub,
+          image: user?.picture || null,
+          largeFont: false
           // Include other user data properties you want to save
         });
         setUserData(response.data);
+        //setLargeFontSetting
+        if(response.data.largeFont){
+          setFontSize(20);
+        }
         // console.log(response);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -42,40 +48,25 @@ const HomePage = () => {
     };
 
     if (isAuthenticated && user) {
-      fetchUserData();
+      postUserData();
       const insertName = `${user.given_name || ''} ${user.family_name?.charAt(
         0
       )}`;
-      AddName(insertName || '', uid);
     }
-  }, []);
+  }, [user, isAuthenticated, users]);
 
-  if (!user) {
+  if (!isAuthenticated || !user) {
     return null;
   }
-  // console.log(user);
-  return (
-    isAuthenticated && (
 
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1.5rem',
-            maxWidth: '400px',
-            margin: 0
-          }}
-        >
-        <h1 style={{ color: '#6e6b8c' }}>Welcome Home, { user.given_name }</h1>
-          Users Online: {users.length}
-          <br />
-          <br />
-          <ButtonToProfile />
-          <ButtonToHostGame />
-          <ButtonToFindGame />
-          <LogoutButton />
-        </div>
-    )
+  return (
+    <Container>
+      <HomeHeader users={users}/>
+      <Main>
+        <ButtonToHostGame />
+        <ButtonToFindGame />
+      </Main>
+    </Container>
   );
 };
 

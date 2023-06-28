@@ -1,6 +1,8 @@
 const path = require('path');
-const HtmlWebPackPlugin = require("html-webpack-plugin");
 const Dotenv = require('dotenv-webpack');
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
+const TerserPlugin = require("terser-webpack-plugin");
 
 const srcDir = path.resolve(__dirname, "src");
 const distDir = path.resolve(__dirname, "dist/client");
@@ -13,14 +15,47 @@ module.exports = {
   },
   output: {
     path: distDir,
-    filename: "bundle.js",
+    filename: "[name].bundle.js",
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        faceapi: {
+          test: /[\\/]node_modules[\\/]face-api\.js[\\/]/,
+          name: 'faceapi',
+          chunks: 'all',
+        },
+        reactThree: {
+          test: /[\\/]node_modules[\\/]@react-three[\\/]/,
+          name: 'react-three',
+          chunks: 'all',
+        },
+        visionBundle: {
+          test: /[\\/]node_modules[\\/]@mediapipe[\\/]/,
+          name: 'mediapipe',
+          chunks: 'all',
+        },
+        three: {
+          test: /[\\/]node_modules[\\/]three[\\/]/,
+          name: 'three',
+          chunks: 'all',
+        }
+      },
+    },
+    usedExports: true,
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
+  parallelism: 50,
   plugins: [
     new HtmlWebPackPlugin({
       template: path.resolve(srcDir, "index.html"),
       inject: "body",
     }),
     new Dotenv(),
+    //UNCOMMENT TO RUN BUILD ANALIZER ON NPM RUN PROD
+    // new BundleAnalyzerPlugin()
   ],
   module: {
     rules: [
@@ -28,7 +63,14 @@ module.exports = {
         test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "ts-loader",
+          loader: "babel-loader?cacheDirectory",
+        options: {
+          presets: [
+            ['@babel/preset-env', { targets: "defaults" }]
+          ],
+          plugins: ['@babel/plugin-proposal-class-properties'],
+          cacheDirectory: true
+        }
         },
       },
     ],
@@ -41,5 +83,4 @@ module.exports = {
       "path": require.resolve("path-browserify"),
     }
   },
-
 };

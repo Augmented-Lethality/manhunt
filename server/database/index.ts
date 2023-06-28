@@ -17,7 +17,6 @@ const sequelize = new Sequelize('manhunt', process.env.DB_USER!, process.env.DB_
 
 sequelize.sync({ alter: true }) // Syncs the database and models
   .then(() => {
-    console.log("Tables synced.");
     return sequelize.authenticate();
   })
   .then(() => {

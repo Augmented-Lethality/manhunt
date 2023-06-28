@@ -1,36 +1,53 @@
 import React, { useContext, useEffect, useState } from 'react';
+import SocketContext, { User } from '../contexts/Socket/SocketContext';
+import { useAuth0 } from '@auth0/auth0-react';
 
-export interface IWhosHuntingProps {
-  users: string[]
-  host: string
-  hunted: string
-}
+const pickVictim = (users: User[], SetHunted: (user: User) => void) => {
+  const victim = users[Math.floor(Math.random() * users.length)];
+  SetHunted(victim);
+};
 
-import SocketContext from '../contexts/Socket/SocketContext';
-
-
-const WhosHunting: React.FunctionComponent<IWhosHuntingProps> = (props) => {
+const WhosHunting: React.FunctionComponent = () => {
+  const { user } = useAuth0();
   const { SetHunted } = useContext(SocketContext);
-  const { names } = useContext(SocketContext).SocketState;
+  const { users, games } = useContext(SocketContext).SocketState;
 
+  const [huntedName, setHuntedName] = useState('');
 
-  const { users, host, hunted } = props;
-
-  // randomly pick a user
   useEffect(() => {
+    // console.log(games);
+    if (games[0].hunted.length > 0 && users) {
+      const matchingUser = users.filter(user => user.authId === games[0].hunted);
+      setHuntedName(matchingUser[0].username)
+    }
+  }, [games, SetHunted, users]);
 
-    const victim = users[Math.floor(Math.random() * users.length)];
-    SetHunted(host, victim);
+  if (!games || games.length === 0) {
+    return <div>Loading Lobby</div>;
+  }
 
+  const game = games[0];
 
-  }, [hunted])
+  if (!game.hunted || game.hunted.length === 0) {
+    if (user?.sub === game.host) {
+      return (
+        <div>
+          <button onClick={() => pickVictim(users, SetHunted)}>Who's Being Hunted?</button>
+        </div>
+      );
+    } else {
+      return <div>Victim Has Not Been Selected</div>;
+    }
+  }
 
   return (
     <div>
-      {hunted.length > 0 && <p>{names[hunted]}, you're being hunted.</p>}
+      <div>{huntedName}, You're Being Hunted</div>
+      {user?.sub === game.host && (
+        <button onClick={() => pickVictim(users, SetHunted)}>Pick Again</button>
+      )}
     </div>
   );
-
 };
 
 export default WhosHunting;

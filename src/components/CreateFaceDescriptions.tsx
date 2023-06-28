@@ -1,60 +1,62 @@
+import {
+  loadSsdMobilenetv1Model,
+  loadFaceLandmarkModel,
+  loadFaceRecognitionModel,
+  detectSingleFace,
+  LabeledFaceDescriptors
+} from 'face-api.js';
 import React, { useState, useEffect } from 'react';
-import * as faceapi from 'face-api.js';
 import CapturePhoto from './CapturePhoto'
 import { WebcamProvider } from '../contexts/WebcamProvider';
 import axios from 'axios';
 import {UserData} from '../pages/ProfilePage'
+import Save from 'react-feather/dist/icons/save'
+import Camera from 'react-feather/dist/icons/camera'
+
 
 interface CreateFaceDescriptionsProps {
-  setIsVerifying: (verify: boolean) => void;
+  setPhotoStatus: (verify: string) => void;
   username?: (string);
   userID?: (string);
   setUser: (user: UserData | null) => void;
 }
 
-const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVerifying, username, userID, setUser}) => {
+const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhotoStatus, username, userID, setUser}) => {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
-  console.log(username)
   useEffect(() => {
     loadModels();
-    console.log('models loaded')
   }, []);
   
   const loadModels = async () => {
     try {
-      await faceapi.loadSsdMobilenetv1Model('/models')
-      await faceapi.loadFaceLandmarkModel('/models')
-      await faceapi.loadFaceRecognitionModel('/models')
+      await loadSsdMobilenetv1Model('/models')
+      await loadFaceLandmarkModel('/models')
+      await loadFaceRecognitionModel('/models')
     } catch (err) {
       console.error(err);
     }
   };
 
   const handleSave = async () => {
-    if (!img) {
-      console.error("No image provided");
+    if (!img || !username) {
       return;
     }
-    // This is just to get typescript to stop throwing an err
-    if(!username){
-      return
-    }
     try {
-      const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+      const detection = await detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
       if (!detection) {
         alert("No face detected in the image, please try again");
         return;
       }
       const descriptions = [detection.descriptor];
-      const labeledFaceDescriptor = new faceapi.LabeledFaceDescriptors(username, descriptions);
+      const labeledFaceDescriptor = new LabeledFaceDescriptors(username, descriptions);
       sendDescriptionToServer(labeledFaceDescriptor);
-      setIsVerifying(false)
+      setPhotoStatus('profile')
     } catch (err){
       console.error(err)
     }
   }
 
-  const sendDescriptionToServer = async (labeledFaceDescriptor: faceapi.LabeledFaceDescriptors) => {
+  const sendDescriptionToServer = async (labeledFaceDescriptor: LabeledFaceDescriptors) => {
     try {
       // Convert descriptor to array for easier serialization
       const descriptorArray = Array.from(labeledFaceDescriptor.descriptors[0]);
@@ -67,81 +69,29 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setIsVer
     }
   }
 
-  return (
-    img ? 
-      (
-        <>
+  if(img){
+    return (
+      <div>
         <img src={img.src} alt="Screenshot" style={{ height: '100%', width: '100%', objectFit: 'cover' }} />
-        <button
-          onClick={()=>{setIsVerifying(false)}}
-          style={{
-            position: 'absolute',
-            top: '10%',
-            left: '20%',
-            transform: 'translate(-50%, -50%)',
-            background: 'rgba(255, 255, 255, 0.4)',
-            borderRadius: '20px',
-            boxShadow: 'rgba(255, 255, 255, 0.5) 0px 0px 100px',
-            border: '2px solid white',
-            backdropFilter: 'blur(5px)',
-            width: '50px',
-            height: '50px',
+        <div style={{
+          position:'absolute',
+          zIndex:'1',
+          bottom: '5vh',
+          display: 'flex',
+          justifyContent: 'space-around',
+          width:'100%'
           }}>
-          X</button>
-        <button
-          onClick={()=>{setImg(null)}}
-          style={{
-            position: 'absolute',
-            top: '90%',
-            left: '20%',
-            transform: 'translate(-50%, -50%)',
-            background: 'rgba(255, 255, 255, 0.4)',
-            borderRadius: '20px',
-            boxShadow: 'rgba(255, 255, 255, 0.5) 0px 0px 100px',
-            border: '2px solid white',
-            backdropFilter: 'blur(5px)',
-            width: '100px',
-            height: '50px',
-          }}
-        >RETAKE</button>
-        <button
-          onClick={handleSave}
-          style={{
-            position: 'absolute',
-            top: '90%',
-            left: '80%',
-            transform: 'translate(-50%, -50%)',
-            background: 'rgba(255, 255, 255, 0.4)',
-            borderRadius: '20px',
-            boxShadow: 'rgba(255, 255, 255, 0.5) 0px 0px 100px',
-            border: '2px solid white',
-            backdropFilter: 'blur(5px)',
-            width: '100px',
-            height: '50px',
-          }}
-        >SAVE</button>
-      </>
-    ) : (
-      <WebcamProvider>
-        <button
-          onClick={()=>{setIsVerifying(false)}}
-          style={{
-            position: 'absolute',
-            top: '10%',
-            left: '20%',
-            transform: 'translate(-50%, -50%)',
-            background: 'rgba(255, 255, 255, 0.4)',
-            borderRadius: '20px',
-            boxShadow: 'rgba(255, 255, 255, 0.5) 0px 0px 100px',
-            border: '2px solid white',
-            backdropFilter: 'blur(5px)',
-            width: '50px',
-            height: '50px',
-          }}>
-          X</button>
-        <CapturePhoto img={img} setImg={setImg}/>
-      </WebcamProvider>
+          <Camera className='react-icon-large' onClick={()=>{setImg(null)}}/>
+          <Save className='react-icon-large' onClick={handleSave}/>
+        </div>
+      </div>
     )
+  }
+
+  return (
+    <WebcamProvider>
+      <CapturePhoto img={img} setImg={setImg}/>
+    </WebcamProvider>
   )
 }
 

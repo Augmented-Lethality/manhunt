@@ -13,6 +13,8 @@ import {
   PerspectiveCamera,
   WebGLRenderer,
   BoxGeometry,
+  Sprite,
+  SpriteMaterial
 } from 'three';
 
 
@@ -57,7 +59,7 @@ class WebcamRendererLocal {
       navigator.mediaDevices
         .getUserMedia(constraints)
         .then((stream) => {
-          console.log(`using the webcam successfully...`);
+          // console.log(`using the webcam successfully...`);
           video.srcObject = stream;
           video.play();
         })
@@ -93,6 +95,21 @@ class WebcamRendererLocal {
       errorPopup.innerHTML = msg;
       errorPopup.setAttribute("id", "error-popup");
       document.body.appendChild(errorPopup);
+    }
+  }
+
+  // created my own method to turn off the camera
+  turnOffCamera() {
+    const video = document.querySelector("video");
+    if (video && video.srcObject) {
+      const stream = video.srcObject;
+      const tracks = stream.getTracks();
+
+      tracks.forEach((track) => {
+        track.stop();
+      });
+
+      video.srcObject = null;
     }
   }
 }
@@ -132,21 +149,52 @@ class LocationBasedLocal {
     }
   }
 
+  createErrorPopup(msg) {
+    if (!document.getElementById("error-popup")) {
+      var errorPopup = document.createElement("div");
+      errorPopup.innerHTML = msg;
+      errorPopup.setAttribute("id", "error-popup");
+      document.body.appendChild(errorPopup);
+    }
+  }
+
 
   startGps(maximumAge = 0) {
     if (this._watchPositionId === null) {
-      navigator.geolocation.getCurrentPosition(function () {}, function (err) { console.log('error on getting location', error)}, {});
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            if (!position.coords.longitude && !position.coords.latitude) {
+              console.log('did not get the positions');
+            } else {
+              console.log('got the positions');
+            }
+          },
+          (error) => {
+            console.log('error on getting location', error);
+          },
+          {}
+        );
+      } else {
+        console.log('Geolocation is not supported by the browser');
+        // Handle the absence of geolocation functionality
+      }
+
       this._watchPositionId = navigator.geolocation.watchPosition(
         (position) => {
           this._gpsReceived(position);
-          this.setUserPosition(position.coords.longitude, position.coords.latitude)
-          console.log('my position: ', position.coords.longitude, position.coords.latitude)
+          if (!position.coords.longitude && !position.coords.latitude) {
+            console.log('did not get the positions');
+          } else {
+            console.log('my position: ', parseFloat(position.coords.longitude.toFixed(3)), parseFloat(position.coords.latitude.toFixed(3)))
+            this.setUserPosition(parseFloat(position.coords.longitude), parseFloat(position.coords.latitude))
+          }
         },
         (error) => {
           if (this._eventHandlers["gpserror"]) {
             this._eventHandlers["gpserror"](error.code);
           } else {
-            alert(`GPS error: code ${error.code}`);
+            alert(`GPS error: code ${error.code}, allow access to location on your browser`);
           }
         },
         {
@@ -159,9 +207,9 @@ class LocationBasedLocal {
     return false;
   }
 
-  setUserPosition = (longitude, latitude, ) => {
+  setUserPosition = (longitude, latitude,) => {
 
-    // console.log('box position: ', longitude, latitude + 0.001, )
+    // console.log('long and lat in web.js', typeof longitude, typeof latitude + 0.001,)
 
     this.userLatitude = latitude;
     this.userLongitude = longitude;
@@ -217,7 +265,7 @@ class LocationBasedLocal {
       try {
         this.setWorldPosition(object, lon, lat, elev);
         this._scene.add(object);
-        console.log('added object!');
+        // console.log('added object!');
         resolve();
       } catch (error) {
         console.error('An error occurred while adding the object:', error);
@@ -296,8 +344,8 @@ class LocationBasedLocal {
     const a =
       Math.sin(dlatitude / 2) * Math.sin(dlatitude / 2) +
       Math.cos(MathUtils.degToRad(src.latitude)) *
-        Math.cos(MathUtils.degToRad(dest.latitude)) *
-        (Math.sin(dlongitude / 2) * Math.sin(dlongitude / 2));
+      Math.cos(MathUtils.degToRad(dest.latitude)) *
+      (Math.sin(dlongitude / 2) * Math.sin(dlongitude / 2));
     const angle = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return angle * 6371000;
   }
@@ -588,4 +636,6 @@ export {
   PerspectiveCamera,
   WebGLRenderer,
   BoxGeometry,
+  Sprite,
+  SpriteMaterial,
 };

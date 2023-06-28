@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Route, Routes } from 'react-router-dom';
-import PageLoader from './Auth0/Loading';
+import PageLoader from './components/Loading';
 import { useAuth0 } from '@auth0/auth0-react';
 import { AuthenticationGuard } from './Auth0/authentication-guard';
 import NotFoundPage from './pages/NotFoundPage';
@@ -12,10 +12,19 @@ import TestPage from './pages/TestPage';
 import GameLobby from './pages/GameLobby';
 import EndGame from './pages/EndGame';
 import FindGamePage from './pages/FindGamePage';
+import FriendsPage from './pages/FriendsPage';
+//import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import SocketComponent from './contexts/Socket/SocketComponent';
+import Settings from './pages/Settings';
+import { useFontSize } from './contexts/FontSize';
 
 const App = () => {
   const { isLoading } = useAuth0();
+  const [fontSize] = useFontSize();
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--font-size', `${fontSize}px`);
+  }, [fontSize]);
 
   if (isLoading) {
     return (
@@ -39,6 +48,10 @@ const App = () => {
         path="/profile"
         element={<AuthenticationGuard component={ProfilePage} />}
       />
+      {/* <Route
+        path="/profile/:username"
+        element={<AuthenticationGuard component={OtherUserProfilePage} />}
+      /> */}
       <Route
         path="/test"
         element={<AuthenticationGuard component={TestPage} />}
@@ -47,29 +60,45 @@ const App = () => {
         path="/findGame"
         element={
           <SocketComponent>
-            <AuthenticationGuard component={FindGamePage}/>
+            <AuthenticationGuard component={FindGamePage} />
           </SocketComponent>}
       />
 
-          <Route
+      <Route
         path="/onthehunt"
         element={
           <SocketComponent>
             <AuthenticationGuard component={GamePage} />
-          </SocketComponent>}/>
+          </SocketComponent>} />
 
-          <Route
+      <Route
         path="/gameover"
         element={
           <SocketComponent>
             <AuthenticationGuard component={EndGame} />
-          </SocketComponent>}/>
+          </SocketComponent>} />
 
       <Route
         path="/lobby"
         element={
           <SocketComponent>
             <AuthenticationGuard component={GameLobby} />
+          </SocketComponent>
+        }
+      />
+      <Route
+        path="/yourcompetition"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={FriendsPage} />
+          </SocketComponent>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={Settings} />
           </SocketComponent>
         }
       />

@@ -1,7 +1,14 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import sequelize from './index';
 
-class User extends Model {}
+////////////////////////////////////////////////
+class User extends Model {
+  gamesPlayed: any;
+  gamesWon: any;
+  killsConfirmed: any;
+  facialDescriptions: any;
+  largeFont: any;
+}
 User.init({
   id: {
     type: DataTypes.INTEGER,
@@ -26,21 +33,21 @@ User.init({
     allowNull: true,
     unique: true
   },
-  sessionId: {
+  image: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: true,
   },
   facialDescriptions: {
     type: DataTypes.ARRAY(DataTypes.FLOAT),
     allowNull: true
   },
-  gameId: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  location: {
+  socketId: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: true,
+  },
+  gameId: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   tfModelPath: {
     type: DataTypes.STRING,
@@ -57,11 +64,22 @@ User.init({
   killsConfirmed: {
     type: DataTypes.INTEGER,
     allowNull: true
+  },
+  largeFont: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 }, { sequelize });
 
-class Friends extends Model {}
-Friends.init({
+////////////////////////////////////////////////
+
+class Friend extends Model {
+  status!: string;
+  userId!: number;
+  friendId!: number;
+}
+Friend.init({
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -96,39 +114,55 @@ Friends.init({
   }
 }, { sequelize });
 
-class Session extends Model {}
-Session.init({
-  id: {
-    type: DataTypes.STRING,
-    primaryKey: true
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: User,
-      key: 'id'
-    }
-  },
-  createdAt: DataTypes.DATE,
-  expiresAt: DataTypes.DATE,
-  ipAddress: DataTypes.STRING,
-  userAgent: DataTypes.STRING
-}, { sequelize });
+////////////////////////////////////////////////
 
-class Game extends Model {}
+class Locations extends Model { }
+Locations.init({
+  authId: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+  },
+  gameId: {
+    type: DataTypes.STRING,
+  },
+  longitude: {
+    type: DataTypes.DECIMAL,
+    allowNull: true,
+  },
+  latitude: {
+    type: DataTypes.DECIMAL,
+    allowNull: true
+  },
+}, { sequelize });
+///////////////////////////
+
+class Game extends Model {
+  gameId: any;
+  users: any;
+}
 Game.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+  gameId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
     primaryKey: true
   },
   host: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     references: {
       model: User,
-      key: 'id'
+      key: 'authId'
     },
-    allowNull: true
+    allowNull: false,
+  },
+  hostName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  hunted: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: ''
   },
   status: {
     type: DataTypes.ENUM('lobby', 'ongoing', 'complete'),
@@ -140,14 +174,20 @@ Game.init({
     allowNull: true
   },
   winnerId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     references: {
       model: User,
-      key: 'id'
+      key: 'authId'
     },
     allowNull: true
-  }
+  },
+  users: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false,
+  },
 }, { sequelize });
+
+////////////////////////////////////////////////
 
 class Trophy extends Model { }
 Trophy.init({
@@ -160,8 +200,8 @@ Trophy.init({
   description: DataTypes.STRING,
   generationConditions: DataTypes.TEXT, // This can be a stringified function or JSON
   filePath: DataTypes.STRING,
-  ownersId: {
-    type: DataTypes.INTEGER,
+  ownerId: {
+    type: DataTypes.NUMBER,
     references: {
       model: User,
       key: 'id'
@@ -194,21 +234,18 @@ UserTrophy.init({
   },
 }, { sequelize, modelName: 'userTrophy' });
 
+
+
 // Define the associations
 User.belongsToMany(Trophy, { through: UserTrophy });
 Trophy.belongsToMany(User, { through: UserTrophy });
 
-User.hasMany(Friends, { foreignKey: 'userId' });
-Friends.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(Friends, { foreignKey: 'friendId' });
-Friends.belongsTo(User, { foreignKey: 'friendId' });
+User.hasMany(Friend, { foreignKey: 'userId' });
+Friend.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Friend, { foreignKey: 'friendId' });
+Friend.belongsTo(User, { foreignKey: 'friendId' });
 
-Game.belongsTo(User, { foreignKey: 'userId' });
-
-User.hasMany(Session, { foreignKey: 'userId' });
-Session.belongsTo(User, { foreignKey: 'userId' });
-
-export { User, Friends, Session, Game, Trophy, UserTrophy };
+export { User, Friend, Game, Trophy, UserTrophy, Locations };
 
 /*** THE FOLLOWING EXISTS INCASE YOU NEED TO DROP INDIVIDUAL TABLES ***/
 /*** JUST UNCOMMENT THE TABLE FROM THE LIST BELOW ***/
@@ -219,8 +256,7 @@ export { User, Friends, Session, Game, Trophy, UserTrophy };
 //     // Drop the tables in reverse order of their dependencies
 //     await UserTrophy.drop();
 //     await Trophy.drop();
-//     await Session.drop();
-//     await Friends.drop();
+//     await Friend.drop();
 //     await Game.drop();
 //     await User.drop();
 

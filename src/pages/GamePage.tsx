@@ -1,79 +1,120 @@
-import React, { useState, useContext, useEffect } from 'react';
+import {
+  FaceMatcher,
+  loadSsdMobilenetv1Model,
+  loadFaceLandmarkModel,
+  loadFaceRecognitionModel,
+  LabeledFaceDescriptors
+} from 'face-api.js';
+import React, { useState, useContext, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { WebcamProvider } from '../contexts/WebcamProvider'
-import axios from 'axios';
-import * as faceapi from 'face-api.js';
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
-import { ButtonToHome } from '../components/Buttons';
+import Countdown from '../components/Countdown';
+import DropDownMenu from '../components/DropDownMenu';
+import { Container } from '../styles/Container';
+import { GameHeader } from '../styles/Header';
+import Crosshair from 'react-feather/dist/icons/crosshair';
+import Home from 'react-feather/dist/icons/home';
+import Eye from 'react-feather/dist/icons/eye';
+
+interface ChaseCamRefType { // declaring type for child method
+  turnOffCamera: () => void;
+}
 
 const GamePage: React.FC = () => {
 
+  // passing this to the ChaseCam.tsx child so that the method can be used in this parent component
+  const chaseCamRef = useRef<ChaseCamRefType>(null);
+  const navigate = useNavigate();
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
-  const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
-  const { uid, games, names } = useContext(SocketContext).SocketState;
-  const [currentGame, setUserGame] = useState<{ gameId: string; uidList: string[], hunted: string }>({ gameId: '', uidList: [], hunted: '' });
+  const [faceMatcher, setFaceMatcher] = useState<FaceMatcher | null>(null);
+  const { users, games } = useContext(SocketContext).SocketState;
+  const { LeaveGame } = useContext(SocketContext);
 
-  useEffect(() => {
-    const foundUserGame = Object.values(games).find((game) => game.uidList.includes(uid));
-    setUserGame(foundUserGame || { gameId: '', uidList: [], hunted: '' });
-  }, [uid]);
+  const { user } = useAuth0();
+
+
+
 
   useEffect(() => {
     loadTensorFlowFaceMatcher();
+  }, [users]);
+
+  useEffect(() => {
+    return () => {
+      handleTurnOffCamera(); // turns off all cameras when this component is unmounted
+    };
   }, []);
+
+  useEffect(() => {
+    console.log('game status:', games[0].status)
+  }, [games])
 
   const loadTensorFlowFaceMatcher = async () => {
     try {
-      await faceapi.loadSsdMobilenetv1Model('/models')
-      await faceapi.loadFaceLandmarkModel('/models')
-      await faceapi.loadFaceRecognitionModel('/models')
+      await loadSsdMobilenetv1Model('/models')
+      await loadFaceLandmarkModel('/models')
+      await loadFaceRecognitionModel('/models')
       createFaceMatcher();
+      console.log('did the face success')
     } catch (err) {
       console.error(err);
     }
   };
 
   const createFaceMatcher = async () => {
-    // get All users. AFTER MVP CHANGE TO GET ONLY RELEVANT USERS
-    const res = await axios.get('/users');
-    const users = res.data.filter(user => user.facialDescriptions);
     const labeledFaceDescriptors = users.map((user) => {
       // Convert each user's description array back to a Float32Array
       const descriptions = [new Float32Array(user.facialDescriptions)];
-      return new faceapi.LabeledFaceDescriptors(user.username, descriptions);
+      return new LabeledFaceDescriptors(user.username, descriptions);
     });
-    setFaceMatcher(new faceapi.FaceMatcher(labeledFaceDescriptors, 0.5));
+    setFaceMatcher(new FaceMatcher(labeledFaceDescriptors, 0.5));
   }
 
   const handleGameChange = () => {
-    if(gameMode === 'Chase') {
+    if (gameMode === 'Chase') {
       setGameMode('Kill')
     } else {
       setGameMode('Chase')
     }
   }
 
+  // the turnOffCamera() is from the ChaseCam child component, passed
+  // using the useRef and useImperativeHandle
+  const handleTurnOffCamera = () => {
+    if (chaseCamRef.current) {
+      chaseCamRef.current.turnOffCamera();
+    }
+  };
+
+  const handleHomeDrop = () => {
+    LeaveGame(user);
+    navigate('/home')
+  }
+
+
   return (
-    <div>
-      <ButtonToHome />
-      <p>Players in this game:</p>
-    <ul>
-      {currentGame?.uidList.map((playerUid) => (
-        <li key={playerUid}>{names[playerUid]}</li>
-      ))}
-    </ul>
-    <button onClick={ handleGameChange }>{gameMode === 'Chase' ? 'Go in For the Kill' : 'Return to the Chase'}</button>
-      {gameMode === 'Chase' && currentGame.hunted.length > 0 && <ChaseCam currentGame={ currentGame }/>}
-      {gameMode === 'Kill' && currentGame.hunted.length > 0 && (
-        <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
-          <WebcamProvider>
-            <KillCam faceMatcher={faceMatcher}/>
-          </WebcamProvider>
-        </div>
+    <Container>
+      <GameHeader>
+        <Countdown initialCount={5 * 60} />
+        <DropDownMenu>
+          <div onClick={handleHomeDrop}><Home className='react-icon' />home</div>
+        </DropDownMenu>
+      </GameHeader>
+      {gameMode === 'Chase' ? <ChaseCam ref={chaseCamRef} />
+      : (
+        <WebcamProvider>
+          <KillCam faceMatcher={faceMatcher} />
+        </WebcamProvider>
       )}
-    </div>
+      {gameMode === 'Chase' 
+        ? <Crosshair className='react-icon-large' onClick={handleGameChange}/>
+        : <Eye className='react-icon-large' onClick={handleGameChange}/>}
+    </Container>
   );
 }
 

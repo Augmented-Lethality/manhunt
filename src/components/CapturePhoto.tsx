@@ -25,7 +25,12 @@ const CapturePhoto: React.FC<CapturePhotoProps> = ({img, setImg}) => {
   }, [webcamRef, setImg]);
 
   return (
-    <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+    <div style={{
+    position:'absolute',
+    top: 0,
+    left: 0,
+    height: '100vh',
+    width: '100vw' }}>
       <button
         onClick={capture}
         style={{
