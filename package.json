@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon dist/server/index.js",
     "build:server": "tsc -p tsconfig-server.json",
-    "build:client": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=6000 webpack -c webpack.prod.js",
+    "build:client": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=900 webpack -c webpack.prod.js",
     "build": "npm run build:server && npm run build:client",
     "dev:server": "tsc -p tsconfig-server.json -w",
     "dev:client": "cross-env NODE_ENV=development webpack -c webpack.dev.js -w",
