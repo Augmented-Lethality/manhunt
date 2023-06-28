@@ -14,7 +14,8 @@ import {
   WebGLRenderer,
   BoxGeometry,
   Sprite,
-  SpriteMaterial
+  SpriteMaterial,
+  TextureLoader,
 } from 'three';
 
 
@@ -265,7 +266,6 @@ class LocationBasedLocal {
       try {
         this.setWorldPosition(object, lon, lat, elev);
         this._scene.add(object);
-        // console.log('added object!');
         resolve();
       } catch (error) {
         console.error('An error occurred while adding the object:', error);
@@ -638,4 +638,5 @@ export {
   BoxGeometry,
   Sprite,
   SpriteMaterial,
+  TextureLoader,
 };
