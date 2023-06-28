@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useReducer, useState, useEffect } from 'react
 import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 import { useAuth0 } from '@auth0/auth0-react';
-import { User } from './SocketContext';
+import { User, Ready } from './SocketContext';
 
 import axios from 'axios';
 
@@ -32,11 +32,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     reconnectionDelay: 3000,
     autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
   });
-  // const socket = useSocket(`http://${process.env.REACT_APP_SOCKET_URI}`, {
-  //   reconnectionAttempts: 5,
-  //   reconnectionDelay: 3000,
-  //   autoConnect: false, // want to make sure the useEffect performs the actions in order, so put false
-  // });
 
   // IF NEED HTTP SOCKET CONNECTION
   // const socket = useSocket(`http://${process.env.REACT_APP_SOCKET_URI}`, {
@@ -222,6 +217,12 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.emit('game_stats', user);
   }
 
+  // local storage of Ready Status
+  const UpdateReady = (ready: Ready) => {
+    SocketDispatch({ type: 'update_ready', payload: ready });
+    socket.emit('update_ready', ready);
+  }
+
 
   // showing this on client side while socket isn't connected
   if (loading) {
@@ -233,7 +234,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   return (
     <SocketContextProvider value={{
       SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, LeaveGame, UpdateGameStatus,
-      AddGameStats
+      AddGameStats, UpdateReady,
     }}>
       {children}
     </SocketContextProvider>
