@@ -28,18 +28,6 @@ const TrophyGenerator: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isClaimed, setIsClaimed] = useState(false);
 
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setUserData(response.data[0]);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
@@ -94,6 +82,19 @@ const TrophyGenerator: React.FC = () => {
     tubeWidth: useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []),
   };
 
+  
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setUserData(response.data[0]);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
   const postTrophyData = async () => {
     try {
@@ -101,7 +102,7 @@ const TrophyGenerator: React.FC = () => {
         setIsClaimed(true);
         console.log('userData.id:', userData.id); // Check the value of userData.id
         await axios.post('/trophies', {
-          name: '',
+          name:  '',
           description: '',
           generationConditions: JSON.stringify(trophyData),
           filePath: '',
