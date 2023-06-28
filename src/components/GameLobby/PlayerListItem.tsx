@@ -7,15 +7,10 @@ import AccessReady from './AccessReady';
 
 export const PlayerListItem: React.FC<{ player: User }> = ({ player }) => {
 
-  useEffect(() => {
-    // console.log('player:', player)
-  })
-
   return (
-    <div>
-      <strong>Player: {player.username}</strong>
-      <AccessReady />
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <AccessReady username={player.username} />
       <br />
     </div>
-  );
+  )
 };
