@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
 export type TrophyData = {
-  id: number
+  id: number;
   name: string;
   description: string;
   createdAt: string;
@@ -53,6 +53,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
     }
   };
 
+  // fetch, parse and set the trophy data
   const fetchUserTrophyData = async () => {
     try {
       if (userData) {
@@ -72,11 +73,36 @@ const SavedTrophy: React.FC<TrophyData> = () => {
 
         const parsedTrophyData: TrophyData[] = response.data.map((trophy) => {
           const generationConditions = JSON.parse(trophy.generationConditions);
+
+          //To make the date more readable
+          const dateRegex = /(\d{4})-(\d{2})-(\d{2})/;
+          const [, year, month, day] = dateRegex.exec(trophy.createdAt) || [];
+          function getMonthName(month: string) {
+            const monthNames = [
+              'January',
+              'February',
+              'March',
+              'April',
+              'May',
+              'June',
+              'July',
+              'August',
+              'September',
+              'October',
+              'November',
+              'December',
+            ];
+          
+            const monthIndex = parseInt(month, 10) - 1;
+            return monthNames[monthIndex];
+          }
+          
+          
           return {
             id: trophy.id,
             name: trophy.name,
             description: trophy.description,
-            createdAt: trophy.createdAt,
+            createdAt: `${day} ${getMonthName(month)} ${year}`,
             dimension: generationConditions.dimension || 0,
             color: generationConditions.color || '',
             shape: generationConditions.shape || '',
@@ -86,14 +112,34 @@ const SavedTrophy: React.FC<TrophyData> = () => {
         });
 
         setUserTrophyData(parsedTrophyData);
-        console.log(userTrophyData, parsedTrophyData)
+        console.log(userTrophyData, parsedTrophyData);
       }
     } catch (error) {
       console.error('Error fetching user trophy data:', error);
     }
   };
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+  const getColorName = (colorCode) => {
+    // Map color codes to more fitting color names
+    const colorMap = {
+      '#3d6cb8': 'Aqua',
+      '#19191a': 'Void',
+      'lightgreen': 'Radioactive',
+      'orange': 'Gold',
+      'darkred': 'Crimson',
+      'yellow': 'Saffron',
+      'pink': 'Rose',
+      'aquamarine': 'Seafoam',
+      // Add color mappings as needed
+    };
+    // Return color name if exists in color map, otherwise return original
+    return colorMap[colorCode] || colorCode;
+  };
+
+  const handleMouseDown = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    index: number
+  ) => {
     setIsDragging(true);
     setPrevMouseX(e.clientX);
     setPrevMouseY(e.clientY);
@@ -108,18 +154,17 @@ const SavedTrophy: React.FC<TrophyData> = () => {
     index: number
   ) => {
     if (!isDragging) return;
-  
+
     const mouseDeltaX = e.clientX - prevMouseX;
     const mouseDeltaY = e.clientY - prevMouseY;
     setPrevMouseX(e.clientX);
     setPrevMouseY(e.clientY);
-  
+
     if (trophyRefs.current[index]?.rotation) {
       trophyRefs.current[index]!.rotation.y += mouseDeltaX * 0.01; // Rotate around Y-axis
       trophyRefs.current[index]!.rotation.x += mouseDeltaY * 0.01; // Rotate around X-axis
     }
   };
-  
 
   const togglePropsView = () => {
     setShowProps(!showProps);
@@ -148,7 +193,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
   }, []);
 
   return (
-    <div >
+    <div>
       <h1>Recent Trophies </h1>
       <button onClick={handleClick}>
         {showTrophies ? 'X' : 'See Trophies'}
@@ -166,9 +211,11 @@ const SavedTrophy: React.FC<TrophyData> = () => {
           .reverse()
           .map((trophy, index) => (
             <div key={index}>
-              <div onMouseDown={(e) => handleMouseDown(e, index)}
+              <div
+                onMouseDown={(e) => handleMouseDown(e, index)}
                 onMouseUp={handleMouseUp}
-                onMouseMove={(e) => handleMouseMove(e, index)}>
+                onMouseMove={(e) => handleMouseMove(e, index)}
+              >
                 <Canvas>
                   <ambientLight intensity={0.5} />
                   <pointLight position={[10, 10, 10]} />
@@ -191,7 +238,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
                   )}
                   {trophy.shape === 'polyhedron' && (
                     <Dodecahedron
-                    ref={(ref) => (trophyRefs.current[index] = ref)}
+                      ref={(ref) => (trophyRefs.current[index] = ref)}
                       args={[trophy.dimension, 0]}
                       position={[0, 0, 0]}
                       rotation={[0, 0.4, 0]}
@@ -204,7 +251,7 @@ const SavedTrophy: React.FC<TrophyData> = () => {
                   )}
                   {trophy.shape === 'torus' && (
                     <Torus
-                    ref={(ref) => (trophyRefs.current[index] = ref)}
+                      ref={(ref) => (trophyRefs.current[index] = ref)}
                       args={[
                         trophy.dimension,
                         trophy.tubeWidth,
@@ -225,12 +272,12 @@ const SavedTrophy: React.FC<TrophyData> = () => {
               <div>
                 {showProps && (
                   <>
-                    <h6>Name: {trophy.name}</h6>
-                    <p>Description: {trophy.description}</p>
-                    <p>Earned at: {trophy.createdAt}</p>
+                    <h6>Trophy Name: {trophy.name}</h6>
+                    <h6>Report: {trophy.description}</h6>
                     <h6>Class: {trophy.shape}</h6>
-                    <h6>Size: {trophy.dimension}</h6>
-                    <h6>Color: {trophy.color}</h6>
+                    <h6>Magnitude: {trophy.dimension}</h6>
+                    <h6>Chroma: {getColorName(trophy.color)}</h6>
+                    <h6>Earned on: {trophy.createdAt}</h6>
                   </>
                 )}
               </div>

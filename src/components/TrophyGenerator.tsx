@@ -82,7 +82,6 @@ const TrophyGenerator: React.FC = () => {
     tubeWidth: useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []),
   };
 
-  
   const fetchUserData = async () => {
     try {
       const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
@@ -110,7 +109,7 @@ const TrophyGenerator: React.FC = () => {
       `A an extremely valuable bounty that seems to never have one owner for too long...`,
       `An extraordinary achievement recognized by the high-tech society of the SOCIETY™.`,
       `A trophy seized from the clutches of the CorpoReality Police, a true symbol of defiance and audacity.`,
-      `A prestigious token of recognition for exceptional espionage and cunning.`,
+      `A token of recognition for exceptional espionage and cunning within The Collective.`,
       `It's dangerous to go alone! Take this.`
     ];
     return getRandomElement(descriptions);
