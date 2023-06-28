@@ -88,9 +88,16 @@ const GamePage: React.FC = () => {
   // the turnOffCamera() is from the ChaseCam child component, passed
   // using the useRef and useImperativeHandle
   const handleTurnOffCamera = () => {
-    if (chaseCamRef.current) {
-      chaseCamRef.current.turnOffCamera();
-    }
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        // console.log('Video Okay');
+        stream.getTracks().forEach((track) => track.stop());
+      })
+      .catch((error) => {
+        console.error('Error accessing video:', error);
+      });
+
   };
 
   const handleHomeDrop = () => {
