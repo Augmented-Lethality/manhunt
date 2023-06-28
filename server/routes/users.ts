@@ -17,6 +17,7 @@ Users.post("/", async (req, res) => {
       gamesPlayed,
       gamesWon,
       killsConfirmed,
+      image,
     } = req.body;
 
     // Check if the user already exists
@@ -37,6 +38,7 @@ Users.post("/", async (req, res) => {
         gamesPlayed,
         gamesWon,
         killsConfirmed,
+        image,
       });
       res.status(201).json(newUser);
     }
@@ -173,12 +175,12 @@ Users.get("/games/:authId", async (req, res) => {
 // SEARCH FOR USERS
 Users.get("/search/:terms", async (req, res) => {
   try {
-    const users = await User.findAll({ 
+    const users = await User.findAll({
       where: {
         username: {
           [Op.like]: `%${req.params.terms}%`
-        } 
-      } 
+        }
+      }
     });
     res.status(200).send(users);
   } catch (err) {

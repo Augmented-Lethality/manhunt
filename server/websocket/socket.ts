@@ -314,6 +314,29 @@ export class ServerSocket {
 
     });
 
+    socket.on('game_stats', async (user) => {
+      try {
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const game = await Game.findOne({ where: { gameId: existingUser?.dataValues.gameId } });
+        if (game) {
+          await Game.update({ winnerId: user.sub }, { where: { gameId: existingUser?.dataValues.gameId } });
+          console.log('winner added');
+          await User.update({
+            gamesWon: existingUser?.dataValues.gamesWon + 1,
+            killsConfirmed: existingUser?.dataValues.killsConfirmed + 1,
+            gamesPlayed: existingUser?.dataValues.gamesPlayed + 1,
+          }, { where: { authId: user.sub } });
+          this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+
+        } else {
+          console.log('no game like that exists')
+        }
+      } catch (err) {
+        console.log(err);
+      }
+
+    });
+
     socket.on('leave_game', async (user) => {
       try {
         // get the user so that can get the game
@@ -327,7 +350,7 @@ export class ServerSocket {
           if (game.dataValues.users.includes(user.sub)) {
 
             // update the user so that they don't have the gameId anymore
-            await User.update({ gameId: null }, { where: { authId: user.sub } });
+            await User.update({ gameId: '' }, { where: { authId: user.sub } });
 
             const location = await Locations.findByPk(user.sub);
 
@@ -380,12 +403,12 @@ export class ServerSocket {
             // update everyone on the new players and games
             this.io.to(game.dataValues.gameId).emit('update_lobby_users');
             this.io.to(game.dataValues.gameId).emit('update_lobby_games');
-            this.io.to('users').emit('update_games');
-            this.io.to('users').emit('update_users');
-
             // put that user back into the users room and leave the game room
             socket.leave(game.dataValues.gameId);
             socket.join('users');
+            this.io.to('users').emit('update_games');
+            this.io.to('users').emit('update_users');
+
 
 
           } else {

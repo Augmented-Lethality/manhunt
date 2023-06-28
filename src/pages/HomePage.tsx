@@ -38,7 +38,7 @@ const HomePage = () => {
         });
         setUserData(response.data);
         //setLargeFontSetting
-        if(response.data.largeFont){
+        if (response.data.largeFont) {
           setFontSize(20);
         }
         // console.log(response);
@@ -49,11 +49,8 @@ const HomePage = () => {
 
     if (isAuthenticated && user) {
       postUserData();
-      const insertName = `${user.given_name || ''} ${user.family_name?.charAt(
-        0
-      )}`;
     }
-  }, [user, isAuthenticated, users]);
+  }, [user, isAuthenticated]);
 
   if (!isAuthenticated || !user) {
     return null;
@@ -61,7 +58,7 @@ const HomePage = () => {
 
   return (
     <Container>
-      <HomeHeader users={users}/>
+      <HomeHeader users={users} />
       <Main>
         <ButtonToHostGame />
         <ButtonToFindGame />
