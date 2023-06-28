@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SocketContext from '../contexts/Socket/SocketContext';
-import { ButtonToHome, ButtonToGame } from '../components/Buttons';
+import { ButtonToGame } from '../components/Buttons';
 import WhosHunting from '../components/WhosHunting';
 import { Container } from '../styles/Container';
 import { Header } from '../styles/Header'

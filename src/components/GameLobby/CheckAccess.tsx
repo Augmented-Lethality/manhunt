@@ -1,10 +1,17 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { AccessContext } from '../../contexts/AccessContext';
+import { useAuth0 } from '@auth0/auth0-react';
+import SocketContext from '../../contexts/Socket/SocketContext';
+import { ButtonToProfile } from '../Buttons';
 
 const CheckAccess: React.FC = () => {
+  const { user } = useAuth0();
+  const { users } = useContext(SocketContext).SocketState;
 
-  const { videoAccessError, locationAccessError, orientationAccessError,
-    setVideoAccessError, setLocationAccessError, setOrientationAccessError, } = useContext(AccessContext);
+  const [videoAccessError, setVideoAccessError] = useState(false);
+  const [locationAccessError, setLocationAccessError] = useState(false);
+  const [orientationAccessError, setOrientationAccessError] = useState(false);
+  const [bioDataError, setBioDataError] = useState(false);
 
   // turns the camera on and off
   const checkVideoAccess = () => {
@@ -61,17 +68,35 @@ const CheckAccess: React.FC = () => {
     };
   };
 
+  const checkBioData = () => {
+    const player = users.find((player) => player.authId === user?.sub);
+    if (player && !player.facialDescriptions) {
+      setBioDataError(true);
+    }
+  };
+
   useEffect(() => {
     checkVideoAccess();
     checkLocationAccess();
     checkOrientationAccess();
   }, []);
 
+  useEffect(() => {
+    checkBioData();
+  }, [users]);
+
   return (
     <div>
       {videoAccessError && <button onClick={checkVideoAccess}>Allow Camera Access</button>}
       {locationAccessError && <strong>Error: Can't Access Location, Ensure Your Browser Allows Location Access</strong>}
       {orientationAccessError && <button onClick={checkOrientationAccess}>Allow Device Orientation Access</button>}
+      {bioDataError &&
+        <div>
+          <strong>Please Visit Your Profile Page to Add Your BioData:</strong>
+          <ButtonToProfile />
+        </div>
+      }
+
     </div>
   );
 };

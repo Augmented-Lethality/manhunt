@@ -82,12 +82,9 @@ const App = () => {
       <Route
         path="/lobby"
         element={
-          <AccessProvider>
-            <SocketComponent>
-              <AuthenticationGuard component={GameLobby} />
-            </SocketComponent>
-          </AccessProvider>
-
+          <SocketComponent>
+            <AuthenticationGuard component={GameLobby} />
+          </SocketComponent>
         }
       />
       <Route

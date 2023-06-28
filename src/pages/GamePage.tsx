@@ -42,6 +42,7 @@ const GamePage: React.FC = () => {
 
   useEffect(() => {
     loadTensorFlowFaceMatcher();
+    console.log(users)
   }, [users]);
 
   useEffect(() => {
@@ -59,7 +60,7 @@ const GamePage: React.FC = () => {
       await loadSsdMobilenetv1Model('/models')
       await loadFaceLandmarkModel('/models')
       await loadFaceRecognitionModel('/models')
-      createFaceMatcher();
+      await createFaceMatcher();
       console.log('did the face success')
     } catch (err) {
       console.error(err);
@@ -67,10 +68,11 @@ const GamePage: React.FC = () => {
   };
 
   const createFaceMatcher = async () => {
-    const labeledFaceDescriptors = users.map((user) => {
+    console.log(users)
+    const labeledFaceDescriptors = users.map((player) => {
       // Convert each user's description array back to a Float32Array
-      const descriptions = [new Float32Array(user.facialDescriptions)];
-      return new LabeledFaceDescriptors(user.username, descriptions);
+      const descriptions = [new Float32Array(player.facialDescriptions)];
+      return new LabeledFaceDescriptors(player.username, descriptions);
     });
     setFaceMatcher(new FaceMatcher(labeledFaceDescriptors, 0.5));
   }
@@ -106,14 +108,14 @@ const GamePage: React.FC = () => {
         </DropDownMenu>
       </GameHeader>
       {gameMode === 'Chase' ? <ChaseCam ref={chaseCamRef} />
-      : (
-        <WebcamProvider>
-          <KillCam faceMatcher={faceMatcher} />
-        </WebcamProvider>
-      )}
-      {gameMode === 'Chase' 
-        ? <Crosshair className='react-icon-large' onClick={handleGameChange}/>
-        : <Eye className='react-icon-large' onClick={handleGameChange}/>}
+        : (
+          <WebcamProvider>
+            <KillCam faceMatcher={faceMatcher} />
+          </WebcamProvider>
+        )}
+      {gameMode === 'Chase'
+        ? <Crosshair className='react-icon-large' onClick={handleGameChange} />
+        : <Eye className='react-icon-large' onClick={handleGameChange} />}
     </Container>
   );
 }
