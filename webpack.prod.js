@@ -2,6 +2,7 @@ const path = require('path');
 const Dotenv = require('dotenv-webpack');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
+const TerserPlugin = require("terser-webpack-plugin");
 
 const srcDir = path.resolve(__dirname, "src");
 const distDir = path.resolve(__dirname, "dist/client");
@@ -43,7 +44,10 @@ module.exports = {
       },
     },
     usedExports: true,
+    minimize: true,
+    minimizer: [new TerserPlugin()],
   },
+  parallelism: 50,
   plugins: [
     new HtmlWebPackPlugin({
       template: path.resolve(srcDir, "index.html"),
@@ -59,7 +63,14 @@ module.exports = {
         test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "ts-loader",
+          loader: "babel-loader?cacheDirectory",
+        options: {
+          presets: [
+            ['@babel/preset-env', { targets: "defaults" }]
+          ],
+          plugins: ['@babel/plugin-proposal-class-properties'],
+          cacheDirectory: true
+        }
         },
       },
     ],
