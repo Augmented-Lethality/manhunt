@@ -16,7 +16,7 @@ const CheckAccess: React.FC = () => {
 
   useEffect(() => {
     if (user?.sub) {
-      const errorMessages = [];
+      const errorMessages: string[] = [];
 
       switch (true) {
         case videoAccessError:
@@ -124,7 +124,7 @@ const CheckAccess: React.FC = () => {
   return (
     <div>
       {videoAccessError && <button onClick={checkVideoAccess}>Allow Camera Access</button>}
-      {locationAccessError && <strong>Error: Can't Access Location, Ensure Your Browser Allows Location Access</strong>}
+      {locationAccessError && <strong>Error: Can't Access Location. Ensure Your Browser Can Access Your Location</strong>}
       {orientationAccessError && <button onClick={checkOrientationAccess}>Allow Device Orientation Access</button>}
       {bioDataError &&
         <div>
