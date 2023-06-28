@@ -1,16 +1,11 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
-import { Canvas } from 'react-three-fiber';
+import { Canvas } from '@react-three/fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
-type TrophyData = {
-  dimension: number;
-  color: string;
-  shape: string;
-  tubularSegments: number;
-  tubeWidth: number;
-};
+
+
 
 export type UserData = {
   id: number;
@@ -24,26 +19,15 @@ export type UserData = {
   // Add other user data properties as needed
 };
 
-const TrophyGenerator: React.FC<TrophyData> = () => {
+const TrophyGenerator: React.FC = () => {
   const trophyRef = useRef<THREE.Mesh>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [prevMouseX, setPrevMouseX] = useState(0);
   const [prevMouseY, setPrevMouseY] = useState(0);
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [isClaimed, setIsClaimed] = useState(false);
 
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setUserData(response.data[0]);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
@@ -74,7 +58,7 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
     return array[randomIndex];
   };
 
-  const trophyData: TrophyData = {
+  const trophyData = {
     dimension: useMemo(() => getRandomElement([1, 2, 3]), []),
     color: useMemo(
       () =>
@@ -98,13 +82,28 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
     tubeWidth: useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []),
   };
 
+  
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
+      setUserData(response.data[0]);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
   const postTrophyData = async () => {
     try {
       if (userData && userData.id) {
+        setIsClaimed(true);
         console.log('userData.id:', userData.id); // Check the value of userData.id
         await axios.post('/trophies', {
-          name: 'Generated Trophy4',
-          description: 'A randomly generated trophy',
+          name:  '',
+          description: '',
           generationConditions: JSON.stringify(trophyData),
           filePath: '',
           ownerId: userData.id
@@ -172,7 +171,7 @@ const TrophyGenerator: React.FC<TrophyData> = () => {
         )}
       </Canvas>
       {userData && userData.id !== null && (
-        <button onClick={postTrophyData}>Claim Trophy</button>
+        <button onClick={postTrophyData} disabled={isClaimed}> {isClaimed ? 'Claimed!' : 'Claim Trophy'}</button>
       )}
     </div>
   );

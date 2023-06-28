@@ -27,7 +27,7 @@ const HomePage = () => {
   useEffect(() => {
     const postUserData = async () => {
       try {
-        // Check if the user exists by sending a POST request instead of a GET request
+        // Check if the user exists by sending a POST request
         const response = await axios.post<UserData>('/Users', {
           username: user?.name,
           email: user?.email,
