@@ -59,7 +59,7 @@ const ProfilePage: React.FC = () => {
       <Container>
         <StyledHeader>
           <h1>BioData</h1>
-          <XCircle className='react-icon' onClick={()=>{setPhotoStatus('profile')}}/>
+          <XCircle className='react-icon' onClick={() => { setPhotoStatus('profile') }} />
         </StyledHeader>
         <CreateFaceDescriptions
           setPhotoStatus={setPhotoStatus}
@@ -78,7 +78,7 @@ const ProfilePage: React.FC = () => {
         <div className='content__body'>
           <div className='profile-grid'>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              {user.picter ? (
+              {user.picture ? (
                 <img
                   src={user?.picture}
                   className='profile__avatar'
@@ -145,7 +145,7 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
       </Main>
     </Container>
   );

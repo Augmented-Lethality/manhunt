@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState, } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SocketContext from '../contexts/Socket/SocketContext';
-import { ButtonToHome, ButtonToGame } from '../components/Buttons';
+import { ButtonToGame } from '../components/Buttons';
 import WhosHunting from '../components/WhosHunting';
 import { Container } from '../styles/Container';
 import { Header } from '../styles/Header'
 import { Main } from '../styles/Main'
 import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
+import CheckAccess from '../components/GameLobby/CheckAccess';
 
 const GameLobby: React.FunctionComponent = () => {
   const { games, users } = useContext(SocketContext).SocketState;
@@ -31,7 +32,7 @@ const GameLobby: React.FunctionComponent = () => {
 
   return (
     <Container>
-      <Header page='Lobby'/>
+      <Header page='Lobby' />
       <Main>
         {showLobby ? (
           <>
@@ -45,6 +46,8 @@ const GameLobby: React.FunctionComponent = () => {
         ) : (
           <p>No Players</p>
         )}
+        <br />
+        <CheckAccess />
       </Main>
     </Container>
   );

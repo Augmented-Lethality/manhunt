@@ -34,7 +34,7 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
 
   // socket contexts
   const { games, users } = useContext(SocketContext).SocketState;
-  const { UpdateGameStatus } = useContext(SocketContext);
+  const { UpdateGameStatus, AddGameStats } = useContext(SocketContext);
 
   // storing username of hunted so tensor can compare
   const [huntedUsername, setHuntedUsername] = useState<string>('');
@@ -55,9 +55,11 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   }, [faceMatcher, huntedUsername])
 
   // whenever targetCounter is updated, if it's at 10, navigate the users
+  // NEED TO CHANGE BACK FOR PRODUCTION
   useEffect(() => {
-    if (targetCounter === 5) {
-      console.log('made it to 5')
+    if (targetCounter === 1) {
+      console.log('made it to 1')
+      AddGameStats(user);
       UpdateGameStatus(user, 'complete')
     }
   }, [targetCounter])

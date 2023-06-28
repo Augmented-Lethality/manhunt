@@ -55,15 +55,18 @@ User.init({
   },
   gamesPlayed: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    defaultValue: 0,
   },
   gamesWon: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    defaultValue: 0,
   },
   killsConfirmed: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    defaultValue: 0,
   },
   largeFont: {
     type: DataTypes.BOOLEAN,
@@ -201,7 +204,7 @@ Trophy.init({
   generationConditions: DataTypes.TEXT, // This can be a stringified function or JSON
   filePath: DataTypes.STRING,
   ownerId: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     references: {
       model: User,
       key: 'id'

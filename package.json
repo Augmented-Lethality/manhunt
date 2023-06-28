@@ -20,7 +20,7 @@
   "dependencies": {
     "@ar-js-org/ar.js": "3.4.2",
     "@auth0/auth0-react": "^2.1.0",
-    "@react-three/drei": "^9.77.0",
+    "@react-three/drei": "^9.77.4",
     "@react-three/fiber": "^8.13.4",
     "@tensorflow/tfjs": "4.3",
     "@types/styled-components": "^5.1.26",
@@ -42,6 +42,7 @@
     "react-feather": "^2.0.10",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^6.12.0",
+    "react-switch": "^7.0.0",
     "react-webcam": "^7.1.1",
     "sequelize": "^6.32.0",
     "socket.io": "^4.6.2",
@@ -49,6 +50,7 @@
     "stream-browserify": "^3.0.0",
     "styled-components": "^5.3.10",
     "three": "^0.153.0",
+    "three-stdlib": "^2.23.10",
     "tslib": "^2.5.3",
     "util": "^0.12.5",
     "uuid": "^9.0.0"
