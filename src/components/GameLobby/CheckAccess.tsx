@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { AccessContext } from '../../contexts/AccessContext';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../../contexts/Socket/SocketContext';
 import { ButtonToProfile } from '../Buttons';
@@ -7,11 +6,38 @@ import { ButtonToProfile } from '../Buttons';
 const CheckAccess: React.FC = () => {
   const { user } = useAuth0();
   const { users } = useContext(SocketContext).SocketState;
+  const { UpdateReady } = useContext(SocketContext);
+
 
   const [videoAccessError, setVideoAccessError] = useState(false);
   const [locationAccessError, setLocationAccessError] = useState(false);
   const [orientationAccessError, setOrientationAccessError] = useState(false);
   const [bioDataError, setBioDataError] = useState(false);
+
+  useEffect(() => {
+    if (user?.sub) {
+      const errorMessages: string[] = [];
+
+      switch (true) {
+        case videoAccessError:
+          errorMessages.push('video');
+          break;
+        case locationAccessError:
+          errorMessages.push('location');
+          break;
+        case orientationAccessError:
+          errorMessages.push('orientation');
+          break;
+        case bioDataError:
+          errorMessages.push('bio');
+          break;
+        default:
+          break;
+      }
+
+      UpdateReady({ [user.sub]: errorMessages });
+    }
+  }, [videoAccessError, locationAccessError, orientationAccessError, bioDataError]);
 
   // turns the camera on and off
   const checkVideoAccess = () => {
@@ -76,9 +102,19 @@ const CheckAccess: React.FC = () => {
   };
 
   useEffect(() => {
+    // initially say the user isn't ready until the checks are made
+    if (user?.sub) {
+      UpdateReady({ [user.sub]: ['not checked'] });
+    }
     checkVideoAccess();
     checkLocationAccess();
     checkOrientationAccess();
+
+    const hasErrors = videoAccessError || locationAccessError || orientationAccessError || bioDataError;
+    if (!hasErrors && user?.sub) {
+      UpdateReady({ [user.sub]: [] });
+    }
+
   }, []);
 
   useEffect(() => {
@@ -88,7 +124,7 @@ const CheckAccess: React.FC = () => {
   return (
     <div>
       {videoAccessError && <button onClick={checkVideoAccess}>Allow Camera Access</button>}
-      {locationAccessError && <strong>Error: Can't Access Location, Ensure Your Browser Allows Location Access</strong>}
+      {locationAccessError && <strong>Error: Can't Access Location. Ensure Your Browser Can Access Your Location</strong>}
       {orientationAccessError && <button onClick={checkOrientationAccess}>Allow Device Orientation Access</button>}
       {bioDataError &&
         <div>
