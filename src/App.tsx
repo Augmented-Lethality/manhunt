@@ -13,7 +13,7 @@ import GameLobby from './pages/GameLobby';
 import EndGame from './pages/EndGame';
 import FindGamePage from './pages/FindGamePage';
 import FriendsPage from './pages/FriendsPage';
-//import OtherUserProfilePage from './pages/OtherUserProfilePage';
+import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import SocketComponent from './contexts/Socket/SocketComponent';
 import Settings from './pages/Settings';
 import { useFontSize } from './contexts/FontSize';
@@ -45,14 +45,14 @@ const App = () => {
             <AuthenticationGuard component={HomePage} />
           </SocketComponent>}
       />
-      <Route
+      {/* <Route
         path="/profile"
         element={<AuthenticationGuard component={ProfilePage} />}
-      />
-      {/* <Route
-        path="/profile/:username"
-        element={<AuthenticationGuard component={OtherUserProfilePage} />}
       /> */}
+      <Route
+        path="/cat/:poop"
+        element={<AuthenticationGuard component={OtherUserProfilePage} />}
+      />
       <Route
         path="/test"
         element={<AuthenticationGuard component={TestPage} />}
