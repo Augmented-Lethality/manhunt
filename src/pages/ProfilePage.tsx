@@ -7,7 +7,7 @@ import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
 
-const TrophyGenerator = lazy(() => import('../components/TrophyGenerator'));
+import EndGame from './EndGame';
 const SavedTrophies = lazy(() => import('../components/SavedTrophies'));
 
 export type UserData = {
@@ -132,11 +132,7 @@ const ProfilePage: React.FC = () => {
               <h6>Games Won: {userData?.gamesWon}</h6>
               <h6>Kills Confirmed: {userData?.killsConfirmed}</h6>
             </div>
-            <div style={{ width: '300px', height: '300px' }}>
-              <Suspense fallback={<div>Loading Saved Trophy...</div>}>
-                <TrophyGenerator />
-              </Suspense>
-            </div>
+            <EndGame/>
             <div style={{ width: '300px', height: '300px' }}>
               <Suspense fallback={<div>Loading Saved Trophy...</div>}>
                 <SavedTrophies
