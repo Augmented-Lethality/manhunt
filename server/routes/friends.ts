@@ -4,11 +4,10 @@ const { Op } = require("sequelize");
 export const Friends = Router();
 
 //GET RELATIONSHIPS
-Friends.get('/', async (req, res) => {
+Friends.get('/:userId', async (req, res) => {
   try {
-    const userId = req.query.userId;
+    const userId = req.params.userId;
     const status = req.query.status;
-
     let relationships
     if (status) {
       relationships = await Friend.findAll({
@@ -27,7 +26,6 @@ Friends.get('/', async (req, res) => {
     } else {
       relationships = await Friend.findAll({
         where: {
-          status: status,
           [Op.or]: [
             { userId: userId },
             { friendId: userId }
@@ -63,13 +61,22 @@ Friends.get('/', async (req, res) => {
 });
 
 //FRIEND REQUEST
-Friends.post('/add', async (req, res) => {
+Friends.post('/', async (req, res) => {
   try {
     const { userId, friendId, status } = req.body;
-
     // Check if userId and friendId are not the same
     if (userId === friendId) {
       return res.status(400).send({ message: "User ID and Friend ID cannot be the same." });
+    }
+
+    // Check that userIds exists
+    const user = await User.findOne({ where: { authId: userId } });
+    if (!user) {
+      res.status(404).send({message: 'Could not find User'});
+    }
+    const friend = await User.findOne({ where: { authId: friendId } });
+    if (!friend) {
+      res.status(404).send({message: 'Could not find Friend'});
     }
 
     // Check if this friendship already exists
