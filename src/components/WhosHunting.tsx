@@ -42,7 +42,7 @@ const WhosHunting: React.FunctionComponent = () => {
 
   return (
     <div>
-      <div>{huntedName}, You're Being Hunted</div>
+      <div>{huntedName}, you're being hunted.</div>
       {user?.sub === game.host && (
         <button onClick={() => pickVictim(users, SetHunted)}>Pick Again</button>
       )}
