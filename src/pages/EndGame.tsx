@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext, lazy, Suspense } from 'react';
 import { ButtonToHome } from '../components/Buttons';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
+
 const TrophyGenerator = lazy(() => import('../components/TrophyGenerator'));
 
 const EndGame: React.FC = () => {
@@ -57,7 +58,7 @@ const EndGame: React.FC = () => {
     <div className="end-game-container">
       <h3>Congratulations, Citizen.</h3>
       <h4>You've Earned a Reward.</h4>
-     {true ? (
+     {winner ? (
         <div style={{ width: '400px', height: '400px' }}>
           <Suspense fallback={<div>Loading Saved Trophy...</div>}>
             <TrophyGenerator />
