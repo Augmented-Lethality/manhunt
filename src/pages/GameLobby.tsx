@@ -9,7 +9,6 @@ import { PlayerListItem } from '../components/GameLobby/PlayerListItem';
 import CheckAccess from '../components/GameLobby/CheckAccess';
 import { useAuth0 } from '@auth0/auth0-react';
 import HostControls from '../components/GameLobby/HostControls';
-import TimerInput from '../components/GameLobby/TimerInput';
 
 const GameLobby: React.FunctionComponent = () => {
   const { user } = useAuth0();
@@ -41,7 +40,6 @@ const GameLobby: React.FunctionComponent = () => {
       <Main>
         {showLobby ? (
           <>
-            <TimerInput />
             <strong>Host: {games[0].hostName}</strong><br />
             <WhosHunting />
             <br />
