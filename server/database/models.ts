@@ -177,7 +177,7 @@ Game.init({
     allowNull: true
   },
   timeStart: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.BIGINT,
     allowNull: true
   },
   winnerId: {

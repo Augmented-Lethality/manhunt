@@ -4,13 +4,14 @@ import { Socket } from 'socket.io-client';
 import { createContext } from 'react';
 
 export interface Game {
+  timeStart: number;
   hunted: string;
   createdAt: string;
   gameId: string;
   host: string;
   hostName: string;
   status: string;
-  timeConstraints: string;
+  timeConstraints: number;
   updatedAt: string;
   users: string[];
   winnerId: string;

@@ -27,7 +27,7 @@ const HostControls: React.FunctionComponent = () => {
 
   return (
     <div>
-      {showControls && (games[0].hunted.length > 0 && !hasReadyErrors && <ButtonToGame />)}
+      {showControls && (games[0].hunted.length > 0 && !hasReadyErrors && games[0].timeConstraints && <ButtonToGame />)}
       {showControls && <TimerInput />}
     </div>
   );
