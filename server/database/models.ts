@@ -173,7 +173,11 @@ Game.init({
     defaultValue: 'lobby'
   },
   timeConstraints: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  timeStart: {
+    type: DataTypes.INTEGER,
     allowNull: true
   },
   winnerId: {

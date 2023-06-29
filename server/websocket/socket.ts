@@ -423,6 +423,43 @@ export class ServerSocket {
       }
     });
 
+    socket.on('update_game_timer', async (time, user) => {
+      try {
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const game = await Game.findOne({ where: { gameId: existingUser?.dataValues.gameId } });
+        if (game) {
+          await Game.update({ timeConstraints: time }, { where: { gameId: existingUser?.dataValues.gameId } });
+          console.log('timer added');
+          this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+
+        } else {
+          console.log('no game like that exists')
+        }
+      } catch (err) {
+        console.log(err);
+      }
+
+    });
+
+    socket.on('update_game_start', async (time, user) => {
+      try {
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const game = await Game.findOne({ where: { gameId: existingUser?.dataValues.gameId } });
+        if (game) {
+          await Game.update({ timeStart: time }, { where: { gameId: existingUser?.dataValues.gameId } });
+          console.log('game start added');
+          this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+
+        } else {
+          console.log('no game like that exists')
+        }
+      } catch (err) {
+        console.log(err);
+      }
+
+    });
+
+
 
     // when the disconnect occurs
     socket.on('disconnect', async () => {
