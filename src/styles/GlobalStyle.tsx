@@ -95,6 +95,14 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
     height: 100vh; 
   }
 
+  .profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
   .trophy-container {
     display: flex;
     flex-direction: column;

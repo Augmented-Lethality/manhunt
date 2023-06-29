@@ -76,7 +76,7 @@ const ProfilePage: React.FC = () => {
       <Header page='Profile' />
       <Main>
         <div className='content__body'>
-          <div className='profile-grid'>
+          <div className='profile-container'>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               {user.picture ? (
                 <img
@@ -114,10 +114,10 @@ const ProfilePage: React.FC = () => {
               </div>
             ) : (
               <div className='profile_verification'>
-                <h3>
+                <h5>
                   Citizen has not been processed by the CorpoReality Police.
-                </h3>
-                <h3>Please send in Biodata to participate in SOCIETY™.</h3>
+                </h5>
+                <h5>Please send in Biodata to participate in SOCIETY™.</h5>
                 <button
                   style={{ background: '#6e6b8c', color: 'white' }}
                   onClick={() => setPhotoStatus('camera')}
