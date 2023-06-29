@@ -4,9 +4,6 @@ import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
-
-
-
 export type UserData = {
   id: number;
   username: string;
@@ -26,9 +23,10 @@ const TrophyGenerator: React.FC = () => {
   const [prevMouseY, setPrevMouseY] = useState(0);
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [isClaimed, setIsClaimed] = useState(false);
+  const [trophyName, setTrophyName] = useState('');
+  const [trophyDescription, setTrophyDescription] = useState('');
 
-
+  // event handlers
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
     setPrevMouseX(e.clientX);
@@ -53,6 +51,7 @@ const TrophyGenerator: React.FC = () => {
     }
   };
 
+  // functions for generating random trophy properties
   const getRandomElement = (array) => {
     const randomIndex = Math.floor(Math.random() * array.length);
     return array[randomIndex];
@@ -82,6 +81,53 @@ const TrophyGenerator: React.FC = () => {
     tubeWidth: useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []),
   };
 
+  const generateRandomName = () => {
+    const adjectives = [
+      'Atomic',
+      'Elite',
+      'Stellar',
+      'Radiating',
+      'Executive Excellence',
+      'Corporate Compliance Champion',
+      'Citizenship',
+      'Participation',
+      'Employee Appreciation',
+    ];
+    const nouns = [
+      'Trophy',
+      'Award',
+      'Bounty',
+      'Medal',
+      'Accolade',
+      'Relic',
+      'Heirloom',
+      'Souvenir',
+      'Jewel',
+      'Keepsake',
+      'Flair',
+    ];
+    const adjective = getRandomElement(adjectives);
+    const noun = getRandomElement(nouns);
+    const name = `${adjective} ${noun}`;
+    setTrophyName(name);
+    return name;
+  };
+
+  const generateRandomDescription = () => {
+    const descriptions = [
+      `Awarded to the most skilled operative in the CorpoReality Autonomy Police.`,
+      `A an extremely valuable bounty that seems to never have one owner for too long...`,
+      `An extraordinary achievement recognized by the high-tech society of the SOCIETY™.`,
+      `A trophy seized from the clutches of the CorpoReality Police, a true symbol of defiance and audacity.`,
+      `A token of recognition for exceptional espionage and cunning within The Collective.`,
+      `It's dangerous to go alone! Take this.`,
+    ];
+    const description = getRandomElement(descriptions);
+    setTrophyDescription(description);
+    return description;
+  };
+
+  // data related functions
   const fetchUserData = async () => {
     try {
       const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
@@ -95,37 +141,16 @@ const TrophyGenerator: React.FC = () => {
     }
   };
 
-  const generateRandomName = () => {
-    const adjectives = ['Atomic', 'Elite', 'Stellar', 'Executive Excellence', 'Corporate Compliance Champion', 'Citizenship', 'Participation'];
-    const nouns = ['Award', 'Bounty', 'Medal', 'Accolade', 'Relic', 'Heirloom', 'Souvenir', 'Jewel', 'Keepsake'];
-    const adjective = getRandomElement(adjectives);
-    const noun = getRandomElement(nouns);
-    return `${adjective} ${noun}`;
-  };
-
-  const generateRandomDescription = () => {
-    const descriptions = [
-      `Awarded to the most skilled operative in the CorpoReality Autonomy Police.`,
-      `A an extremely valuable bounty that seems to never have one owner for too long...`,
-      `An extraordinary achievement recognized by the high-tech society of the SOCIETY™.`,
-      `A trophy seized from the clutches of the CorpoReality Police, a true symbol of defiance and audacity.`,
-      `A token of recognition for exceptional espionage and cunning within The Collective.`,
-      `It's dangerous to go alone! Take this.`
-    ];
-    return getRandomElement(descriptions);
-  };
-
   const postTrophyData = async () => {
     try {
       if (userData && userData.id) {
-        setIsClaimed(true);
-        // console.log('userData.id:', userData.id); 
+        // console.log('userData.id:', userData.id);
         await axios.post('/trophies', {
-          name:  generateRandomName(),
-          description: generateRandomDescription(),
+          name: trophyName,
+          description: trophyDescription,
           generationConditions: JSON.stringify(trophyData),
           filePath: '',
-          ownerId: userData.id
+          ownerId: userData.id,
         });
       } else {
         console.log('userData is not available');
@@ -134,10 +159,16 @@ const TrophyGenerator: React.FC = () => {
       console.error('Error posting trophy data:', error);
     }
   };
-  
+
   useEffect(() => {
     fetchUserData();
+    generateRandomName();
+    generateRandomDescription();
   }, []);
+
+  useEffect(() => {
+    postTrophyData();
+  }, [userData]);
 
   return (
     <div
@@ -145,7 +176,7 @@ const TrophyGenerator: React.FC = () => {
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      <h1>You win this!</h1>
+      <h3>Good work, citizen. You've earned this.</h3>
       <Canvas>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
@@ -190,7 +221,10 @@ const TrophyGenerator: React.FC = () => {
         )}
       </Canvas>
       {userData && userData.id !== null && (
-        <button onClick={postTrophyData} disabled={isClaimed}> {isClaimed ? 'Claimed!' : 'Claim Trophy'}</button>
+        <div>
+          <h5>Designation: {trophyName}</h5>
+          <h5>Report: {trophyDescription}</h5>
+        </div>
       )}
     </div>
   );

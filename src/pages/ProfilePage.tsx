@@ -8,7 +8,7 @@ import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
 
 const TrophyGenerator = lazy(() => import('../components/TrophyGenerator'));
-const SavedTrophy = lazy(() => import('../components/SavedTrophy'));
+const SavedTrophies = lazy(() => import('../components/SavedTrophies'));
 
 export type UserData = {
   userId: number;
@@ -139,7 +139,7 @@ const ProfilePage: React.FC = () => {
             </div>
             <div style={{ width: '300px', height: '300px' }}>
               <Suspense fallback={<div>Loading Saved Trophy...</div>}>
-                <SavedTrophy
+                <SavedTrophies
                   id={0}
                   name={''}
                   description={''}
