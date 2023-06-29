@@ -54,15 +54,11 @@ const EndGame: React.FC = () => {
   }, [games, user]);
 
   return (
-    <div
-      style={{
-        textAlign: 'center',
-        padding: '50px',
-        backgroundColor: '#fcf18d',
-      }}
-    >
+    <div className="end-game-container">
+      <h3>Congratulations, Citizen.</h3>
+      <h4>You've Earned a Reward.</h4>
      {true ? (
-        <div style={{ width: '300px', height: '300px' }}>
+        <div style={{ width: '400px', height: '400px' }}>
           <Suspense fallback={<div>Loading Saved Trophy...</div>}>
             <TrophyGenerator />
           </Suspense>

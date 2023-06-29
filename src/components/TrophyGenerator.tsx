@@ -39,17 +39,18 @@ const TrophyGenerator: React.FC = () => {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (!isDragging) return;
-
-    const mouseDeltaX = e.clientX - prevMouseX;
+  
+    const mouseDeltaX = -(e.clientX - prevMouseX);
     const mouseDeltaY = e.clientY - prevMouseY;
     setPrevMouseX(e.clientX);
     setPrevMouseY(e.clientY);
-
+  
     if (trophyRef.current) {
-      trophyRef.current.rotation.y += mouseDeltaX * 0.01; // Rotate around Y-axis
+      trophyRef.current.rotation.y -= mouseDeltaX * 0.01; // Rotate around Y-axis
       trophyRef.current.rotation.x += mouseDeltaY * 0.01; // Rotate around X-axis
     }
   };
+  
 
   // functions for generating random trophy properties
   const getRandomElement = (array) => {
@@ -175,8 +176,8 @@ const TrophyGenerator: React.FC = () => {
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
+      className="trophy-container"
     >
-      <h3>Good work, citizen. You've earned this.</h3>
       <Canvas>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />

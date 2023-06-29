@@ -87,6 +87,22 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
   border: 2px solid black;
   }
 
+  .end-game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; 
+  }
+
+  .trophy-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
   p {
     font-size: calc(var(--font-size) * 1.5);
     color: #6e6b8c;
@@ -115,6 +131,9 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
     font-size: calc(var(--font-size) * 1.5);
     color: #979fd0;
   }
+
+  
+
 `;
 
 export default GlobalStyle;
