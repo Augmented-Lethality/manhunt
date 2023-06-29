@@ -72,14 +72,6 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
     }
   }, [users])
 
-  // whenever the games state changes, if the status is complete, navigate to /gameover endpoint
-  useEffect(() => {
-    if (games[0].status === 'complete') {
-      navigate('/gameover');
-    }
-  }, [games])
-
-
   const createCanvas = () => {
     if (videoStarted && webcamRef?.current?.video) {
       canvasRef.current = createCanvasFromMedia(webcamRef.current.video);

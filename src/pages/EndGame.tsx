@@ -13,7 +13,7 @@ const EndGame: React.FC = () => {
     if (games.length > 0) {
       // they won and were not the victim
       if (games[0].winnerId === user?.sub && games[0].hunted !== user?.sub) {
-        setGameOverMessage(`Great work, ${user?.name}. You skip tracing gained you your very own bounty.`);
+        setGameOverMessage(`Great work, ${user?.name}. Your skip tracing gained you a bounty.`);
 
         // INSERT TROPHY COMPONENT
 
@@ -28,7 +28,7 @@ const EndGame: React.FC = () => {
       } else if (games[0].winnerId !== user?.sub && games[0].hunted === user?.sub) {
         setGameOverMessage(`C'mon ${user?.name}, you seriously let these guys catch you?`);
         // lost and were a hunter
-      } else if (games[0].winnerId !== user?.sub && games[0].hunted === user?.sub) {
+      } else if (games[0].winnerId !== user?.sub && games[0].hunted !== user?.sub) {
         setGameOverMessage(`${user?.name}, bounty hunters catch the bounty. Get back in there and try again!`);
 
       }

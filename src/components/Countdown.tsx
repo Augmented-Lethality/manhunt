@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import SocketContext from '../contexts/Socket/SocketContext';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const CountdownContainer = styled.div`
   position: absolute;
@@ -13,6 +14,9 @@ const CountdownContainer = styled.div`
 
 const Countdown: React.FC = () => {
   const { games } = useContext(SocketContext).SocketState;
+  const { AddGameStats, UpdateGameStatus } = useContext(SocketContext);
+
+  const { user } = useAuth0();
 
   const [initialCount, setInitialCount] = useState(-1);
   const [minutes, setMinutes] = useState(-1);
@@ -47,6 +51,13 @@ const Countdown: React.FC = () => {
     setMinutes(Math.floor(initialCount / 60));
     setSeconds(initialCount % 60);
   }, [initialCount]);
+
+  useEffect(() => {
+    if (minutes === 0 && seconds === 0 && games[0].status !== 'complete' && games[0].hunted === user?.sub) {
+      AddGameStats(user);
+      UpdateGameStatus(user, 'complete')
+    }
+  }, [seconds]);
 
 
   return (

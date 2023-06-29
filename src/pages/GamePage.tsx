@@ -20,14 +20,9 @@ import Crosshair from 'react-feather/dist/icons/crosshair';
 import Home from 'react-feather/dist/icons/home';
 import Eye from 'react-feather/dist/icons/eye';
 
-interface ChaseCamRefType { // declaring type for child method
-  turnOffCamera: () => void;
-}
 
 const GamePage: React.FC = () => {
 
-  // passing this to the ChaseCam.tsx child so that the method can be used in this parent component
-  const chaseCamRef = useRef<ChaseCamRefType>(null);
   const navigate = useNavigate();
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
@@ -37,22 +32,20 @@ const GamePage: React.FC = () => {
 
   const { user } = useAuth0();
 
-
-
-
   useEffect(() => {
-    loadTensorFlowFaceMatcher();
-    console.log(users)
+    if (users.length > 0) {
+      loadTensorFlowFaceMatcher();
+      console.log(users)
+    }
   }, [users]);
 
-  useEffect(() => {
-    return () => {
-      handleTurnOffCamera(); // turns off all cameras when this component is unmounted
-    };
-  }, []);
-
+  // whenever the games state changes, if the status is complete, navigate to /gameover endpoint
   useEffect(() => {
     console.log('game status:', games[0].status)
+
+    if (games[0].status === 'complete') {
+      navigate('/gameover');
+    }
   }, [games])
 
   const loadTensorFlowFaceMatcher = async () => {
@@ -85,21 +78,6 @@ const GamePage: React.FC = () => {
     }
   }
 
-  // the turnOffCamera() is from the ChaseCam child component, passed
-  // using the useRef and useImperativeHandle
-  const handleTurnOffCamera = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        // console.log('Video Okay');
-        stream.getTracks().forEach((track) => track.stop());
-      })
-      .catch((error) => {
-        console.error('Error accessing video:', error);
-      });
-
-  };
-
   const handleHomeDrop = () => {
     LeaveGame(user);
     navigate('/home')
@@ -109,12 +87,12 @@ const GamePage: React.FC = () => {
   return (
     <Container>
       <GameHeader>
-        <Countdown initialCount={5 * 60} />
+        <Countdown />
         <DropDownMenu>
           <div onClick={handleHomeDrop}><Home className='react-icon' />home</div>
         </DropDownMenu>
       </GameHeader>
-      {gameMode === 'Chase' ? <ChaseCam ref={chaseCamRef} />
+      {gameMode === 'Chase' ? <ChaseCam />
         : (
           <WebcamProvider>
             <KillCam faceMatcher={faceMatcher} />
