@@ -29,7 +29,7 @@ const CheckAccess: React.FC = () => {
           errorMessages.push('orientation');
           break;
         case bioDataError:
-          errorMessages.push('bio');
+          errorMessages.push('bio data');
           break;
         default:
           break;

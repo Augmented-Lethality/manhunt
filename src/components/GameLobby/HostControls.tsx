@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import SocketContext from '../../contexts/Socket/SocketContext';
 import { ButtonToGame } from '../Buttons';
 import { useAuth0 } from '@auth0/auth0-react';
+import TimerInput from './TimerInput';
 
 
 const HostControls: React.FunctionComponent = () => {
@@ -12,7 +13,7 @@ const HostControls: React.FunctionComponent = () => {
   const [showControls, setShowControls] = useState(false);
 
   useEffect(() => {
-    if (games.length > 0) {
+    if (games.length > 0 && games[0].host === user?.sub) {
       setShowControls(true);
     } else {
       setShowControls(false);
@@ -26,7 +27,8 @@ const HostControls: React.FunctionComponent = () => {
 
   return (
     <div>
-      {showControls && (games.length > 0 && games[0].hunted.length > 0 && !hasReadyErrors && games[0].host === user?.sub && <ButtonToGame />)}
+      {showControls && (games[0].hunted.length > 0 && !hasReadyErrors && games[0].timeConstraints && <ButtonToGame />)}
+      {showControls && <TimerInput />}
     </div>
   );
 };

@@ -42,7 +42,16 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
 
   // creating the canvas when the component mounts
   useEffect(() => {
-    createCanvas()
+    createCanvas();
+    return () => {
+      // Stop the camera here using webcamRef.current
+
+      // Example:
+      if (webcamRef?.current?.video) {
+        webcamRef.current.video.pause();
+        webcamRef.current.video.srcObject = null;
+      }
+    };
   }, [])
 
   // if faceMatcher and huntedUsername are both set, start the handleVideoPlay()
@@ -72,14 +81,6 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
     }
   }, [users])
 
-  // whenever the games state changes, if the status is complete, navigate to /gameover endpoint
-  useEffect(() => {
-    if (games[0].status === 'complete') {
-      navigate('/gameover');
-    }
-  }, [games])
-
-
   const createCanvas = () => {
     if (videoStarted && webcamRef?.current?.video) {
       canvasRef.current = createCanvasFromMedia(webcamRef.current.video);
@@ -99,36 +100,36 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   const handleVideoOnPlay = () => {
     if (canvasRef.current && webcamRef?.current) {
       matchDimensions(canvasRef.current, displaySize);
-    }
-    const processVideoFrame = async () => {
-      if (faceMatcher && webcamRef?.current?.video && canvasRef.current) {
-        const detections = await detectAllFaces(webcamRef.current.video)
-          .withFaceLandmarks()
-          .withFaceDescriptors();
-        const resizedDetections = resizeResults(detections, displaySize);
-        const context = canvasRef.current.getContext('2d');
-        if (context) {
-          context.clearRect(0, 0, videoWidth, videoHeight);
-        }
-        draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
-        const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
-        results.forEach((result, i) => {
-          const name = result.toString()
-          const sliceIndex = name.indexOf(' (')
-          const detectedFace = name.slice(0, sliceIndex)
-          if (detectedFace === huntedUsername) {
-            wasBountyDetected = true;
+      const context = canvasRef.current.getContext('2d');
+      if (context) {
+        const processVideoFrame = async () => {
+          if (faceMatcher && webcamRef?.current?.video && canvasRef.current) {
+            const detections = await detectAllFaces(webcamRef.current.video)
+              .withFaceLandmarks()
+              .withFaceDescriptors();
+            const resizedDetections = resizeResults(detections, displaySize);
+            context.clearRect(0, 0, videoWidth, videoHeight);
+            draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
+            const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
+            results.forEach((result, i) => {
+              const name = result.toString()
+              const sliceIndex = name.indexOf(' (')
+              const detectedFace = name.slice(0, sliceIndex)
+              if (detectedFace === huntedUsername) {
+                wasBountyDetected = true;
+              }
+              const box = resizedDetections[i].detection.box
+              const drawBox = new draw.DrawBox(box, { label: name })
+              if (canvasRef.current) {
+                drawBox.draw(canvasRef.current)
+              }
+            });
+            setTimeout(processVideoFrame, 100);
           }
-          const box = resizedDetections[i].detection.box
-          const drawBox = new draw.DrawBox(box, { label: name })
-          if (canvasRef.current) {
-            drawBox.draw(canvasRef.current)
-          }
-        });
+        };
         setTimeout(processVideoFrame, 100);
       }
-    };
-    setTimeout(processVideoFrame, 100);
+    }
   };
 
   return (

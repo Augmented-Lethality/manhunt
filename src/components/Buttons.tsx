@@ -11,7 +11,7 @@ type ButtonProps = {
   onClick?: () => void;
   primary?: boolean;
   className?: string;
-} 
+}
 
 const StyledButton1 = styled.button<ButtonProps>`
   /* Adapt the colors based on primary prop */
@@ -102,10 +102,11 @@ export const ButtonToHome: React.FC = () => {
 
 export const ButtonToGame: React.FC = () => {
   const { user } = useAuth0();
-  const { UpdateGameStatus } = useContext(SocketContext);
+  const { UpdateGameStatus, AddGameStart } = useContext(SocketContext);
 
   const handleToGame = () => {
     UpdateGameStatus(user, 'ongoing');
+    AddGameStart(Date.now(), user);
   }
 
   return <Button label='Game Time' route='' onClick={handleToGame} />;
