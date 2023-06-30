@@ -120,9 +120,11 @@ const GamePage: React.FC = () => {
             <KillCam faceMatcher={faceMatcher} />
           </WebcamProvider>
         )}
-      {gameMode === 'Chase'
-        ? <Crosshair className='react-icon-large' onClick={handleGameChange} />
-        : <Eye className='react-icon-large' onClick={handleGameChange} />}
+      <div style={{display:'flex', justifyContent:'end'}}>
+        {gameMode === 'Chase'
+          ? <Crosshair className='react-icon-large' onClick={handleGameChange} />
+          : <Eye className='react-icon-large' onClick={handleGameChange} />}
+      </div>
     </Container>
   );
 }

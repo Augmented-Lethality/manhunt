@@ -6,54 +6,59 @@ export const Friends = Router();
 //GET RELATIONSHIPS
 Friends.get('/:userId', async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const authId = req.params.userId;
     const status = req.query.status;
-    let relationships
+    
+    let relationships;
+    
     if (status) {
       relationships = await Friend.findAll({
         where: {
           status: status,
           [Op.or]: [
-            { userId: userId },
-            { friendId: userId }
+            { userId: authId },
+            { friendId: authId }
           ]
         },
+        attributes: ['userId', 'friendId', 'status'], 
         include: [
-          { model: User, as: 'User', attributes: ['id', 'username'] },
-          { model: User, as: 'Friend', attributes: ['id', 'username'] }
+          { model: User, as: 'Self', attributes: [ 'username'] },
+          { model: User, as: 'Other', attributes: ['username'] }
         ]
       });
     } else {
       relationships = await Friend.findAll({
         where: {
           [Op.or]: [
-            { userId: userId },
-            { friendId: userId }
+            { userId: authId },
+            { friendId: authId }
           ]
         },
+        attributes: ['userId', 'friendId', 'status'], 
         include: [
-          { model: User, as: 'User', attributes: ['id', 'username'] },
-          { model: User, as: 'Friend', attributes: ['id', 'username'] }
+          { model: User, as: 'Self', attributes: ['username'] },
+          { model: User, as: 'Other', attributes: ['username'] }
         ]
       });
     }
 
-    const friends = relationships.map(relationship => {
-      if (relationship.User.id === Number(userId)) {
+    //sort the relations to only include the friend's authId
+    console.log(relationships);
+    const relations = relationships.map(relationship => {
+      if (relationship.dataValues.userId === authId) {
         return {
-          id: relationship.Friend.id,
-          username: relationship.Friend.username,
-          gameId: relationship.Friend.gameId
-        };
-      } else {
-        return {
-          id: relationship.User.id,
-          username: relationship.User.username
-        };
+          friend: relationship.dataValues.friendId,
+          status: relationship.dataValues.status
+        }
       }
-    });
-
-    res.status(200).send(friends);
+      else {
+        return {
+          friend: relationship.dataValues.userId,
+          status: relationship.dataValues.status
+        }
+      }
+    })
+    res.status(200).send(relations);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'An error occurred while trying to retrieve friends.' });
@@ -68,7 +73,6 @@ Friends.post('/', async (req, res) => {
     if (userId === friendId) {
       return res.status(400).send({ message: "User ID and Friend ID cannot be the same." });
     }
-
     // Check that userIds exists
     const user = await User.findOne({ where: { authId: userId } });
     if (!user) {
@@ -82,9 +86,15 @@ Friends.post('/', async (req, res) => {
     // Check if this friendship already exists
     const existingFriendship = await Friend.findOne({
       where: {
-        userId: userId,
-        friendId: friendId,
-      },
+        [Op.or]: [
+          { userId: userId,
+            friendId: friendId
+          },
+          { friendId: userId,
+            userId: friendId
+          }
+        ]
+      }
     });
     if (existingFriendship) {
       if(existingFriendship.status === 'accepted'){
