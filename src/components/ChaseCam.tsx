@@ -20,7 +20,7 @@ interface ChaseCamProps { }
 
 // passing the turnOffCamera method to the GamePage.tsx parent component
 type ChaseCamRefType = {
-  turnOffCamera: () => void;
+  stopCamera: () => void;
 };
 
 
@@ -88,11 +88,12 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
 
   // function that turns off the camera, will be sent to the parent component (GamePage.tsx)
   // so that it turns off both this camera and Kalypso's camera on dismount
-  const turnOffCamera = () => {
+  const stopCamera = () => {
     if (webcamRendererRef.current) {
       webcamRendererRef.current.turnOffCamera();
+      console.log('camera turned off yay!!!');
+
     }
-    console.log('camera turned off yay!!!');
   };
 
   const handlePermission = () => {
@@ -226,7 +227,9 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
 
-      turnOffCamera();
+      stopCamera();
+
+      cam.dispose();
 
       arjsRef.current?.stopGps();
     };
@@ -237,7 +240,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
   // parent component will get this method and be able to call it instead of trying
   // to pass it around with props
   useImperativeHandle(ref, () => ({
-    turnOffCamera: turnOffCamera
+    stopCamera: stopCamera
   }));
 
   useEffect(() => {
