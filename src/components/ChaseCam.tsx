@@ -334,10 +334,10 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
 
 
   return (
-    <div style={{ position: 'relative', height: '100vh', width: '100vw' }}>
+    <div style={{ height: '100%', width: '100%' }}>
       <canvas
         ref={canvasRef}
-        style={{ width: '100%', height: '100%', position: 'relative' }}
+        style={{ width: '100%', height: '100%' }}
       />
     </div >
   );
