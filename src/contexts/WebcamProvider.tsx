@@ -41,7 +41,7 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
         screenshotFormat="image/jpeg"
         onUserMedia={handleUserMedia}
         videoConstraints={videoConstraints}
-        style={{ position: 'absolute', top: 0, left: 0 }}/>
+        style={{ position: 'relative', top: '100%', left: '100%' }}/>
       {children}
     </WebcamContext.Provider>
   );

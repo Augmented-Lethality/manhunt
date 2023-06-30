@@ -67,11 +67,10 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
   }
 
   .react-icon-large{
-    position: relative;
-    top: -11px;
-    font-size: 2rem;
-    padding: 10px;
+    top: 88vh;
+    right: 4vh;
     border-radius: 50%;
+    padding: 10px;
     background-color: rgb(48 48 58);
     color: #6e6b8c;
     border: 3px solid #6e6b8c;
