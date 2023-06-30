@@ -3,6 +3,7 @@ import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 import { useAuth0 } from '@auth0/auth0-react';
 import { User, Ready } from './SocketContext';
+import PageLoader from '../../components/Loading';
 
 import axios from 'axios';
 
@@ -233,7 +234,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // showing this on client side while socket isn't connected
   if (loading) {
-    return <p>Loading Socket Connection...</p>
+    return <PageLoader />
   };
 
   // provides the socket context to the nested components
