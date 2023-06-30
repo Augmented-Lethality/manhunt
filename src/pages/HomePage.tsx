@@ -41,7 +41,6 @@ const HomePage = () => {
         if (response.data.largeFont) {
           setFontSize(20);
         }
-        // console.log(response);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }

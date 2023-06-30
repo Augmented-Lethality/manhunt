@@ -70,7 +70,6 @@ const ProfilePage: React.FC = () => {
       </Container>
     );
   }
-
   return (
     <Container>
       <Header page='Profile' />

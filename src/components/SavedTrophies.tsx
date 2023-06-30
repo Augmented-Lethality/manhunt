@@ -37,7 +37,8 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userTrophyData, setUserTrophyData] = useState<TrophyData[]>([]);
   const [showProps, setShowProps] = useState(false);
-  const [showTrophies, setShowTrophies] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchUserData = async () => {
     try {
@@ -46,7 +47,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      console.log('User Data:', response.data[0]); // Log the response data
       setUserData(response.data[0]);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -92,12 +92,11 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               'November',
               'December',
             ];
-          
+
             const monthIndex = parseInt(month, 10) - 1;
             return monthNames[monthIndex];
           }
-          
-          
+
           return {
             id: trophy.id,
             name: trophy.name,
@@ -112,7 +111,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
         });
 
         setUserTrophyData(parsedTrophyData);
-        console.log(userTrophyData, parsedTrophyData);
       }
     } catch (error) {
       console.error('Error fetching user trophy data:', error);
@@ -124,12 +122,12 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     const colorMap = {
       '#3d6cb8': 'Cerulean',
       '#19191a': 'Void',
-      'lightgreen': 'Radioactive',
-      'orange': 'Gold',
-      'darkred': 'Crimson',
-      'yellow': 'Saffron',
-      'pink': 'Rose',
-      'aquamarine': 'Aquamarine',
+      lightgreen: 'Radioactive',
+      orange: 'Gold',
+      darkred: 'Crimson',
+      yellow: 'Saffron',
+      pink: 'Rose',
+      aquamarine: 'Aquamarine',
       // Add color mappings as needed
     };
     // Return color name if exists in color map, otherwise return original
@@ -170,119 +168,133 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     setShowProps(!showProps);
   };
 
-  const toggleTrophies = () => {
-    setShowTrophies(!showTrophies);
-  };
-
-  const handleClick = () => {
-    toggleTrophies();
-  };
-
   useEffect(() => {
-    if (showTrophies && userTrophyData.length === 0) {
-      fetchUserTrophyData();
+    if (isAuthenticated) {
+      setIsLoading(true);
+      fetchUserData().then(() => setIsLoading(false));
     }
-  }, [showTrophies]);
-
+  }, [isAuthenticated]);
+  
   useEffect(() => {
-    fetchUserData();
-  }, []);
+    setIsLoading(true);
+    fetchUserTrophyData()
+      .then(() => {
+        setIsLoading(false); 
+      })
+      .catch((error) => {
+        console.error('Error fetching user trophy data:', error);
+        setIsLoading(false);
+      });
+  }, [userData]);
 
-  useEffect(() => {
-    fetchUserTrophyData();
-  }, []);
+  const trophiesPerPage = 9;
+  const startIndex = (currentPage - 1) * trophiesPerPage;
+  const endIndex = startIndex + trophiesPerPage;
+  const trophiesToDisplay = userTrophyData.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(userTrophyData.length / trophiesPerPage);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div>
       <h1>Recent Trophies </h1>
-      <button onClick={handleClick}>
-        {showTrophies ? 'X' : 'See Trophies'}
-      </button>
-      <button
-        onClick={togglePropsView}
-        style={{ display: showTrophies ? 'block' : 'none' }}
-      >
-        {showProps ? 'X' : 'Trophy Details'}
-      </button>
-
-      {showTrophies &&
-        userTrophyData
-          .slice(0)
-          .reverse()
-          .map((trophy, index) => (
-            <div key={index}>
-              <div
-                onMouseDown={(e) => handleMouseDown(e, index)}
-                onMouseUp={handleMouseUp}
-                onMouseMove={(e) => handleMouseMove(e, index)}
-              >
-                <Canvas>
-                  <ambientLight intensity={0.5} />
-                  <pointLight position={[10, 10, 10]} />
-                  {trophy.shape === 'box' && (
-                    <Box
-                      ref={(ref) => (trophyRefs.current[index] = ref)}
-                      args={[
-                        trophy.dimension,
-                        trophy.dimension,
-                        trophy.dimension,
-                      ]}
-                      position={[0, 0, 0]}
-                      rotation={[0, 0.4, 0]}
-                    >
-                      <meshStandardMaterial
-                        attach='material'
-                        color={trophy.color}
-                      />
-                    </Box>
-                  )}
-                  {trophy.shape === 'polyhedron' && (
-                    <Dodecahedron
-                      ref={(ref) => (trophyRefs.current[index] = ref)}
-                      args={[trophy.dimension, 0]}
-                      position={[0, 0, 0]}
-                      rotation={[0, 0.4, 0]}
-                    >
-                      <meshStandardMaterial
-                        attach='material'
-                        color={trophy.color}
-                      />
-                    </Dodecahedron>
-                  )}
-                  {trophy.shape === 'torus' && (
-                    <Torus
-                      ref={(ref) => (trophyRefs.current[index] = ref)}
-                      args={[
-                        trophy.dimension,
-                        trophy.tubeWidth,
-                        16,
-                        trophy.tubularSegments,
-                      ]}
-                      position={[0, 0, 0]}
-                      rotation={[0, 0.4, 0]}
-                    >
-                      <meshStandardMaterial
-                        attach='material'
-                        color={trophy.color}
-                      />
-                    </Torus>
-                  )}
-                </Canvas>
-              </div>
-              <div>
-                {showProps && (
-                  <>
-                    <h6>Designation: {trophy.name}</h6>
-                    <h6>Report: {trophy.description}</h6>
-                    <h6>Class: {trophy.shape}</h6>
-                    <h6>Magnitude: {trophy.dimension}</h6>
-                    <h6>Chroma: {getColorName(trophy.color)}</h6>
-                    <h6>Earned on: {trophy.createdAt}</h6>
-                  </>
+      {trophiesToDisplay
+        .slice(0)
+        .reverse()
+        .map((trophy, index) => (
+          <div key={index}>
+            <div
+              onMouseDown={(e) => handleMouseDown(e, index)}
+              onMouseUp={handleMouseUp}
+              onMouseMove={(e) => handleMouseMove(e, index)}
+            >
+              <Canvas>
+                <ambientLight intensity={0.5} />
+                <pointLight position={[10, 10, 10]} />
+                {trophy.shape === 'box' && (
+                  <Box
+                    ref={(ref) => (trophyRefs.current[index] = ref)}
+                    args={[
+                      trophy.dimension,
+                      trophy.dimension,
+                      trophy.dimension,
+                    ]}
+                    position={[0, 0, 0]}
+                    rotation={[0, 0.4, 0]}
+                  >
+                    <meshStandardMaterial
+                      attach='material'
+                      color={trophy.color}
+                    />
+                  </Box>
                 )}
-              </div>
+                {trophy.shape === 'polyhedron' && (
+                  <Dodecahedron
+                    ref={(ref) => (trophyRefs.current[index] = ref)}
+                    args={[trophy.dimension, 0]}
+                    position={[0, 0, 0]}
+                    rotation={[0, 0.4, 0]}
+                  >
+                    <meshStandardMaterial
+                      attach='material'
+                      color={trophy.color}
+                    />
+                  </Dodecahedron>
+                )}
+                {trophy.shape === 'torus' && (
+                  <Torus
+                    ref={(ref) => (trophyRefs.current[index] = ref)}
+                    args={[
+                      trophy.dimension,
+                      trophy.tubeWidth,
+                      16,
+                      trophy.tubularSegments,
+                    ]}
+                    position={[0, 0, 0]}
+                    rotation={[0, 0.4, 0]}
+                  >
+                    <meshStandardMaterial
+                      attach='material'
+                      color={trophy.color}
+                    />
+                  </Torus>
+                )}
+              </Canvas>
             </div>
-          ))}
+            <div>
+              {showProps && (
+                <>
+                  <h6>Designation: {trophy.name}</h6>
+                  <h6>Report: {trophy.description}</h6>
+                  <h6>Class: {trophy.shape}</h6>
+                  <h6>Magnitude: {trophy.dimension}</h6>
+                  <h6>Chroma: {getColorName(trophy.color)}</h6>
+                  <h6>Earned on: {trophy.createdAt}</h6>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+      {(
+        <div>
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+          >
+            Previous Page
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
+            Next Page
+          </button>
+        </div>
+      )}
     </div>
   );
 };

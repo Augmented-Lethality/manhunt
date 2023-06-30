@@ -12,7 +12,6 @@ const EndGame: React.FC = () => {
   const [ winner, setWinner ] = useState(false);
 
   useEffect(() => {
-    console.log(user);
     if (games.length > 0) {
       // they won and were not the victim
       if (games[0].winnerId === user?.sub && games[0].hunted !== user?.sub) {
@@ -45,7 +44,7 @@ const EndGame: React.FC = () => {
       // lost and were a hunter
       } else if (
         games[0].winnerId !== user?.sub &&
-        games[0].hunted === user?.sub
+        games[0].hunted !== user?.sub
       ) {
         setGameOverMessage(
           `${user?.name}, bounty hunters catch the bounty. Get back in there and try again!`
