@@ -9,20 +9,19 @@ const EndGame: React.FC = () => {
   const { user } = useAuth0();
   const { games } = useContext(SocketContext).SocketState;
   const [gameOverMessage, setGameOverMessage] = useState('');
-  const [ winner, setWinner ] = useState(false);
+  const [winner, setWinner] = useState(false);
 
   useEffect(() => {
     console.log(user);
     if (games.length > 0) {
       // they won and were not the victim
       if (games[0].winnerId === user?.sub && games[0].hunted !== user?.sub) {
-        setGameOverMessage(
-          `Great work, ${user?.name}. You skip tracing gained you your very own bounty.`
-        );
-        // INSERT TROPHY COMPONENT
-          setWinner(true);
+        setGameOverMessage(`Great work, ${user?.name}. Your skip tracing gained you a bounty.`);
 
-      // they won and were being hunted
+        // INSERT TROPHY COMPONENT
+        setWinner(true);
+
+        // they won and were being hunted
       } else if (
         games[0].winnerId === user?.sub &&
         games[0].hunted === user?.sub
@@ -33,7 +32,7 @@ const EndGame: React.FC = () => {
         // INSERT TROPHY COMPONENT
         setWinner(true);
 
-      // lost and were being hunted
+        // lost and were being hunted
       } else if (
         games[0].winnerId !== user?.sub &&
         games[0].hunted === user?.sub
@@ -42,10 +41,10 @@ const EndGame: React.FC = () => {
           `C'mon ${user?.name}, you seriously let these guys catch you?`
         );
 
-      // lost and were a hunter
+        // lost and were a hunter
       } else if (
         games[0].winnerId !== user?.sub &&
-        games[0].hunted === user?.sub
+        games[0].hunted !== user?.sub
       ) {
         setGameOverMessage(
           `${user?.name}, bounty hunters catch the bounty. Get back in there and try again!`
@@ -58,7 +57,7 @@ const EndGame: React.FC = () => {
     <div className="end-game-container">
       <h3>Congratulations, Citizen.</h3>
       <h4>You've Earned a Reward.</h4>
-     {winner ? (
+      {winner ? (
         <div style={{ width: '400px', height: '400px' }}>
           <Suspense fallback={<div>Loading Saved Trophy...</div>}>
             <TrophyGenerator />

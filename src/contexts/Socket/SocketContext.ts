@@ -4,13 +4,14 @@ import { Socket } from 'socket.io-client';
 import { createContext } from 'react';
 
 export interface Game {
+  timeStart: number;
   hunted: string;
   createdAt: string;
   gameId: string;
   host: string;
   hostName: string;
   status: string;
-  timeConstraints: string;
+  timeConstraints: number;
   updatedAt: string;
   users: string[];
   winnerId: string;
@@ -119,6 +120,8 @@ export interface ISocketContextProps {
   UpdateGameStatus: (user: any, status: string) => void;
   AddGameStats: (user: any) => void;
   UpdateReady: (ready: Ready) => void;
+  AddGameDuration: (time: number, user: any) => void;
+  AddGameStart: (time: number, user: any) => void;
 }
 
 // context object that creates the context using the createContext() method
@@ -137,6 +140,8 @@ const SocketContext = createContext<ISocketContextProps>({
   UpdateGameStatus: () => { },
   AddGameStats: () => { },
   UpdateReady: () => { },
+  AddGameDuration: () => { },
+  AddGameStart: () => { },
 });
 
 // shares data between components without having to pass props around (react feature):

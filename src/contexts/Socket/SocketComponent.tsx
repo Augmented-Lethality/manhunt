@@ -223,6 +223,13 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.emit('update_ready', ready);
   }
 
+  const AddGameDuration = (time: number, user: any) => {
+    socket.emit('update_game_timer', time, user);
+  };
+
+  const AddGameStart = (time: number, user: any) => {
+    socket.emit('update_game_start', time, user);
+  };
 
   // showing this on client side while socket isn't connected
   if (loading) {
@@ -234,7 +241,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   return (
     <SocketContextProvider value={{
       SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, LeaveGame, UpdateGameStatus,
-      AddGameStats, UpdateReady,
+      AddGameStats, UpdateReady, AddGameDuration, AddGameStart,
     }}>
       {children}
     </SocketContextProvider>
