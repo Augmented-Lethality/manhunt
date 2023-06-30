@@ -1,5 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import React, { useEffect, useState, lazy, Suspense} from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import axios from 'axios';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
 import { Container } from '../styles/Container';
@@ -7,9 +7,7 @@ import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
 
-const TrophyGenerator = lazy(() => import('../components/TrophyGenerator'));
-const SavedTrophy = lazy(() => import('../components/SavedTrophy'));
-
+const SavedTrophies = lazy(() => import('../components/SavedTrophies'));
 
 export type UserData = {
   userId: number;
@@ -22,9 +20,6 @@ export type UserData = {
   facialDescriptions: Array<number> | null;
   // Add other user data properties as needed
 };
-
-
-
 
 const ProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -59,7 +54,12 @@ const ProfilePage: React.FC = () => {
       <Container>
         <StyledHeader>
           <h1>BioData</h1>
-          <XCircle className='react-icon' onClick={() => { setPhotoStatus('profile') }} />
+          <XCircle
+            className='react-icon'
+            onClick={() => {
+              setPhotoStatus('profile');
+            }}
+          />
         </StyledHeader>
         <CreateFaceDescriptions
           setPhotoStatus={setPhotoStatus}
@@ -76,7 +76,7 @@ const ProfilePage: React.FC = () => {
       <Header page='Profile' />
       <Main>
         <div className='content__body'>
-          <div className='profile-grid'>
+          <div className='profile-container'>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               {user.picture ? (
                 <img
@@ -85,9 +85,7 @@ const ProfilePage: React.FC = () => {
                   style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
                 />
               ) : (
-                <h1 className='alt-user-pic-large'>
-                  {user.name?.slice(0, 1)}
-                </h1>
+                <h1 className='alt-user-pic-large'>{user.name?.slice(0, 1)}</h1>
               )}
               <div
                 style={{
@@ -116,10 +114,10 @@ const ProfilePage: React.FC = () => {
               </div>
             ) : (
               <div className='profile_verification'>
-                <h3>
+                <h5>
                   Citizen has not been processed by the CorpoReality Police.
-                </h3>
-                <h3>Please send in Biodata to participate in SOCIETY™.</h3>
+                </h5>
+                <h5>Please send in Biodata to participate in SOCIETY™.</h5>
                 <button
                   style={{ background: '#6e6b8c', color: 'white' }}
                   onClick={() => setPhotoStatus('camera')}
@@ -134,18 +132,22 @@ const ProfilePage: React.FC = () => {
               <h6>Kills Confirmed: {userData?.killsConfirmed}</h6>
             </div>
             <div style={{ width: '300px', height: '300px' }}>
-            <Suspense fallback={<div>Loading Saved Trophy...</div>}>
-              <TrophyGenerator />
-              </Suspense>
-            </div>
-            <div style={{ width: '300px', height: '300px' }}>
-            <Suspense fallback={<div>Loading Saved Trophy...</div>}>
-              <SavedTrophy id={0} name={''} description={''} createdAt={''} dimension={0} color={''} shape={''} tubularSegments={0} tubeWidth={0} />
+              <Suspense fallback={<div>Loading Saved Trophy...</div>}>
+                <SavedTrophies
+                  id={0}
+                  name={''}
+                  description={''}
+                  createdAt={''}
+                  dimension={0}
+                  color={''}
+                  shape={''}
+                  tubularSegments={0}
+                  tubeWidth={0}
+                />
               </Suspense>
             </div>
           </div>
         </div>
-
       </Main>
     </Container>
   );
