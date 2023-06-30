@@ -10,14 +10,13 @@ In the shadowy underbelly of a civilization lost to corruption, you are the last
 <br>
 
 ## An Augmented Reality Game of Tag
-Man Hunt is a mobile facing web app where users can play games of AR Tag. 
-*augmented reality, facial recognition, graphical 3D rendering, AND websockets together*
+Man Hunt is a mobile facing web app where users participate in games of AR tag and detect their target using facial recognition.
 
-Upon the start of a game, a single user is randomly selected to be the bounty. All other users become the bounty hunters, and must try to track down the bounty while racing against a clock. A hunter wins by using facial recognition technology on their phone's cameras to confirm that they have captured their mark. If the bounty's face is recognized, the hunter who captured the mark wins the game. If the bounty escapes capture and the timer runs out, the bounty wins the game. Phone will display hints about the other users's locations to aid players to victory.
+Upon the start of a game, a single user is randomly selected to be the bounty. All other users become the bounty hunters, and must try to track down the bounty while racing against a clock. A hunter wins by using facial recognition technology on their phone's cameras to confirm that they have captured their mark. If the bounty's face is recognized, the hunter who captured the mark wins the game. If the bounty escapes capture and the timer runs out, the bounty wins the game.
 
 To play Man Hunt, go to [production link here](productionlinkhere).
 
-Man Hunt is built using Typescript, React, Express, and is hosted on AWS. For more information on our tech stack, see the Techstack section of this readme. 
+Man Hunt is built using Typescript, React, Express, and is hosted on AWS. For more information on our tech stack, see the Techstack section of this readme.
 
 <br>
 
