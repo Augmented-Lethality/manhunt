@@ -473,16 +473,24 @@ export class ServerSocket {
           // remove user from the list of users in the game since they're disconnected
           if (game) {
             const updatedUserList = game.dataValues.users.filter((authId: string) => authId !== user.dataValues.authId);
-            await Game.update(
-              { users: updatedUserList },
-              { where: { gameId: user.dataValues.gameId } }
-            )
-            const location = await Locations.findByPk(user.dataValues.authId);
 
-            if (location) {
-              await Locations.destroy({ where: { gameId: game.dataValues.gameId } });
-              console.log('deleted locations')
+            // if this user was the only user, then delete the game instead
+            if (updatedUserList.length === 0) {
+              await Game.destroy({ where: { gameId: game.dataValues.gameId } });
+
+              const location = await Locations.findByPk(user.dataValues.authId);
+
+              if (location) {
+                await Locations.destroy({ where: { authId: user.dataValues.authId } });
+                console.log('deleted locations')
+              }
+            } else {
+              await Game.update(
+                { users: updatedUserList },
+                { where: { gameId: user.dataValues.gameId } }
+              )
             }
+
 
             socket.leave(user.dataValues.gameId);
             // send new games to all connected users to update their games lists
