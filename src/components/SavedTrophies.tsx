@@ -279,28 +279,33 @@ const SavedTrophies: React.FC<TrophyData> = () => {
           bottom: 0,
         }}
       >
+         {totalPages > 1 && (
         <button
           disabled={currentPage === 1}
           onClick={() => setCurrentPage(currentPage - 1)}
         >
           Prev
         </button>
+      )}
+      {totalPages > 1 && (
         <button
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(currentPage + 1)}
         >
           Next
         </button>
-      </div>
-      <span
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        Page {currentPage}
-      </span>
+      )}
+    </div>
+
+    <span
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      Page {currentPage}
+    </span>
     </div>
   );
 };
