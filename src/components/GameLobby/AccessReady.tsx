@@ -38,15 +38,14 @@ const AccessReady: React.FC<{ player: User; errors: string[] }> = ({ player, err
   };
 
   return (
-    <div>
+    <div style={{ marginLeft: '12px' }}>
       {light ? (
-        <div>
-          <CheckCircle color="green" size={20} /> {player.username}
-        </div>
+        <CheckCircle color="green" size={20} />
       ) : (
         <div>
-          {!errors.includes('ok') && <strong>{errorMessage}</strong>}<br />
-          <AlertCircle color="red" size={20} /> {player.username}
+          <AlertCircle color="red" size={20} />
+          {!errors.includes('ok') && <strong> {errorMessage}</strong>}
+
         </div>
       )}
     </div>

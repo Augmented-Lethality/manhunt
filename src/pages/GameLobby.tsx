@@ -61,11 +61,10 @@ const GameLobby: React.FC<{}> = () => {
         <ControlsContainer>
           <WhosHunting />
           <HostControls />
-          <CheckAccess />
         </ControlsContainer>
         <PlayersContainer>
           <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>Players • {users.length}</h1>
-          <UserListItem user={users[0]} />
+          <UserListItem player={users[0]} />
           <UsersList users={users.slice(1)} />
           {/* <strong>Host: {games[0].hostName}</strong><br /> */}
           {/* <br /> */}
