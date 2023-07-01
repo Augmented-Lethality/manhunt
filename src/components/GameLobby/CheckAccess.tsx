@@ -35,7 +35,11 @@ const CheckAccess: React.FC = () => {
           break;
       }
 
-      UpdateReady({ [user.sub]: errorMessages });
+      if (errorMessages.length) {
+        UpdateReady({ [user.sub]: errorMessages });
+      } else {
+        UpdateReady({ [user.sub]: ["ok"] });
+      }
     }
   }, [videoAccessError, locationAccessError, orientationAccessError, bioDataError]);
 
@@ -102,19 +106,9 @@ const CheckAccess: React.FC = () => {
   };
 
   useEffect(() => {
-    // initially say the user isn't ready until the checks are made
-    if (user?.sub) {
-      UpdateReady({ [user.sub]: ['not checked'] });
-    }
     checkVideoAccess();
     checkLocationAccess();
     checkOrientationAccess();
-
-    const hasErrors = videoAccessError || locationAccessError || orientationAccessError || bioDataError;
-    if (!hasErrors && user?.sub) {
-      UpdateReady({ [user.sub]: [] });
-    }
-
   }, []);
 
   useEffect(() => {
@@ -123,7 +117,7 @@ const CheckAccess: React.FC = () => {
 
   return (
     <div>
-      {videoAccessError && <button onClick={checkVideoAccess}>Allow Camera Access</button>}
+      {/* {videoAccessError && <button onClick={checkVideoAccess}>Allow Camera Access</button>}
       {locationAccessError && <strong>Error: Can't Access Location. Ensure Your Browser Can Access Your Location</strong>}
       {orientationAccessError && <button onClick={checkOrientationAccess}>Allow Device Orientation Access</button>}
       {bioDataError &&
@@ -131,7 +125,7 @@ const CheckAccess: React.FC = () => {
           <strong>Please Visit Your Profile Page to Add Your BioData:</strong>
           <ButtonToProfile />
         </div>
-      }
+      } */}
 
     </div>
   );

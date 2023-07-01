@@ -319,6 +319,19 @@ export class ServerSocket {
 
     });
 
+    socket.on('update_ready_state', async (ready) => {
+      try {
+        const existingUser = await User.findOne({ where: { socketId: socket.id } });
+
+        // console.log('got the ready:', ready, existingUser?.dataValues.gameId)
+        this.io.to(existingUser?.dataValues.gameId).emit('update_ready', ready);
+
+      } catch (err) {
+        console.log(err);
+      }
+
+    });
+
     socket.on('game_stats', async (user) => {
       try {
         const existingUser = await User.findOne({ where: { authId: user.sub } });

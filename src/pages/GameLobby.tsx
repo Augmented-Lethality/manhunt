@@ -48,7 +48,6 @@ const GameLobby: React.FunctionComponent = () => {
         )}
         <br />
         <HostControls />
-        <CheckAccess />
       </Main>
     </Container>
   );

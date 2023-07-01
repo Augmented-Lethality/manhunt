@@ -173,6 +173,11 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       }
     });
 
+    socket.on('update_ready', async (ready) => {
+      console.log('updating ready state:', ready)
+      SocketDispatch({ type: 'update_ready', payload: ready });
+    });
+
 
 
   }
@@ -241,10 +246,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.emit('game_stats', user);
   }
 
-  // local storage of Ready Status
   const UpdateReady = (ready: Ready) => {
-    SocketDispatch({ type: 'update_ready', payload: ready });
-    socket.emit('update_ready', ready);
+    socket.emit('update_ready_state', ready);
   }
 
   const AddGameDuration = (time: number, user: any) => {

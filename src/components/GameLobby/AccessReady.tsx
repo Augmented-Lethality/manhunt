@@ -1,37 +1,28 @@
-import React, { useContext, useEffect, useState } from 'react';
-import SocketContext from '../../contexts/Socket/SocketContext';
+import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import CheckCircle from 'react-feather/dist/icons/check-circle';
 import AlertCircle from 'react-feather/dist/icons/alert-circle';
+import { User } from '../../contexts/Socket/SocketContext';
 
-const AccessReady: React.FC<{ username: string }> = ({ username }) => {
+const AccessReady: React.FC<{ player: User; errors: string[] }> = ({ player, errors }) => {
   const { user } = useAuth0();
-  const { ready } = useContext(SocketContext).SocketState;
 
   const [light, setLight] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  // const [test, setTest] = useState(['video', 'location']);
 
   useEffect(() => {
-    if (user?.sub && ready[user?.sub].length <= 0) {
-      // show green light next to their name, they're ready
+    if (errors.includes('ok')) {
       setLight(true);
-
     } else {
-      // show red light, they aren't ready
       setLight(false);
-      // create the error message
-      createErrorMess();
+      createErrorMessage();
     }
-  }, [ready]);
+  }, [errors, player.authId, user?.sub]);
 
-  const createErrorMess = () => {
+  const createErrorMessage = () => {
+    let mess = '';
 
-    if (user?.sub && ready[user?.sub].length > 0) {
-      let mess = '';
-      const errors = ready[user?.sub];
-      // const errors = test;
-
+    if (errors.length > 0 && !errors.includes('ok')) {
       if (errors.length > 2) {
         const lastItem = errors.pop();
         mess = `Please fix your ${errors.join(', ')}, and ${lastItem}.`;
@@ -40,27 +31,22 @@ const AccessReady: React.FC<{ username: string }> = ({ username }) => {
       } else {
         mess = `Please fix your ${errors[0]}.`;
       }
-
-      setErrorMessage(mess);
-
     }
-  }
 
-  // for testing, please don't delete
-  // useEffect(() => {
-  //   createErrorMess();
-  // }, []);
+
+    setErrorMessage(mess);
+  };
 
   return (
     <div>
       {light ? (
         <div>
-          <CheckCircle color="green" size={20} /> {username}
+          <CheckCircle color="green" size={20} /> {player.username}
         </div>
       ) : (
         <div>
-          {errorMessage.length > 0 && <strong>{errorMessage}</strong>}<br />
-          <AlertCircle color="red" size={20} /> {username}
+          {!errors.includes('ok') && <strong>{errorMessage}</strong>}<br />
+          <AlertCircle color="red" size={20} /> {player.username}
         </div>
       )}
     </div>
