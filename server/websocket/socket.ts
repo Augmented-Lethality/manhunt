@@ -100,6 +100,8 @@ export class ServerSocket {
           } else {
             if (existingUser.dataValues.gameId.length > 0 || existingUser.dataValues.gameId !== null) {
               await User.update({ gameId: '' }, { where: { authId: user.sub } });
+            } else if (existingUser.dataValues.gameId === null) {
+              await User.update({ gameId: '' }, { where: { authId: user.sub } });
             }
             console.log('joined users')
             socket.join('users');
