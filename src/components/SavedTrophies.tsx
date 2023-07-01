@@ -137,10 +137,26 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const rotateTrophies = () => {
     trophyRefs.current.forEach((trophy) => {
       if (trophy) {
-        trophy.rotation.y += 0.001; // Adjust rotation speed 
+        if (!trophy.userData.initialRotationSet) {
+          // Set initial rotation values
+          trophy.userData.initialRotationSet = true;
+          trophy.userData.rotationSpeed = Math.random() * 0.006; // Random speed between 0 and 0.01
+          trophy.userData.rotationDirection = Math.random() < 0.5 ? -1 : 1; // Random direction: -1 or 1
+          trophy.userData.rotationAxis = getRandomRotationAxis(); // Random rotation axis: 'x', 'y', or 'z'
+        }
+        const { rotationSpeed, rotationDirection, rotationAxis } = trophy.userData;
+        trophy.rotation[rotationAxis] += rotationSpeed * rotationDirection; // Adjust rotation speed and direction around the chosen axis
       }
     });
   };
+  
+  const getRandomRotationAxis = () => {
+    const axes = ['x', 'y', 'z'];
+    return axes[Math.floor(Math.random() * axes.length)];
+  };
+  
+  
+  
 
   const onFrame = () => {
     rotateTrophies();
