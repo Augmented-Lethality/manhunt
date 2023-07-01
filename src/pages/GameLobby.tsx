@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState, } from 'react';
-import { useNavigate } from 'react-router-dom';
 import SocketContext from '../contexts/Socket/SocketContext';
 import WhosHunting from '../components/WhosHunting';
 import { Container } from '../styles/Container';
@@ -32,13 +31,10 @@ const ControlsContainer = styled.div`
   border-radius: 10px;
 `;
 
-
-const GameLobby: React.FunctionComponent = () => {
-  const { user } = useAuth0();
+const GameLobby: React.FC<{}> = () => {
+  const { isAuthenticated } = useAuth0();
   const { games, users } = useContext(SocketContext).SocketState;
   const [showLobby, setShowLobby] = useState(false);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (games.length > 0 && users.length > 0) {
@@ -50,8 +46,12 @@ const GameLobby: React.FunctionComponent = () => {
   }, [games, users]);
 
 
+  if (!isAuthenticated){
+    return null
+  }
+
   if (!showLobby) {
-    return PageLoader
+    return <PageLoader/>
   }
 
   return (
