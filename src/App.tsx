@@ -90,11 +90,11 @@ const App = () => {
         element={<AuthenticationGuard component={TestPage} />}
       />
       <Route
-        path="/trophyroom"
+        path="/trophies"
         element={<AuthenticationGuard component={TrophyRoom} />}
       />
       <Route
-        path="/yourcompetition"
+        path="/friends"
         element={<AuthenticationGuard component={FriendsPage} />
         }
       />
