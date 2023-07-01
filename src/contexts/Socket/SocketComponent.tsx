@@ -3,8 +3,10 @@ import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 import { useAuth0 } from '@auth0/auth0-react';
 import { User, Ready } from './SocketContext';
+import PageLoader from '../../components/Loading';
 
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 // THIS CAN BE REUSED TO PASS THE SOCKET INFORMATION AROUND THE CLIENT SIDE
@@ -19,6 +21,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   const { children } = props;
 
   const { user } = useAuth0();
+
+  const navigate = useNavigate();
 
 
   // making a local state to store the created reducer and the default socket context state
@@ -116,6 +120,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
         const users = response.data;
         console.log('updating lobby users state:', users)
         SocketDispatch({ type: 'update_lobby_users', payload: users });
+
       } catch (error) {
         console.error('Error fetching lobby users:', error);
       }
@@ -128,6 +133,21 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
         const games = response.data;
         console.log('updating lobby games state:', games)
         SocketDispatch({ type: 'update_lobby_games', payload: games });
+
+        const redirect = () => {
+          if (games[0].status === 'lobby') {
+            navigate('/lobby');
+          } else if (games[0].status === 'complete') {
+            navigate('/gameover');
+          } else if (games[0].status === 'ongoing') {
+            navigate('/onthehunt');
+          }
+        }
+
+        if (games.length > 0) {
+          redirect();
+
+        }
       } catch (error) {
         console.error('Error fetching lobby games:', error);
       }
@@ -233,7 +253,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // showing this on client side while socket isn't connected
   if (loading) {
-    return <p>Loading Socket Connection...</p>
+    return <PageLoader />
   };
 
   // provides the socket context to the nested components

@@ -8,12 +8,7 @@ import { GameListItem } from '../components/GameLobby/GameListItem';
 
 
 const FindGamePage: React.FC = () => {
-
   const { games } = useContext(SocketContext).SocketState;
-
-  useEffect(() => {
-    console.log(games)
-  }, [games])
 
   return (
     <div>

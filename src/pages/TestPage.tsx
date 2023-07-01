@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { WebcamProvider } from '../contexts/WebcamProvider';
 import KillCam from '../components/KillCam';
 import axios from 'axios';
@@ -36,7 +36,7 @@ function TestPage() {
 
   return (
     <WebcamProvider>
-      <KillCam faceMatcher={faceMatcher}/>
+      <KillCam />
     </WebcamProvider>
   )
 }

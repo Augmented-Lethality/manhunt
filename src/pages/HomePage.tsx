@@ -6,7 +6,6 @@ import SocketContext from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
 import { HomeHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
-import { useNavigate } from 'react-router-dom';
 import { useFontSize } from '../contexts/FontSize';
 
 type UserData = {
@@ -18,7 +17,6 @@ type UserData = {
 };
 
 const HomePage = () => {
-  const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth0();
   const { users } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
