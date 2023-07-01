@@ -134,6 +134,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
         console.log('updating lobby games state:', games)
         SocketDispatch({ type: 'update_lobby_games', payload: games });
 
+        // redirecting the user based on the lobby games state
         const redirect = () => {
           if (games[0].status === 'lobby') {
             navigate('/lobby');
@@ -141,6 +142,9 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
             navigate('/gameover');
           } else if (games[0].status === 'ongoing') {
             navigate('/onthehunt');
+          } else if (games[0].users.length <= 0) { // edit this to handle only user in the game, add a win
+            navigate('/home');
+            LeaveGame(user);
           }
         }
 
@@ -212,7 +216,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   };
 
   // sending leave game to the server
-  const LeaveGame = (user: User) => {
+  const LeaveGame = (user: any) => {
 
     socket.emit('leave_game', user, () => {
       console.log('leaving game')
