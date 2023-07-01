@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import UserListItem from './UserListItem';
-import { useNavigate } from 'react-router-dom';
 
 const ListContainer = styled.div`
   margin-bottom: 30px;
@@ -12,8 +11,8 @@ interface UsersListProps {
   header?: string | null;
 }
 
-
 const UsersList: React.FC<UsersListProps> = ({ users, header }) => {
+
   return (
     <ListContainer>
       {header && <h1>{header}</h1>}
