@@ -81,7 +81,7 @@ export class ServerSocket {
         if (existingUser) {
           // If the user exists, update the socket.id
           await User.update({ socketId: socket.id }, { where: { authId: user.sub } })
-          console.log('updated db user connection')
+          // console.log('updated db user connection')
 
 
           // now see if they were part of the game
@@ -98,6 +98,9 @@ export class ServerSocket {
             this.io.to(existingUser.dataValues.gameId).emit('update_lobby_games');
 
           } else {
+            if (existingUser.dataValues.gameId.length > 0 || existingUser.dataValues.gameId !== null) {
+              await User.update({ gameId: '' }, { where: { authId: user.sub } });
+            }
             console.log('joined users')
             socket.join('users');
           }
