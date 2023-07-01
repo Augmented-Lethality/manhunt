@@ -275,6 +275,8 @@ const SavedTrophies: React.FC<TrophyData> = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          position: 'sticky',
+          bottom: 0,
         }}
       >
         <button
