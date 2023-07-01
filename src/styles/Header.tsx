@@ -95,10 +95,7 @@ export function HomeHeader({ users }) {
             className='profile__avatar'
             onClick={() => { navigate('/profile') }}
             style={{ height: '3rem', borderRadius:'50%', marginRight:'10px'}}/>
-          <DropDownMenu>
-            <p onClick={() => { navigate('/profile') }}><User />profile</p>
-            <p onClick={() => { navigate('/trophyroom') }}><Award />trophies</p>
-          </DropDownMenu>
+          <DropDownMenu page={'Home'}/>
         </div>
         <h3>Users Online: {users.length}</h3>
       </div>
@@ -117,10 +114,6 @@ export function Header({ page }) {
     navigate('/home');
   }
 
-  const handleTrophy = () => {
-    navigate('/trophyroom')
-  }
-
   return (
     <StyledHeader>
       <LogoWithCrossHairs />
@@ -132,10 +125,7 @@ export function Header({ page }) {
             className='profile__avatar'
             onClick={() => { navigate('/profile') }}
             style={{ height: '3rem', borderRadius:'50%', marginRight:'10px'}}/>
-          <DropDownMenu>
-            <p onClick={handleHome}><Home />home</p>
-            {(!page.includes('trophy') && !page.includes('Trophy')) && <p onClick={handleTrophy}><Award />trophies</p>}
-          </DropDownMenu>
+          <DropDownMenu page={page}/>
         </div>
         <h1>{page}</h1>
       </div>
@@ -177,9 +167,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
   return (
     <StyledHeader>
       <StyledOval>{children}</StyledOval>
-      <DropDownMenu>
-        <p onClick={handleHome}><Home />home</p>
-      </DropDownMenu>
+      <DropDownMenu page={'Game'}/>
     </StyledHeader>
   );
 }
