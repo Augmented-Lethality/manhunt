@@ -195,7 +195,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
 
   return (
     <div>
-      <h1>Recent Trophies </h1>
       {trophiesToDisplay
         .slice(0)
         .reverse()
@@ -258,8 +257,9 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   </Torus>
                 )}
               </Canvas>
-              <details>
-                <summary>Details</summary>
+
+              <details style={{ textAlign: 'center' }}>
+                <summary style={{ textAlign: 'right' }}>Details</summary>
                 <h6>Designation: {trophy.name}</h6>
                 <h6>Report: {trophy.description}</h6>
                 <h6>Class: {trophy.shape}</h6>
@@ -270,25 +270,35 @@ const SavedTrophies: React.FC<TrophyData> = () => {
             </div>
           </div>
         ))}
-      {
-        <div>
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            Previous Page
-          </button>
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            Next Page
-          </button>
-        </div>
-      }
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+        >
+          Prev
+        </button>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+        >
+          Next
+        </button>
+      </div>
+      <span
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        Page {currentPage}
+      </span>
     </div>
   );
 };
