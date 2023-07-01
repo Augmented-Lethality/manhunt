@@ -5,10 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import User from 'react-feather/dist/icons/user';
 import Home from 'react-feather/dist/icons/home';
 import { useAuth0 } from '@auth0/auth0-react';
-import { ButtonToHome } from '../components/Buttons';
 import SocketContext from '../contexts/Socket/SocketContext';
-import { Crosshair } from 'react-feather';
-
 
 export const StyledHeader = styled.header`
   display: flex;
@@ -18,7 +15,6 @@ export const StyledHeader = styled.header`
   border-bottom: 1px solid #202026;
   justify-content: end;
   position: relative;
-  overflow: hidden;
 `;
 
 const Crosshairs = () => {
@@ -60,7 +56,7 @@ const LogoWithCrossHairs = () => {
   const fontSize = window.innerWidth > 750 ? '55px' : '7vw'
 
   return (
-    <>
+    <div style={{overflow:'hidden', height:'132px', width:'100vw', position: 'absolute', top:0, left:0, pointerEvents:'none'}}>
       <Crosshairs />
       <div style={{
         position: 'absolute',
@@ -73,15 +69,15 @@ const LogoWithCrossHairs = () => {
         justifyContent:'center'
       }}>
         <h1
-          style={{fontSize:fontSize, margin: 0}}
+          style={{fontSize:fontSize, margin: 0, pointerEvents:'auto'}}
           className='logo'
           onClick={handleHome}>MAN</h1>
         <h1
-          style={{fontSize:fontSize, margin: 0}}
+          style={{fontSize:fontSize, margin: 0, pointerEvents:'auto'}}
           className='logo'
           onClick={handleHome}>HUNT</h1>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -147,6 +143,7 @@ interface GameHeaderProps {
   children?: ReactNode;
 }
 
+const leftOvalPosition = `${window.innerWidth/2}px`
 const StyledOval = styled.div`
   display: flex;
   justify-content: center;
@@ -156,6 +153,10 @@ const StyledOval = styled.div`
   background-color: #2f303a;
   border-radius: 50%;
   border: 2px solid #222225;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 65px;
+  left: ${leftOvalPosition};
 `;
 
 export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
@@ -170,7 +171,6 @@ export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
 
   return (
     <StyledHeader>
-      <Home className='react-icon-logo' onClick={handleHome} />
       <StyledOval>{children}</StyledOval>
       <DropDownMenu>
         <p onClick={handleHome}><Home />home</p>

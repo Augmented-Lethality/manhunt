@@ -35,7 +35,7 @@ const UserListItem: React.FC<UserListItemProps> = ({ user }) => {
         <UserImage src={user.image} alt={user.username} />
       ) : (
         <h1 className='alt-user-pic'>
-          {user.username?.slice(0, 1)}
+          <p>{user.username?.slice(0, 1)}</p>
         </h1>
       )}
       <Username>{user.username}</Username>
