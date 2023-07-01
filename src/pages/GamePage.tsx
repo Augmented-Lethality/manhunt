@@ -19,22 +19,11 @@ import Eye from 'react-feather/dist/icons/eye';
 const GamePage: React.FC = () => {
 
   const navigate = useNavigate();
-
   const { user } = useAuth0();
-
-  const { games } = useContext(SocketContext).SocketState;
   const { LeaveGame } = useContext(SocketContext);
 
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
-
-  // whenever the games state changes, if the status is complete, navigate to /gameover endpoint
-  useEffect(() => {
-
-    if (games[0].status === 'complete') {
-      navigate('/gameover');
-    }
-  }, [games])
 
 
   const handleGameChange = () => {
