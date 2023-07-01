@@ -1,8 +1,8 @@
-import React, { forwardRef, useRef, useEffect, useState, useContext, useImperativeHandle, } from 'react';
+import React, { useRef, useEffect, useState, useContext, } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useWebcam } from '../contexts/WebcamChaseProvider';
 
 import {
-  WebcamRendererLocal,
   LocationBasedLocal,
   PerspectiveCamera,
   Scene,
@@ -15,24 +15,16 @@ import {
 
 import SocketContext from '../contexts/Socket/SocketContext';
 
-// forwardRef requires props so don't delete even though it's not being used
-interface ChaseCamProps { }
 
-// passing the turnOffCamera method to the GamePage.tsx parent component
-type ChaseCamRefType = {
-  turnOffCamera: () => void;
-};
-
-
-const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
+const ChaseCam: React.FC = () => {
 
   const { user } = useAuth0();
   const { games, locations, users } = useContext(SocketContext).SocketState;
-
   const [userTextures, setUserTextures] = useState({});
 
-  const textureLoader = new TextureLoader();
-
+  // comes from the webcam context that this component is wrapped in
+  const webcamContext = useWebcam();
+  const webcamRef = webcamContext?.webcamRef;
 
   ////////// create markers to render on the screen that stays in the defined location ///////////
   // create sprite materials
@@ -50,7 +42,11 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
   killers.scale.set(spriteSize, spriteSize, 1);
   victim.scale.set(spriteSize, spriteSize, 1);
   // hardCodeMarker.scale.set(spriteSize, spriteSize, 1);
+
+  // loads the pictures of the users onto the markers if they have a google photo
+  const textureLoader = new TextureLoader();
   //////////////////////////////////////////////////////////////////
+
 
   // this will add the location to the DB
   const { AddLocation } = useContext(SocketContext);
@@ -59,48 +55,15 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
   const [userLatitude, setUserLatitude] = useState<number>(0);
   const [userLongitude, setUserLongitude] = useState<number>(0);
 
-  // the canvas element to render the scene
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // tracks the animation frame rate from requestAnimationFrame
-  const frameIdRef = useRef<number | null>(null);
-
-  // camera rotation step in radians (the THREE.Math.degToRad(2) is deprecated or something)
-  const rotationStep = (2 * Math.PI) / 180;
-
-  // checks if the mouse button is being held down on the scene
-  const mousedownRef = useRef(false);
-
-  // stores the last position of the mouse
-  const lastXRef = useRef(0);
-
-  // the camera reference in the three library
-  const cameraRef = useRef<PerspectiveCamera | null>(null);
-
-  // arjs reference
-  const arjsRef = useRef<LocationBasedLocal | null>(null);
-
-
-  // webcam ref
-  const webcamRendererRef = useRef<WebcamRendererLocal | null>(null);
-
+  // the refs to be used in the useEffect
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const frameIdRef = useRef<number | null>(null);   // tracks the animation frame rate from requestAnimationFrame
+  const cameraRef = useRef<PerspectiveCamera | null>(null); // renders the markers
+  const arjsRef = useRef<LocationBasedLocal | null>(null); // gets the locations
+  const webcamRendererRef = useRef<HTMLVideoElement | null>(null); // HTML element for the video
   const deviceOrientationControlsRef = useRef<DeviceOrientationControls | null>(null);
 
-  // function that turns off the camera, will be sent to the parent component (GamePage.tsx)
-  // so that it turns off both this camera and Kalypso's camera on dismount
-  const turnOffCamera = () => {
-    if (webcamRendererRef.current) {
-      webcamRendererRef.current.turnOffCamera();
-    }
-    console.log('camera turned off yay!!!');
-  };
-
-  const handlePermission = () => {
-    if (deviceOrientationControlsRef.current) {
-      deviceOrientationControlsRef.current.connect();
-    }
-  }
-
+  // getting the pictures for the textures, gravatar was giving a CORS error
   useEffect(() => {
     const textureObject = {};
     users.forEach(async (person) => {
@@ -119,7 +82,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
     // the rest of the code
     if (!canvasRef.current) return;
 
-    // otherwise it isn't null and assigns it
+    // canvas is the HTML element canvas
     const canvas = canvasRef.current;
 
     // new scene, camera, and renderer
@@ -129,20 +92,18 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
     const camera = new PerspectiveCamera(80, 2, 0.1, 50000);
 
     // rendering the scene
-    const renderer = new WebGLRenderer({ canvas: canvas });
+    const renderer = new WebGLRenderer({ canvas: canvas, alpha: true });
 
     // LocationBased object for AR, takes scene and camera
     arjsRef.current = new LocationBasedLocal(scene, camera);
 
     // renders the webcam stream as the background for the scene, this is an AR.js class that I edited
-    const cam = new WebcamRendererLocal(renderer);
-    webcamRendererRef.current = cam;
+    if (webcamRef?.current?.video) {
+      webcamRendererRef.current = webcamRef?.current?.video;
+    }
 
     // start the device orientation controls for mobile
     deviceOrientationControlsRef.current = new DeviceOrientationControls(camera);
-
-    handlePermission();
-
 
     // start the location
     arjsRef.current.startGps();
@@ -167,8 +128,6 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
 
       // send updates when the phone tilts
       deviceOrientationControlsRef.current?.update();
-      // update the camera's feed
-      cam.update();
       renderer.render(scene, camera);
       frameIdRef.current = requestAnimationFrame(render);
 
@@ -189,56 +148,22 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
     // kick starts the loop of rendering the canvas
     frameIdRef.current = requestAnimationFrame(render);
 
-    /////// FOR DESKTOP TESTING //////
-    const handleMouseDown = () => {
-      mousedownRef.current = true;
-    };
 
-    const handleMouseUp = () => {
-      mousedownRef.current = false;
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!mousedownRef.current) return;
-      if (e.clientX < lastXRef.current) {
-        camera.rotation.y -= rotationStep;
-        if (camera.rotation.y < 0) {
-          camera.rotation.y += 2 * Math.PI;
-        }
-      } else if (e.clientX > lastXRef.current) {
-        camera.rotation.y += rotationStep;
-        if (camera.rotation.y > 2 * Math.PI) {
-          camera.rotation.y -= 2 * Math.PI;
-        }
-      }
-      lastXRef.current = e.clientX;
-    };
-
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
-    window.addEventListener('mousemove', handleMouseMove);
-
+    // clean up
     return () => {
       if (frameIdRef.current) {
         cancelAnimationFrame(frameIdRef.current);
       }
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-      window.removeEventListener('mousemove', handleMouseMove);
 
-      turnOffCamera();
+      if (canvasRef.current) {
+        canvasRef.current.remove();
+      }
 
       arjsRef.current?.stopGps();
     };
   }, []);
   /////// /////////////////////////////////// //////
 
-  // ref is an object, turnOffCamera is a method on the object
-  // parent component will get this method and be able to call it instead of trying
-  // to pass it around with props
-  useImperativeHandle(ref, () => ({
-    turnOffCamera: turnOffCamera
-  }));
 
   useEffect(() => {
     // console.log('inserting into AddLocation:', typeof userLongitude, userLongitude)
@@ -255,11 +180,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
   // NOTE: THIS IS VERY TIME COMPLEX SO I WILL BE POLISHING THIS IN POLISH WEEK
   useEffect(() => {
 
-    if (locations.length === 0) {
-      console.log('There are no locations to plot.');
-      return;
-    }
-
+    if (locations.length === 0) return;
 
     // iterating through the locations of the current locations state in socket.io (all locations of players in the current game)
     for (const playerLocation of locations) {
@@ -276,8 +197,6 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
           }
         });
       }
-      // console.log(existingMarkers)
-
 
       // if the current player in the locations state's authId matches the current user's authId,
       // don't place a marker because there's no point in a marker being on top of you
@@ -297,7 +216,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
             }
             // add the marker to the scene at their long/lat and an elevation of 10 so it's mid height
             arjsRef.current?.add(victim, markerLong, markerLat, 5);
-            console.log(`Added NEW victim marker`);
+            // console.log(`Added NEW victim marker`);
           } else {
             // make another killer marker to place and add to the scene
             const clonedKiller = killers.clone();
@@ -305,12 +224,11 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
             // set the user's picture as the map texture for the killer
             const texture = userTextures[playerLocation.authId];
             if (texture) {
-              console.log('texture:', texture, userTextures)
               clonedKiller.material.map = texture;
               clonedKiller.material.needsUpdate = true; // re-process with the new material texture
             }
             arjsRef.current?.add(clonedKiller, markerLong, markerLat, 5);
-            console.log(`Added NEW killer marker`);
+            // console.log(`Added NEW killer marker`);
           }
         } else {
           // find the existing marker
@@ -339,8 +257,8 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
         ref={canvasRef}
         style={{ width: '100%', height: '100%', position: 'absolute' }}
       />
-    </div >
+    </div>
   );
-});
+};
 
 export default ChaseCam;

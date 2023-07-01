@@ -81,7 +81,7 @@ export class ServerSocket {
         if (existingUser) {
           // If the user exists, update the socket.id
           await User.update({ socketId: socket.id }, { where: { authId: user.sub } })
-          console.log('updated db user connection')
+          // console.log('updated db user connection')
 
 
           // now see if they were part of the game
@@ -98,6 +98,9 @@ export class ServerSocket {
             this.io.to(existingUser.dataValues.gameId).emit('update_lobby_games');
 
           } else {
+            if (existingUser.dataValues.gameId.length > 0 || existingUser.dataValues.gameId !== null) {
+              await User.update({ gameId: '' }, { where: { authId: user.sub } });
+            }
             console.log('joined users')
             socket.join('users');
           }
@@ -423,6 +426,43 @@ export class ServerSocket {
       }
     });
 
+    socket.on('update_game_timer', async (time, user) => {
+      try {
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const game = await Game.findOne({ where: { gameId: existingUser?.dataValues.gameId } });
+        if (game) {
+          await Game.update({ timeConstraints: time }, { where: { gameId: existingUser?.dataValues.gameId } });
+          console.log('timer added');
+          this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+
+        } else {
+          console.log('no game like that exists')
+        }
+      } catch (err) {
+        console.log(err);
+      }
+
+    });
+
+    socket.on('update_game_start', async (time, user) => {
+      try {
+        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const game = await Game.findOne({ where: { gameId: existingUser?.dataValues.gameId } });
+        if (game) {
+          await Game.update({ timeStart: time }, { where: { gameId: existingUser?.dataValues.gameId } });
+          console.log('game start added');
+          this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+
+        } else {
+          console.log('no game like that exists')
+        }
+      } catch (err) {
+        console.log(err);
+      }
+
+    });
+
+
 
     // when the disconnect occurs
     socket.on('disconnect', async () => {
@@ -436,16 +476,24 @@ export class ServerSocket {
           // remove user from the list of users in the game since they're disconnected
           if (game) {
             const updatedUserList = game.dataValues.users.filter((authId: string) => authId !== user.dataValues.authId);
-            await Game.update(
-              { users: updatedUserList },
-              { where: { gameId: user.dataValues.gameId } }
-            )
-            const location = await Locations.findByPk(user.dataValues.authId);
 
-            if (location) {
-              await Locations.destroy({ where: { gameId: game.dataValues.gameId } });
-              console.log('deleted locations')
+            // if this user was the only user, then delete the game instead
+            if (updatedUserList.length === 0) {
+              await Game.destroy({ where: { gameId: game.dataValues.gameId } });
+
+              const location = await Locations.findByPk(user.dataValues.authId);
+
+              if (location) {
+                await Locations.destroy({ where: { authId: user.dataValues.authId } });
+                console.log('deleted locations')
+              }
+            } else {
+              await Game.update(
+                { users: updatedUserList },
+                { where: { gameId: user.dataValues.gameId } }
+              )
             }
+
 
             socket.leave(user.dataValues.gameId);
             // send new games to all connected users to update their games lists
