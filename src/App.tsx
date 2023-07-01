@@ -17,6 +17,7 @@ import FriendsPage from './pages/FriendsPage';
 import SocketComponent from './contexts/Socket/SocketComponent';
 import Settings from './pages/Settings';
 import { useFontSize } from './contexts/FontSize';
+import TrophyRoom from './pages/TrophyRoom';
 
 const App = () => {
   const { isLoading } = useAuth0();
@@ -47,6 +48,10 @@ const App = () => {
       <Route
         path="/profile"
         element={<AuthenticationGuard component={ProfilePage} />}
+      />
+      <Route
+        path="/trophyroom"
+        element={<AuthenticationGuard component={TrophyRoom} />}
       />
       {/* <Route
         path="/profile/:username"

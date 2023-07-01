@@ -4,6 +4,7 @@ import DropDownMenu from '../components/DropDownMenu';
 import { useNavigate } from 'react-router-dom';
 import User from 'react-feather/dist/icons/user';
 import Home from 'react-feather/dist/icons/home';
+import Award from 'react-feather/dist/icons/award';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ButtonToHome } from '../components/Buttons';
 import SocketContext from '../contexts/Socket/SocketContext';
@@ -32,10 +33,11 @@ export function HomeHeader({ users }) {
         alt='Profile'
         className='profile__avatar'
         onClick={() => { navigate('/profile') }}
-        style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
-        <DropDownMenu>
-          <p onClick={() => { navigate('/profile') }}><User />profile</p>
-        </DropDownMenu>
+        style={{ height: '10vw', width: '10vw', borderRadius: '50%' }} />
+      <DropDownMenu>
+        <p onClick={() => { navigate('/profile') }}><User />profile</p>
+        <p onClick={() => { navigate('/trophyroom') }}><Award />trophies</p>
+      </DropDownMenu>
     </StyledHeader>
   );
 }
@@ -51,6 +53,10 @@ export function Header({ page }) {
     navigate('/home');
   }
 
+  const handleTrophy = () => {
+    navigate('/trophyroom')
+  }
+
   return (
     <StyledHeader>
       <Home className='react-icon-logo' onClick={handleHome} />
@@ -63,6 +69,7 @@ export function Header({ page }) {
         style={{ height: '10vw', width: '10vw', borderRadius: '50%' }} />
       <DropDownMenu>
         <p onClick={handleHome}><Home />home</p>
+        {(!page.includes('trophy') && !page.includes('Trophy')) && <p onClick={handleTrophy}><Award />trophies</p>}
       </DropDownMenu>
     </StyledHeader>
   );
