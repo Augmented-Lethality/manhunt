@@ -79,7 +79,7 @@ const ProfilePage: React.FC = () => {
       <Main>
         <div className='content__body'>
           <div className='profile-container'>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center'}}>
               {user.picture ? (
                 <img
                   src={user?.picture}
@@ -97,7 +97,7 @@ const ProfilePage: React.FC = () => {
                   alignItems: 'start',
                 }}
               >
-                <h4 className='profile__title'>{user?.name}</h4>
+                <h2 className='profile__title'>{user?.name}</h2>
                 <span className='profile__description'>
                   {user?.email}
                   {/* <ButtonToUpdateEmail /> */}
