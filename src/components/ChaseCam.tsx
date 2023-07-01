@@ -1,10 +1,9 @@
-import React, { forwardRef, useRef, useEffect, useState, useContext, } from 'react';
+import React, { useRef, useEffect, useState, useContext, } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useWebcam } from '../contexts/WebcamTestPro';
 
 import {
   LocationBasedLocal,
-  WebcamRendererLocal,
   PerspectiveCamera,
   Scene,
   WebGLRenderer,
@@ -16,28 +15,16 @@ import {
 
 import SocketContext from '../contexts/Socket/SocketContext';
 
-// forwardRef requires props so don't delete even though it's not being used
-interface ChaseCamProps { }
 
-// passing the turnOffCamera method to the GamePage.tsx parent component
-type ChaseCamRefType = {
-  stopCamera: () => void;
-};
-
-
-const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
+const ChaseCam: React.FC = () => {
 
   const { user } = useAuth0();
   const { games, locations, users } = useContext(SocketContext).SocketState;
-
   const [userTextures, setUserTextures] = useState({});
 
-  const textureLoader = new TextureLoader();
-
+  // comes from the webcam context that this component is wrapped in
   const webcamContext = useWebcam();
   const webcamRef = webcamContext?.webcamRef;
-  const videoStarted = webcamContext?.videoStarted;
-
 
   ////////// create markers to render on the screen that stays in the defined location ///////////
   // create sprite materials
@@ -55,7 +42,11 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
   killers.scale.set(spriteSize, spriteSize, 1);
   victim.scale.set(spriteSize, spriteSize, 1);
   // hardCodeMarker.scale.set(spriteSize, spriteSize, 1);
+
+  // loads the pictures of the users onto the markers if they have a google photo
+  const textureLoader = new TextureLoader();
   //////////////////////////////////////////////////////////////////
+
 
   // this will add the location to the DB
   const { AddLocation } = useContext(SocketContext);
@@ -64,29 +55,15 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
   const [userLatitude, setUserLatitude] = useState<number>(0);
   const [userLongitude, setUserLongitude] = useState<number>(0);
 
-  // the canvas element to render the scene
+  // the refs to be used in the useEffect
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  // tracks the animation frame rate from requestAnimationFrame
-  const frameIdRef = useRef<number | null>(null);
-
-  // the camera reference in the three library
-  const cameraRef = useRef<PerspectiveCamera | null>(null);
-
-  // arjs reference
-  const arjsRef = useRef<LocationBasedLocal | null>(null);
-
-  // webcam ref
-  const webcamRendererRef = useRef<HTMLVideoElement | null>(null);
-
+  const frameIdRef = useRef<number | null>(null);   // tracks the animation frame rate from requestAnimationFrame
+  const cameraRef = useRef<PerspectiveCamera | null>(null); // renders the markers
+  const arjsRef = useRef<LocationBasedLocal | null>(null); // gets the locations
+  const webcamRendererRef = useRef<HTMLVideoElement | null>(null); // HTML element for the video
   const deviceOrientationControlsRef = useRef<DeviceOrientationControls | null>(null);
 
-  const handlePermission = () => {
-    if (deviceOrientationControlsRef.current) {
-      deviceOrientationControlsRef.current.connect();
-    }
-  }
-
+  // getting the pictures for the textures, gravatar was giving a CORS error
   useEffect(() => {
     const textureObject = {};
     users.forEach(async (person) => {
@@ -105,7 +82,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
     // the rest of the code
     if (!canvasRef.current) return;
 
-    // otherwise it isn't null and assigns it
+    // canvas is the HTML element canvas
     const canvas = canvasRef.current;
 
     // new scene, camera, and renderer
@@ -122,17 +99,11 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
 
     // renders the webcam stream as the background for the scene, this is an AR.js class that I edited
     if (webcamRef?.current?.video) {
-      console.log('we got inside of the camera')
-
-      // const cam = new WebcamRendererLocal(renderer, webcamRef.current.video);
       webcamRendererRef.current = webcamRef?.current?.video;
     }
 
     // start the device orientation controls for mobile
     deviceOrientationControlsRef.current = new DeviceOrientationControls(camera);
-
-    handlePermission();
-
 
     // start the location
     arjsRef.current.startGps();
@@ -178,6 +149,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
     frameIdRef.current = requestAnimationFrame(render);
 
 
+    // clean up
     return () => {
       if (frameIdRef.current) {
         cancelAnimationFrame(frameIdRef.current);
@@ -208,11 +180,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
   // NOTE: THIS IS VERY TIME COMPLEX SO I WILL BE POLISHING THIS IN POLISH WEEK
   useEffect(() => {
 
-    if (locations.length === 0) {
-      console.log('There are no locations to plot.');
-      return;
-    }
-
+    if (locations.length === 0) return;
 
     // iterating through the locations of the current locations state in socket.io (all locations of players in the current game)
     for (const playerLocation of locations) {
@@ -229,8 +197,6 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
           }
         });
       }
-      // console.log(existingMarkers)
-
 
       // if the current player in the locations state's authId matches the current user's authId,
       // don't place a marker because there's no point in a marker being on top of you
@@ -250,7 +216,7 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
             }
             // add the marker to the scene at their long/lat and an elevation of 10 so it's mid height
             arjsRef.current?.add(victim, markerLong, markerLat, 5);
-            console.log(`Added NEW victim marker`);
+            // console.log(`Added NEW victim marker`);
           } else {
             // make another killer marker to place and add to the scene
             const clonedKiller = killers.clone();
@@ -258,12 +224,11 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
             // set the user's picture as the map texture for the killer
             const texture = userTextures[playerLocation.authId];
             if (texture) {
-              console.log('texture:', texture, userTextures)
               clonedKiller.material.map = texture;
               clonedKiller.material.needsUpdate = true; // re-process with the new material texture
             }
             arjsRef.current?.add(clonedKiller, markerLong, markerLat, 5);
-            console.log(`Added NEW killer marker`);
+            // console.log(`Added NEW killer marker`);
           }
         } else {
           // find the existing marker
@@ -294,6 +259,6 @@ const ChaseCam = forwardRef<ChaseCamRefType, ChaseCamProps>((props, ref) => {
       />
     </div>
   );
-});
+};
 
 export default ChaseCam;
