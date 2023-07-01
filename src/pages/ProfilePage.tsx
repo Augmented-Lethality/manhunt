@@ -84,7 +84,8 @@ const ProfilePage: React.FC = () => {
                 <img
                   src={user?.picture}
                   className='profile__avatar'
-                  style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
+                  style={{ maxWidth: '100%', height: 'auto', borderRadius: '50%' }}
+                  // style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
                 />
               ) : (
                 <h1 className='alt-user-pic-large'>{user.name?.slice(0, 1)}</h1>
