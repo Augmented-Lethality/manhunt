@@ -13,7 +13,7 @@ import GameLobby from './pages/GameLobby';
 import EndGame from './pages/EndGame';
 import FindGamePage from './pages/FindGamePage';
 import FriendsPage from './pages/FriendsPage';
-//import OtherUserProfilePage from './pages/OtherUserProfilePage';
+import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import SocketComponent from './contexts/Socket/SocketComponent';
 import Settings from './pages/Settings';
 import { useFontSize } from './contexts/FontSize';
@@ -46,43 +46,29 @@ const App = () => {
           </SocketComponent>}
       />
       <Route
-        path="/profile"
-        element={<AuthenticationGuard component={ProfilePage} />}
-      />
-      <Route
-        path="/trophyroom"
-        element={<AuthenticationGuard component={TrophyRoom} />}
-      />
-      {/* <Route
-        path="/profile/:username"
-        element={<AuthenticationGuard component={OtherUserProfilePage} />}
-      /> */}
-      <Route
-        path="/test"
-        element={<AuthenticationGuard component={TestPage} />}
-      />
-      <Route
         path="/findGame"
         element={
           <SocketComponent>
             <AuthenticationGuard component={FindGamePage} />
-          </SocketComponent>}
+          </SocketComponent>
+        }
       />
-
       <Route
         path="/onthehunt"
         element={
           <SocketComponent>
             <AuthenticationGuard component={GamePage} />
-          </SocketComponent>} />
-
+          </SocketComponent>
+        }
+      />
       <Route
         path="/gameover"
         element={
           <SocketComponent>
             <AuthenticationGuard component={EndGame} />
-          </SocketComponent>} />
-
+          </SocketComponent>
+        }
+      />
       <Route
         path="/lobby"
         element={
@@ -92,20 +78,29 @@ const App = () => {
         }
       />
       <Route
-        path="/yourcompetition"
-        element={
-          <SocketComponent>
-            <AuthenticationGuard component={FriendsPage} />
-          </SocketComponent>
+        path="profile"
+        element={<AuthenticationGuard component={ProfilePage} />}
+      />
+      <Route
+        path="/profile/:username"
+        element={<AuthenticationGuard component={OtherUserProfilePage} />}
+      />
+      <Route
+        path="/test"
+        element={<AuthenticationGuard component={TestPage} />}
+      />
+      <Route
+        path="/trophies"
+        element={<AuthenticationGuard component={TrophyRoom} />}
+      />
+      <Route
+        path="/friends"
+        element={<AuthenticationGuard component={FriendsPage} />
         }
       />
       <Route
         path="/settings"
-        element={
-          <SocketComponent>
-            <AuthenticationGuard component={Settings} />
-          </SocketComponent>
-        }
+        element={<AuthenticationGuard component={Settings} />}
       />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

@@ -6,25 +6,23 @@ import UsersList from '../components/UsersList';
 import {Container} from '../styles/Container';
 import {Main} from '../styles/Main';
 import {Header} from '../styles/Header';
-import Search from 'react-feather/dist/icons/search';
-import XCircle from 'react-feather/dist/icons/x-circle';
+import { Search , XCircle, Bell } from 'react-feather';
+
 
 const FriendsContainer = styled.div`
-  background-color: #3C3E49;
+  background-color: #26262d;
   padding: 20px;
-  margin: 20px;
-  margin-bottom: 0;
+  margin-inline: 20px;
   flex-grow: 1;
 `;
 
 const SearchBar = styled.div`
   display: flex;
   align-items: center;
+  margin: 20px;
   margin-inline: auto;
-  background-color: #2B2B32;
-  color: #fff;
+  background-color: #2b2b36;
   padding: 10px;
-  border: none;
   width: 70%;
   height: 30px;
 `;
@@ -40,9 +38,12 @@ const CloseIcon = styled(XCircle)`
 
 const FriendsPage: React.FC = () => {
   const [searchText, setSearchText] = useState('');
-  const [onlineFriends, setOnlineFriends] = useState([]);
-  const [offlineFriends, setOfflineFriends] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
+  const [onlineFriends, setOnlineFriends] = useState<any[]>([]);
+  const [offlineFriends, setOfflineFriends] = useState<any[]>([]);
+  const [pendingRequests, setPendingRequests] = useState<any[]>([]);
+  const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [viewingPending, setViewingPending] = useState(false);
   const { user, isAuthenticated } = useAuth0();
 
   useEffect(() => {
@@ -57,27 +58,28 @@ const FriendsPage: React.FC = () => {
 
   const getFriends = async () => {
     try {
-      const res = await axios.get('/friends', {
-        params: {
-          userId: user?.sub,
-          status: 'accepted'
-        }
-     });
+      const res = await axios.get(`/friends/${user?.sub}`);
+      console.log(res.data);
       if (res.status === 200) {
-        let onlineFriends;
-        let offlineFriends;
-        res.data.forEach(friend => {
-          if(friend.gameId){
-            onlineFriends.push(friend);
-          } else {
-            offlineFriends.push(friend);
+        let online: any[] = [];
+        let pending: any[] = [];
+        let blocked: any[] = [];
+        res.data.forEach(resUser => {
+          if(resUser.status === 'blocked'){
+            blocked.push(resUser);
+          } else if (resUser.status === 'pending'){
+            pending.push(resUser)
+          }
+          else {
+            online.push(resUser);
           }
         });
-        setOnlineFriends(onlineFriends);
-        setOfflineFriends(offlineFriends);
+        setOnlineFriends(online);
+        setPendingRequests(pending);
+        setBlockedUsers(blocked);
       }
     } catch(err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -91,7 +93,7 @@ const FriendsPage: React.FC = () => {
         setSearchResults(res.data)
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -107,21 +109,25 @@ const FriendsPage: React.FC = () => {
   return (
     <Container>
       <Header page='Friends'/>
-      <Main style={{marginBottom: 0, display:'flex'}}>
+      <Main>
         <SearchBar>
-          <input
-            type='text'
-            placeholder="Search"
-            value={searchText}
-            onChange={handleInputChange}
-            />
-        {searchText === '' ?
-        <SearchIcon className='react-icon'/>
-        : <CloseIcon onClick={() => {setSearchText('')}} className='react-icon'/>}
-       </SearchBar>
+            <input
+              type='text'
+              placeholder="Search"
+              value={searchText}
+              onChange={handleInputChange}
+              />
+          {searchText === '' ?
+          <SearchIcon className='react-icon'/>
+          : <CloseIcon onClick={() => {setSearchText('')}} className='react-icon'/>}
+        </SearchBar>
         <FriendsContainer>
           {searchText === '' ? (
             <>
+              <Bell onClick={()=>{setViewingPending(viewingPending => !viewingPending)}}/>
+              {viewingPending && 
+                <UsersList users={pendingRequests} header={`Requests • ${pendingRequests.length}`} />
+              }
               <UsersList users={onlineFriends} header={`Online • ${onlineFriends.length}`} />
               <UsersList users={offlineFriends} header={`Offline • ${offlineFriends.length}`} />
             </>
