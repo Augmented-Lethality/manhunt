@@ -24,6 +24,10 @@ const ProfilePage: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
 
+  const winLossRatio = userData?.gamesPlayed && userData?.gamesWon
+  ? userData.gamesWon / userData.gamesPlayed
+  : 0;
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -125,7 +129,7 @@ const ProfilePage: React.FC = () => {
             )}
             <div className='profile__details'>
               <h6>
-                Win / Loss Ratio: {userData?.gamesPlayed} / {userData?.gamesWon}{' '}
+                Win / Loss Ratio: {winLossRatio}
               </h6>
               <h6>Games Played: {userData?.gamesPlayed}</h6>
               <h6>Games Won: {userData?.gamesWon}</h6>
