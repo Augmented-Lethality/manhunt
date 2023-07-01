@@ -252,12 +252,13 @@ const ChaseCam: React.FC = () => {
 
 
   return (
-    <div style={{ height: '100%', width: '100%' }}>
+    // <div style={{ height: '100%', width: '100%' }}>
       <canvas
         ref={canvasRef}
-        style={{ width: '100%', height: '100%' }}
+        style={{ position: 'absolute', top: '132px', left: 0 }}
+        // style={{ width: '100%', height: '100%' }}
       />
-    </div>
+    // </div>
   );
 };
 
