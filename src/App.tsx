@@ -17,7 +17,6 @@ import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import SocketComponent from './contexts/Socket/SocketComponent';
 import Settings from './pages/Settings';
 import { useFontSize } from './contexts/FontSize';
-import { AccessProvider } from './contexts/AccessContext';
 
 const App = () => {
   const { isLoading } = useAuth0();

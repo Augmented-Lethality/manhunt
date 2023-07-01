@@ -1,15 +1,10 @@
-import {
-  FaceMatcher,
-  loadSsdMobilenetv1Model,
-  loadFaceLandmarkModel,
-  loadFaceRecognitionModel,
-  LabeledFaceDescriptors
-} from 'face-api.js';
-import React, { useState, useContext, useEffect, useRef } from 'react';
+
+import React, { useState, useContext, useEffect, } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { WebcamProvider } from '../contexts/WebcamProvider'
+import { WebcamChaseProvider } from '../contexts/WebcamChaseProvider';
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
 import Countdown from '../components/Countdown';
@@ -25,51 +20,12 @@ import Eye from 'react-feather/dist/icons/eye';
 const GamePage: React.FC = () => {
 
   const navigate = useNavigate();
-  // which component do we render? kill or chase?
-  const [gameMode, setGameMode] = useState<string>('Chase');
-  const [faceMatcher, setFaceMatcher] = useState<FaceMatcher | null>(null);
-  const { users, games } = useContext(SocketContext).SocketState;
+  const { user } = useAuth0();
   const { LeaveGame } = useContext(SocketContext);
 
-  const { user } = useAuth0();
+  // which component do we render? kill or chase?
+  const [gameMode, setGameMode] = useState<string>('Chase');
 
-  useEffect(() => {
-    if (users.length > 0) {
-      loadTensorFlowFaceMatcher();
-      console.log(users)
-    }
-  }, [users]);
-
-  // whenever the games state changes, if the status is complete, navigate to /gameover endpoint
-  useEffect(() => {
-    console.log('game status:', games[0].status)
-
-    if (games[0].status === 'complete') {
-      navigate('/gameover');
-    }
-  }, [games])
-
-  const loadTensorFlowFaceMatcher = async () => {
-    try {
-      await loadSsdMobilenetv1Model('/models')
-      await loadFaceLandmarkModel('/models')
-      await loadFaceRecognitionModel('/models')
-      await createFaceMatcher();
-      console.log('did the face success')
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const createFaceMatcher = async () => {
-    console.log(users)
-    const labeledFaceDescriptors = users.map((player) => {
-      // Convert each user's description array back to a Float32Array
-      const descriptions = [new Float32Array(player.facialDescriptions)];
-      return new LabeledFaceDescriptors(player.username, descriptions);
-    });
-    setFaceMatcher(new FaceMatcher(labeledFaceDescriptors, 0.5));
-  }
 
   const handleGameChange = () => {
     if (gameMode === 'Chase') {
@@ -90,12 +46,15 @@ const GamePage: React.FC = () => {
         <Countdown />
       </GameHeader>
       <Main>
-      {gameMode === 'Chase' ? <ChaseCam />
-        : (
-          <WebcamProvider>
-            <KillCam faceMatcher={faceMatcher} />
-          </WebcamProvider>
-        )}
+      {gameMode === 'Chase' ? (
+        <WebcamChaseProvider key="chaseCam">
+          <ChaseCam />
+        </WebcamChaseProvider>
+      ) : (
+        <WebcamProvider key="killCam">
+          <KillCam />
+        </WebcamProvider>
+      )}
       </Main>
       <Footer style={{display:'flex', justifyContent:'end'}}>
         {gameMode === 'Chase'

@@ -4,13 +4,13 @@ import Webcam from 'react-webcam';
 const videoConstraints = {
   width: window.innerWidth,
   height: window.innerHeight,
-  facingMode: "user"
+  facingMode: "environment"
 };
 
 // Create a context
 const WebcamContext = createContext<{
   webcamRef: React.RefObject<Webcam>,
-  videoStarted:boolean
+  videoStarted: boolean
 } | null>(null);
 
 interface WebcamProviderProps {

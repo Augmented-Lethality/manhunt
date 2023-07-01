@@ -16,14 +16,12 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 
 root.render(
-  // <React.StrictMode>
-    <BrowserRouter>
-      <Auth0ProviderWithNavigate>
-        <FontSizeProvider>
-          <GlobalStyle />
-          <App />
-        </FontSizeProvider>
-      </Auth0ProviderWithNavigate>
-    </BrowserRouter>
-  // </React.StrictMode>
+  <BrowserRouter>
+    <Auth0ProviderWithNavigate>
+      <FontSizeProvider>
+        <GlobalStyle />
+        <App />
+      </FontSizeProvider>
+    </Auth0ProviderWithNavigate>
+  </BrowserRouter>
 );

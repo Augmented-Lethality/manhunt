@@ -10,6 +10,7 @@ import UsersList from '../components/UsersList';
 import CheckAccess from '../components/GameLobby/CheckAccess';
 import { useAuth0 } from '@auth0/auth0-react';
 import HostControls from '../components/GameLobby/HostControls';
+import PageLoader from '../components/Loading';
 import styled from 'styled-components';
 
 const PlayersContainer = styled.div`
@@ -42,23 +43,15 @@ const GameLobby: React.FunctionComponent = () => {
   useEffect(() => {
     if (games.length > 0 && users.length > 0) {
       setShowLobby(true);
-      redirectToGame();
     } else {
       setShowLobby(false);
     }
     console.log('games', games, '\nusers', users)
   }, [games, users]);
 
-  const redirectToGame = () => {
-    if (games[0].status === 'ongoing') {
-      navigate('/onthehunt');
-    } else {
-      // do nothing :)
-    }
-  }
 
   if (!showLobby) {
-    return <h1>No Players</h1>
+    return PageLoader
   }
 
   return (

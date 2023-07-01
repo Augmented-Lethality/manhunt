@@ -2,17 +2,18 @@ import React, { useEffect, useState, useContext, lazy, Suspense } from 'react';
 import { ButtonToHome } from '../components/Buttons';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
+import { useNavigate } from 'react-router-dom';
 
 const TrophyGenerator = lazy(() => import('../components/TrophyGenerator'));
 
 const EndGame: React.FC = () => {
+  const navigate = useNavigate();
   const { user } = useAuth0();
   const { games } = useContext(SocketContext).SocketState;
   const [gameOverMessage, setGameOverMessage] = useState('');
   const [winner, setWinner] = useState(false);
 
   useEffect(() => {
-    console.log(user);
     if (games.length > 0) {
       // they won and were not the victim
       if (games[0].winnerId === user?.sub && games[0].hunted !== user?.sub) {
@@ -52,6 +53,7 @@ const EndGame: React.FC = () => {
       }
     }
   }, [games, user]);
+
 
   return (
     <div className="end-game-container">
