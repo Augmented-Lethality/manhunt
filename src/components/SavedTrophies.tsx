@@ -134,6 +134,18 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     return colorMap[colorCode] || colorCode;
   };
 
+  const rotateTrophies = () => {
+    trophyRefs.current.forEach((trophy) => {
+      if (trophy) {
+        trophy.rotation.y += 0.001; // Adjust rotation speed 
+      }
+    });
+  };
+
+  const onFrame = () => {
+    rotateTrophies();
+  };
+
   const handleMouseDown = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number
@@ -205,7 +217,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               onMouseUp={handleMouseUp}
               onMouseMove={(e) => handleMouseMove(e, index)}
             >
-              <Canvas>
+              <Canvas onCreated={({ gl }) => gl.setAnimationLoop(onFrame)}>
                 <ambientLight intensity={0.5} />
                 <pointLight position={[10, 10, 10]} />
                 {trophy.shape === 'box' && (
