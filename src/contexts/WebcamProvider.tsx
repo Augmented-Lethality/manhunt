@@ -21,7 +21,8 @@ interface WebcamProviderProps {
 export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
   const webcamRef = useRef<Webcam | null>(null);
   const [videoStarted, setVideoStarted] = useState(false);
-
+  const height = window.innerHeight - 136;
+  const width = window.innerWidth; 
 
   const setRef = useCallback((webcam: Webcam | null) => {
     webcamRef.current = webcam;
@@ -36,12 +37,11 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
       <Webcam
         audio={false}
         ref={setRef} 
-        height={window.innerHeight}
-        width={window.innerWidth}
+        height={height}
+        width={width}
         screenshotFormat="image/jpeg"
         onUserMedia={handleUserMedia}
-        videoConstraints={videoConstraints}
-        style={{ top: '100%', left: '100%' }}/>
+        videoConstraints={videoConstraints}/>
       {children}
     </WebcamContext.Provider>
   );

@@ -24,7 +24,7 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   const webcamRef = webcamContext?.webcamRef;
   const videoStarted = webcamContext?.videoStarted;
   const navigate = useNavigate();
-  const videoHeight = window.innerHeight;
+  const videoHeight = window.innerHeight - 196;
   const videoWidth = window.innerWidth;
   const displaySize = { width: videoWidth, height: videoHeight };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -66,7 +66,7 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   // whenever targetCounter is updated, if it's at 10, navigate the users
   // NEED TO CHANGE BACK FOR PRODUCTION
   useEffect(() => {
-    if (targetCounter === 1) {
+    if (targetCounter === 100) {
       console.log('made it to 1')
       AddGameStats(user);
       UpdateGameStatus(user, 'complete')
@@ -133,10 +133,10 @@ const KillCam: React.FC<KillCamProps> = ({ faceMatcher }) => {
   };
 
   return (
-    <div>
-      <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0 }} />
+    <>
+      <canvas ref={canvasRef} style={{ position: 'absolute', top: '132px', left: 0 }} />
       <TargetRecognition progress={targetCounter} />
-    </div>
+    </>
   );
 }
 

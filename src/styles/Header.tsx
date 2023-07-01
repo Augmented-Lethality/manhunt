@@ -7,33 +7,105 @@ import Home from 'react-feather/dist/icons/home';
 import { useAuth0 } from '@auth0/auth0-react';
 import { ButtonToHome } from '../components/Buttons';
 import SocketContext from '../contexts/Socket/SocketContext';
+import { Crosshair } from 'react-feather';
 
 
 export const StyledHeader = styled.header`
   display: flex;
   padding: 1rem;
   height: 100px;
-  background-color: #3F404F;
+  background-color: #37394a;
   border-bottom: 1px solid #202026;
-  justify-content: space-between;
+  justify-content: end;
+  position: relative;
+  overflow: hidden;
 `;
+
+const Crosshairs = () => {
+  const scale = window.innerWidth / 600;
+  
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#4e4c61"
+      strokeWidth="1"
+      style={{
+        position: 'absolute',
+        top: '55%',
+        left: '15%',
+        transform: `translate(-50%, -50%) scale(${scale})`,
+        pointerEvents: 'none'
+      }}>
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="6" strokeWidth=".5" />
+      <line x1="22" y1="12" x2="20" y2="12" />
+      <line x1="4" y1="12" x2="2" y2="12" />
+      <line x1="12" y1="4" x2="12" y2="2" />
+      <line x1="12" y1="22" x2="12" y2="20" />
+    </svg>
+  );
+}
+
+const LogoWithCrossHairs = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth0();
+  const { LeaveGame } = useContext(SocketContext);
+
+  const handleHome = () => {
+    LeaveGame(user);
+    navigate('/home');
+  }
+
+  const fontSize = window.innerWidth > 750 ? '55px' : '7vw'
+
+  return (
+    <>
+      <Crosshairs />
+      <div style={{
+        position: 'absolute',
+        top: '55%',
+        left: '15%',
+        transform: 'translate(-50%, -50%)',
+        display:'flex',
+        flexDirection:'column',
+        alignItems: 'center',
+        justifyContent:'center'
+      }}>
+        <h1
+          style={{fontSize:fontSize, margin: 0}}
+          className='logo'
+          onClick={handleHome}>MAN</h1>
+        <h1
+          style={{fontSize:fontSize, margin: 0}}
+          className='logo'
+          onClick={handleHome}>HUNT</h1>
+      </div>
+    </>
+  )
+}
 
 export function HomeHeader({ users }) {
   const navigate = useNavigate();
   const { user } = useAuth0();
+  
   return (
     <StyledHeader>
-      <h1 className='logo'>Man Hunt</h1>
-      <p>Users Online: {users.length}</p>
-      <img
-        src={user?.picture}
-        alt='Profile'
-        className='profile__avatar'
-        onClick={() => { navigate('/profile') }}
-        style={{ height: '10vw', width: '10vw', borderRadius:'50%' }}/>
-        <DropDownMenu>
-          <p onClick={() => { navigate('/profile') }}><User />profile</p>
-        </DropDownMenu>
+      <LogoWithCrossHairs />
+      <div style={{display:'flex', flexDirection:'column'}}>
+        <div style={{display:'flex', flexDirection:'row', justifyContent:'end'}}>
+          <img
+            src={user?.picture}
+            alt='Profile'
+            className='profile__avatar'
+            onClick={() => { navigate('/profile') }}
+            style={{ height: '3rem', borderRadius:'50%', marginRight:'10px'}}/>
+          <DropDownMenu>
+            <p onClick={() => { navigate('/profile') }}><User />profile</p>
+          </DropDownMenu>
+        </div>
+        <h3>Users Online: {users.length}</h3>
+      </div>
     </StyledHeader>
   );
 }
@@ -51,17 +123,21 @@ export function Header({ page }) {
 
   return (
     <StyledHeader>
-      <Home className='react-icon-logo' onClick={handleHome} />
-      <h1>{page}</h1>
-      <img
-        src={user?.picture}
-        alt='Profile'
-        className='profile__avatar'
-        onClick={() => { navigate('/profile') }}
-        style={{ height: '10vw', width: '10vw', borderRadius: '50%' }} />
-      <DropDownMenu>
-        <p onClick={handleHome}><Home />home</p>
-      </DropDownMenu>
+      <LogoWithCrossHairs />
+      <div style={{display:'flex', flexDirection:'column'}}>
+        <div style={{display:'flex', flexDirection:'row', justifyContent:'end'}}>
+        <img
+            src={user?.picture}
+            alt='Profile'
+            className='profile__avatar'
+            onClick={() => { navigate('/profile') }}
+            style={{ height: '3rem', borderRadius:'50%', marginRight:'10px'}}/>
+          <DropDownMenu>
+            <p onClick={handleHome}><Home />home</p>
+          </DropDownMenu>
+        </div>
+        <h1>{page}</h1>
+      </div>
     </StyledHeader>
   );
 }
@@ -108,6 +184,8 @@ export const Footer = styled.footer`
   border-top: 2px solid #202026;
   height: 60px;
   padding: 1rem;
+  position: absloute;
+  bottom: 0px;
 `;
 
 

@@ -10,21 +10,19 @@ import { Search , XCircle, Bell } from 'react-feather';
 
 
 const FriendsContainer = styled.div`
-  background-color: #3C3E49;
+  background-color: #26262d;
   padding: 20px;
-  margin: 20px;
-  margin-bottom: 0;
+  margin-inline: 20px;
   flex-grow: 1;
 `;
 
 const SearchBar = styled.div`
   display: flex;
   align-items: center;
+  margin: 20px;
   margin-inline: auto;
-  background-color: #2B2B32;
-  color: #fff;
+  background-color: #2b2b36;
   padding: 10px;
-  border: none;
   width: 70%;
   height: 30px;
 `;
@@ -111,7 +109,7 @@ const FriendsPage: React.FC = () => {
   return (
     <Container>
       <Header page='Friends'/>
-      <Main style={{marginBottom: 0, display:'flex'}}>
+      <Main>
         <SearchBar>
             <input
               type='text'

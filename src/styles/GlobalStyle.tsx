@@ -8,8 +8,8 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
     height: 100vh;
     width: 100vw;
     box-sizing: border-box;
-    background: #4C4E61;
-    color: #6e6b8c;
+    background: linear-gradient(0, #303350, #454860);
+    color: #8a87ab;
     font-family: 'Source Code Pro';
     font-size: var(--font-size);
     word-wrap: break-word;
@@ -56,9 +56,14 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
 
   .logo{
     color: #e6a733;
-    font-family: 'Fascinate';
+    font-family: 'Fascinate Inline';
+    text-shadow:
+    -2px -1px 0 #000,  
+     1px -1px 0 #000,
+     -1px 1px 0 #000,
+      1px 1px 0 #000;
     font-size: 2rem;
-    margin: 0;
+    margin: -.5rem;
   }
 
   .react-icon{
@@ -120,8 +125,13 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
   // }
 
   h1 {
-    font-size: 2rem;
+    font-size: 3rem;
     margin: 0;
+    text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000; 
   }
 
   h3 {

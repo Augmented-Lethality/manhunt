@@ -48,16 +48,16 @@ const Menu = styled.div<{ isOpen: boolean }>`
 `;
 
 const Dots = styled(MoreHorizontal)`
-height: 10vw;
-width: 10vw;
+height: 3rem;
+width: 3rem;
 border-radius: 50%;
-border: 2px solid #5E5E63;
+border: 3px solid #6e6b8c;
 box-sizing: border-box;
 `;
 
 const Close = styled(XCircle)`
-height: 10vw;
-width: 10vw;
+height: 3rem;
+width: 3rem;
 padding: 0;
 z-index: 3;
 position: absolute;
