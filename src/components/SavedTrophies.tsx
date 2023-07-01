@@ -174,12 +174,12 @@ const SavedTrophies: React.FC<TrophyData> = () => {
       fetchUserData().then(() => setIsLoading(false));
     }
   }, [isAuthenticated]);
-  
+
   useEffect(() => {
     setIsLoading(true);
     fetchUserTrophyData()
       .then(() => {
-        setIsLoading(false); 
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching user trophy data:', error);
@@ -193,7 +193,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const trophiesToDisplay = userTrophyData.slice(startIndex, endIndex);
   const totalPages = Math.ceil(userTrophyData.length / trophiesPerPage);
 
-  
   return (
     <div>
       <h1>Recent Trophies </h1>
@@ -259,22 +258,19 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   </Torus>
                 )}
               </Canvas>
-            </div>
-            <div>
-              {showProps && (
-                <>
-                  <h6>Designation: {trophy.name}</h6>
-                  <h6>Report: {trophy.description}</h6>
-                  <h6>Class: {trophy.shape}</h6>
-                  <h6>Magnitude: {trophy.dimension}</h6>
-                  <h6>Chroma: {getColorName(trophy.color)}</h6>
-                  <h6>Earned on: {trophy.createdAt}</h6>
-                </>
-              )}
+              <details>
+                <summary>Details</summary>
+                <h6>Designation: {trophy.name}</h6>
+                <h6>Report: {trophy.description}</h6>
+                <h6>Class: {trophy.shape}</h6>
+                <h6>Magnitude: {trophy.dimension}</h6>
+                <h6>Chroma: {getColorName(trophy.color)}</h6>
+                <h6>Earned on: {trophy.createdAt}</h6>
+              </details>
             </div>
           </div>
         ))}
-      {(
+      {
         <div>
           <button
             disabled={currentPage === 1}
@@ -292,7 +288,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
             Next Page
           </button>
         </div>
-      )}
+      }
     </div>
   );
 };
