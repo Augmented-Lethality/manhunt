@@ -31,7 +31,7 @@ User.init({
   authId: {
     type: DataTypes.STRING,
     allowNull: true,
-    unique: true
+    unique: true,
   },
   image: {
     type: DataTypes.STRING,
@@ -44,10 +44,13 @@ User.init({
   socketId: {
     type: DataTypes.STRING,
     allowNull: true,
+    defaultValue: '',
   },
   gameId: {
     type: DataTypes.STRING,
     allowNull: true,
+    defaultValue: '',
+
   },
   tfModelPath: {
     type: DataTypes.STRING,

@@ -17,6 +17,7 @@ import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import SocketComponent from './contexts/Socket/SocketComponent';
 import Settings from './pages/Settings';
 import { useFontSize } from './contexts/FontSize';
+import TrophyRoom from './pages/TrophyRoom';
 
 const App = () => {
   const { isLoading } = useAuth0();
@@ -87,6 +88,10 @@ const App = () => {
       <Route
         path="/test"
         element={<AuthenticationGuard component={TestPage} />}
+      />
+      <Route
+        path="/trophyroom"
+        element={<AuthenticationGuard component={TrophyRoom} />}
       />
       <Route
         path="/yourcompetition"

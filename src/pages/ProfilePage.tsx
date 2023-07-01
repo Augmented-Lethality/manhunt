@@ -7,8 +7,6 @@ import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
 
-const SavedTrophies = lazy(() => import('../components/SavedTrophies'));
-
 export type UserData = {
   userId: number;
   username: string;
@@ -70,7 +68,6 @@ const ProfilePage: React.FC = () => {
       </Container>
     );
   }
-
   return (
     <Container>
       <Header page='Profile' />
@@ -127,24 +124,12 @@ const ProfilePage: React.FC = () => {
               </div>
             )}
             <div className='profile__details'>
+              <h6>
+                Win / Loss Ratio: {userData?.gamesPlayed} / {userData?.gamesWon}{' '}
+              </h6>
               <h6>Games Played: {userData?.gamesPlayed}</h6>
               <h6>Games Won: {userData?.gamesWon}</h6>
               <h6>Kills Confirmed: {userData?.killsConfirmed}</h6>
-            </div>
-            <div style={{ width: '300px', height: '300px' }}>
-              <Suspense fallback={<div>Loading Saved Trophy...</div>}>
-                <SavedTrophies
-                  id={0}
-                  name={''}
-                  description={''}
-                  createdAt={''}
-                  dimension={0}
-                  color={''}
-                  shape={''}
-                  tubularSegments={0}
-                  tubeWidth={0}
-                />
-              </Suspense>
             </div>
           </div>
         </div>
