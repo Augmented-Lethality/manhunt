@@ -17,7 +17,9 @@ const EndGame: React.FC = () => {
     if (games.length > 0) {
       // they won and were not the victim
       if (games[0].winnerId === user?.sub && games[0].hunted !== user?.sub) {
-        setGameOverMessage(`Great work, ${user?.name}. Your skip tracing gained you a bounty.`);
+        setGameOverMessage(
+          `Great work, ${user?.name}. Your skip tracing gained you a bounty.`
+        );
 
         // INSERT TROPHY COMPONENT
         setWinner(true);
@@ -54,14 +56,13 @@ const EndGame: React.FC = () => {
     }
   }, [games, user]);
 
-
   return (
-    <div className="end-game-container">
-      <h3>Congratulations, Citizen.</h3>
-      <h4>You've Earned a Reward.</h4>
+    <div className='end-game-container'>
       {winner ? (
         <div style={{ width: '400px', height: '400px' }}>
-          <Suspense fallback={<div>Loading Saved Trophy...</div>}>
+          <h3>Congratulations, Citizen.</h3>
+          <h4>You've Earned a Reward.</h4>
+          <Suspense fallback={<div>Loading Trophy...</div>}>
             <TrophyGenerator />
           </Suspense>
         </div>

@@ -17,7 +17,6 @@ Trophies.post('/', async (req, res) => {
       ownerId,
     });
     res.status(201).json(newTrophy);
-    console.log(name, 'saved successfully');
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -28,7 +27,6 @@ Trophies.post('/', async (req, res) => {
 Trophies.get('/:ownerId', async (req, res) => {
   try {
     const { ownerId } = req.params;
-    console.log('got all trophies for user with Id:', ownerId);
     // Fetch all trophies associated with the provided authId
     const userTrophies = await Trophy.findAll({
       where: { ownerId: ownerId },

@@ -145,7 +145,6 @@ const TrophyGenerator: React.FC = () => {
   const postTrophyData = async () => {
     try {
       if (userData && userData.id) {
-        // console.log('userData.id:', userData.id);
         await axios.post('/trophies', {
           name: trophyName,
           description: trophyDescription,
