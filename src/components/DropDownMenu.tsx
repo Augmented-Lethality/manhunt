@@ -2,11 +2,16 @@ import React, { FC, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import MoreHorizontal from 'react-feather/dist/icons/more-horizontal';
-import XCircle from 'react-feather/dist/icons/x-circle';
-import Users from 'react-feather/dist/icons/users';
-import LogOut from 'react-feather/dist/icons/log-out';
-import Settings from 'react-feather/dist/icons/settings';
+import {
+  Home,
+  User,
+  Users,
+  MoreHorizontal,
+  XCircle,
+  LogOut,
+  Settings,
+  Award } from 'react-feather';
+
 
 
 const dropdownAnimation = keyframes`
@@ -48,16 +53,16 @@ const Menu = styled.div<{ isOpen: boolean }>`
 `;
 
 const Dots = styled(MoreHorizontal)`
-height: 10vw;
-width: 10vw;
+height: 3rem;
+width: 3rem;
 border-radius: 50%;
-border: 2px solid #5E5E63;
+border: 3px solid #6e6b8c;
 box-sizing: border-box;
 `;
 
 const Close = styled(XCircle)`
-height: 10vw;
-width: 10vw;
+height: 3rem;
+width: 3rem;
 padding: 0;
 z-index: 3;
 position: absolute;
@@ -66,13 +71,21 @@ right: 0;
 `;
 
 interface DropDownMenuProps {
-  children: React.ReactNode;
+  page: string;
 }
 
-const DropDownMenu: FC<DropDownMenuProps> = ({ children }) => {
+const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth0();
+  const icons = {
+    home: <Home />,
+    profile: <User />,
+    friends: <Users />,
+    trophies: <Award />,
+    settings: <Settings />
+  }
+  const pages = Object.keys(icons);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -85,10 +98,19 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ children }) => {
       <Backdrop isOpen={isMenuOpen} onClick={toggleMenu}/>
       <Menu isOpen={isMenuOpen}>
         <Close onClick={toggleMenu} />
-        {children}
-        <p onClick={()=>{navigate('/yourcompetition')}}><Users/>friends</p>
-        <p onClick={()=>{navigate('/settings')}}><Settings/>settings</p>
-        <p onClick={()=>{logout({logoutParams: {returnTo: window.location.origin}})}}><LogOut/>logout</p>
+        {pages.map((pageName, index) => {
+          if(page.toLowerCase() !== pageName) {
+            const PageComponent = icons[pageName]
+            return <p key={index} onClick={()=>{navigate(`/${pageName}`)}}>
+              {PageComponent}
+              {pageName}
+            </p>
+          } 
+        })}
+        <p onClick={()=>{logout({logoutParams: {returnTo: window.location.origin}})}}>
+          <LogOut/>
+          logout
+        </p>
       </Menu>
 
     </div>

@@ -4,12 +4,9 @@ import SocketContext from '../contexts/Socket/SocketContext';
 import { useAuth0 } from "@auth0/auth0-react";
 
 const CountdownContainer = styled.div`
-  position: absolute;
-  color: #ffffffa1;
+  position: relative;
+  color: #9e9da6;
   font-size: 10vw;
-  top: 21vw;
-  left: 50%;
-  transform: translate(-50%, -50%);
 `;
 
 const Countdown: React.FC = () => {

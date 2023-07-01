@@ -10,7 +10,8 @@ import KillCam from '../components/KillCam';
 import Countdown from '../components/Countdown';
 import DropDownMenu from '../components/DropDownMenu';
 import { Container } from '../styles/Container';
-import { GameHeader } from '../styles/Header';
+import { GameHeader, Footer } from '../styles/Header';
+import { Main } from '../styles/Main';
 import Crosshair from 'react-feather/dist/icons/crosshair';
 import Home from 'react-feather/dist/icons/home';
 import Eye from 'react-feather/dist/icons/eye';
@@ -39,15 +40,12 @@ const GamePage: React.FC = () => {
     navigate('/home')
   }
 
-
   return (
     <Container>
       <GameHeader>
         <Countdown />
-        <DropDownMenu>
-          <div onClick={handleHomeDrop}><Home className='react-icon' />home</div>
-        </DropDownMenu>
       </GameHeader>
+      <Main>
       {gameMode === 'Chase' ? (
         <WebcamChaseProvider key="chaseCam">
           <ChaseCam />
@@ -57,9 +55,12 @@ const GamePage: React.FC = () => {
           <KillCam />
         </WebcamProvider>
       )}
-      {gameMode === 'Chase'
-        ? <Crosshair className='react-icon-large' onClick={handleGameChange} />
-        : <Eye className='react-icon-large' onClick={handleGameChange} />}
+      </Main>
+      <Footer style={{display:'flex', justifyContent:'end'}}>
+        {gameMode === 'Chase'
+          ? <Crosshair className='react-icon-large' onClick={handleGameChange} />
+          : <Eye className='react-icon-large' onClick={handleGameChange} />}
+      </Footer>
     </Container>
   );
 }

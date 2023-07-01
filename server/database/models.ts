@@ -92,17 +92,17 @@ Friend.init({
     primaryKey: true
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     references: {
       model: User,
-      key: 'id'
+      key: 'authId'
     }
   },
   friendId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     references: {
       model: User,
-      key: 'id'
+      key: 'authId'
     }
   },
   status: {
@@ -111,10 +111,10 @@ Friend.init({
     defaultValue: 'pending'
   },
   initiator: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     references: {
       model: User,
-      key: 'id'
+      key: 'authId'
     },
     allowNull: false
   }

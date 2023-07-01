@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const UserContainer = styled.div`
@@ -23,18 +24,18 @@ interface UserListItemProps {
     image: string;
     username: string;
   };
-  onClick: any
 }
 
 const UserListItem: React.FC<UserListItemProps> = ({ user }) => {
-
+  const navigate = useNavigate();
+  
   return (
-    <UserContainer>
+    <UserContainer onClick={() => navigate(`/profile/${user.username}`)}>
       {user.image ? (
         <UserImage src={user.image} alt={user.username} />
       ) : (
         <h1 className='alt-user-pic'>
-          {user.username?.slice(0, 1)}
+          <p>{user.username?.slice(0, 1)}</p>
         </h1>
       )}
       <Username>{user.username}</Username>

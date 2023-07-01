@@ -147,6 +147,7 @@ Users.get("/:authId", async (req, res) => {
   try {
     // Fetch the user's data from the database based on their google auth ID
     const user = await User.findAll({ where: { authId: req.params.authId } });
+    console.log(user)
     if (!user) {
       return res.sendStatus(404);
     }
@@ -156,7 +157,7 @@ Users.get("/:authId", async (req, res) => {
   }
 });
 
-// GET SPECIFIC USER
+// GET SPECIFIC USER BY GAME
 Users.get("/games/:authId", async (req, res) => {
   try {
     // Fetch the user's data from the database based on their google auth ID
@@ -172,13 +173,33 @@ Users.get("/games/:authId", async (req, res) => {
   }
 });
 
-// SEARCH FOR USERS
+// GET SPECIFIC USER BY USERNAME
+Users.get("/name/:username", async (req, res) => {
+  try {
+    const user = await User.findOne({ 
+      where: { 
+        username: { 
+          [Op.iLike]: req.params.username 
+        } 
+      } 
+    });
+
+    if (!user) {
+      res.sendStatus(404);
+    }
+    res.status(200).send(user);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+// SEARCH FOR USERS BY USERNAME
 Users.get("/search/:terms", async (req, res) => {
   try {
     const users = await User.findAll({
       where: {
         username: {
-          [Op.like]: `%${req.params.terms}%`
+          [Op.iLike]: `%${req.params.terms}%`
         }
       }
     });
