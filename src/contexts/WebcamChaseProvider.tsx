@@ -8,7 +8,7 @@ const videoConstraints = {
 };
 
 // Create a context
-const WebcamTestContext = createContext<{
+const WebcamChaseContext = createContext<{
   webcamRef: React.RefObject<Webcam>,
   videoStarted: boolean
 } | null>(null);
@@ -17,7 +17,7 @@ interface WebcamProviderProps {
   children: ReactNode;
 }
 
-export const WebcamTestProvider: React.FC<WebcamProviderProps> = ({ children }) => {
+export const WebcamChaseProvider: React.FC<WebcamProviderProps> = ({ children }) => {
   const webcamRef = useRef<Webcam | null>(null);
   const [videoStarted, setVideoStarted] = useState(false);
 
@@ -26,12 +26,9 @@ export const WebcamTestProvider: React.FC<WebcamProviderProps> = ({ children }) 
     webcamRef.current = webcam;
   }, []);
 
-  const handleUserMedia = () => {
-    // setVideoStarted(true);
-  };
 
   return (
-    <WebcamTestContext.Provider value={{ webcamRef, videoStarted }}>
+    <WebcamChaseContext.Provider value={{ webcamRef, videoStarted }}>
       <Webcam
         audio={false}
         ref={setRef}
@@ -41,9 +38,9 @@ export const WebcamTestProvider: React.FC<WebcamProviderProps> = ({ children }) 
         videoConstraints={videoConstraints}
         style={{ position: 'absolute', top: 0, left: 0 }} />
       {children}
-    </WebcamTestContext.Provider>
+    </WebcamChaseContext.Provider>
   );
 };
 
 // Create a hook to use the webcam context
-export const useWebcam = () => useContext(WebcamTestContext);
+export const useWebcam = () => useContext(WebcamChaseContext);

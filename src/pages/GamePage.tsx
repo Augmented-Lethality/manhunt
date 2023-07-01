@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { WebcamProvider } from '../contexts/WebcamProvider'
-import { WebcamTestProvider } from '../contexts/WebcamTestPro';
+import { WebcamChaseProvider } from '../contexts/WebcamChaseProvider';
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
 import Countdown from '../components/Countdown';
@@ -60,9 +60,9 @@ const GamePage: React.FC = () => {
         </DropDownMenu>
       </GameHeader>
       {gameMode === 'Chase' ? (
-        <WebcamTestProvider key="chaseCam">
+        <WebcamChaseProvider key="chaseCam">
           <ChaseCam />
-        </WebcamTestProvider>
+        </WebcamChaseProvider>
       ) : (
         <WebcamProvider key="killCam">
           <KillCam />
