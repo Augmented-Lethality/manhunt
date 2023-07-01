@@ -193,9 +193,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const trophiesToDisplay = userTrophyData.slice(startIndex, endIndex);
   const totalPages = Math.ceil(userTrophyData.length / trophiesPerPage);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  
   return (
     <div>
       <h1>Recent Trophies </h1>
