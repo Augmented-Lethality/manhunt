@@ -18,21 +18,20 @@ export interface Game {
 }
 
 export interface User {
-  image: string;
-  authId: string;
-  createdAt: string;
-  email: string;
-  facialDescriptions: number[];
-  gameId: string;
-  gamesPlayed: number | null;
-  gamesWon: number | null;
   id: number;
-  killsConfirmed: number | null;
-  location: string | null;
-  socketId: string;
-  tfModelPath: string | null;
-  updatedAt: string;
   username: string;
+  email: string;
+  authId: string;
+  image: string;
+  facialDescriptions: number[] | null;
+  socketId: string;
+  gameId: string;
+  tfModelPath: string | null;
+  gamesPlayed: number;
+  gamesWon: number;
+  killsConfirmed: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Locations {
@@ -56,6 +55,7 @@ export interface ISocketContextState {
   games: Game[],
   locations: Locations[],
   ready: Ready,
+  player: User,
 };
 
 // initial context state, will be overwritten eventually, but need the default state
@@ -66,15 +66,30 @@ export const defaultSocketContextState: ISocketContextState = {
   games: [],
   locations: [],
   ready: {},
-
+  player: {
+    id: 0,
+    username: '',
+    email: '',
+    authId: '',
+    image: '',
+    facialDescriptions: null,
+    socketId: '',
+    gameId: '',
+    tfModelPath: null,
+    gamesPlayed: 0,
+    gamesWon: 0,
+    killsConfirmed: 0,
+    createdAt: '',
+    updatedAt: ''
+  },
 };
 
 // these actions will each have their own functions in the reducer
 export type TSocketContextActions = 'update_socket' | 'update_users' | 'remove_user' | 'update_games' |
-  'update_locations' | 'update_lobby_users' | 'update_lobby_games' | 'update_ready'
+  'update_locations' | 'update_lobby_users' | 'update_lobby_games' | 'update_ready' | 'update_player'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = Socket | User[] | Game[] | string | Locations[] | Ready
+export type TSocketContextPayload = Socket | User[] | Game[] | string | Locations[] | Ready | User
 
 // describes the shape of the actions in this context
 export type ISocketContextActions = {
@@ -89,6 +104,8 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
   switch (action.type) {
     case 'update_socket':
       return { ...state, socket: action.payload as Socket };
+    case 'update_player':
+      return { ...state, player: action.payload as User };
     case 'update_users':
       return { ...state, users: action.payload as User[] };
     case 'update_games':
