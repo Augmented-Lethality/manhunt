@@ -75,7 +75,6 @@ export class ServerSocket {
     socket.on('handshake', async (user) => {
 
       try {
-
         // if the user exists, update the new socket connection
         const existingUser = await User.findOne({ where: { authId: user.sub } });
         if (existingUser) {
@@ -94,8 +93,7 @@ export class ServerSocket {
             }
             console.log('put user back in game')
             socket.join(existingUser.dataValues.gameId);
-            this.io.to(existingUser.dataValues.gameId).emit('update_lobby_users');
-            this.io.to(existingUser.dataValues.gameId).emit('update_lobby_games');
+            this.EmitLobbyUpdates(existingUser.dataValues.gameId);
 
           } else {
             if (existingUser.dataValues.gameId.length > 0 || existingUser.dataValues.gameId !== null) {
@@ -134,8 +132,7 @@ export class ServerSocket {
           await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub], hunted: '' });
           await User.update({ gameId: gameId }, { where: { authId: user.sub } })
           socket.join(gameId);
-          this.io.to(gameId).emit('update_lobby_users');
-          this.io.to(gameId).emit('update_lobby_games');
+          this.EmitLobbyUpdates(gameId);
 
         }
         // send new user to all connected users to update their games lists
@@ -162,8 +159,7 @@ export class ServerSocket {
 
           socket.join(game.dataValues.gameId);
           socket.leave('users');
-          this.io.to(game.dataValues.gameId).emit('update_lobby_users');
-          this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+          this.EmitLobbyUpdates(game.dataValues.gameId);
 
           this.io.to('users').emit('update_games');
 
@@ -192,8 +188,7 @@ export class ServerSocket {
           socket.leave('users');
           socket.join(game.dataValues.gameId);
 
-          this.io.to(game.dataValues.gameId).emit('update_lobby_users');
-          this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+          this.EmitLobbyUpdates(game.dataValues.gameId);
 
         } else {
 
@@ -217,8 +212,7 @@ export class ServerSocket {
               socket.join(existingUser.dataValues.gameId);
 
               console.log('user in game again, updating the game lobby')
-              this.io.to(existingUser.dataValues.gameId).emit('update_lobby_users');
-              this.io.to(existingUser.dataValues.gameId).emit('update_lobby_games');
+              this.EmitLobbyUpdates(existingUser.dataValues.gameId);
             }
           } else {
             console.log('no game with that host exists')
@@ -244,8 +238,7 @@ export class ServerSocket {
               socket.join(existingUser.dataValues.gameId);
 
               console.log('user in game again, updating the game lobby')
-              this.io.to(existingUser.dataValues.gameId).emit('update_lobby_users');
-              this.io.to(existingUser.dataValues.gameId).emit('update_lobby_games');
+              this.EmitLobbyUpdates(existingUser.dataValues.gameId);
             }
           }
         } else {
@@ -419,8 +412,7 @@ export class ServerSocket {
 
 
             // update everyone on the new players and games
-            this.io.to(game.dataValues.gameId).emit('update_lobby_users');
-            this.io.to(game.dataValues.gameId).emit('update_lobby_games');
+            this.EmitLobbyUpdates(game.dataValues.gameId);
             // put that user back into the users room and leave the game room
             socket.leave(game.dataValues.gameId);
             socket.join('users');
@@ -540,6 +532,12 @@ export class ServerSocket {
 
     });
   };
+
+  // HELPER FUNCTIONS
+  EmitLobbyUpdates = (gameId: string) => {
+    this.io.to(gameId).emit('update_lobby_users');
+    this.io.to(gameId).emit('update_lobby_games');
+  }
 
 
 }
