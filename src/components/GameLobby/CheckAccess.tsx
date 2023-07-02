@@ -59,7 +59,8 @@ const CheckAccess: React.FC = () => {
       .catch((error) => {
         setVideoAccessError(true);
         setErrorMessages((prevMessages) => [...prevMessages,
-        `Your camera isn't working because ${error.message.toLowerCase()}. Gear up, fix the issue, and reload that refresh button like a true bounty hunter you are.`]);
+        `Your camera isn't working because ${error.message.toLowerCase()}.
+        Gear up, fix the issue, and reload that refresh button like a true bounty hunter you are.`]);
       });
   };
 
@@ -76,7 +77,8 @@ const CheckAccess: React.FC = () => {
         (error) => {
           setLocationAccessError(true);
           setErrorMessages((prevMessages) => [...prevMessages,
-          `Your journey into the Corpoverse awaits, but ${error.message.toLowerCase()}. Go fix your location, then come back and refresh the page.`]);
+          `Your journey into the Corpoverse awaits, but ${error.message.toLowerCase()}.
+          Go fix your location, then come back and refresh the page.`]);
         },
         {}
       );
@@ -103,7 +105,8 @@ const CheckAccess: React.FC = () => {
         .catch(function (error: any) {
           setOrientationAccessError(true);
           setErrorMessages((prevMessages) => [...prevMessages,
-          `No device orientation means no hunting. ${error.message.charAt(0).toUpperCase() + error.message.slice(1).toLowerCase()}. Click the button to allow access.`]);
+          `No device orientation means no hunting. ${error.message.charAt(0).toUpperCase() + error.message.slice(1).toLowerCase()}.
+          Click the button to allow access.`]);
         });
     };
   };
@@ -114,7 +117,8 @@ const CheckAccess: React.FC = () => {
     if (player && !player.facialDescriptions) {
       setBioDataError(true);
       setErrorMessages((prevMessages) => [...prevMessages,
-        `Corpoverse requires all participants to submit their facial structures. Please visit your profile page to add your biodata. Thank you for your cooperation.`]);
+        `Corpoverse requires all participants to submit their facial structures. Please visit your profile page to add your biodata.
+        Thank you for your cooperation.`]);
     }
   };
 
