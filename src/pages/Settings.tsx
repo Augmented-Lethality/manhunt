@@ -106,9 +106,14 @@ const Settings: React.FC = () => {
   return (
     <Container>
       <Header page='Settings'/>
-      <Main style={{flexDirection:'row', alignItems:'baseline'}}>
-        <Switch onChange={toggleLargeFont} checked={checked}/>
-        <h3>Larger Font</h3>
+      <Main>
+        <div style={{display:'flex', flexDirection:'column', margin:'20px', textAlign:'center'}}>
+          <h3>Corpoverse has gifted its citizens with the following setting</h3>
+          <div style={{display:'flex', flexDirection:'row', margin:'20px', alignItems:'baseline'}}>
+            <Switch onChange={toggleLargeFont} checked={checked}/>
+            <h3>Larger Font</h3>
+          </div>
+        </div>
       </Main>
     </Container>
   )
