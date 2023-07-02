@@ -76,7 +76,7 @@ export class ServerSocket {
 
       try {
         // if the user exists, update the new socket connection
-        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const existingUser = await this.FindUserByAuthId(user.sub);
         if (existingUser) {
           // If the user exists, update the socket.id
           await User.update({ socketId: socket.id }, { where: { authId: user.sub } })
@@ -84,21 +84,21 @@ export class ServerSocket {
 
 
           // now see if they were part of the game
-          const existingGame = await Game.findOne({ where: { gameId: existingUser.dataValues.gameId } })
+          const existingGame = await Game.findOne({ where: { gameId: existingUser.gameId } })
           // if the game exists on their model and the user isn't in the game list, add them back
           if (existingGame) {
-            if (!existingGame.dataValues.users.includes(existingUser.dataValues.authId)) {
-              await Game.update({ users: [...existingGame.dataValues.users, existingUser.dataValues.authId] },
-                { where: { gameId: existingUser.dataValues.gameId } });
+            if (!existingGame.dataValues.users.includes(existingUser.authId)) {
+              await Game.update({ users: [...existingGame.dataValues.users, existingUser.authId] },
+                { where: { gameId: existingUser.gameId } });
             }
             console.log('put user back in game')
-            socket.join(existingUser.dataValues.gameId);
-            this.EmitLobbyUpdates(existingUser.dataValues.gameId);
+            socket.join(existingUser.gameId);
+            this.EmitLobbyUpdates(existingUser.gameId);
 
           } else {
-            if (existingUser.dataValues.gameId.length > 0 || existingUser.dataValues.gameId !== null) {
+            if (existingUser.gameId.length > 0 || existingUser.gameId !== null) {
               await User.update({ gameId: '' }, { where: { authId: user.sub } });
-            } else if (existingUser.dataValues.gameId === null) {
+            } else if (existingUser.gameId === null) {
               await User.update({ gameId: '' }, { where: { authId: user.sub } });
             }
             console.log('joined users')
@@ -201,18 +201,18 @@ export class ServerSocket {
     socket.on('reconnect_in_game', async (user) => {
 
       try {
-        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const existingUser = await this.FindUserByAuthId(user.sub);
 
         if (existingUser) {
-          const game = await Game.findOne({ where: { gameId: existingUser.dataValues.gameId } });
+          const game = await Game.findOne({ where: { gameId: existingUser.gameId } });
 
           if (game) {
             if (!game.dataValues.users.includes(user.sub)) {
-              await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: existingUser.dataValues.gameId } });
-              socket.join(existingUser.dataValues.gameId);
+              await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: existingUser.gameId } });
+              socket.join(existingUser.gameId);
 
               console.log('user in game again, updating the game lobby')
-              this.EmitLobbyUpdates(existingUser.dataValues.gameId);
+              this.EmitLobbyUpdates(existingUser.gameId);
             }
           } else {
             console.log('no game with that host exists')
@@ -227,18 +227,18 @@ export class ServerSocket {
     socket.on('reconnect_user', async (user) => {
 
       try {
-        const existingUser = await User.findOne({ where: { authId: user.sub } });
+        const existingUser = await this.FindUserByAuthId(user.sub);
 
         if (existingUser) {
-          const game = await Game.findOne({ where: { gameId: existingUser.dataValues.gameId } });
+          const game = await Game.findOne({ where: { gameId: existingUser.gameId } });
 
           if (game) {
             if (!game.dataValues.users.includes(user.sub)) {
-              await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: existingUser.dataValues.gameId } });
-              socket.join(existingUser.dataValues.gameId);
+              await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: existingUser.gameId } });
+              socket.join(existingUser.gameId);
 
               console.log('user in game again, updating the game lobby')
-              this.EmitLobbyUpdates(existingUser.dataValues.gameId);
+              this.EmitLobbyUpdates(existingUser.gameId);
             }
           }
         } else {
@@ -537,6 +537,11 @@ export class ServerSocket {
   EmitLobbyUpdates = (gameId: string) => {
     this.io.to(gameId).emit('update_lobby_users');
     this.io.to(gameId).emit('update_lobby_games');
+  }
+
+  FindUserByAuthId = async (authId: string) => {
+    const existingUser = await User.findOne({ where: { authId } });
+    return existingUser?.dataValues;
   }
 
 
