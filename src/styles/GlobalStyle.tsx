@@ -140,6 +140,13 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
     font-weight: 400;    
   }
 
+  h6 {
+    font-size: calc(var(--font-size) * 0.8);
+    margin: 0;
+    margin-inline: 30px;
+    font-weight: 400;
+  }
+
   input {
     border: none;
     background: none;
