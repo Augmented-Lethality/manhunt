@@ -562,9 +562,10 @@ export class ServerSocket {
 
   EmitGeneralUpdates = async () => {
     const users = await User.findAll({ where: { socketId: { [Op.and]: [{ [Op.not]: null }, { [Op.not]: '' }] } } });
-
     this.io.to('users').emit('update_users', users);
-    this.io.to('users').emit('update_games');
+
+    const games = await Game.findAll();
+    this.io.to('users').emit('update_games', games);
   }
 
 

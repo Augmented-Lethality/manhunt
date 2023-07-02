@@ -90,16 +90,21 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     })
 
     // updating games
-    socket.on('update_games', async () => {
-      try {
-        const response = await axios.get('/games');
-        const games = response.data;
-        console.log('updating game state', games)
-        SocketDispatch({ type: 'update_games', payload: games });
-      } catch (error) {
-        console.error('Error fetching games:', error);
-      }
+
+    socket.on('update_games', async (games) => {
+      console.log('updating games state:', games)
+      SocketDispatch({ type: 'update_games', payload: games });
     });
+    // socket.on('update_games', async () => {
+    //   try {
+    //     const response = await axios.get('/games');
+    //     const games = response.data;
+    //     console.log('updating game state', games)
+    //     SocketDispatch({ type: 'update_games', payload: games });
+    //   } catch (error) {
+    //     console.error('Error fetching games:', error);
+    //   }
+    // });
 
     socket.on('update_ready', async (ready) => {
       console.log('updating ready state:', ready)
