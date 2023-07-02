@@ -164,7 +164,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
       // sending the player information back if success, if failure it sends a string
       if (typeof response !== 'string') {
-        console.log('updating player state:', response)
+        console.log('updating player state!')
         SocketDispatch({ type: 'update_player', payload: response });
         setLoading(false);
       } else {

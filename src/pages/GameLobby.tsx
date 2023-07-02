@@ -34,15 +34,15 @@ const ControlsContainer = styled.div`
 const GameLobby: React.FC<{}> = () => {
   const { isAuthenticated } = useAuth0();
   const { games, users } = useContext(SocketContext).SocketState;
-  const { Redirect } = useContext(SocketContext);
+  // const { Redirect } = useContext(SocketContext);
   const [showLobby, setShowLobby] = useState(false);
 
   // checks to see if the user should be redirected if the game doesn't exist
   const location = useLocation();
   const currentEndpoint = location.pathname;
-  useEffect(() => {
-    Redirect(currentEndpoint);
-  }, [games]);
+  // useEffect(() => {
+  //   Redirect(currentEndpoint);
+  // }, [games]);
 
 
   useEffect(() => {

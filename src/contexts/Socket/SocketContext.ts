@@ -30,6 +30,7 @@ export interface User {
   gamesPlayed: number;
   gamesWon: number;
   killsConfirmed: number;
+  largeFont: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -79,6 +80,7 @@ export const defaultSocketContextState: ISocketContextState = {
     gamesPlayed: 0,
     gamesWon: 0,
     killsConfirmed: 0,
+    largeFont: false,
     createdAt: '',
     updatedAt: ''
   },
