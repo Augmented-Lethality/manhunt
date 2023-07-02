@@ -5,10 +5,12 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    height: 100%;
+    min-height: 100vh;
     width: 100vw;
     box-sizing: border-box;
     background: linear-gradient(0, #303350, #454860);
+    repeat: no-repeat;
     color: #8a87ab;
     font-family: 'Source Code Pro';
     font-size: var(--font-size);
@@ -17,12 +19,17 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
 
   button{
     background: #6e6b8c;
-    color: #dddddd;
-    font-size: 1em;
+    color: black;
+    font-family: 'Source Code Pro';
+    font-size: calc(var(--font-size) * 1.5);
+    font-weight: 600;
+    font-weight: 600;
+    letter-spacing: 3px;
     margin: 1em;
-    padding: 0.25em 1em;
+    min-width: 139px;
+    padding: 1rem;
     border: 2px solid #6e6b8c;
-    border-radius: 3px;
+    border-radius: 17px;
   }
 
   .alt-user-pic {
@@ -120,13 +127,16 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
     color: #6e6b8c;
   }
 
-  // h1, h2, h3, h4, h5, h6 {
-  //   color: #979fd0;
-  // }
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0
+  }
+
+  h2, h3, h4, h5, h6 {
+    font-weight: 400;
+  }
 
   h1 {
     font-size: 3rem;
-    margin: 0;
     text-shadow:
     -1px -1px 0 #000,
      1px -1px 0 #000,
@@ -134,10 +144,25 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
      1px 1px 0 #000; 
   }
 
+  h2 {
+    font-size: 2rem;
+    word-spacing: -10px
+  }
+
   h3 {
     font-size: calc(var(--font-size) * 1.5);
     color: #b8b8b8;
     font-weight: 400;    
+  }
+
+  h4 {
+    color: #5d5b6f;
+  }
+
+  h6 {
+    font-size: calc(var(--font-size) * 0.8);
+    margin-inline: 30px;
+    font-weight: 400;
   }
 
   input {

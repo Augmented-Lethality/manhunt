@@ -4,7 +4,7 @@ import axios from 'axios';
 import { ButtonToFindGame, ButtonToHostGame } from '../components/Buttons';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
-import { HomeHeader } from '../styles/Header';
+import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { useFontSize } from '../contexts/FontSize';
 
@@ -63,7 +63,7 @@ const HomePage = () => {
 
   return (
     <Container>
-      <HomeHeader users={users} />
+      <Header page={'Home'} users={users} />
       <Main>
         <ButtonToHostGame />
         <ButtonToFindGame />

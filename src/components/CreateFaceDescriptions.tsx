@@ -13,7 +13,6 @@ import {UserData} from '../pages/ProfilePage'
 import Save from 'react-feather/dist/icons/save'
 import Camera from 'react-feather/dist/icons/camera'
 
-
 interface CreateFaceDescriptionsProps {
   setPhotoStatus: (verify: string) => void;
   username?: (string);
@@ -23,6 +22,8 @@ interface CreateFaceDescriptionsProps {
 
 const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhotoStatus, username, userID, setUser}) => {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
+  const [verifying, setVerifying] = useState<boolean>(false)
+  
   useEffect(() => {
     loadModels();
   }, []);
@@ -42,18 +43,29 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhoto
       return;
     }
     try {
-      const detection = await detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-      if (!detection) {
-        alert("No face detected in the image, please try again");
-        return;
+      setVerifying(true)
+      const labeledFaceDescriptor = await createFaceDescriptor();
+      if(labeledFaceDescriptor){
+        sendDescriptionToServer(labeledFaceDescriptor);
+        setPhotoStatus('profile')
       }
-      const descriptions = [detection.descriptor];
-      const labeledFaceDescriptor = new LabeledFaceDescriptors(username, descriptions);
-      sendDescriptionToServer(labeledFaceDescriptor);
-      setPhotoStatus('profile')
     } catch (err){
       console.error(err)
     }
+  }
+
+  const createFaceDescriptor = async () => {
+    if (!img || !username) {
+      return;
+    }
+    const detection = await detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+    if (!detection) {
+      alert("No face detected in the image, please try again");
+      return;
+    }
+    const descriptions = [detection.descriptor];
+    const labeledFaceDescriptor = new LabeledFaceDescriptors(username, descriptions);
+    return labeledFaceDescriptor;
   }
 
   const sendDescriptionToServer = async (labeledFaceDescriptor: LabeledFaceDescriptors) => {
@@ -72,6 +84,7 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhoto
   if(img){
     return (
       <div>
+        {verifying && <h1 style={{position:'absolute'}}>Verifying</h1>}
         <img src={img.src} alt="Screenshot" style={{ height: '100%', width: '100%', objectFit: 'cover' }} />
         <div style={{
           position:'absolute',
@@ -90,7 +103,7 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhoto
 
   return (
     <WebcamProvider>
-      <CapturePhoto img={img} setImg={setImg}/>
+      <CapturePhoto setImg={setImg}/>
     </WebcamProvider>
   )
 }
