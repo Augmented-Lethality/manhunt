@@ -84,8 +84,7 @@ export class ServerSocket {
           // if the game exists on their model and the user isn't in the game list, add them back
           if (existingGame) {
             if (!existingGame.users.includes(existingUser.authId)) {
-              await Game.update({ users: [...existingGame.users, existingUser.authId] },
-                { where: { gameId: existingUser.gameId } });
+              await this.GameUpdateUsers([...existingGame.users, existingUser.authId], 'gameId', existingUser.gameId);
             }
             console.log('put user back in game')
             socket.join(existingUser.gameId);
@@ -151,7 +150,8 @@ export class ServerSocket {
             console.log('user already in that game')
           } else {
             await this.UserUpdate('gameId', game.gameId, 'authId', user.sub);
-            await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
+            await this.GameUpdateUsers([...game.users, user.sub], 'host', host);
+
           }
 
           socket.join(game.gameId);
@@ -177,8 +177,7 @@ export class ServerSocket {
             // they're already in the game, don't need to add them
           } else {
             await this.UserUpdate('gameId', game.gameId, 'authId', user.sub);
-            await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
-
+            await this.GameUpdateUsers([...game.users, user.sub], 'host', host);
             // this.io.to('users').emit('update_games');
           }
 
@@ -204,7 +203,7 @@ export class ServerSocket {
 
           if (game) {
             if (!game.users.includes(user.sub)) {
-              await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: existingUser.gameId } });
+              await this.GameUpdateUsers([...game.users, user.sub], 'gameId', existingUser.gameId);
               socket.join(existingUser.gameId);
 
               this.EmitLobbyUpdates(existingUser.gameId);
@@ -229,7 +228,7 @@ export class ServerSocket {
 
           if (game) {
             if (!game.users.includes(user.sub)) {
-              await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: existingUser.gameId } });
+              await this.GameUpdateUsers([...game.users, user.sub], 'gameId', existingUser.gameId);
               socket.join(existingUser.gameId);
 
               console.log('user in game again, updating the game lobby')
@@ -275,7 +274,9 @@ export class ServerSocket {
         const game = await this.FindGameByGameId(victim.gameId)
 
         if (game) {
-          await Game.update({ hunted: victim.authId }, { where: { gameId: victim.gameId } });
+
+          await this.GameUpdate('hunted', victim.authId, 'gameId', victim.gameId);
+
           console.log('hunter set');
           this.io.to(victim.gameId).emit('update_lobby_games');
 
@@ -294,7 +295,8 @@ export class ServerSocket {
         const existingUser = await this.FindUserByAuthId(user.sub);
         const game = await this.FindGameByGameId(existingUser.gameId)
         if (game) {
-          await Game.update({ status: status }, { where: { gameId: existingUser?.gameId } });
+          await this.GameUpdate('status', status, 'gameId', existingUser?.gameId);
+
           console.log('game status updated to:', status);
           this.io.to(game.gameId).emit('update_lobby_games');
 
@@ -324,7 +326,8 @@ export class ServerSocket {
         const existingUser = await this.FindUserByAuthId(user.sub);
         const game = await this.FindGameByGameId(existingUser.gameId)
         if (game) {
-          await Game.update({ winnerId: user.sub }, { where: { gameId: existingUser?.gameId } });
+          await this.GameUpdate('winnerId', user.sub, 'gameId', existingUser?.gameId);
+
           console.log('winner added');
           await User.update({
             gamesWon: existingUser?.gamesWon + 1,
@@ -435,7 +438,7 @@ export class ServerSocket {
         const existingUser = await this.FindUserByAuthId(user.sub);
         const game = await this.FindGameByGameId(existingUser.gameId)
         if (game) {
-          await Game.update({ timeConstraints: time }, { where: { gameId: existingUser?.gameId } });
+          await this.GameUpdate('timeConstraints', time, 'gameId', existingUser?.gameId);
           console.log('timer added');
           this.io.to(game.gameId).emit('update_lobby_games');
 
@@ -453,7 +456,7 @@ export class ServerSocket {
         const existingUser = await this.FindUserByAuthId(user.sub);
         const game = await this.FindGameByGameId(existingUser.gameId)
         if (game) {
-          await Game.update({ timeStart: time }, { where: { gameId: existingUser?.gameId } });
+          await this.GameUpdate('timeStart', time, 'gameId', existingUser?.gameId);
           this.io.to(game.gameId).emit('update_lobby_games');
 
         } else {
@@ -491,10 +494,8 @@ export class ServerSocket {
                 console.log('deleted locations')
               }
             } else {
-              await Game.update(
-                { users: updatedUserList },
-                { where: { gameId: user.gameId } }
-              )
+
+              this.GameUpdateUsers(updatedUserList, 'gameId', user.gameId);
             }
 
             socket.leave(user.gameId);
@@ -532,6 +533,14 @@ export class ServerSocket {
 
   UserUpdate = async (newKey: string, newValue: string, searchKey: string, searchValue: string) => {
     await User.update({ [newKey]: newValue }, { where: { [searchKey]: searchValue } });
+  }
+
+  GameUpdate = async (newKey: string, newValue: string, searchKey: string, searchValue: string) => {
+    await Game.update({ [newKey]: newValue }, { where: { [searchKey]: searchValue } });
+  }
+
+  GameUpdateUsers = async (newValue: Array<string>, searchKey: string, searchValue: string) => {
+    await Game.update({ users: newValue }, { where: { [searchKey]: searchValue } });
   }
 
   GameFindOne = async (key: string, value: string) => {
