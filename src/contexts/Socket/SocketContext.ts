@@ -23,6 +23,24 @@ export interface User {
   email: string;
   authId: string;
   image: string;
+  facialDescriptions: number[];
+  socketId: string;
+  gameId: string;
+  tfModelPath: string | null;
+  gamesPlayed: number;
+  gamesWon: number;
+  killsConfirmed: number;
+  largeFont: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Player {
+  id: number;
+  username: string;
+  email: string;
+  authId: string;
+  image: string;
   facialDescriptions: number[] | null;
   socketId: string;
   gameId: string;
@@ -46,7 +64,6 @@ export interface Ready {
   [authId: string]: string[];
 }
 
-
 // syntax that the context state must conform to, gives properties and types of those properties
 // server will be passing this information back and forth with client as needed
 export interface ISocketContextState {
@@ -56,7 +73,7 @@ export interface ISocketContextState {
   games: Game[],
   locations: Locations[],
   ready: Ready,
-  player: User,
+  player: Player,
 };
 
 // initial context state, will be overwritten eventually, but need the default state
@@ -91,7 +108,7 @@ export type TSocketContextActions = 'update_socket' | 'update_users' | 'remove_u
   'update_locations' | 'update_lobby_users' | 'update_lobby_games' | 'update_ready' | 'update_player'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = Socket | User[] | Game[] | string | Locations[] | Ready | User
+export type TSocketContextPayload = Socket | User[] | Game[] | string | Locations[] | Ready | Player
 
 // describes the shape of the actions in this context
 export type ISocketContextActions = {
@@ -107,7 +124,7 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
     case 'update_socket':
       return { ...state, socket: action.payload as Socket };
     case 'update_player':
-      return { ...state, player: action.payload as User };
+      return { ...state, player: action.payload as Player };
     case 'update_users':
       return { ...state, users: action.payload as User[] };
     case 'update_games':
