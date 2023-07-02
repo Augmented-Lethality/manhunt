@@ -70,6 +70,7 @@ export class ServerSocket {
 
     // client is asking to make a socket connection to the server, also known as a handshake
     socket.on('handshake', async (user) => {
+      console.log(user)
 
       try {
         // if the user exists, update the new socket connection
@@ -102,14 +103,15 @@ export class ServerSocket {
           }
 
         }
+        // send new user to all connected users to update their state
+        this.EmitGeneralUpdates()
+        socket.emit('handshake_reply', 'success');
+
 
       } catch (err) {
-        console.error(err);
+        console.error('the user is null, are they not?', err);
+        socket.emit('handshake_reply', 'fail');
       }
-
-      // send new user to all connected users to update their state
-      this.EmitGeneralUpdates()
-      socket.emit('handshake_reply', 'success');
 
     });
 
@@ -529,7 +531,9 @@ export class ServerSocket {
 
   // HELPER FUNCTIONS
 
-  // sequelize queries
+  ///// Sequelize Queries ////
+
+  // user
   FindUserByAuthId = async (authId: string) => {
     const existingUser = await User.findOne({ where: { authId } });
     return existingUser?.dataValues;
@@ -544,6 +548,7 @@ export class ServerSocket {
     await User.update({ [newKey]: newValue }, { where: { [searchKey]: searchValue } });
   }
 
+  // game
   GameUpdate = async (newKey: string, newValue: string, searchKey: string, searchValue: string) => {
     await Game.update({ [newKey]: newValue }, { where: { [searchKey]: searchValue } });
   }
@@ -561,6 +566,7 @@ export class ServerSocket {
     const existingGame = await Game.findOne({ where: { gameId } });
     return existingGame?.dataValues;
   }
+  ///////////////////////////
 
   // socket emits
   EmitLobbyUpdates = async (gameId: string) => {
