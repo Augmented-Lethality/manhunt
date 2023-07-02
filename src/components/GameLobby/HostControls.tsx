@@ -9,15 +9,13 @@ const HostControls: React.FunctionComponent = () => {
   const { games, ready } = useContext(SocketContext).SocketState;
   const [hasReadyErrors, setHasReadyErrors] = useState(false);
   const { user } = useAuth0();
-
   const [showControls, setShowControls] = useState(false);
 
+  //Determine who can see the controls and who can't
   useEffect(() => {
-    if (games.length > 0 && games[0].host === user?.sub) {
-      setShowControls(true);
-    } else {
-      setShowControls(false);
-    }
+    (games.length > 0 && games[0].host === user?.sub)
+    ? setShowControls(true)
+    : setShowControls(false);
   }, [games]);
 
   // if any of the ready objects don't have a value of 'ok', can't start the game
@@ -27,14 +25,14 @@ const HostControls: React.FunctionComponent = () => {
   }, [ready]);
 
   return (
-    <div>
+    <>
       {showControls && (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <>
           <TimerInput />
           {games[0].hunted.length > 0 && !hasReadyErrors && games[0].timeConstraints && <ButtonToGame />}
-        </div>
+        </>
       )}
-    </div>
+    </>
   );
 };
 
