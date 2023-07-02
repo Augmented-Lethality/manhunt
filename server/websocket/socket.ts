@@ -64,8 +64,7 @@ export class ServerSocket {
     this.io.on('connect', this.StartListeners);
   }
 
-  // method to handle all of the socket functions
-  // takes in the socket object sent from the client
+  // method to handle all of the client emits
   StartListeners = (socket: Socket) => {
 
     // client is asking to make a socket connection to the server, also known as a handshake
@@ -109,8 +108,7 @@ export class ServerSocket {
       }
 
       // send new user to all connected users to update their state
-      this.io.to('users').emit('update_users');
-      this.io.to('users').emit('update_games');
+      this.EmitGeneralUpdates()
       socket.emit('handshake_reply', 'success');
 
     });
@@ -160,9 +158,8 @@ export class ServerSocket {
           this.EmitLobbyUpdates(game.gameId);
 
           socket.leave('users');
-          // this.io.to('users').emit('update_users');
+          this.EmitGeneralUpdates()
 
-          this.io.to('users').emit('update_games');
 
         } else {
           console.log('no game with that host exists')
@@ -177,21 +174,19 @@ export class ServerSocket {
         const game = await this.GameFindOne('host', host);
         if (game) {
           if (game.users.includes(user.sub)) {
+            // they're already in the game, don't need to add them
           } else {
             await this.UserUpdate('gameId', game.gameId, 'authId', user.sub);
             await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
 
-            this.io.to('users').emit('update_games');
+            // this.io.to('users').emit('update_games');
           }
 
           socket.leave('users');
-          // this.io.to('users').emit('update_users');
+          this.EmitGeneralUpdates()
 
           socket.join(game.gameId);
-
           this.EmitLobbyUpdates(game.gameId);
-
-        } else {
 
         }
       } catch (err) {
@@ -212,11 +207,10 @@ export class ServerSocket {
               await Game.update({ users: [...game.users, user.sub] }, { where: { gameId: existingUser.gameId } });
               socket.join(existingUser.gameId);
 
-              console.log('user in game again, updating the game lobby')
               this.EmitLobbyUpdates(existingUser.gameId);
             }
           } else {
-            console.log('no game with that host exists')
+            console.log('can not reconnect, no game with that host exists')
           }
         }
 
@@ -248,8 +242,7 @@ export class ServerSocket {
           if (!socket.rooms.has('users')) {
             socket.join('users');
           }
-          this.io.to('users').emit('update_users');
-          this.io.to('users').emit('update_games');
+          this.EmitGeneralUpdates()
         }
 
       } catch (err) {
@@ -374,10 +367,16 @@ export class ServerSocket {
 
             // if there's no more users in the game, destroy the game
             if (updatedUserList.length === 0) {
+
               await Game.destroy({ where: { gameId: game.gameId } });
+
+              // making sure there is no trace of the gameId in other users
+              const usersToUpdate = await User.findAll({ where: { gameId: game.gameId } });
+              await Promise.all(usersToUpdate.map(user => user.update({ gameId: '' })));
               await Locations.destroy({ where: { gameId: game.gameId } });
-              console.log('Game deleted');
-              console.log('Locations deleted')
+
+              console.log('Game deleted, no more users in game');
+              console.log('Locations deleted, no more users in game')
 
             } else {
               // the host is the current host
@@ -411,16 +410,12 @@ export class ServerSocket {
 
             }
 
-
             // update everyone on the new players and games
             this.EmitLobbyUpdates(game.gameId);
             // put that user back into the users room and leave the game room
             socket.leave(game.gameId);
             socket.join('users');
-            this.io.to('users').emit('update_games');
-            this.io.to('users').emit('update_users');
-
-
+            this.EmitGeneralUpdates()
 
           } else {
             console.log('game did not have that user');
@@ -502,14 +497,8 @@ export class ServerSocket {
               )
             }
 
-
             socket.leave(user.gameId);
-            // send new games to all connected users to update their games lists
-            this.io.to(user.gameId).emit('update_games');
-            // send new user to all connected users to update their state
-            this.io.to(user.gameId).emit('update_users');
-
-
+            this.EmitLobbyUpdates(user.gameId);
           }
 
           // delete the socket id from the user since they're not connected anymore
@@ -518,12 +507,7 @@ export class ServerSocket {
           console.log('removed socket from disconnected user:')
         }
         socket.leave('users');
-
-        // send new games to all connected users to update their games lists
-        this.io.to('users').emit('update_games');
-        // send new user to all connected users to update their state
-        this.io.to('users').emit('update_users');
-
+        this.EmitGeneralUpdates()
 
       } catch (err) {
         console.log(err);
@@ -564,6 +548,11 @@ export class ServerSocket {
   EmitLobbyUpdates = (gameId: string) => {
     this.io.to(gameId).emit('update_lobby_users');
     this.io.to(gameId).emit('update_lobby_games');
+  }
+
+  EmitGeneralUpdates = () => {
+    this.io.to('users').emit('update_users');
+    this.io.to('users').emit('update_games');
   }
 
 }
