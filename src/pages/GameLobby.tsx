@@ -28,14 +28,16 @@ const ControlsContainer = styled.div`
   //margin-inline: 20px;
   background-color: #2E303C;
   padding: 10px;
-  height: 60px;
+  height: 100px;
   border-radius: 10px;
+  justify-content: space-evenly;
 `;
 
 const GameLobby: React.FC<{}> = () => {
   const { isAuthenticated } = useAuth0();
   const { games, users } = useContext(SocketContext).SocketState;
   const [showLobby, setShowLobby] = useState(false);
+  const [bountyName, setBountyName] = useState<string | null>(null)
 
   useEffect(() => {
     if (games.length > 0 && users.length > 0) {
@@ -55,12 +57,16 @@ const GameLobby: React.FC<{}> = () => {
     return <PageLoader />
   }
 
+  // if(bountyName) {
+  //   return <h2>{bountyName} is being Hunted</h2>
+  // }
+
   return (
     <Container>
       <Header page='Lobby' />
       <Main>
         <ControlsContainer>
-          <WhosHunting />
+          <WhosHunting setBountyName={setBountyName}/>
           <HostControls />
         </ControlsContainer>
         <PlayersContainer>
