@@ -3,23 +3,24 @@ import Popup from 'reactjs-popup';
 
 interface PopupProps {
   content: string;
-  accessFunction: () => void;
+  accessFunctions: { [key: string]: () => void };
+  errorMessages: string[];
 }
 
-export const AccessPopup: React.FC<PopupProps> = ({ content, accessFunction }) => {
-  const [message, setMessage] = useState('');
 
+export const AccessPopup: React.FC<PopupProps> = ({ content, accessFunctions, errorMessages }) => {
+  const [accessButtonClicked, setAccessButtonClicked] = useState<string | null>(null);
+
+  // refresh button reloads the window
   const handleRefresh = () => {
     window.location.reload();
   };
 
-  const handleAccessButton = () => {
-    accessFunction();
+  // the function for the access button is triggered here
+  const handleAccessButton = (accessType: string) => {
+    accessFunctions[accessType]();
+    setAccessButtonClicked(accessType);
   };
-
-  if (content.includes('Camera')) {
-    setMessage(content);
-  }
 
   return (
     <Popup
@@ -27,22 +28,38 @@ export const AccessPopup: React.FC<PopupProps> = ({ content, accessFunction }) =
       modal
       closeOnDocumentClick
       contentStyle={{
-        background: 'white',
+        background: `url('https://media.tenor.com/EIXSHzr7TfUAAAAC/fallout-vault.gif')`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
         padding: '20px',
         borderRadius: '4px',
         maxWidth: '500px',
         textAlign: 'center',
+        color: 'black',
       }}
+
       overlayStyle={{
         background: 'rgba(0, 0, 0, 0.5)',
       }}
     >
       <div className="popup-content">
-        <h2>{content}</h2>
+        <h2 style={{ whiteSpace: 'pre-line' }}>{content}</h2>
         <div className="button-container">
+          {Object.keys(accessFunctions).map((accessType) => (
+            accessType !== 'location' &&
+            errorMessages.some((errorMessage) => errorMessage.includes(accessType)) && (
+              <button
+                key={accessType}
+                onClick={() => handleAccessButton(accessType)}
+                disabled={accessButtonClicked === accessType}
+              >
+                {accessType}
+              </button>
+            )
+          ))}
           <button onClick={handleRefresh}>Refresh Page</button>
-          <button onClick={handleAccessButton}>Button For Access</button>
 
         </div>
       </div>
