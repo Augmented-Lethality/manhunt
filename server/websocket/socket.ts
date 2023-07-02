@@ -62,9 +62,6 @@ export class ServerSocket {
 
     // when client connects to the server, call this StartListeners method which handles user connections/disconnections
     this.io.on('connect', this.StartListeners);
-
-    // confirms that the socket is ready for client emits
-    // console.info('Socket.io is listening');
   }
 
   // method to handle all of the socket functions
@@ -79,7 +76,7 @@ export class ServerSocket {
         const existingUser = await this.FindUserByAuthId(user.sub);
         if (existingUser) {
           // If the user exists, update the socket.id
-          await User.update({ socketId: socket.id }, { where: { authId: user.sub } })
+          await this.UserUpdate('socketId', socket.id, 'authId', user.sub);
           // console.log('updated db user connection')
 
 
@@ -97,11 +94,11 @@ export class ServerSocket {
 
           } else {
             if (existingUser.gameId.length > 0 || existingUser.gameId !== null) {
-              await User.update({ gameId: '' }, { where: { authId: user.sub } });
+              await this.UserUpdate('gameId', '', 'authId', user.sub);
+
             } else if (existingUser.gameId === null) {
-              await User.update({ gameId: '' }, { where: { authId: user.sub } });
+              await this.UserUpdate('gameId', '', 'authId', user.sub);
             }
-            console.log('joined users')
             socket.join('users');
           }
 
@@ -130,7 +127,8 @@ export class ServerSocket {
           const gameId = v4();
           const hostName = user.name;
           await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub], hunted: '' });
-          await User.update({ gameId: gameId }, { where: { authId: user.sub } })
+          await this.UserUpdate('gameId', gameId, 'authId', user.sub);
+
           socket.join(gameId);
           this.EmitLobbyUpdates(gameId);
 
@@ -154,13 +152,15 @@ export class ServerSocket {
           if (game.users.includes(user.sub)) {
             console.log('user already in that game')
           } else {
-            await User.update({ gameId: game.gameId }, { where: { authId: user.sub } });
+            await this.UserUpdate('gameId', game.gameId, 'authId', user.sub);
             await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
           }
 
           socket.join(game.gameId);
-          socket.leave('users');
           this.EmitLobbyUpdates(game.gameId);
+
+          socket.leave('users');
+          // this.io.to('users').emit('update_users');
 
           this.io.to('users').emit('update_games');
 
@@ -177,16 +177,16 @@ export class ServerSocket {
         const game = await this.GameFindOne('host', host);
         if (game) {
           if (game.users.includes(user.sub)) {
-            console.log('user in game we good, updating the game lobby')
           } else {
-            await User.update({ gameId: game.gameId }, { where: { authId: user.sub } });
+            await this.UserUpdate('gameId', game.gameId, 'authId', user.sub);
             await Game.update({ users: [...game.users, user.sub] }, { where: { host: host } });
 
             this.io.to('users').emit('update_games');
-
           }
 
           socket.leave('users');
+          // this.io.to('users').emit('update_users');
+
           socket.join(game.gameId);
 
           this.EmitLobbyUpdates(game.gameId);
@@ -243,8 +243,8 @@ export class ServerSocket {
             }
           }
         } else {
-          console.log('no game with that host exists, reconnecting to users room')
-          await User.update({ socketId: socket.id }, { where: { authId: user.sub } })
+          await this.UserUpdate('socketId', socket.id, 'authId', user.sub);
+
           if (!socket.rooms.has('users')) {
             socket.join('users');
           }
@@ -361,7 +361,7 @@ export class ServerSocket {
           if (game.users.includes(user.sub)) {
 
             // update the user so that they don't have the gameId anymore
-            await User.update({ gameId: '' }, { where: { authId: user.sub } });
+            await this.UserUpdate('gameId', '', 'authId', user.sub);
 
             const location = await Locations.findByPk(user.sub);
 
@@ -513,10 +513,8 @@ export class ServerSocket {
           }
 
           // delete the socket id from the user since they're not connected anymore
-          await User.update(
-            { socketId: '' },
-            { where: { socketId: socket.id } }
-          )
+          await this.UserUpdate('socketId', '', 'socketId', socket.id);
+
           console.log('removed socket from disconnected user:')
         }
         socket.leave('users');
@@ -546,6 +544,10 @@ export class ServerSocket {
   UserFindOne = async (key: string, value: string) => {
     const existingUser = await User.findOne({ where: { [key]: value } });
     return existingUser?.dataValues;
+  }
+
+  UserUpdate = async (newKey: string, newValue: string, searchKey: string, searchValue: string) => {
+    await User.update({ [newKey]: newValue }, { where: { [searchKey]: searchValue } });
   }
 
   GameFindOne = async (key: string, value: string) => {
