@@ -322,7 +322,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
           </button>
         )}
       </div>
-      <span style={{ display: 'flex',}}>
+      <span style={{ display: 'flex', padding: '1em'}}>
         Page {currentPage}
       </span>
     </div>
