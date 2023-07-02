@@ -8,47 +8,22 @@ import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { useFontSize } from '../contexts/FontSize';
 
-type UserData = {
-  username: string;
-  email: string;
-  authId: string;
-  largeFont: boolean;
-  // Add other user data properties as needed
-};
-
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
-  const { users } = useContext(SocketContext).SocketState;
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const { users, player } = useContext(SocketContext).SocketState;
+  const { LeaveGame } = useContext(SocketContext);
   const [fontSize, setFontSize] = useFontSize();
 
+  useEffect(() => {
+    if (player.largeFont) {
+      setFontSize(20);
+    }
+  }, [player])
 
-  // useEffect(() => {
-  //   const postUserData = async () => {
-  //     try {
-  //       // Check if the user exists by sending a POST request
-  //       const response = await axios.post<UserData>('/Users', {
-  //         username: user?.name,
-  //         email: user?.email,
-  //         authId: user?.sub,
-  //         image: user?.picture || null,
-  //         largeFont: false
-  //         // Include other user data properties you want to save
-  //       });
-  //       setUserData(response.data);
-  //       //setLargeFontSetting
-  //       if (response.data.largeFont) {
-  //         setFontSize(20);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching user data:', error);
-  //     }
-  //   };
+  useEffect(() => {
+    LeaveGame(user);
+  }, [])
 
-  //   if (isAuthenticated && user) {
-  //     postUserData();
-  //   }
-  // }, [user, isAuthenticated]);
 
   if (!isAuthenticated || !user) {
     return null;
