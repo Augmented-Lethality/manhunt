@@ -150,11 +150,16 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       SocketDispatch({ type: 'update_locations', payload: correctLocations });
     });
 
-
     socket.on('update_ready', async (ready) => {
       console.log('updating ready state:', ready)
       SocketDispatch({ type: 'update_ready', payload: ready });
     });
+
+    socket.on('redirect', async (endpoint) => {
+      console.log('redirecting user to', endpoint)
+      navigate(endpoint);
+    });
+
   }
 
   // sending the handshake to the server, meaning it's trying to establish a connection to the server using websocket
@@ -200,8 +205,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
   };
 
-  const Redirect = (host: string, endpoint: string) => {
-    socket.emit('nav_to_endpoint', host, endpoint);
+  const Redirect = (endpoint: string) => {
+    socket.emit('nav_to_endpoint', endpoint);
   };
 
   const SetHunted = (victim: User) => {

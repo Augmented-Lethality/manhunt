@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, } from 'react';
+import { useLocation } from 'react-router-dom';
 import SocketContext from '../contexts/Socket/SocketContext';
 import WhosHunting from '../components/WhosHunting';
 import { Container } from '../styles/Container';
@@ -10,8 +11,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import HostControls from '../components/GameLobby/HostControls';
 import PageLoader from '../components/Loading';
 import styled from 'styled-components';
-
-import { AccessPopup } from '../components/Popups/AccessPopup';
 
 const PlayersContainer = styled.div`
   background-color: #2E303C;
@@ -35,7 +34,16 @@ const ControlsContainer = styled.div`
 const GameLobby: React.FC<{}> = () => {
   const { isAuthenticated } = useAuth0();
   const { games, users } = useContext(SocketContext).SocketState;
+  const { Redirect } = useContext(SocketContext);
   const [showLobby, setShowLobby] = useState(false);
+
+  // checks to see if the user should be redirected if the game doesn't exist
+  const location = useLocation();
+  const currentEndpoint = location.pathname;
+  useEffect(() => {
+    Redirect(currentEndpoint);
+  }, [games]);
+
 
   useEffect(() => {
     if (games.length > 0 && users.length > 0) {
@@ -43,7 +51,6 @@ const GameLobby: React.FC<{}> = () => {
     } else {
       setShowLobby(false);
     }
-    // console.log('games', games, '\nusers', users)
   }, [games, users]);
 
 

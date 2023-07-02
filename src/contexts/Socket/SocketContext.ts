@@ -100,7 +100,6 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
     case 'update_lobby_games':
       return { ...state, games: action.payload as Game[] };
     case 'update_ready':
-      console.log('Ready state:', { ...state.ready, ...action.payload as Ready });
       return { ...state, ready: { ...state.ready, ...action.payload as Ready } };
 
     default:
@@ -115,7 +114,7 @@ export interface ISocketContextProps {
   CreateGame: () => void;
   AddLocation: (user: any, gameId: string, longitude: number, latitude: number) => void;
   JoinGame: (host: string, user: User) => void;
-  Redirect: (host: string, endpoint: string) => void;
+  Redirect: (endpoint: string) => void;
   SetHunted: (victim: User) => void;
   LeaveGame: (user: any) => void;
   UpdateGameStatus: (user: any, status: string) => void;

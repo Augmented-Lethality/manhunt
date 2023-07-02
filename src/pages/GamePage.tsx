@@ -1,6 +1,6 @@
 
 import React, { useState, useContext, useEffect, } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { WebcamProvider } from '../contexts/WebcamProvider'
@@ -19,12 +19,17 @@ import Eye from 'react-feather/dist/icons/eye';
 
 const GamePage: React.FC = () => {
 
-  const navigate = useNavigate();
-  const { user } = useAuth0();
-  const { LeaveGame } = useContext(SocketContext);
-
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
+  const { games } = useContext(SocketContext).SocketState;
+  const { Redirect } = useContext(SocketContext);
+
+  // checks to see if the user should be redirected if the game doesn't exist
+  const location = useLocation();
+  const currentEndpoint = location.pathname;
+  useEffect(() => {
+    Redirect(currentEndpoint);
+  }, [games]);
 
 
   const handleGameChange = () => {
@@ -35,28 +40,23 @@ const GamePage: React.FC = () => {
     }
   }
 
-  const handleHomeDrop = () => {
-    LeaveGame(user);
-    navigate('/home')
-  }
-
   return (
     <Container>
       <GameHeader>
         <Countdown />
       </GameHeader>
       <Main>
-      {gameMode === 'Chase' ? (
-        <WebcamChaseProvider key="chaseCam">
-          <ChaseCam />
-        </WebcamChaseProvider>
-      ) : (
-        <WebcamProvider key="killCam">
-          <KillCam />
-        </WebcamProvider>
-      )}
+        {gameMode === 'Chase' ? (
+          <WebcamChaseProvider key="chaseCam">
+            <ChaseCam />
+          </WebcamChaseProvider>
+        ) : (
+          <WebcamProvider key="killCam">
+            <KillCam />
+          </WebcamProvider>
+        )}
       </Main>
-      <Footer style={{display:'flex', justifyContent:'end'}}>
+      <Footer style={{ display: 'flex', justifyContent: 'end' }}>
         {gameMode === 'Chase'
           ? <Crosshair className='react-icon-large' onClick={handleGameChange} />
           : <Eye className='react-icon-large' onClick={handleGameChange} />}

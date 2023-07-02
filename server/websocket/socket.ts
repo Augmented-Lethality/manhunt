@@ -470,6 +470,13 @@ export class ServerSocket {
 
     });
 
+    socket.on('nav_to_endpoint', async (endpoint) => {
+      if (socket.rooms.has('users')) {
+        if (endpoint === '/onthehunt' || endpoint === '/gameover' || endpoint === '/lobby') {
+          socket.emit('redirect', '/home');
+        }
+      }
+    })
 
 
     // when the disconnect occurs
