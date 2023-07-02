@@ -20,10 +20,8 @@ const EndGame: React.FC = () => {
         setGameOverMessage(
           `Great work, ${user?.name}. Your skip tracing gained you a bounty.`
         );
-
-        // INSERT TROPHY COMPONENT
+        // user is a winner
         setWinner(true);
-
         // they won and were being hunted
       } else if (
         games[0].winnerId === user?.sub &&
@@ -32,9 +30,8 @@ const EndGame: React.FC = () => {
         setGameOverMessage(
           `Why, ${user?.name}, you successfully evaded capture! Go put your feet up and crack open a cold one.`
         );
-        // INSERT TROPHY COMPONENT
+        // user is a winner
         setWinner(true);
-
         // lost and were being hunted
       } else if (
         games[0].winnerId !== user?.sub &&
@@ -43,7 +40,6 @@ const EndGame: React.FC = () => {
         setGameOverMessage(
           `C'mon ${user?.name}, you seriously let these guys catch you?`
         );
-
         // lost and were a hunter
       } else if (
         games[0].winnerId !== user?.sub &&
@@ -58,17 +54,16 @@ const EndGame: React.FC = () => {
 
   return (
     <div className='end-game-container'>
+      <h1>GAME OVER</h1>
+      <h3>{gameOverMessage}</h3>
       {winner ? (
         <div style={{ width: '400px', height: '400px' }}>
-          <h3>Congratulations, Citizen.</h3>
-          <h4>You've Earned a Reward.</h4>
+          <h3>You've Earned a Reward.</h3>
           <Suspense fallback={<div>Loading Trophy...</div>}>
             <TrophyGenerator />
           </Suspense>
         </div>
       ) : null}
-      <h1>GAME OVER</h1>
-      <h3>{gameOverMessage}</h3>
       <ButtonToHome />
     </div>
   );

@@ -100,7 +100,8 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
     case 'update_lobby_games':
       return { ...state, games: action.payload as Game[] };
     case 'update_ready':
-      return { ...state, ready: { ...state.ready, ...action.payload as Ready } }; // merges existing ready instead of replacing like the ones above!
+      console.log('Ready state:', { ...state.ready, ...action.payload as Ready });
+      return { ...state, ready: { ...state.ready, ...action.payload as Ready } };
 
     default:
       return { ...state };

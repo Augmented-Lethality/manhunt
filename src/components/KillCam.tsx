@@ -91,8 +91,7 @@ const KillCam: React.FC = () => {
   // whenever targetCounter is updated, if it's at 10, navigate the users
   // NEED TO CHANGE BACK FOR PRODUCTION
   useEffect(() => {
-    if (targetCounter === 100) {
-      console.log('made it to 1')
+    if (targetCounter === 10) {
       AddGameStats(user);
       UpdateGameStatus(user, 'complete')
     }
