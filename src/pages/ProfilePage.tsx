@@ -24,6 +24,11 @@ const ProfilePage: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
 
+  const winLossRatio =
+    userData?.gamesPlayed && userData?.gamesWon
+      ? userData.gamesWon / userData.gamesPlayed
+      : 0;
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -74,12 +79,13 @@ const ProfilePage: React.FC = () => {
       <Main>
         <div className='content__body'>
           <div className='profile-container'>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center'}}>
               {user.picture ? (
                 <img
                   src={user?.picture}
                   className='profile__avatar'
-                  style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
+                  style={{ maxWidth: '100%', height: 'auto', borderRadius: '50%' }}
+                  // style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
                 />
               ) : (
                 <h1 className='alt-user-pic-large'>{user.name?.slice(0, 1)}</h1>
@@ -92,12 +98,19 @@ const ProfilePage: React.FC = () => {
                   alignItems: 'start',
                 }}
               >
-                <h6 className='profile__title'>{user?.name}</h6>
+                <h2 className='profile__title'>{user?.name}</h2>
                 <span className='profile__description'>
                   {user?.email}
                   {/* <ButtonToUpdateEmail /> */}
                 </span>
               </div>
+            </div>
+           
+            <div className='profile__details'>
+              <h4>Games Played: {userData?.gamesPlayed}</h4>
+              <h4>Games Won: {userData?.gamesWon}</h4>
+              <h4>Kills Confirmed: {userData?.killsConfirmed}</h4>
+              <h4>Win / Loss Ratio: {winLossRatio}</h4>
             </div>
             {userData?.facialDescriptions ? (
               <div className='profile_verification'>
@@ -111,10 +124,10 @@ const ProfilePage: React.FC = () => {
               </div>
             ) : (
               <div className='profile_verification'>
-                <h5>
+                <h4>
                   Citizen has not been processed by the CorpoReality Police.
-                </h5>
-                <h5>Please send in Biodata to participate in SOCIETY™.</h5>
+                </h4>
+                <h4>Please send in Biodata to participate in SOCIETY™.</h4>
                 <button
                   style={{ background: '#6e6b8c', color: 'white' }}
                   onClick={() => setPhotoStatus('camera')}
@@ -123,15 +136,8 @@ const ProfilePage: React.FC = () => {
                 </button>
               </div>
             )}
-            <div className='profile__details'>
-              <h6>
-                Win / Loss Ratio: {userData?.gamesPlayed} / {userData?.gamesWon}{' '}
-              </h6>
-              <h6>Games Played: {userData?.gamesPlayed}</h6>
-              <h6>Games Won: {userData?.gamesWon}</h6>
-              <h6>Kills Confirmed: {userData?.killsConfirmed}</h6>
-            </div>
           </div>
+          
         </div>
       </Main>
     </Container>

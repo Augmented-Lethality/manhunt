@@ -134,6 +134,34 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     return colorMap[colorCode] || colorCode;
   };
 
+  const rotateTrophies = () => {
+    trophyRefs.current.forEach((trophy) => {
+      if (trophy) {
+        if (!trophy.userData.initialRotationSet) {
+          // Set initial rotation values
+          trophy.userData.initialRotationSet = true;
+          trophy.userData.rotationSpeed = Math.random() * 0.006; // Random speed between 0 and 0.01
+          trophy.userData.rotationDirection = Math.random() < 0.5 ? -1 : 1; // Random direction: -1 or 1
+          trophy.userData.rotationAxis = getRandomRotationAxis(); // Random rotation axis: 'x', 'y', or 'z'
+        }
+        const { rotationSpeed, rotationDirection, rotationAxis } = trophy.userData;
+        trophy.rotation[rotationAxis] += rotationSpeed * rotationDirection; // Adjust rotation speed and direction around the chosen axis
+      }
+    });
+  };
+  
+  const getRandomRotationAxis = () => {
+    const axes = ['x', 'y', 'z'];
+    return axes[Math.floor(Math.random() * axes.length)];
+  };
+  
+  
+  
+
+  const onFrame = () => {
+    rotateTrophies();
+  };
+
   const handleMouseDown = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number
@@ -174,12 +202,12 @@ const SavedTrophies: React.FC<TrophyData> = () => {
       fetchUserData().then(() => setIsLoading(false));
     }
   }, [isAuthenticated]);
-  
+
   useEffect(() => {
     setIsLoading(true);
     fetchUserTrophyData()
       .then(() => {
-        setIsLoading(false); 
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching user trophy data:', error);
@@ -193,10 +221,8 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const trophiesToDisplay = userTrophyData.slice(startIndex, endIndex);
   const totalPages = Math.ceil(userTrophyData.length / trophiesPerPage);
 
-  
   return (
     <div>
-      <h1>Recent Trophies </h1>
       {trophiesToDisplay
         .slice(0)
         .reverse()
@@ -207,7 +233,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               onMouseUp={handleMouseUp}
               onMouseMove={(e) => handleMouseMove(e, index)}
             >
-              <Canvas>
+              <Canvas onCreated={({ gl }) => gl.setAnimationLoop(onFrame)}>
                 <ambientLight intensity={0.5} />
                 <pointLight position={[10, 10, 10]} />
                 {trophy.shape === 'box' && (
@@ -259,40 +285,55 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   </Torus>
                 )}
               </Canvas>
-            </div>
-            <div>
-              {showProps && (
-                <>
-                  <h6>Designation: {trophy.name}</h6>
-                  <h6>Report: {trophy.description}</h6>
-                  <h6>Class: {trophy.shape}</h6>
-                  <h6>Magnitude: {trophy.dimension}</h6>
-                  <h6>Chroma: {getColorName(trophy.color)}</h6>
-                  <h6>Earned on: {trophy.createdAt}</h6>
-                </>
-              )}
+
+              <details style={{ textAlign: 'center' }}>
+                <summary style={{ textAlign: 'right' }}>Details</summary>
+                <h6>Designation: {trophy.name}</h6>
+                <h6>Report: {trophy.description}</h6>
+                <h6>Class: {trophy.shape}</h6>
+                <h6>Magnitude: {trophy.dimension}</h6>
+                <h6>Chroma: {getColorName(trophy.color)}</h6>
+                <h6>Earned on: {trophy.createdAt}</h6>
+              </details>
             </div>
           </div>
         ))}
-      {(
-        <div>
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            Previous Page
-          </button>
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            Next Page
-          </button>
-        </div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'sticky',
+          bottom: 0,
+        }}
+      >
+         {totalPages > 1 && (
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+        >
+          Prev
+        </button>
       )}
+      {totalPages > 1 && (
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+        >
+          Next
+        </button>
+      )}
+    </div>
+
+    <span
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      Page {currentPage}
+    </span>
     </div>
   );
 };
