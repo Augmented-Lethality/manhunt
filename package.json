@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
-  "sideEffects": ["*.css", "*.scss"],
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
   "scripts": {
     "start": "nodemon dist/server/index.js",
     "start:prod": "dist/server/index.js",
@@ -47,6 +50,7 @@
     "react-router-dom": "^6.12.0",
     "react-switch": "^7.0.0",
     "react-webcam": "^7.1.1",
+    "reactjs-popup": "^2.0.5",
     "sequelize": "^6.32.0",
     "socket.io": "^4.6.2",
     "socket.io-client": "^4.6.2",
