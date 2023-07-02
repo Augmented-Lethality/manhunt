@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../../contexts/Socket/SocketContext';
-import { ButtonToProfile } from '../Buttons';
+import { AccessPopup } from '../Popups/AccessPopup';
 
 const CheckAccess: React.FC = () => {
   const { user } = useAuth0();
@@ -117,8 +117,10 @@ const CheckAccess: React.FC = () => {
 
   return (
     <div>
+      {locationAccessError && (
+        <AccessPopup content={`Location Access Please! Make Sure Your Browser Has Access to Your Location. Or... I Won't Let You Play.`} accessFunction={checkLocationAccess} />
+      )}
       {/* {videoAccessError && <button onClick={checkVideoAccess}>Allow Camera Access</button>}
-      {locationAccessError && <strong>Error: Can't Access Location. Ensure Your Browser Can Access Your Location</strong>}
       {orientationAccessError && <button onClick={checkOrientationAccess}>Allow Device Orientation Access</button>}
       {bioDataError &&
         <div>

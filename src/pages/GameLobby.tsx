@@ -63,8 +63,6 @@ const GameLobby: React.FC<{}> = () => {
           <WhosHunting />
           <HostControls />
         </ControlsContainer>
-        <AccessPopup content="HAHAHHAHA" />
-
         <PlayersContainer>
           <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>Players • {users.length}</h1>
           <UserListItem player={users[0]} />

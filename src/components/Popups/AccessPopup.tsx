@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Popup from 'reactjs-popup';
 
 interface PopupProps {
   content: string;
+  accessFunction: () => void;
 }
 
-export const AccessPopup: React.FC<PopupProps> = ({ content }) => {
+export const AccessPopup: React.FC<PopupProps> = ({ content, accessFunction }) => {
+  const [message, setMessage] = useState('');
+
   const handleRefresh = () => {
     window.location.reload();
   };
 
   const handleAccessButton = () => {
-    console.log('not funny');
+    accessFunction();
   };
+
+  if (content.includes('Camera')) {
+    setMessage(content);
+  }
 
   return (
     <Popup
@@ -36,6 +43,7 @@ export const AccessPopup: React.FC<PopupProps> = ({ content }) => {
         <div className="button-container">
           <button onClick={handleRefresh}>Refresh Page</button>
           <button onClick={handleAccessButton}>Button For Access</button>
+
         </div>
       </div>
     </Popup>
