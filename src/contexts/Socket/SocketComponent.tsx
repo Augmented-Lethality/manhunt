@@ -4,8 +4,6 @@ import { SocketContextProvider, SocketReducer, defaultSocketContextState } from 
 import { useAuth0 } from '@auth0/auth0-react';
 import { User, Ready } from './SocketContext';
 import PageLoader from '../../components/Loading';
-
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -89,30 +87,31 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       // alert('Unable to connect to web socket')
     })
 
-    // updating games
-
+    // updating games list, user is not in game if they see this
     socket.on('update_games', async (games) => {
       console.log('updating games state:', games)
       SocketDispatch({ type: 'update_games', payload: games });
     });
 
-    socket.on('update_ready', async (ready) => {
-      console.log('updating ready state:', ready)
-      SocketDispatch({ type: 'update_ready', payload: ready });
-    });
-
+    // updating users not in game
     socket.on('update_users', async (users) => {
       console.log('updating users state:', users)
       SocketDispatch({ type: 'update_users', payload: users });
     });
 
-    // updating users in lobby
+    // updating the ready status of the users in the game
+    socket.on('update_ready', async (ready) => {
+      console.log('updating ready state:', ready)
+      SocketDispatch({ type: 'update_ready', payload: ready });
+    });
 
+    // updating users in game lobby
     socket.on('update_lobby_users', async (users) => {
       console.log('updating lobby users state:', users)
       SocketDispatch({ type: 'update_lobby_users', payload: users });
     });
 
+    // updating the games in the lobby (should only be one, but different details about it change)
     socket.on('update_lobby_games', async (games) => {
       console.log('updating lobby games state:', games)
       SocketDispatch({ type: 'update_lobby_games', payload: games });
@@ -138,22 +137,20 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
     // update locations event
     socket.on('update_locations', async (locations) => {
-
+      // making sure the locations are not strings, but rather numbers with decimals
       const correctLocations = locations.map(location => ({
         ...location,
         latitude: parseFloat(location.latitude),
         longitude: parseFloat(location.longitude)
       }));
       console.log('updating locations state:', correctLocations)
-
-
       SocketDispatch({ type: 'update_locations', payload: correctLocations });
     });
 
-
-    socket.on('update_ready', async (ready) => {
-      console.log('updating ready state:', ready)
-      SocketDispatch({ type: 'update_ready', payload: ready });
+    // redirects the user to a certain endpoint
+    socket.on('redirect', async (endpoint) => {
+      console.log('redirecting user to', endpoint)
+      navigate(endpoint);
     });
   }
 
@@ -164,10 +161,17 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
 
     socket.on('handshake_reply', (response) => {
-      setLoading(false);
+
+      // sending the player information back if success, if failure it sends a string
+      if (typeof response !== 'string') {
+        console.log('updating player state!')
+        SocketDispatch({ type: 'update_player', payload: response });
+        setLoading(false);
+      } else {
+        console.error('Could not create a connection between client and server! Help!')
+      }
     });
   };
-
 
   // sending createRoom to the server
   const CreateGame = () => {
@@ -177,7 +181,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   const AddLocation = (user: any, gameId: string, longitude: number, latitude: number) => {
     socket.emit('add_location', user, gameId, longitude, latitude, () => {
-      console.log('adding location');
     });
   };
 
@@ -186,11 +189,9 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     // console.info('Client wants to join a game...');
 
     socket.emit('join_game', host, user, () => {
-      console.log('joining game')
     });
 
     socket.emit('join_lobby', host, user, () => {
-      console.log('joining lobby')
     });
   };
 
@@ -200,8 +201,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     });
   };
 
-  const Redirect = (host: string, endpoint: string) => {
-    socket.emit('nav_to_endpoint', host, endpoint);
+  const Redirect = (endpoint: string) => {
+    socket.emit('nav_to_endpoint', endpoint);
   };
 
   const SetHunted = (victim: User) => {
