@@ -3,7 +3,7 @@ import React, { useEffect, useState, lazy, Suspense } from 'react';
 import axios from 'axios';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
 import { Container } from '../styles/Container';
-import { Header, StyledHeader } from '../styles/Header';
+import { Header, StyledHeader, Footer } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
 
@@ -50,14 +50,21 @@ const ProfilePage: React.FC = () => {
   if (photoStatus === 'camera') {
     return (
       <Container>
-        <StyledHeader>
-          <h1>BioData</h1>
-          <XCircle
-            className='react-icon'
-            onClick={() => {
-              setPhotoStatus('profile');
-            }}
-          />
+        <StyledHeader style={{display: 'flex', flexDirection:'column'}}>
+          <div style={{display: 'flex', justifyContent:'space-between'}}>
+            <h2 style={{fontSize: '1.2rem'}}>BioData Collection Process</h2>
+            <XCircle
+              className='react-icon'
+              onClick={() => {
+                setPhotoStatus('profile');
+              }}
+            />
+          </div>
+          <h6>
+            We don't save the photo, we just use it to collect 
+            information on the shape of your face.
+          </h6>
+
         </StyledHeader>
         <CreateFaceDescriptions
           setPhotoStatus={setPhotoStatus}
@@ -65,6 +72,7 @@ const ProfilePage: React.FC = () => {
           userID={user?.sub}
           setUser={setUserData}
         />
+        <Footer/>
       </Container>
     );
   }
