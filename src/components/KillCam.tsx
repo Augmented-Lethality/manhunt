@@ -11,19 +11,20 @@ import {
   loadFaceLandmarkModel,
   loadFaceRecognitionModel,
   LabeledFaceDescriptors
-
 } from 'face-api.js';
 import { useWebcam } from '../contexts/WebcamProvider';
 import TargetRecognition from './KillProgress';
 import { useAuth0 } from "@auth0/auth0-react";
 import SocketContext from '../contexts/Socket/SocketContext';
 
+interface KillCamProps {
+  setImg?: (img: ImageData | null) => void;
+}
 
-const KillCam: React.FC = () => {
+const KillCam: React.FC<KillCamProps> = (setImg) => {
   const webcamContext = useWebcam();
   const webcamRef = webcamContext?.webcamRef;
   const videoStarted = webcamContext?.videoStarted;
-  const navigate = useNavigate();
   const videoHeight = window.innerHeight - 196;
   const videoWidth = window.innerWidth;
   const displaySize = { width: videoWidth, height: videoHeight };
