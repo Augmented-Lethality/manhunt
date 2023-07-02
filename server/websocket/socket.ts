@@ -70,15 +70,18 @@ export class ServerSocket {
 
     // client is asking to make a socket connection to the server, also known as a handshake
     socket.on('handshake', async (user) => {
+      console.log(user)
+
+      let player = null;
 
       try {
         // if the user exists, update the new socket connection
         const existingUser = await this.FindUserByAuthId(user.sub);
         if (existingUser) {
+
+          player = existingUser;
           // If the user exists, update the socket.id
           await this.UserUpdate('socketId', socket.id, 'authId', user.sub);
-          // console.log('updated db user connection')
-
 
           // now see if they were part of the game
           const existingGame = await this.FindGameByGameId(existingUser.gameId)
@@ -92,24 +95,42 @@ export class ServerSocket {
             this.EmitLobbyUpdates(existingUser.gameId);
 
           } else {
-            if (existingUser.gameId.length > 0 || existingUser.gameId !== null) {
-              await this.UserUpdate('gameId', '', 'authId', user.sub);
-
-            } else if (existingUser.gameId === null) {
-              await this.UserUpdate('gameId', '', 'authId', user.sub);
-            }
+            await this.UserUpdate('gameId', '', 'authId', user.sub);
             socket.join('users');
           }
 
+
+        } else {
+          console.log('new user, adding them to the database first');
+
+          let username = user.name;
+
+          if (user.name.includes('@')) {
+            username = user.nickname;
+          }
+
+          const newUser = await User.create({   // kept old post request on homepage the same, just adding socket id directly
+            username: username,
+            email: user?.email,
+            authId: user?.sub,
+            image: user?.picture || null,
+            largeFont: false,
+            socketId: socket.id,
+          })
+
+          player = newUser.dataValues;
+
+          socket.join('users');
         }
+        // send new user to all connected users to update their state
+        this.EmitGeneralUpdates()
+        socket.emit('handshake_reply', player);
+
 
       } catch (err) {
-        console.error(err);
+        console.error('the user is null, are they not?', err);
+        socket.emit('handshake_reply', 'fail');
       }
-
-      // send new user to all connected users to update their state
-      this.EmitGeneralUpdates()
-      socket.emit('handshake_reply', 'success');
 
     });
 
@@ -470,6 +491,14 @@ export class ServerSocket {
 
     });
 
+    socket.on('nav_to_endpoint', async (endpoint) => {
+      if (socket.rooms.has('users')) {
+        // if (endpoint === '/onthehunt' || endpoint === '/gameover' || endpoint === '/lobby') {
+        if (endpoint === '/onthehunt' || endpoint === '/gameover') {
+          socket.emit('redirect', '/home');
+        }
+      }
+    });
 
 
     // when the disconnect occurs
@@ -522,7 +551,9 @@ export class ServerSocket {
 
   // HELPER FUNCTIONS
 
-  // sequelize queries
+  ///// Sequelize Queries ////
+
+  // user
   FindUserByAuthId = async (authId: string) => {
     const existingUser = await User.findOne({ where: { authId } });
     return existingUser?.dataValues;
@@ -537,6 +568,7 @@ export class ServerSocket {
     await User.update({ [newKey]: newValue }, { where: { [searchKey]: searchValue } });
   }
 
+  // game
   GameUpdate = async (newKey: string, newValue: string, searchKey: string, searchValue: string) => {
     await Game.update({ [newKey]: newValue }, { where: { [searchKey]: searchValue } });
   }
@@ -554,6 +586,7 @@ export class ServerSocket {
     const existingGame = await Game.findOne({ where: { gameId } });
     return existingGame?.dataValues;
   }
+  ///////////////////////////
 
   // socket emits
   EmitLobbyUpdates = async (gameId: string) => {

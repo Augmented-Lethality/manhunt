@@ -90,14 +90,7 @@ export const LargeButton: React.FC<ButtonProps> = ({
 };
 
 export const ButtonToHome: React.FC = () => {
-  const { LeaveGame } = useContext(SocketContext);
-  const { user } = useAuth0();
-
-  const handleHome = () => {
-    LeaveGame(user);
-  }
-
-  return <Button label='Home' route='/home' onClick={handleHome} />;
+  return <Button label='Home' route='/home' />;
 };
 
 export const ButtonToGame: React.FC = () => {
@@ -117,7 +110,7 @@ export const ButtonToProfile: React.FC = () => {
 };
 
 export const ButtonToFindGame: React.FC = () => {
-  return <LargeButton label='Find a Game' route='/findGame' />;
+  return <LargeButton label='View The Contract Board' route='/findGame' />;
 };
 
 export const ButtonToJoinLobby: React.FC = () => {
@@ -126,7 +119,7 @@ export const ButtonToJoinLobby: React.FC = () => {
 
 export const ButtonToHostGame: React.FC = () => {
   const { CreateGame } = useContext(SocketContext);
-  return <LargeButton label='Host a Game' route='/lobby' onClick={CreateGame} />;
+  return <LargeButton label='Host a Contract with Corpoverse' route='/lobby' onClick={CreateGame} />;
 };
 
 export const LogoutButton = () => {
