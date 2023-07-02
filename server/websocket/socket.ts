@@ -124,11 +124,11 @@ export class ServerSocket {
         } else {
           const gameId = v4();
           const hostName = user.name;
-          await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub], hunted: '' });
+          const newGame = await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub], hunted: '' });
           await this.UserUpdate('gameId', gameId, 'authId', user.sub);
 
           socket.join(gameId);
-          this.EmitLobbyUpdates(gameId);
+          this.EmitLobbyUpdates(newGame.dataValues.gameId);
 
         }
         // send new user to all connected users to update their games lists
@@ -555,9 +555,13 @@ export class ServerSocket {
   }
 
   // socket emits
-  EmitLobbyUpdates = (gameId: string) => {
-    this.io.to(gameId).emit('update_lobby_users');
-    this.io.to(gameId).emit('update_lobby_games');
+  EmitLobbyUpdates = async (gameId: string) => {
+
+    const users = await User.findAll({ where: { gameId: gameId } })
+    this.io.to(gameId).emit('update_lobby_users', users);
+
+    const games = await Game.findAll({ where: { gameId: gameId } });
+    this.io.to(gameId).emit('update_lobby_games', games);
   }
 
   EmitGeneralUpdates = async () => {

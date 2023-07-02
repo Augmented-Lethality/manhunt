@@ -95,16 +95,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       console.log('updating games state:', games)
       SocketDispatch({ type: 'update_games', payload: games });
     });
-    // socket.on('update_games', async () => {
-    //   try {
-    //     const response = await axios.get('/games');
-    //     const games = response.data;
-    //     console.log('updating game state', games)
-    //     SocketDispatch({ type: 'update_games', payload: games });
-    //   } catch (error) {
-    //     console.error('Error fetching games:', error);
-    //   }
-    // });
 
     socket.on('update_ready', async (ready) => {
       console.log('updating ready state:', ready)
@@ -116,61 +106,77 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       SocketDispatch({ type: 'update_users', payload: users });
     });
 
-    // updating users
-    // socket.on('update_users', async () => {
+    // updating users in lobby
+
+    socket.on('update_lobby_users', async (users) => {
+      console.log('updating lobby users state:', users)
+      SocketDispatch({ type: 'update_lobby_users', payload: users });
+    });
+
+    // socket.on('update_lobby_users', async () => {
     //   try {
-    //     const response = await axios.get('/users/sockets');
+    //     const response = await axios.get(`/users/games/${user?.sub}`);
     //     const users = response.data;
-    //     console.log('updating users state:', users)
-    //     SocketDispatch({ type: 'update_users', payload: users });
+    //     console.log('updating lobby users state:', users)
+    //     SocketDispatch({ type: 'update_lobby_users', payload: users });
+
     //   } catch (error) {
-    //     console.error('Error fetching users:', error);
+    //     console.error('Error fetching lobby users:', error);
     //   }
     // });
 
-    // updating users in lobby
-    socket.on('update_lobby_users', async () => {
-      try {
-        const response = await axios.get(`/users/games/${user?.sub}`);
-        const users = response.data;
-        console.log('updating lobby users state:', users)
-        SocketDispatch({ type: 'update_lobby_users', payload: users });
+    socket.on('update_lobby_games', async (games) => {
+      console.log('updating lobby games state:', games)
+      SocketDispatch({ type: 'update_lobby_games', payload: games });
 
-      } catch (error) {
-        console.error('Error fetching lobby users:', error);
+      // redirecting the user based on the lobby games state
+      const redirect = () => {
+        if (games[0].status === 'lobby') {
+          navigate('/lobby');
+        } else if (games[0].status === 'complete') {
+          navigate('/gameover');
+        } else if (games[0].status === 'ongoing') {
+          navigate('/onthehunt');
+        } else if (games[0].users.length <= 0) {
+          navigate('/home');
+          LeaveGame(user);
+        }
+      }
+
+      if (games.length > 0) {
+        redirect();
       }
     });
 
     // updating games in lobby
-    socket.on('update_lobby_games', async () => {
-      try {
-        const response = await axios.get(`/games/user/${user?.sub}`);
-        const games = response.data;
-        console.log('updating lobby games state:', games)
-        SocketDispatch({ type: 'update_lobby_games', payload: games });
+    // socket.on('update_lobby_games', async () => {
+    //   try {
+    //     const response = await axios.get(`/games/user/${user?.sub}`);
+    //     const games = response.data;
+    //     console.log('updating lobby games state:', games)
+    //     SocketDispatch({ type: 'update_lobby_games', payload: games });
 
-        // redirecting the user based on the lobby games state
-        const redirect = () => {
-          if (games[0].status === 'lobby') {
-            navigate('/lobby');
-          } else if (games[0].status === 'complete') {
-            navigate('/gameover');
-          } else if (games[0].status === 'ongoing') {
-            navigate('/onthehunt');
-          } else if (games[0].users.length <= 0) { // edit this to handle only user in the game, add a win
-            navigate('/home');
-            LeaveGame(user);
-          }
-        }
+    // // redirecting the user based on the lobby games state
+    // const redirect = () => {
+    //   if (games[0].status === 'lobby') {
+    //     navigate('/lobby');
+    //   } else if (games[0].status === 'complete') {
+    //     navigate('/gameover');
+    //   } else if (games[0].status === 'ongoing') {
+    //     navigate('/onthehunt');
+    //   } else if (games[0].users.length <= 0) { // edit this to handle only user in the game, add a win
+    //     navigate('/home');
+    //     LeaveGame(user);
+    //   }
+    // }
 
-        if (games.length > 0) {
-          redirect();
-
-        }
-      } catch (error) {
-        console.error('Error fetching lobby games:', error);
-      }
-    });
+    // if (games.length > 0) {
+    //   redirect();
+    // }
+    //   } catch (error) {
+    //     console.error('Error fetching lobby games:', error);
+    //   }
+    // });
 
     // update locations event
     socket.on('update_locations', async () => {
@@ -212,7 +218,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // sending createRoom to the server
   const CreateGame = () => {
     socket.emit('create_game', user, () => {
-      // console.log('creating game client side');
     });
   }
 
