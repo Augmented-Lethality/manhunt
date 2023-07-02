@@ -3,15 +3,13 @@ import { useWebcam } from '../contexts/WebcamProvider';
 import React, { useState, useCallback } from 'react';
 
 interface CapturePhotoProps {
-  img: HTMLImageElement | null;
   setImg: (img: HTMLImageElement | null) => void;
 }
 
 
-const CapturePhoto: React.FC<CapturePhotoProps> = ({img, setImg}) => {
+const CapturePhoto: React.FC<CapturePhotoProps> = ({setImg}) => {
   const webcamContext = useWebcam();
   const webcamRef = webcamContext?.webcamRef;
-  
 
   const capture = useCallback(() => {
     const screenShot = webcamRef?.current?.getScreenshot();
@@ -25,12 +23,6 @@ const CapturePhoto: React.FC<CapturePhotoProps> = ({img, setImg}) => {
   }, [webcamRef, setImg]);
 
   return (
-    <div style={{
-    position:'absolute',
-    top: 0,
-    left: 0,
-    height: '100vh',
-    width: '100vw' }}>
       <button
         onClick={capture}
         style={{
@@ -47,7 +39,6 @@ const CapturePhoto: React.FC<CapturePhotoProps> = ({img, setImg}) => {
           height: '100px',
         }}
       />
-    </div>
   );
 };
 

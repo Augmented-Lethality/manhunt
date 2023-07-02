@@ -8,14 +8,10 @@ import { WebcamChaseProvider } from '../contexts/WebcamChaseProvider';
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
 import Countdown from '../components/Countdown';
-import DropDownMenu from '../components/DropDownMenu';
 import { Container } from '../styles/Container';
 import { GameHeader, Footer } from '../styles/Header';
 import { Main } from '../styles/Main';
-import Crosshair from 'react-feather/dist/icons/crosshair';
-import Home from 'react-feather/dist/icons/home';
-import Eye from 'react-feather/dist/icons/eye';
-
+import {Crosshair , Eye } from 'react-feather';
 
 const GamePage: React.FC = () => {
 
