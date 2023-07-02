@@ -23,32 +23,32 @@ const HomePage = () => {
   const [fontSize, setFontSize] = useFontSize();
 
 
-  useEffect(() => {
-    const postUserData = async () => {
-      try {
-        // Check if the user exists by sending a POST request
-        const response = await axios.post<UserData>('/Users', {
-          username: user?.name,
-          email: user?.email,
-          authId: user?.sub,
-          image: user?.picture || null,
-          largeFont: false
-          // Include other user data properties you want to save
-        });
-        setUserData(response.data);
-        //setLargeFontSetting
-        if (response.data.largeFont) {
-          setFontSize(20);
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const postUserData = async () => {
+  //     try {
+  //       // Check if the user exists by sending a POST request
+  //       const response = await axios.post<UserData>('/Users', {
+  //         username: user?.name,
+  //         email: user?.email,
+  //         authId: user?.sub,
+  //         image: user?.picture || null,
+  //         largeFont: false
+  //         // Include other user data properties you want to save
+  //       });
+  //       setUserData(response.data);
+  //       //setLargeFontSetting
+  //       if (response.data.largeFont) {
+  //         setFontSize(20);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching user data:', error);
+  //     }
+  //   };
 
-    if (isAuthenticated && user) {
-      postUserData();
-    }
-  }, [user, isAuthenticated]);
+  //   if (isAuthenticated && user) {
+  //     postUserData();
+  //   }
+  // }, [user, isAuthenticated]);
 
   if (!isAuthenticated || !user) {
     return null;
