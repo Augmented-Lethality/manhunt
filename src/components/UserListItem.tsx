@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+
+import SocketContext, { User } from '../contexts/Socket/SocketContext';
+import CheckAccess from './GameLobby/CheckAccess';
+import AccessReady from './GameLobby/AccessReady';
 
 const UserContainer = styled.div`
   display: flex;
@@ -19,26 +23,31 @@ const Username = styled.p`
   color: #000;
 `;
 
-interface UserListItemProps {
-  user: {
-    image: string;
-    username: string;
-  };
-}
 
-const UserListItem: React.FC<UserListItemProps> = ({ user }) => {
+const UserListItem: React.FC<{ player: User }> = ({ player }) => {
   const navigate = useNavigate();
-  
+
+  const { ready } = useContext(SocketContext).SocketState;
+  const [errors, setErrors] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (ready[player.authId]) {
+      setErrors(ready[player.authId]);
+    }
+  }, [ready, player.authId]);
+
   return (
-    <UserContainer onClick={() => navigate(`/profile/${user.username}`)}>
-      {user.image ? (
-        <UserImage src={user.image} alt={user.username} />
+    <UserContainer onClick={() => navigate(`/profile/${player.username}`)}>
+      {player.image ? (
+        <UserImage src={player.image} alt={player.username} />
       ) : (
         <h1 className='alt-user-pic'>
-          <p>{user.username?.slice(0, 1)}</p>
+          <p>{player.username?.slice(0, 1)}</p>
         </h1>
       )}
-      <Username>{user.username}</Username>
+      <Username>{player.username}</Username><br />
+      <AccessReady player={player} errors={errors} />
+      <CheckAccess />
     </UserContainer>
   );
 };

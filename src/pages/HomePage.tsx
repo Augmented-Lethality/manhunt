@@ -8,6 +8,8 @@ import { HomeHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { useFontSize } from '../contexts/FontSize';
 
+import { useNavigate, useLocation } from 'react-router-dom';
+
 type UserData = {
   username: string;
   email: string;
@@ -21,6 +23,12 @@ const HomePage = () => {
   const { users } = useContext(SocketContext).SocketState;
   const [userData, setUserData] = useState<UserData | null>(null);
   const [fontSize, setFontSize] = useFontSize();
+
+  const location = useLocation();
+  const currentEndpoint = location.pathname;
+
+  console.log('Current endpoint:', currentEndpoint);
+
 
   useEffect(() => {
     const postUserData = async () => {

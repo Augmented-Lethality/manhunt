@@ -20,15 +20,20 @@ const HostControls: React.FunctionComponent = () => {
     }
   }, [games]);
 
+  // if any of the ready objects don't have a value of 'ok', can't start the game
   useEffect(() => {
-    const hasErrors = Object.values(ready).some((errors: string[]) => errors.length > 0);
+    const hasErrors = Object.values(ready).some((errors: string[]) => !errors.includes('ok'));
     setHasReadyErrors(hasErrors);
   }, [ready]);
 
   return (
     <div>
-      {showControls && (games[0].hunted.length > 0 && !hasReadyErrors && games[0].timeConstraints && <ButtonToGame />)}
-      {showControls && <TimerInput />}
+      {showControls && (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <TimerInput />
+          {games[0].hunted.length > 0 && !hasReadyErrors && games[0].timeConstraints && <ButtonToGame />}
+        </div>
+      )}
     </div>
   );
 };

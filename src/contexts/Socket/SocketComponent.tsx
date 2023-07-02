@@ -90,91 +90,71 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     })
 
     // updating games
-    socket.on('update_games', async () => {
-      try {
-        const response = await axios.get('/games');
-        const games = response.data;
-        console.log('updating game state', games)
-        SocketDispatch({ type: 'update_games', payload: games });
-      } catch (error) {
-        console.error('Error fetching games:', error);
-      }
+
+    socket.on('update_games', async (games) => {
+      console.log('updating games state:', games)
+      SocketDispatch({ type: 'update_games', payload: games });
     });
 
-    // updating users
-    socket.on('update_users', async () => {
-      try {
-        const response = await axios.get('/users/sockets');
-        const users = response.data;
-        console.log('updating users state:', users)
-        SocketDispatch({ type: 'update_users', payload: users });
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
+    socket.on('update_ready', async (ready) => {
+      console.log('updating ready state:', ready)
+      SocketDispatch({ type: 'update_ready', payload: ready });
+    });
+
+    socket.on('update_users', async (users) => {
+      console.log('updating users state:', users)
+      SocketDispatch({ type: 'update_users', payload: users });
     });
 
     // updating users in lobby
-    socket.on('update_lobby_users', async () => {
-      try {
-        const response = await axios.get(`/users/games/${user?.sub}`);
-        const users = response.data;
-        console.log('updating lobby users state:', users)
-        SocketDispatch({ type: 'update_lobby_users', payload: users });
 
-      } catch (error) {
-        console.error('Error fetching lobby users:', error);
-      }
+    socket.on('update_lobby_users', async (users) => {
+      console.log('updating lobby users state:', users)
+      SocketDispatch({ type: 'update_lobby_users', payload: users });
     });
 
-    // updating games in lobby
-    socket.on('update_lobby_games', async () => {
-      try {
-        const response = await axios.get(`/games/user/${user?.sub}`);
-        const games = response.data;
-        console.log('updating lobby games state:', games)
-        SocketDispatch({ type: 'update_lobby_games', payload: games });
+    socket.on('update_lobby_games', async (games) => {
+      console.log('updating lobby games state:', games)
+      SocketDispatch({ type: 'update_lobby_games', payload: games });
 
-        // redirecting the user based on the lobby games state
-        const redirect = () => {
-          if (games[0].status === 'lobby') {
-            navigate('/lobby');
-          } else if (games[0].status === 'complete') {
-            navigate('/gameover');
-          } else if (games[0].status === 'ongoing') {
-            navigate('/onthehunt');
-          } else if (games[0].users.length <= 0) { // edit this to handle only user in the game, add a win
-            navigate('/home');
-            LeaveGame(user);
-          }
+      // redirecting the user based on the lobby games state
+      const redirect = () => {
+        if (games[0].status === 'lobby') {
+          navigate('/lobby');
+        } else if (games[0].status === 'complete') {
+          navigate('/gameover');
+        } else if (games[0].status === 'ongoing') {
+          navigate('/onthehunt');
+        } else if (games[0].users.length <= 0) {
+          navigate('/home');
+          LeaveGame(user);
         }
+      }
 
-        if (games.length > 0) {
-          redirect();
-
-        }
-      } catch (error) {
-        console.error('Error fetching lobby games:', error);
+      if (games.length > 0) {
+        redirect();
       }
     });
 
     // update locations event
-    socket.on('update_locations', async () => {
-      try {
-        const response = await axios.get(`/locations/${user?.sub}`);
-        const locations = response.data.map(location => ({
-          ...location,
-          latitude: parseFloat(location.latitude),
-          longitude: parseFloat(location.longitude)
-        }));
-        console.log('updating locations state:', locations)
-        SocketDispatch({ type: 'update_locations', payload: locations });
-      } catch (error) {
-        console.error('Error fetching locations:', error);
-      }
+    socket.on('update_locations', async (locations) => {
+
+      const correctLocations = locations.map(location => ({
+        ...location,
+        latitude: parseFloat(location.latitude),
+        longitude: parseFloat(location.longitude)
+      }));
+      console.log('updating locations state:', correctLocations)
+
+
+      SocketDispatch({ type: 'update_locations', payload: correctLocations });
     });
 
 
-
+    socket.on('update_ready', async (ready) => {
+      console.log('updating ready state:', ready)
+      SocketDispatch({ type: 'update_ready', payload: ready });
+    });
   }
 
   // sending the handshake to the server, meaning it's trying to establish a connection to the server using websocket
@@ -192,7 +172,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // sending createRoom to the server
   const CreateGame = () => {
     socket.emit('create_game', user, () => {
-      // console.log('creating game client side');
     });
   }
 
@@ -217,15 +196,11 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // sending leave game to the server
   const LeaveGame = (user: any) => {
-
     socket.emit('leave_game', user, () => {
-      console.log('leaving game')
     });
-
   };
 
   const Redirect = (host: string, endpoint: string) => {
-    // console.info(`Redirect from ${host} to ${endpoint}`);
     socket.emit('nav_to_endpoint', host, endpoint);
   };
 
@@ -241,10 +216,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.emit('game_stats', user);
   }
 
-  // local storage of Ready Status
   const UpdateReady = (ready: Ready) => {
-    SocketDispatch({ type: 'update_ready', payload: ready });
-    socket.emit('update_ready', ready);
+    socket.emit('update_ready_state', ready);
   }
 
   const AddGameDuration = (time: number, user: any) => {
