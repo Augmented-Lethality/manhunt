@@ -43,7 +43,8 @@ const App = () => {
         element={
           <SocketComponent>
             <AuthenticationGuard component={HomePage} />
-          </SocketComponent>}
+          </SocketComponent>
+        }
       />
       <Route
         path="/findGame"

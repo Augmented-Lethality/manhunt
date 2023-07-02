@@ -18,7 +18,7 @@ export const StyledHeader = styled.header`
 
 const Crosshairs = () => {
   const scale = window.innerWidth / 600;
-  
+
   return (
     <svg xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -45,34 +45,32 @@ const Crosshairs = () => {
 const LogoWithCrossHairs = () => {
   const navigate = useNavigate();
   const { user } = useAuth0();
-  const { LeaveGame } = useContext(SocketContext);
 
   const handleHome = () => {
-    LeaveGame(user);
     navigate('/home');
   }
 
   const fontSize = window.innerWidth > 750 ? '55px' : '7vw'
 
   return (
-    <div style={{overflow:'hidden', height:'132px', width:'100vw', position: 'absolute', top:0, left:0, pointerEvents:'none'}}>
+    <div style={{ overflow: 'hidden', height: '132px', width: '100vw', position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
       <Crosshairs />
       <div style={{
         position: 'absolute',
         top: '55%',
         left: '15%',
         transform: 'translate(-50%, -50%)',
-        display:'flex',
-        flexDirection:'column',
+        display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent:'center'
+        justifyContent: 'center'
       }}>
         <h1
-          style={{fontSize:fontSize, margin: 0, pointerEvents:'auto'}}
+          style={{ fontSize: fontSize, margin: 0, pointerEvents: 'auto' }}
           className='logo'
           onClick={handleHome}>MAN</h1>
         <h1
-          style={{fontSize:fontSize, margin: 0, pointerEvents:'auto'}}
+          style={{ fontSize: fontSize, margin: 0, pointerEvents: 'auto' }}
           className='logo'
           onClick={handleHome}>HUNT</h1>
       </div>
@@ -93,21 +91,21 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
   return (
     <StyledHeader>
       <LogoWithCrossHairs />
-      <div style={{display:'flex', flexDirection:'column'}}>
-       <div style={{display:'flex', flexDirection:'row', justifyContent:'end'}}>
-         <img
-           src={user?.picture}
-           alt='Profile'
-           className='profile__avatar'
-           onClick={() => { navigate('/profile') }}
-           style={{ height: '3rem', borderRadius:'50%', marginRight:'10px'}}/>
-         <DropDownMenu page={page}/>
-       </div>
-       { (page === 'Home') 
-         ? <h3>Users Online: {users?.length}</h3>
-         : <h1>{page}</h1>
-       }
-     </div>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
+          <img
+            src={user?.picture}
+            alt='Profile'
+            className='profile__avatar'
+            onClick={() => { navigate('/profile') }}
+            style={{ height: '3rem', borderRadius: '50%', marginRight: '10px' }} />
+          <DropDownMenu page={page} />
+        </div>
+        {(page === 'Find')
+          ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
+          : <h1>{page}</h1>
+        }
+      </div>
     </StyledHeader>
   );
 }
@@ -117,7 +115,7 @@ interface GameHeaderProps {
   children?: ReactNode;
 }
 
-const leftOvalPosition = `${window.innerWidth/2}px`
+const leftOvalPosition = `${window.innerWidth / 2}px`
 const StyledOval = styled.div`
   display: flex;
   justify-content: center;
@@ -146,7 +144,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
   return (
     <StyledHeader>
       <StyledOval>{children}</StyledOval>
-      <DropDownMenu page={'Game'}/>
+      <DropDownMenu page={'Game'} />
     </StyledHeader>
   );
 }
