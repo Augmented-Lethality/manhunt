@@ -2,6 +2,7 @@ import { Server as HttpServer } from 'http';
 import { Socket, Server } from 'socket.io';
 import { v4 } from 'uuid';
 import { User, Game, Locations } from '../database/models';
+import { Op } from 'sequelize';
 
 /***** TYPESCRIPT NOTES****
 
@@ -559,9 +560,12 @@ export class ServerSocket {
     this.io.to(gameId).emit('update_lobby_games');
   }
 
-  EmitGeneralUpdates = () => {
-    this.io.to('users').emit('update_users');
+  EmitGeneralUpdates = async () => {
+    const users = await User.findAll({ where: { socketId: { [Op.and]: [{ [Op.not]: null }, { [Op.not]: '' }] } } });
+
+    this.io.to('users').emit('update_users', users);
     this.io.to('users').emit('update_games');
   }
+
 
 }

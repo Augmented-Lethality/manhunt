@@ -101,17 +101,27 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       }
     });
 
-    // updating users
-    socket.on('update_users', async () => {
-      try {
-        const response = await axios.get('/users/sockets');
-        const users = response.data;
-        console.log('updating users state:', users)
-        SocketDispatch({ type: 'update_users', payload: users });
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
+    socket.on('update_ready', async (ready) => {
+      console.log('updating ready state:', ready)
+      SocketDispatch({ type: 'update_ready', payload: ready });
     });
+
+    socket.on('update_users', async (users) => {
+      console.log('updating users state:', users)
+      SocketDispatch({ type: 'update_users', payload: users });
+    });
+
+    // updating users
+    // socket.on('update_users', async () => {
+    //   try {
+    //     const response = await axios.get('/users/sockets');
+    //     const users = response.data;
+    //     console.log('updating users state:', users)
+    //     SocketDispatch({ type: 'update_users', payload: users });
+    //   } catch (error) {
+    //     console.error('Error fetching users:', error);
+    //   }
+    // });
 
     // updating users in lobby
     socket.on('update_lobby_users', async () => {
