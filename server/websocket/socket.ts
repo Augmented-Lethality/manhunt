@@ -133,7 +133,7 @@ export class ServerSocket {
         }
         // send new user to all connected users to update their games lists
         socket.leave('users');
-        this.io.to('users').emit('update_games');
+        await this.EmitGamesUpdates();
 
       } catch (err) {
         console.log(err);
@@ -262,7 +262,10 @@ export class ServerSocket {
           await Locations.create({ authId: user.sub, gameId: gameId, longitude: longitude, latitude: latitude })
           console.log('made new location')
         }
-        this.io.to(gameId).emit('update_locations');
+
+        const locations = await Locations.findAll({ where: { authId: user.sub } });
+
+        this.io.to(gameId).emit('update_locations', locations);
       } catch (err) {
         console.log(err);
       }
@@ -279,7 +282,7 @@ export class ServerSocket {
           await this.GameUpdate('hunted', victim.authId, 'gameId', victim.gameId);
 
           console.log('hunter set');
-          this.io.to(victim.gameId).emit('update_lobby_games');
+          await this.EmitLobbyGamesUpdates(victim.gameId)
 
         } else {
           console.log('no game like that exists')
@@ -297,9 +300,7 @@ export class ServerSocket {
         const game = await this.FindGameByGameId(existingUser.gameId)
         if (game) {
           await this.GameUpdate('status', status, 'gameId', existingUser?.gameId);
-
-          console.log('game status updated to:', status);
-          this.io.to(game.gameId).emit('update_lobby_games');
+          await this.EmitLobbyGamesUpdates(game.gameId)
 
         } else {
           console.log('no game like that exists')
@@ -335,7 +336,8 @@ export class ServerSocket {
             killsConfirmed: existingUser?.killsConfirmed + 1,
             gamesPlayed: existingUser?.gamesPlayed + 1,
           }, { where: { authId: user.sub } });
-          this.io.to(game.gameId).emit('update_lobby_games');
+
+          await this.EmitLobbyGamesUpdates(game.gameId)
 
         } else {
           console.log('no game like that exists')
@@ -439,9 +441,8 @@ export class ServerSocket {
         const existingUser = await this.FindUserByAuthId(user.sub);
         const game = await this.FindGameByGameId(existingUser.gameId)
         if (game) {
-          await this.GameUpdate('timeConstraints', time, 'gameId', existingUser?.gameId);
-          console.log('timer added');
-          this.io.to(game.gameId).emit('update_lobby_games');
+          await this.GameUpdate('timeConstraints', time, 'gameId', game.gameId);
+          await this.EmitLobbyGamesUpdates(game.gameId)
 
         } else {
           console.log('no game like that exists')
@@ -458,7 +459,7 @@ export class ServerSocket {
         const game = await this.FindGameByGameId(existingUser.gameId)
         if (game) {
           await this.GameUpdate('timeStart', time, 'gameId', existingUser?.gameId);
-          this.io.to(game.gameId).emit('update_lobby_games');
+          await this.EmitLobbyGamesUpdates(game.gameId)
 
         } else {
           console.log('no game like that exists')
@@ -556,10 +557,14 @@ export class ServerSocket {
 
   // socket emits
   EmitLobbyUpdates = async (gameId: string) => {
-
     const users = await User.findAll({ where: { gameId: gameId } })
     this.io.to(gameId).emit('update_lobby_users', users);
 
+    const games = await Game.findAll({ where: { gameId: gameId } });
+    this.io.to(gameId).emit('update_lobby_games', games);
+  }
+
+  EmitLobbyGamesUpdates = async (gameId: string) => {
     const games = await Game.findAll({ where: { gameId: gameId } });
     this.io.to(gameId).emit('update_lobby_games', games);
   }
@@ -568,6 +573,11 @@ export class ServerSocket {
     const users = await User.findAll({ where: { socketId: { [Op.and]: [{ [Op.not]: null }, { [Op.not]: '' }] } } });
     this.io.to('users').emit('update_users', users);
 
+    const games = await Game.findAll();
+    this.io.to('users').emit('update_games', games);
+  }
+
+  EmitGamesUpdates = async () => {
     const games = await Game.findAll();
     this.io.to('users').emit('update_games', games);
   }

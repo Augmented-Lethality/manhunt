@@ -43,7 +43,7 @@ const GameLobby: React.FC<{}> = () => {
     } else {
       setShowLobby(false);
     }
-    console.log('games', games, '\nusers', users)
+    // console.log('games', games, '\nusers', users)
   }, [games, users]);
 
 
