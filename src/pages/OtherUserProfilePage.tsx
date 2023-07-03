@@ -9,14 +9,14 @@ import { UserPlus } from 'react-feather';
 import Loading from '../components/Loading';
 
 type ProfileData = {
-    authId: string;
-    gamesPlayed: number;
-    gamesWon: number;
-    killsConfirmed: number;
-    image: string ;
+  authId: string;
+  gamesPlayed: number;
+  gamesWon: number;
+  killsConfirmed: number;
+  image: string;
 };
 
- const OtherUserProfilePage: React.FC = () => {
+const OtherUserProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
   const { username } = useParams();
   const [loading, setLoading] = useState(true);
@@ -38,7 +38,7 @@ type ProfileData = {
 
   const addFriend = async () => {
     try {
-      const res= await axios.post(`/friends`, {
+      const res = await axios.post(`/friends`, {
         userId: user?.sub,
         friendId: profileData?.authId,
         status: 'pending'
@@ -55,45 +55,45 @@ type ProfileData = {
     return null;
   }
 
-  if (!profileData) {
+  if (!profileData && !loading) {
     return <h1>User Not Found</h1>
   }
 
-  if(loading) {
-    return <Loading/>
+  if (loading) {
+    return <Loading />
   }
 
-   return (
-     <Container>
-       <Header page='Profile' />
-       <Main>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-              {profileData?.image ? (
-              <img
-                src={profileData?.image}
-                className='profile__avatar'
-                style={{ height: '14vh', width: '14vh', borderRadius:'50%'}}
-              />
-            ) : (
-              <h1 className='alt-user-pic-large'>
-                {username?.slice(0, 1)}
-              </h1>
-            )}
-            <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
-              <h2 className='profile__title'>{username}</h2>
-              <UserPlus className='react-icon' onClick={addFriend}/>
-            </div>
+  return (
+    <Container>
+      <Header page='Profile' />
+      <Main>
+        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px' }}>
+          {profileData?.image ? (
+            <img
+              src={profileData?.image}
+              className='profile__avatar'
+              style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
+            />
+          ) : (
+            <h1 className='alt-user-pic-large'>
+              {username?.slice(0, 1)}
+            </h1>
+          )}
+          <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
+            <h2 className='profile__title'>{username}</h2>
+            <UserPlus className='react-icon' onClick={addFriend} />
           </div>
-          <div className='profile__details'>
-            <br />
-            <br />
-            <h2>Games Played: {profileData?.gamesPlayed}</h2>
-            <h2>Games Won: {profileData?.gamesWon}</h2>
-            <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
-          </div>
+        </div>
+        <div className='profile__details' style={{ marginLeft: '20px' }}>
+          <br />
+          <br />
+          <h2>Games Played: {profileData?.gamesPlayed}</h2>
+          <h2>Games Won: {profileData?.gamesWon}</h2>
+          <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
+        </div>
       </Main>
-     </Container>
-   );
- };
+    </Container>
+  );
+};
 
 export default OtherUserProfilePage;
