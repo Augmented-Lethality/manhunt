@@ -81,19 +81,28 @@ const GameLobby: React.FC<{}> = () => {
   }, [games, users]);
 
   //starts the countdown to enter the game
+  // useEffect(() => {
+  //   //decreases the countdown by one every second
+  //   let timeoutId
+  //   if (bountyName && countdown > 0) {
+  //     timeoutId = setTimeout(() => setCountdown(countdown => countdown - 1), 1000);
+  //   }
+  //   // once the countdown reaches 0, navigate all players in lobby to game
+  //   if (!countdown) {
+  //     UpdateGameStatus(user, 'ongoing');
+  //     AddGameStart(Date.now(), user);
+  //   }
+  //   return () => clearTimeout(timeoutId);
+  // }, [bountyName, countdown])
+
   useEffect(() => {
-    //decreases the countdown by one every second
-    let timeoutId
-    if (bountyName && countdown > 0) {
-      timeoutId = setTimeout(() => setCountdown(countdown => countdown - 1), 1000);
-    }
-    // once the countdown reaches 0, navigate all players in lobby to game
-    if (!countdown) {
+    if (bountyName) {
       UpdateGameStatus(user, 'ongoing');
       AddGameStart(Date.now(), user);
+
     }
-    return () => clearTimeout(timeoutId);
-  }, [bountyName, countdown])
+
+  }, [bountyName])
 
   if (!isAuthenticated) {
     return null
