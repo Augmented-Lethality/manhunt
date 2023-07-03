@@ -140,23 +140,21 @@ const SavedTrophies: React.FC<TrophyData> = () => {
         if (!trophy.userData.initialRotationSet) {
           // Set initial rotation values
           trophy.userData.initialRotationSet = true;
-          trophy.userData.rotationSpeed = Math.random() * 0.006; // Random speed between 0 and 0.01
+          trophy.userData.rotationSpeed = Math.random() * 0.004; // Random speed between 0 and 0.01
           trophy.userData.rotationDirection = Math.random() < 0.5 ? -1 : 1; // Random direction: -1 or 1
           trophy.userData.rotationAxis = getRandomRotationAxis(); // Random rotation axis: 'x', 'y', or 'z'
         }
-        const { rotationSpeed, rotationDirection, rotationAxis } = trophy.userData;
+        const { rotationSpeed, rotationDirection, rotationAxis } =
+          trophy.userData;
         trophy.rotation[rotationAxis] += rotationSpeed * rotationDirection; // Adjust rotation speed and direction around the chosen axis
       }
     });
   };
-  
+
   const getRandomRotationAxis = () => {
     const axes = ['x', 'y', 'z'];
     return axes[Math.floor(Math.random() * axes.length)];
   };
-  
-  
-  
 
   const onFrame = () => {
     rotateTrophies();
@@ -222,7 +220,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const totalPages = Math.ceil(userTrophyData.length / trophiesPerPage);
 
   return (
-    <div>
+    <div >
       {trophiesToDisplay
         .slice(0)
         .reverse()
@@ -232,6 +230,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               onMouseDown={(e) => handleMouseDown(e, index)}
               onMouseUp={handleMouseUp}
               onMouseMove={(e) => handleMouseMove(e, index)}
+              style={{backgroundColor: '#303350', margin: '3em', borderRadius: '25px', padding: '1em', width: '15em'}}
             >
               <Canvas onCreated={({ gl }) => gl.setAnimationLoop(onFrame)}>
                 <ambientLight intensity={0.5} />
@@ -246,7 +245,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                     ]}
                     position={[0, 0, 0]}
                     rotation={[0, 0.4, 0]}
-                  >
+                  > 
                     <meshStandardMaterial
                       attach='material'
                       color={trophy.color}
@@ -301,39 +300,31 @@ const SavedTrophies: React.FC<TrophyData> = () => {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
           position: 'sticky',
           bottom: 0,
+          alignItems: 'center'
         }}
       >
-         {totalPages > 1 && (
-        <button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
-        >
-          Prev
-        </button>
-      )}
-      {totalPages > 1 && (
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(currentPage + 1)}
-        >
-          Next
-        </button>
-      )}
-    </div>
-
-    <span
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      Page {currentPage}
-    </span>
+        {totalPages > 1 && (
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+          >
+            Prev
+          </button>
+        )}
+        {totalPages > 1 && (
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
+            Next
+          </button>
+        )}
+      </div>
+      <span style={{ display: 'flex', padding: '1em'}}>
+        Page {currentPage}
+      </span>
     </div>
   );
 };

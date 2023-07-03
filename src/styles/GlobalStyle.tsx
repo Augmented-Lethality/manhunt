@@ -19,17 +19,16 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
 
   button{
     background: #6e6b8c;
+    border: 2px #6e6b8c solid;
     color: black;
     font-family: 'Source Code Pro';
     font-size: calc(var(--font-size) * 1.5);
-    font-weight: 600;
     font-weight: 600;
     letter-spacing: 3px;
     margin: 1em;
     min-width: 139px;
     padding: 1rem;
-    border: 2px solid #6e6b8c;
-    border-radius: 17px;
+    border-radius: 26px;
   }
 
   .alt-user-pic {

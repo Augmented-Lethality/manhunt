@@ -1,53 +1,40 @@
 import React, { useContext, useEffect, useState } from 'react';
 import SocketContext, { User } from '../contexts/Socket/SocketContext';
-import { useAuth0 } from '@auth0/auth0-react';
 
-const pickVictim = (users: User[], SetHunted: (user: User) => void) => {
-  const victim = users[Math.floor(Math.random() * users.length)];
-  SetHunted(victim);
-};
+interface WhosHuntingProps {
+  setBountyName: React.Dispatch<React.SetStateAction<string | null>>;
+}
 
-const WhosHunting: React.FunctionComponent = () => {
-  const { user } = useAuth0();
+const WhosHunting: React.FunctionComponent<WhosHuntingProps> = ({setBountyName}) => {
+  const { users, ready } = useContext(SocketContext).SocketState;
   const { SetHunted } = useContext(SocketContext);
-  const { users, games } = useContext(SocketContext).SocketState;
+  const [hasReadyErrors, setHasReadyErrors] = useState(false);
 
-  const [huntedName, setHuntedName] = useState('');
-
+  // if any of the ready objects don't have a value of 'ok', can't start the game
   useEffect(() => {
-    // console.log(games);
-    if (games[0].hunted.length > 0 && users) {
-      const matchingUser = users.filter(user => user.authId === games[0].hunted);
-      setHuntedName(matchingUser[0].username)
-    }
-  }, [games, SetHunted, users]);
+    const hasErrors = Object.values(ready).some((errors: string[]) => !errors.includes('ok'));
+    setHasReadyErrors(hasErrors);
+  }, [ready]);
 
-  if (!games || games.length === 0) {
-    return <div>Loading Lobby</div>;
-  }
+  const pickVictim = (users: User[], SetHunted: (user: User) => void) => {
+    //Chose a random victim from the players
+    const bounty = users[Math.floor(Math.random() * users.length)];
+    //Set the socket context to include the bounty
+    SetHunted(bounty);
+    //Grab the bounty's username to display to the players
+    const matchingUser = users.filter(player => player.authId === bounty.authId).at(0)?.username || null;
+    setBountyName(matchingUser)
+  };
 
-  const game = games[0];
-
-  if (!game.hunted || game.hunted.length === 0) {
-    if (user?.sub === game.host) {
-      return (
-        <div>
-          <button onClick={() => pickVictim(users, SetHunted)}>Who's Being Hunted?</button>
-        </div>
-      );
-    } else {
-      return <div>Victim Has Not Been Selected</div>;
-    }
-  }
-
+  //dont render the start button until the players are all ready
   return (
-    <div>
-      <div>{huntedName}, you're being hunted.</div>
-      {user?.sub === game.host && (
-        <button onClick={() => pickVictim(users, SetHunted)}>Pick Again</button>
-      )}
-    </div>
-  );
+    !hasReadyErrors
+    ? <button
+        onClick={() => pickVictim(users, SetHunted)}
+        style={{maxWidth:'200px'}}>Start
+      </button>
+    : <button style={{maxWidth:'200px'}}>Waiting on Players</button>
+  )
 };
 
 export default WhosHunting;
