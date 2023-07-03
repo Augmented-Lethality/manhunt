@@ -97,9 +97,8 @@ const GameLobby: React.FC<{}> = () => {
 
   useEffect(() => {
     if (bountyName) {
-      UpdateGameStatus(user, 'ongoing');
       AddGameStart(Date.now(), user);
-
+      UpdateGameStatus(user, 'ongoing');
     }
 
   }, [bountyName])
