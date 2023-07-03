@@ -144,7 +144,7 @@ export class ServerSocket {
           console.log('already hosting a game');
         } else {
           const gameId = v4();
-          const hostName = user.username;
+          const hostName = user.name;
           const newGame = await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub], hunted: '' });
           await this.UserUpdate('gameId', gameId, 'authId', user.sub);
 
