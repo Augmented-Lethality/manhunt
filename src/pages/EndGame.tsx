@@ -1,72 +1,109 @@
 import React, { useEffect, useState, useContext, lazy, Suspense } from 'react';
-import { ButtonToHome } from '../components/Buttons';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { useNavigate } from 'react-router-dom';
+import { Container } from '../styles/Container';
+import { Header } from '../styles/Header';
+import { Main } from '../styles/Main';
+
+import styled from 'styled-components';
+
+const MessageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 10px;
+  margin-inline: 20px;
+  background-color: #1a1b22;
+  padding: 56px;
+  border-radius: 10px;
+  justify-content: space-around;
+  border: 2px solid #e6a733;
+`;
+
+
 
 const TrophyGenerator = lazy(() => import('../components/TrophyGenerator'));
 
 const EndGame: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth0();
-  const { games } = useContext(SocketContext).SocketState;
+  const { games, users, player } = useContext(SocketContext).SocketState;
   const [gameOverMessage, setGameOverMessage] = useState('');
   const [winner, setWinner] = useState(false);
 
   useEffect(() => {
     if (games.length > 0) {
       // they won and were not the victim
-      if (games[0].winnerId === user?.sub && games[0].hunted !== user?.sub) {
+      if (games[0].winnerId === player.authId && games[0].hunted !== player.authId) {
         setGameOverMessage(
-          `Great work, ${user?.name}. Your skip tracing gained you a bounty.`
+          `Great work, ${player.username}.\nYour skip tracing gained you a bounty.`
         );
         // user is a winner
         setWinner(true);
         // they won and were being hunted
       } else if (
-        games[0].winnerId === user?.sub &&
-        games[0].hunted === user?.sub
+        games[0].winnerId === player.authId &&
+        games[0].hunted === player.authId
       ) {
         setGameOverMessage(
-          `Why, ${user?.name}, you successfully evaded capture! Go put your feet up and crack open a cold one.`
+          `Go put your feet up and crack open a cold one.\n${player.username}, you successfully evaded capture!`
         );
         // user is a winner
         setWinner(true);
         // lost and were being hunted
       } else if (
-        games[0].winnerId !== user?.sub &&
-        games[0].hunted === user?.sub
+        games[0].winnerId !== player.authId &&
+        games[0].hunted === player.authId
       ) {
         setGameOverMessage(
-          `C'mon ${user?.name}, you seriously let these guys catch you?`
+          `C'mon ${player.username}, you seriously let these guys catch you?`
         );
         // lost and were a hunter
       } else if (
-        games[0].winnerId !== user?.sub &&
-        games[0].hunted !== user?.sub
+        games[0].winnerId !== player.authId &&
+        games[0].hunted !== player.authId
       ) {
         setGameOverMessage(
-          `${user?.name}, bounty hunters catch the bounty. Get back in there and try again!`
+          `${player.username}, bounty hunters catch the bounty.\nGet back in there and try again!`
         );
       }
     }
-  }, [games, user]);
+  }, [games]);
+
+  if (!gameOverMessage.length) {
+    return <img
+      src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjFyb2Z6ODR3b3UzaDc4YXMwMWNsMjhqaTY1d2d5em52bTduMnNnZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CdhxVrdRN4YFi/giphy.gif"
+      alt="Game Over GIF"
+      style={{ width: '400px', height: '400px', marginBottom: '20px' }}
+    />
+  }
 
   return (
-    <div className='end-game-container'>
-      <h1>GAME OVER</h1>
-      <h3>{gameOverMessage}</h3>
-      {winner ? (
-        <div style={{ width: '400px', height: '400px' }}>
-          <h3>You've Earned a Reward.</h3>
-          <Suspense fallback={<div>Loading Trophy...</div>}>
-            <TrophyGenerator />
-          </Suspense>
-        </div>
-      ) : null}
-      <ButtonToHome />
-    </div>
+    <Container>
+      <Header page={''} users={users} />
+      <Main>
+        <h1 className='end-main' style={{ fontSize: '3em', marginBottom: '2px', marginTop: '15px', textAlign: 'center', }}>GAME OVER</h1>
+        <MessageContainer>
+          <h3 className='game-over' style={{ fontSize: '1.5em', marginBottom: '10px', paddingLeft: '20px', paddingRight: '20px', whiteSpace: 'pre-line', marginTop: '0px', }}>{gameOverMessage}</h3>
+          {winner ? (
+            <div className='trophy-container-end' style={{
+              width: '400px', height: '300px', marginBottom: '8px', display: 'flex',
+              flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <h3 className='earned-reward' style={{ fontSize: '1.2em', marginBottom: '15px' }}>You've Earned a Reward.</h3>
+              <Suspense fallback={<div>Loading Trophy...</div>}>
+                <TrophyGenerator />
+              </Suspense>
+            </div>
+          ) : null}
+        </MessageContainer>
+      </Main>
+    </Container >
   );
+
 };
 
 export default EndGame;

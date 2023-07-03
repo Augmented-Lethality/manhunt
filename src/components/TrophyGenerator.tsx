@@ -1,30 +1,34 @@
-import React, { useRef, useState, useMemo, useEffect } from 'react';
+import React, { useRef, useState, useMemo, useEffect, useContext } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
-import { useAuth0 } from '@auth0/auth0-react';
+// import { useAuth0 } from '@auth0/auth0-react';
+import SocketContext, { Player } from '../contexts/Socket/SocketContext';
 
-export type UserData = {
-  id: number;
-  username: string;
-  email: string;
-  authId: string;
-  gamesPlayed: number;
-  gamesWon: number;
-  killsConfirmed: number;
-  facialDescriptions: Array<number> | null;
-  // Add other user data properties as needed
-};
+// export type UserData = {
+//   id: number;
+//   username: string;
+//   email: string;
+//   authId: string;
+//   gamesPlayed: number;
+//   gamesWon: number;
+//   killsConfirmed: number;
+//   facialDescriptions: Array<number> | null;
+//   // Add other user data properties as needed
+// };
 
 const TrophyGenerator: React.FC = () => {
   const trophyRef = useRef<THREE.Mesh>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [prevMouseX, setPrevMouseX] = useState(0);
   const [prevMouseY, setPrevMouseY] = useState(0);
-  const { user, isAuthenticated } = useAuth0();
-  const [userData, setUserData] = useState<UserData | null>(null);
+  // const { user, isAuthenticated } = useAuth0();
+  // const [userData, setUserData] = useState<UserData | null>(null);
   const [trophyName, setTrophyName] = useState('');
   const [trophyDescription, setTrophyDescription] = useState('');
+
+  const { player } = useContext(SocketContext).SocketState;
+
 
   // event handlers
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -39,18 +43,18 @@ const TrophyGenerator: React.FC = () => {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (!isDragging) return;
-  
+
     const mouseDeltaX = -(e.clientX - prevMouseX);
     const mouseDeltaY = e.clientY - prevMouseY;
     setPrevMouseX(e.clientX);
     setPrevMouseY(e.clientY);
-  
+
     if (trophyRef.current) {
       trophyRef.current.rotation.y -= mouseDeltaX * 0.01; // Rotate around Y-axis
       trophyRef.current.rotation.x += mouseDeltaY * 0.01; // Rotate around X-axis
     }
   };
-  
+
 
   // functions for generating random trophy properties
   const getRandomElement = (array) => {
@@ -120,7 +124,7 @@ const TrophyGenerator: React.FC = () => {
       `A an extremely valuable bounty that seems to never have one owner for too long...`,
       `An extraordinary achievement recognized by the high-tech society of the SOCIETY™.`,
       `A trophy seized from the clutches of the CorpoReality Police, a true symbol of defiance and audacity.`,
-      `A token of recognition for exceptional espionage and cunning within The Collective.`,
+      `A token of recognition for exceptional espionage and cunning within The Corpoverse.`,
       `It's dangerous to go alone! Take this.`,
     ];
     const description = getRandomElement(descriptions);
@@ -129,31 +133,31 @@ const TrophyGenerator: React.FC = () => {
   };
 
   // data related functions
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setUserData(response.data[0]);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
+  // const fetchUserData = async () => {
+  //   try {
+  //     const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${user?.token}`,
+  //       },
+  //     });
+  //     setUserData(response.data[0]);
+  //   } catch (error) {
+  //     console.error('Error fetching user data:', error);
+  //   }
+  // };
 
   const postTrophyData = async () => {
     try {
-      if (userData && userData.id) {
+      if (player.authId) {
         await axios.post('/trophies', {
           name: trophyName,
           description: trophyDescription,
           generationConditions: JSON.stringify(trophyData),
           filePath: '',
-          ownerId: userData.id,
+          ownerId: player.id,
         });
       } else {
-        console.log('userData is not available');
+        console.log('player is not available');
       }
     } catch (error) {
       console.error('Error posting trophy data:', error);
@@ -161,14 +165,14 @@ const TrophyGenerator: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchUserData();
+    // fetchUserData();
     generateRandomName();
     generateRandomDescription();
   }, []);
 
   useEffect(() => {
     postTrophyData();
-  }, [userData]);
+  }, [player]);
 
   return (
     <div
@@ -220,10 +224,10 @@ const TrophyGenerator: React.FC = () => {
           </Torus>
         )}
       </Canvas>
-      {userData && userData.id !== null && (
+      {player && (
         <div>
-          <h5>Designation: {trophyName}</h5>
-          <h5>Report: {trophyDescription}</h5>
+          <h4 style={{ marginBottom: '2px', marginTop: '20px' }}>{trophyName}</h4>
+          <h5>{trophyDescription}</h5>
         </div>
       )}
     </div>
