@@ -45,25 +45,25 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // when the component mounts, aka the user visits a react component surrounded by this socket component, these functions are called
   useEffect(() => {
 
-    if (user) {
-      console.log('there is a user to send', user)
-      // opens the socket
-      socket.connect();
+    // if (user) {
+    console.log('there is a user to send', user)
+    // opens the socket
+    socket.connect();
 
-      // updates the socket state on the connection
-      SocketDispatch({ type: 'update_socket', payload: socket })
+    // updates the socket state on the connection
+    SocketDispatch({ type: 'update_socket', payload: socket })
 
-      // start the event listeners
-      StartListeners();
+    // start the event listeners
+    StartListeners();
 
-      // send the handshake (attempts to connect to the server)
-      SendHandshake();
-    } else {
-      console.log('no user to send yet')
-    }
+    // send the handshake (attempts to connect to the server)
+    SendHandshake();
+    // } else {
+    //   console.log('no user to send yet')
+    // }
 
     // eslint-disable-next-line
-  }, [user])
+  }, [])
 
   const StartListeners = () => {
     // declare default event listeners that socket.io provides to handle reconnection events
@@ -123,9 +123,10 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
       // redirecting the user based on the lobby games state
       const redirect = () => {
-        if (!games[0].users.includes(user?.sub) || !games.length) {
-          navigate('/home');
-          LeaveGame(user);
+        if (!games[0].users.includes(user?.sub) || games.length === 0) {
+          // navigate('/home');
+          // LeaveGame(user);
+          console.log('should redirect to home? maybe not?')
         } else if (games[0].status === 'complete') {
           navigate('/gameover');
         } else if (games[0].status === 'ongoing') {
