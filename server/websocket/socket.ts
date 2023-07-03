@@ -284,7 +284,7 @@ export class ServerSocket {
           console.log('made new location')
         }
 
-        const locations = await Locations.findAll({ where: { authId: user.sub } });
+        const locations = await Locations.findAll({ where: { gameId: gameId } });
 
         this.io.to(gameId).emit('update_locations', locations);
       } catch (err) {
@@ -423,7 +423,6 @@ export class ServerSocket {
       console.log('There was a socket disconnection');
       try {
         const user = await this.UserFindOne('socketId', socket.id);
-        console.log('returned user in disconnect:', user)
         if (user) {
           //have the user leave the game
           const matchFuncParamsForUser = { sub: user.authId }
@@ -556,13 +555,13 @@ export class ServerSocket {
               { users: updatedUserList, host: host, hostName: hostName, hunted: victim },
               { where: { gameId: game.gameId } }
             )
-            const newGame = await this.FindGameByGameId(game.gameId)
-            // update everyone on the new players and games
-            this.EmitLobbyUpdates(newGame.gameId);
           }
+          // update everyone on the new players and games
+          socket.leave(game.gameId);
           // update the user so that they don't have the gameId anymore
           await this.UserUpdate('gameId', '', 'authId', user.sub);
-          socket.leave(game.gameId);
+          this.EmitLobbyUpdates(game.gameId);
+
           // put that user back into the users room and leave the game room
           socket.join('users');
           this.EmitGeneralUpdates()
@@ -570,8 +569,8 @@ export class ServerSocket {
           console.log('game did not have that user');
         }
       } else {
-        console.log(`tried to leave game, game does not exist with the gameId that the user provided:, ${existingUser.gameId}.
-        no biggie, it may have been a generic request from the home page.`);
+        console.log(`tried to leave game, game does not exist with the gameId that the user provided: ${existingUser.gameId}!
+no biggie, it may have been a generic request from the home page.`);
       }
     } catch (err) {
       console.log('something went wrong when trying to leave the game:', err);
