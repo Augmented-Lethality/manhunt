@@ -3,20 +3,18 @@ import SocketContext from '../../contexts/Socket/SocketContext';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 
-
 const TimeListContainer = styled.ul<{ open: boolean }>`
   display: ${({ open }) => (open ? 'inline-block' : 'none')};
   font-size: 2em;
-  max-height: 245px;
+  height: 100%;
   width: 175px;
   padding: 0;
-  margin: 0;
   overflow: hidden;
-  position: relative;
-  background-color: #0f0f16;
 `;
 
-const TimeItem = styled.li<{ selected: boolean }>`
+// TimeItemComponent filters out spacer prop to remove a browser error
+const TimeItemComponent = ({ spacer, ...props }) => <li {...props} />;
+const TimeItem = styled(TimeItemComponent)<{ selected: boolean, spacer?: boolean }>`
   padding: 2px;
   cursor: pointer;
   text-align: center;
@@ -26,29 +24,25 @@ const TimeItem = styled.li<{ selected: boolean }>`
   outline: none;
   background: ${({ selected }) => (selected ? '#6e6b8c' : 'transparent')};
   color: ${({ selected }) => (selected ? 'white' : '#6e6b8c')};
+  height: ${({ spacer }) => (spacer ? '1.5rem' : 'auto')};
 `;
 
 const SelectedTime = styled.div`
-  display: inline-block;
   font-size: 2em;
-  cursor: pointer;
   text-align: center;
-  width: 172px;
-  position: relative;
+  width: 175px;
 `;
 
-const ArrowContainer = styled.div`
-  position: absolute;
-  width: 100%;
-  text-align: center;
+// TimeItemComponent filters out 'visible' prop to remove a browser error
+const ArrowComponent = ({ visible, ...props }) => <div {...props} />;
+const Arrow = styled(ArrowComponent)<{ visible: boolean }>`
+  color: ${({ visible }) => (visible ? '#6e6b8c' : 'transparent')};
+  user-select: none;
 `;
 
-const Arrow = styled.div<{ visible: boolean }>`
-  display: ${({ visible }) => (visible ? 'inline-block' : 'none')};
-  cursor: pointer;
-`;
-
-const TimeList: React.FC = () => {
+const TimerInput: React.FC = () => {
+  const { AddGameDuration } = useContext(SocketContext);
+  const { user } = useAuth0();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState('03:00');
   const listRef = useRef<HTMLUListElement>(null);
@@ -56,6 +50,12 @@ const TimeList: React.FC = () => {
 
   const selectedIndex = scrollValues.indexOf(selected.split(':')[0]);
 
+  //Send the selected time to the socket instance
+  useEffect(() => {
+    AddGameDuration(Number(selected.slice(0, 2)), user);
+  }, [selected])
+
+  //Allow clicking the arrows to change the time
   const handleArrowClick = (direction: 'up' | 'down') => {
     if (direction === 'up' && selectedIndex > 0) {
       setSelected(`${scrollValues[selectedIndex - 1]}:00`);
@@ -64,23 +64,22 @@ const TimeList: React.FC = () => {
     }
   };
 
+  //Allow scrolling through the menu
   useEffect(() => {
     if (listRef.current) {
       const currentList = listRef.current;
-
       const handleScroll = (e: WheelEvent) => {
         e.preventDefault();
         currentList.scrollTop += e.deltaY;
       };
-
       currentList.addEventListener('wheel', handleScroll);
-
       return () => {
         currentList.removeEventListener('wheel', handleScroll);
       };
     }
   }, []);
 
+  //make sure when the menu opens you can see the selected item
   useEffect(() => {
     if (listRef.current && open) {
       if (selectedIndex > -1) {
@@ -92,22 +91,23 @@ const TimeList: React.FC = () => {
   return (
     <>
       {!open && (
-        <SelectedTime onClick={() => setOpen(!open)}>
-          <ArrowContainer>
-            <Arrow visible={selectedIndex > 0} onClick={() => handleArrowClick('up')}>
-              ▲
-            </Arrow>
+        <SelectedTime >
+          <Arrow visible={selectedIndex > 0} onClick={() => handleArrowClick('up')}>
+            ▲
+          </Arrow>
+          <div onClick={() => setOpen(!open)}>
             {selected}
-            <Arrow
-              visible={selectedIndex < scrollValues.length - 1}
-              onClick={() => handleArrowClick('down')}
-            >
-              ▼
-            </Arrow>
-          </ArrowContainer>
+          </div>
+          <Arrow
+            visible={selectedIndex < scrollValues.length - 1}
+            onClick={() => handleArrowClick('down')}
+          >
+            ▼
+          </Arrow>
         </SelectedTime>
       )}
       <TimeListContainer open={open} ref={listRef}>
+        <TimeItem spacer selected={false}/>
         {scrollValues.map((val, index) => (
           <TimeItem
             selected={`${val}:00` === selected}
@@ -120,51 +120,8 @@ const TimeList: React.FC = () => {
             {`${val}:00`}
           </TimeItem>
         ))}
+        <TimeItem spacer selected={false} />
       </TimeListContainer>
-    </>
-  );
-};
-
-const TimerInput: React.FunctionComponent = () => {
-  const [selectedTime, setSelectedTime] = useState(0);
-  const { AddGameDuration } = useContext(SocketContext);
-  const { user } = useAuth0();
-
-  const handleTimeChange = (event) => {
-    const { value } = event.target;
-    setSelectedTime(Number(value));
-
-  };
-
-  useEffect(() => {
-    if (selectedTime !== 0) {
-      AddGameDuration(selectedTime, user);
-
-    }
-  }, [selectedTime])
-
-  const formatTime = (minutes) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-
-    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-  };
-
-  return (
-    <>
-      <label htmlFor="time">Select time:</label>
-      <select id="time" value={selectedTime} onChange={handleTimeChange}>
-        <option value={1}>1:00</option>
-        <option value={5}>5:00</option>
-        <option value={10}>10:00</option>
-        <option value={20}>20:00</option>
-        <option value={30}>30:00</option>
-        <option value={45}>45:00</option>
-        <option value={60}>60:00</option>
-
-      </select>
-      {/* <TimeList /> */}
-      <div>Selected time: {formatTime(selectedTime)}</div>
     </>
   );
 };
