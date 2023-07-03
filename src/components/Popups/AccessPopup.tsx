@@ -12,9 +12,9 @@ export const AccessPopup: React.FC<PopupProps> = ({ content, accessFunctions, er
   const [accessButtonClicked, setAccessButtonClicked] = useState<string | null>(null);
 
   // refresh button reloads the window
-  const handleRefresh = () => {
-    window.location.reload();
-  };
+  // const handleRefresh = () => {
+  //   window.location.reload();
+  // };
 
   // the function for the access button is triggered here
   const handleAccessButton = (accessType: string) => {
@@ -62,7 +62,7 @@ export const AccessPopup: React.FC<PopupProps> = ({ content, accessFunctions, er
               </button>
             )
           ))}
-          <button onClick={handleRefresh}>Refresh Page</button>
+          {/* <button onClick={handleRefresh}>Refresh Page</button> */}
 
         </div>
       </div>
