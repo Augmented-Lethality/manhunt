@@ -14,7 +14,8 @@ const AccessReady: React.FC<{ player: User; errors: string[] }> = ({ player, err
     if (errors.includes('ok')) {
       setLight(true);
     } else {
-      setLight(false);
+      // setLight(false);
+      setLight(true);
       createErrorMessage();
     }
   }, [errors, player.authId, user?.sub]);

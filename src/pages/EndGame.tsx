@@ -17,7 +17,7 @@ const MessageContainer = styled.div`
   margin-top: 10px;
   margin-inline: 20px;
   background-color: #1a1b22;
-  padding: 56px;
+  padding: 20px;
   border-radius: 10px;
   justify-content: space-around;
   border: 2px solid #e6a733;
@@ -49,7 +49,7 @@ const EndGame: React.FC = () => {
         games[0].hunted === player.authId
       ) {
         setGameOverMessage(
-          `Go put your feet up and crack open a cold one.\n${player.username}, you successfully evaded capture!`
+          `Go put your feet up and crack open a cold one.`
         );
         // user is a winner
         setWinner(true);
