@@ -166,9 +166,9 @@ class LocationBasedLocal {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             if (!position.coords.longitude && !position.coords.latitude) {
-              console.log('did not get the positions');
+              // console.log('did not get the positions');
             } else {
-              console.log('got the positions');
+              // console.log('got the positions');
             }
           },
           (error) => {
@@ -185,9 +185,9 @@ class LocationBasedLocal {
         (position) => {
           this._gpsReceived(position);
           if (!position.coords.longitude && !position.coords.latitude) {
-            console.log('did not get the positions');
+            // console.log('did not get the positions');
           } else {
-            console.log('my position: ', parseFloat(position.coords.longitude.toFixed(3)), parseFloat(position.coords.latitude.toFixed(3)))
+            // console.log('my position: ', parseFloat(position.coords.longitude.toFixed(3)), parseFloat(position.coords.latitude.toFixed(3)))
             this.setUserPosition(parseFloat(position.coords.longitude), parseFloat(position.coords.latitude))
           }
         },
