@@ -118,21 +118,19 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
       // redirecting the user based on the lobby games state
       const redirect = () => {
-        if (games[0].status === 'lobby') {
-          navigate('/lobby');
+        if (!games[0].users.includes(user?.sub) || !games.length) {
+          navigate('/home');
+          LeaveGame(user);
         } else if (games[0].status === 'complete') {
           navigate('/gameover');
         } else if (games[0].status === 'ongoing') {
           navigate('/onthehunt');
-        } else if (games[0].users.length <= 0) {
-          navigate('/home');
-          LeaveGame(user);
+        } else if (games[0].status === 'lobby') {
+          navigate('/lobby');
         }
       }
 
-      if (games.length > 0) {
-        redirect();
-      }
+      redirect();
     });
 
     // update locations event
