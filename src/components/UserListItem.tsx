@@ -61,12 +61,12 @@ const UserListItem: React.FC<{ player: User }> = ({ player }) => {
       )}
       <Username>{player.username}</Username><br />
       {/* <KD>{player.gamesWon / player.gamesPlayed}</KD><br /> */}
-      {currentEndpoint === 'lobby' && (
-        <>
-          <AccessReady player={player} errors={errors} />
-          <CheckAccess />
-        </>
-      )}
+      {/* {currentEndpoint === 'lobby' && (
+        <> */}
+      <AccessReady player={player} errors={errors} />
+      <CheckAccess />
+      {/* </>
+      )} */}
     </UserContainer>
   );
 };

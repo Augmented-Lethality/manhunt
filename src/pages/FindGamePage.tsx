@@ -18,7 +18,7 @@ const FindGamePage: React.FC = () => {
     <Container>
       <Header page={'Contracts'} users={users} />
       <Main>
-        <h3 style={{ textAlign: 'center', marginTop: '10px' }}>{users?.length - 1} Hunter{users?.length - 1 !== 1 ? 's' : ''} Prepared for Slaughter</h3>
+        {/* <h3 style={{ textAlign: 'center', marginTop: '10px' }}>{users?.length - 1} Hunter{users?.length - 1 !== 1 ? 's' : ''} Prepared for Slaughter</h3> */}
         {
           Object.keys(games).length > 0 ? (
             <>

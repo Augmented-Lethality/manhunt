@@ -43,9 +43,9 @@ export const GameListItem: React.FC<{ game: Game }> = ({ game }) => {
   return (
     <GameContainer>
       <div onClick={() => handleJoinGame(game.host, user)}>
-        <h2>{game.hostName}</h2>
+        <h3>{game.hostName}</h3>
         <br />
-        <h3>{game.users.length} Hunter{game.users.length !== 1 ? 's' : ''} in Lobby</h3>
+        <h4>{game.users.length} Hunter{game.users.length !== 1 ? 's' : ''} in Lobby</h4>
       </div>
 
     </GameContainer>
