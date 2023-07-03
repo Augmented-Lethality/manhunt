@@ -27,8 +27,6 @@ const TimeItem = styled(TimeItemComponent)<{ selected: boolean, spacer?: boolean
   height: ${({ spacer }) => (spacer ? '1.5rem' : 'auto')};
 `;
 
-
-
 const SelectedTime = styled.div`
   font-size: 2em;
   text-align: center;
