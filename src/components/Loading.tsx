@@ -11,11 +11,18 @@ const bounce = keyframes`
 const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
+
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 
   div {
     width: 1rem;
     height: 1rem;
-    margin: 2rem 0.3rem;
+    margin: 0.3rem;
     background: #979fd0;
     border-radius: 50%;
     animation: 0.9s ${bounce} infinite alternate;
@@ -32,11 +39,11 @@ const LoadingContainer = styled.div`
 
 
 const PageLoader: React.FC = () => (
-    <LoadingContainer>
-      <div></div>
-      <div></div>
-      <div></div>
-    </LoadingContainer>
+  <LoadingContainer>
+    <div></div>
+    <div></div>
+    <div></div>
+  </LoadingContainer>
 );
 
 export default PageLoader;
