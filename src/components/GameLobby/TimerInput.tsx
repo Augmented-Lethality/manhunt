@@ -12,7 +12,9 @@ const TimeListContainer = styled.ul<{ open: boolean }>`
   overflow: hidden;
 `;
 
-const TimeItem = styled.li<{ selected: boolean, spacer?: boolean }>`
+// TimeItemComponent filters out spacer prop to remove a browser error
+const TimeItemComponent = ({ spacer, ...props }) => <li {...props} />;
+const TimeItem = styled(TimeItemComponent)<{ selected: boolean, spacer?: boolean }>`
   padding: 2px;
   cursor: pointer;
   text-align: center;
@@ -25,13 +27,17 @@ const TimeItem = styled.li<{ selected: boolean, spacer?: boolean }>`
   height: ${({ spacer }) => (spacer ? '1.5rem' : 'auto')};
 `;
 
+
+
 const SelectedTime = styled.div`
   font-size: 2em;
   text-align: center;
   width: 175px;
 `;
 
-const Arrow = styled.div<{ visible: boolean }>`
+// TimeItemComponent filters out 'visible' prop to remove a browser error
+const ArrowComponent = ({ visible, ...props }) => <div {...props} />;
+const Arrow = styled(ArrowComponent)<{ visible: boolean }>`
   color: ${({ visible }) => (visible ? '#6e6b8c' : 'transparent')};
   user-select: none;
 `;
@@ -49,7 +55,6 @@ const TimerInput: React.FC = () => {
   //Send the selected time to the socket instance
   useEffect(() => {
     AddGameDuration(Number(selected.slice(0, 2)), user);
-    console.log(Number(selected.slice(0, 2)))
   }, [selected])
 
   //Allow clicking the arrows to change the time
@@ -104,7 +109,7 @@ const TimerInput: React.FC = () => {
         </SelectedTime>
       )}
       <TimeListContainer open={open} ref={listRef}>
-        <TimeItem spacer={true} selected={false}/>
+        <TimeItem spacer selected={false}/>
         {scrollValues.map((val, index) => (
           <TimeItem
             selected={`${val}:00` === selected}
@@ -117,7 +122,7 @@ const TimerInput: React.FC = () => {
             {`${val}:00`}
           </TimeItem>
         ))}
-        <TimeItem spacer={true} selected={false} />
+        <TimeItem spacer selected={false} />
       </TimeListContainer>
     </>
   );
