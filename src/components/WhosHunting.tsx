@@ -1,16 +1,20 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SocketContext, { User } from '../contexts/Socket/SocketContext';
-import { useAuth0 } from '@auth0/auth0-react';
 
 interface WhosHuntingProps {
-  setBountyName: React.Dispatch<React.SetStateAction<string | null>>
+  setBountyName: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const WhosHunting: React.FunctionComponent<WhosHuntingProps> = ({setBountyName}) => {
-  const { user } = useAuth0();
+  const { users, ready } = useContext(SocketContext).SocketState;
   const { SetHunted } = useContext(SocketContext);
-  const { users, games } = useContext(SocketContext).SocketState;
-  const game = games[0];
+  const [hasReadyErrors, setHasReadyErrors] = useState(false);
+
+  // if any of the ready objects don't have a value of 'ok', can't start the game
+  useEffect(() => {
+    const hasErrors = Object.values(ready).some((errors: string[]) => !errors.includes('ok'));
+    setHasReadyErrors(hasErrors);
+  }, [ready]);
 
   const pickVictim = (users: User[], SetHunted: (user: User) => void) => {
     //Chose a random victim from the players
@@ -18,21 +22,22 @@ const WhosHunting: React.FunctionComponent<WhosHuntingProps> = ({setBountyName})
     //Set the socket context to include the bounty
     SetHunted(bounty);
     //Grab the bounty's username to display to the players
-    const matchingUser = users.filter(user => user.authId === games[0].hunted);
-    setBountyName(matchingUser[0].username)
+    const matchingUser = users.filter(player => player.authId === bounty.authId).at(0)?.username || null;
+    setBountyName(matchingUser)
   };
 
-  if (!games || games.length === 0) {
-    return <div>Loading Lobby</div>;
-  }
+  // if (!games || games.length === 0) {
+  //   return <div>Loading Lobby</div>;
+  // }
 
+  //dont render the start button until the players are all ready
   return (
-    user?.sub === game?.host
+    !hasReadyErrors
     ? <button
         onClick={() => pickVictim(users, SetHunted)}
         style={{maxWidth:'200px'}}>Start
       </button>
-    : <button style={{flexGrow: 2}}>Waiting on Host</button>
+    : <button style={{maxWidth:'200px'}}>Waiting on Players</button>
   )
 };
 
