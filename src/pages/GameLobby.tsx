@@ -58,8 +58,8 @@ const GameLobby: React.FC<{}> = () => {
   const [countdown, setCountdown] = useState(10);
 
   // checks to see if the user should be redirected if the game doesn't exist
-  const location = useLocation();
-  const currentEndpoint = location.pathname;
+  // const location = useLocation();
+  // const currentEndpoint = location.pathname;
   // useEffect(() => {
   //   Redirect(currentEndpoint);
   // }, [games]);
@@ -67,10 +67,10 @@ const GameLobby: React.FC<{}> = () => {
   //Determine who can see the controls and who can't
   useEffect(() => {
     (games.length > 0 && games[0].host === user?.sub)
-    ? setShowControls(true)
-    : setShowControls(false);
+      ? setShowControls(true)
+      : setShowControls(false);
   }, [games]);
-  
+
   //See if things are still loading
   useEffect(() => {
     if (games.length > 0 && users.length > 0) {
@@ -84,11 +84,11 @@ const GameLobby: React.FC<{}> = () => {
   useEffect(() => {
     //decreases the countdown by one every second
     let timeoutId
-    if(bountyName && countdown > 0){
+    if (bountyName && countdown > 0) {
       timeoutId = setTimeout(() => setCountdown(countdown => countdown - 1), 1000);
     }
     // once the countdown reaches 0, navigate all players in lobby to game
-    if(!countdown) {
+    if (!countdown) {
       UpdateGameStatus(user, 'ongoing');
       AddGameStart(Date.now(), user);
     }
@@ -98,12 +98,12 @@ const GameLobby: React.FC<{}> = () => {
   if (!isAuthenticated) {
     return null
   }
-  
+
   if (!showLobby) {
     return <PageLoader />
   }
 
-  if(bountyName) {
+  if (bountyName) {
     return (
       <Container>
         <Header page='Lobby' />
@@ -122,9 +122,9 @@ const GameLobby: React.FC<{}> = () => {
       <Header page='Lobby' />
       <Main>
         <ControlsContainer>
-          { showControls ? (
+          {showControls ? (
             <>
-              <WhosHunting setBountyName={setBountyName}/>
+              <WhosHunting setBountyName={setBountyName} />
               <TimerInput />
               {games[0].hunted.length > 0 && !hasReadyErrors && games[0].timeConstraints && <ButtonToGame />}
             </>
@@ -133,11 +133,11 @@ const GameLobby: React.FC<{}> = () => {
               <button>Waiting on Host</button>
               <h2>{games[0].timeConstraints}:00</h2>
             </>
-            )
+          )
           }
         </ControlsContainer>
         <PlayersContainer>
-          <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>Players • {users.length}</h1>
+          <h1 style={{ fontSize: '2rem', marginBottom: '10px', textAlign: 'center' }}>Contracted to Kill • {users.length}</h1>
           <UserListItem player={users[0]} />
           <UsersList users={users.slice(1)} />
         </PlayersContainer>

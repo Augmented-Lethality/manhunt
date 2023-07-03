@@ -33,10 +33,10 @@ const StyledButton2 = styled.button<ButtonProps>`
   color: #292932;
   background: #d7a13c;
   font-family: Source Code Pro;
-  font-size: 2em;
+  font-size: 1em;
   font-weight: 1000;
-  margin: 1.5em;
-  padding: 2.20em;
+  margin: 4em;
+  padding: 2.25em;
   border: 2px solid #e5bd75;
   border-radius: 35px;
   box-shadow: 0 0 0 2.5px #1a1a20, 0 0.625em 0 0 #0f0f16cf;

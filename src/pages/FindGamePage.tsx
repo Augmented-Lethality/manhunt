@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import SocketContext from '../contexts/Socket/SocketContext';
-import { ButtonToHome } from '../components/Buttons';
 import { GameListItem } from '../components/GameLobby/GameListItem';
+import { GameContainer } from '../components/GameLobby/GameListItem';
 
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
@@ -16,9 +16,9 @@ const FindGamePage: React.FC = () => {
 
   return (
     <Container>
-      <Header page={'Contract Board'} users={users} />
+      <Header page={'Contracts'} users={users} />
       <Main>
-        <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Searching for Contracts</h3>
+        <h3 style={{ textAlign: 'center', marginTop: '10px' }}>{users?.length - 1} Hunter{users?.length - 1 !== 1 ? 's' : ''} Prepared for Slaughter</h3>
         {
           Object.keys(games).length > 0 ? (
             <>
@@ -27,7 +27,9 @@ const FindGamePage: React.FC = () => {
               ))}
             </>
           ) : (
-            <p>No Bounties Have Been Posted</p>
+            <GameContainer>
+              <h2>No Bounties Have Been Posted</h2>
+            </GameContainer>
           )
         }
 

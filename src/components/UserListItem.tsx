@@ -6,9 +6,16 @@ import SocketContext, { User } from '../contexts/Socket/SocketContext';
 import CheckAccess from './GameLobby/CheckAccess';
 import AccessReady from './GameLobby/AccessReady';
 
+import { GameContainer } from './GameLobby/GameListItem';
+
 const UserContainer = styled.div`
   display: flex;
   align-items: center;
+    padding: 25px;
+  border-radius: 10px;
+    margin-top: 10px;
+  margin-inline: 20px;
+  background-color: #1a1b22;
 `;
 
 const UserImage = styled.img`
@@ -20,7 +27,11 @@ const UserImage = styled.img`
 
 const Username = styled.p`
   font-size: 16px;
-  color: #000;
+  color: #6e6b8c;
+`;
+const KD = styled.p`
+  font-size: 16px;
+  color: #6e6b8c;
 `;
 
 
@@ -49,6 +60,7 @@ const UserListItem: React.FC<{ player: User }> = ({ player }) => {
         </h1>
       )}
       <Username>{player.username}</Username><br />
+      {/* <KD>{player.gamesWon / player.gamesPlayed}</KD><br /> */}
       {currentEndpoint === 'lobby' && (
         <>
           <AccessReady player={player} errors={errors} />

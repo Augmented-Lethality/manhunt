@@ -7,8 +7,6 @@ import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { useFontSize } from '../contexts/FontSize';
 
-import RevolverLoader from '../components/Loaders/RevolverLoader';
-
 import { BioDataPopup } from '../components/Popups/BioDataPopup';
 
 const HomePage = () => {
@@ -42,7 +40,6 @@ const HomePage = () => {
       <Header page={'Home'} users={users} />
       <Main>
         {showBioPopup && <BioDataPopup />}
-        <RevolverLoader />
         <ButtonToHostGame />
         <ButtonToFindGame />
       </Main>
