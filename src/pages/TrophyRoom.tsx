@@ -10,7 +10,7 @@ const TrophyRoom: React.FC = () => {
 
   return (
     <Container>
-      <Header page='Trophy Room' />
+      <Header page='Trophies' />
       <Main>
         <div className='content__body'>
           <div style={{ width: '300px', height: '300px' }}>
