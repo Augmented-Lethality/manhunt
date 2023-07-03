@@ -35,7 +35,10 @@ export const AccessPopup: React.FC<PopupProps> = ({ content, accessFunctions, er
         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
         padding: '20px',
         borderRadius: '4px',
-        maxWidth: '500px',
+        maxWidth: '90vw',
+        maxHeight: '90vh',
+        width: 'auto',
+        height: 'auto',
         textAlign: 'center',
         color: 'black',
       }}
@@ -44,8 +47,8 @@ export const AccessPopup: React.FC<PopupProps> = ({ content, accessFunctions, er
         background: 'rgba(0, 0, 0, 0.5)',
       }}
     >
-      <div className="popup-content">
-        <h2 style={{ whiteSpace: 'pre-line' }}>{content}</h2>
+      <div className="popup-content" style={{ maxHeight: '70vh', overflow: 'auto' }}>
+        <h4 style={{ whiteSpace: 'pre-line' }}>{content}</h4>
         <div className="button-container">
           {Object.keys(accessFunctions).map((accessType) => (
             accessType !== 'location' &&
