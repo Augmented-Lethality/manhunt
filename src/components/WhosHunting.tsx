@@ -26,10 +26,6 @@ const WhosHunting: React.FunctionComponent<WhosHuntingProps> = ({setBountyName})
     setBountyName(matchingUser)
   };
 
-  // if (!games || games.length === 0) {
-  //   return <div>Loading Lobby</div>;
-  // }
-
   //dont render the start button until the players are all ready
   return (
     !hasReadyErrors
