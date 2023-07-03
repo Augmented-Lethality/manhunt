@@ -45,20 +45,25 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // when the component mounts, aka the user visits a react component surrounded by this socket component, these functions are called
   useEffect(() => {
 
-    // opens the socket
-    socket.connect();
+    if (user) {
+      console.log('there is a user to send', user)
+      // opens the socket
+      socket.connect();
 
-    // updates the socket state on the connection
-    SocketDispatch({ type: 'update_socket', payload: socket })
+      // updates the socket state on the connection
+      SocketDispatch({ type: 'update_socket', payload: socket })
 
-    // start the event listeners
-    StartListeners();
+      // start the event listeners
+      StartListeners();
 
-    // send the handshake (attempts to connect to the server)
-    SendHandshake();
+      // send the handshake (attempts to connect to the server)
+      SendHandshake();
+    } else {
+      console.log('no user to send yet')
+    }
 
     // eslint-disable-next-line
-  }, [])
+  }, [user])
 
   const StartListeners = () => {
     // declare default event listeners that socket.io provides to handle reconnection events
@@ -166,7 +171,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
         SocketDispatch({ type: 'update_player', payload: response });
         setLoading(false);
       } else {
-        console.error('Could not create a connection between client and server! Help!')
+        navigate('/');
       }
     });
   };
