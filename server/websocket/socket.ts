@@ -426,7 +426,8 @@ export class ServerSocket {
         console.log('returned user in disconnect:', user)
         if (user) {
           //have the user leave the game
-          await this.LeaveTheGame(socket, user);
+          const matchFuncParamsForUser = { sub: user.authId }
+          await this.LeaveTheGame(socket, matchFuncParamsForUser);
           // delete the socket id from the user since they're not connected anymore
           await this.UserUpdate('socketId', '', 'socketId', socket.id);
           console.log('Removed socket from disconnected user');
