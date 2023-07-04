@@ -7,6 +7,7 @@ import { Header, StyledHeader, Footer } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
 import styled from 'styled-components';
+import SingleTrophy from '../components/SingleTrophy'
 
 export type UserData = {
   userId: number;
@@ -177,7 +178,7 @@ const ProfilePage: React.FC = () => {
       <Header page='Profile' />
       <Main>
         <TrophyContainer>
-          <h3>TROPHY???</h3>
+          <SingleTrophy />
         </TrophyContainer>
         <IdContainer>
           {userData?.facialDescriptions ?
