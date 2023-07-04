@@ -26,7 +26,7 @@ const CheckAccess: React.FC = () => {
 
       switch (true) {
         case videoAccessError:
-          errorMessages.push('video');
+          // errorMessages.push('video');
           break;
         case locationAccessError:
           errorMessages.push('location');
@@ -51,17 +51,17 @@ const CheckAccess: React.FC = () => {
 
   // turns the camera on and off
   const checkVideoAccess = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        stream.getTracks().forEach((track) => track.stop());
-      })
-      .catch((error) => {
-        setVideoAccessError(true);
-        setErrorMessages((prevMessages) => [...prevMessages,
-        `Your camera isn't working because ${error.message.toLowerCase()}.
-        Gear up, fix the issue, and reload that refresh button like a true bounty hunter you are.`]);
-      });
+    // navigator.mediaDevices
+    //   .getUserMedia({ video: true })
+    //   .then((stream) => {
+    //     stream.getTracks().forEach((track) => track.stop());
+    //   })
+    //   .catch((error) => {
+    //     // setVideoAccessError(true);
+    //     setErrorMessages((prevMessages) => [...prevMessages,
+    //     `Your camera isn't working because ${error.message.toLowerCase()}.
+    //     Gear up, fix the issue, and reload that refresh button like a true bounty hunter you are.`]);
+    //   });
   };
 
   // checks to see if user location is accessible 

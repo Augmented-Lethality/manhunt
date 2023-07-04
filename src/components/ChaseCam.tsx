@@ -38,7 +38,7 @@ const ChaseCam: React.FC = () => {
   // const hardCodeMarker = new Sprite(hardCodeMtl);
 
   // set size of sprites
-  const spriteSize = 0.3;
+  const spriteSize = 0.5;
   killers.scale.set(spriteSize, spriteSize, 1);
   victim.scale.set(spriteSize, spriteSize, 1);
   // hardCodeMarker.scale.set(spriteSize, spriteSize, 1);
@@ -253,11 +253,11 @@ const ChaseCam: React.FC = () => {
 
   return (
     // <div style={{ height: '100%', width: '100%' }}>
-      <canvas
-        ref={canvasRef}
-        style={{ position: 'absolute', top: '132px', left: 0 }}
-        // style={{ width: '100%', height: '100%' }}
-      />
+    <canvas
+      ref={canvasRef}
+      style={{ position: 'absolute', top: '132px', left: 0 }}
+    // style={{ width: '100%', height: '100%' }}
+    />
     // </div>
   );
 };

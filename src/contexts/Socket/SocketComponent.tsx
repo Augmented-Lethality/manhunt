@@ -45,6 +45,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   // when the component mounts, aka the user visits a react component surrounded by this socket component, these functions are called
   useEffect(() => {
 
+    // if (user) {
+    console.log('there is a user to send', user)
     // opens the socket
     socket.connect();
 
@@ -56,6 +58,9 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
     // send the handshake (attempts to connect to the server)
     SendHandshake();
+    // } else {
+    //   console.log('no user to send yet')
+    // }
 
     // eslint-disable-next-line
   }, [])
@@ -118,21 +123,20 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
       // redirecting the user based on the lobby games state
       const redirect = () => {
-        if (games[0].status === 'lobby') {
-          navigate('/lobby');
+        if (!games[0].users.includes(user?.sub) || games.length === 0) {
+          // navigate('/home');
+          // LeaveGame(user);
+          console.log('should redirect to home? maybe not?')
         } else if (games[0].status === 'complete') {
           navigate('/gameover');
         } else if (games[0].status === 'ongoing') {
           navigate('/onthehunt');
-        } else if (games[0].users.length <= 0) {
-          navigate('/home');
-          LeaveGame(user);
+        } else if (games[0].status === 'lobby') {
+          navigate('/lobby');
         }
       }
 
-      if (games.length > 0) {
-        redirect();
-      }
+      redirect();
     });
 
     // update locations event
@@ -168,7 +172,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
         SocketDispatch({ type: 'update_player', payload: response });
         setLoading(false);
       } else {
-        console.error('Could not create a connection between client and server! Help!')
+        navigate('/');
       }
     });
   };

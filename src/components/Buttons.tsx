@@ -119,7 +119,7 @@ export const ButtonToJoinLobby: React.FC = () => {
 
 export const ButtonToHostGame: React.FC = () => {
   const { CreateGame } = useContext(SocketContext);
-  return <LargeButton label='Host a Contract with Corpoverse' route='/lobby' onClick={CreateGame} />;
+  return <LargeButton label='Host a Contract' route='/lobby' onClick={CreateGame} />;
 };
 
 export const LogoutButton = () => {

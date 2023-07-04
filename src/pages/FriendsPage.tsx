@@ -3,10 +3,10 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 import UsersList from '../components/UsersList';
-import {Container} from '../styles/Container';
-import {Main} from '../styles/Main';
-import {Header} from '../styles/Header';
-import { Search , XCircle, Bell } from 'react-feather';
+import { Container } from '../styles/Container';
+import { Main } from '../styles/Main';
+import { Header } from '../styles/Header';
+import { Search, XCircle, Bell } from 'react-feather';
 
 
 const FriendsContainer = styled.div`
@@ -47,14 +47,14 @@ const FriendsPage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
 
   useEffect(() => {
-    if(user && isAuthenticated) {
+    if (user && isAuthenticated) {
       getFriends();
     }
-  }, [user, isAuthenticated]); 
+  }, [user, isAuthenticated]);
 
   useEffect(() => {
     handleSearch();
-  }, [searchText]); 
+  }, [searchText]);
 
   const getFriends = async () => {
     try {
@@ -65,9 +65,9 @@ const FriendsPage: React.FC = () => {
         let pending: any[] = [];
         let blocked: any[] = [];
         res.data.forEach(resUser => {
-          if(resUser.status === 'blocked'){
+          if (resUser.status === 'blocked') {
             blocked.push(resUser);
-          } else if (resUser.status === 'pending'){
+          } else if (resUser.status === 'pending') {
             pending.push(resUser)
           }
           else {
@@ -78,61 +78,63 @@ const FriendsPage: React.FC = () => {
         setPendingRequests(pending);
         setBlockedUsers(blocked);
       }
-    } catch(err) {
-      console.error(err);
-    }
-  }
-
-  const handleSearch = async () => {
-    if(!searchText.length){
-      return;
-    }
-    try {
-      const res = await axios.get(`/users/search/${searchText}`)
-      if(res.status === 200){
-        setSearchResults(res.data)
-      }
     } catch (err) {
       console.error(err);
     }
   }
 
+  const handleSearch = async () => {
+    if (!searchText.length) {
+      return;
+    }
+    try {
+      const res = await axios.get(`/users/search/${searchText}`);
+      if (res.status === 200) {
+        const filteredFriends = res.data.filter(player => player.authId !== user?.sub);
+        setSearchResults(filteredFriends);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
 
-  if(!user || !isAuthenticated){
+  if (!user || !isAuthenticated) {
     return null;
   }
 
 
   return (
     <Container>
-      <Header page='Friends'/>
+      <Header page='Friends' />
       <Main>
         <SearchBar>
-            <input
-              type='text'
-              placeholder="Search"
-              value={searchText}
-              onChange={handleInputChange}
-              />
+          <input
+            type='text'
+            placeholder="Find a Hunter"
+            value={searchText}
+            onChange={handleInputChange}
+          />
           {searchText === '' ?
-          <SearchIcon className='react-icon'/>
-          : <CloseIcon onClick={() => {setSearchText('')}} className='react-icon'/>}
+            <SearchIcon className='react-icon' />
+            : <CloseIcon onClick={() => { setSearchText('') }} className='react-icon' />}
         </SearchBar>
         <FriendsContainer>
           {searchText === '' ? (
             <>
-              <Bell onClick={()=>{setViewingPending(viewingPending => !viewingPending)}}/>
-              {viewingPending && 
+              <Bell onClick={() => { setViewingPending(viewingPending => !viewingPending) }} />
+              {viewingPending &&
                 <UsersList users={pendingRequests} header={`Requests • ${pendingRequests.length}`} />
               }
               <UsersList users={onlineFriends} header={`Online • ${onlineFriends.length}`} />
               <UsersList users={offlineFriends} header={`Offline • ${offlineFriends.length}`} />
             </>
           ) : searchResults.length === 0 ? (
-            <p>no users found</p>
+            <h3 style={{ textAlign: 'center' }}>You've got the wrong guy!</h3>
           ) : (
             <UsersList users={searchResults} />
           )}

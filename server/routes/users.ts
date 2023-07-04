@@ -147,7 +147,7 @@ Users.get("/:authId", async (req, res) => {
   try {
     // Fetch the user's data from the database based on their google auth ID
     const user = await User.findAll({ where: { authId: req.params.authId } });
-    console.log(user)
+    // console.log(user)
     if (!user) {
       return res.sendStatus(404);
     }
@@ -176,12 +176,12 @@ Users.get("/games/:authId", async (req, res) => {
 // GET SPECIFIC USER BY USERNAME
 Users.get("/name/:username", async (req, res) => {
   try {
-    const user = await User.findOne({ 
-      where: { 
-        username: { 
-          [Op.iLike]: req.params.username 
-        } 
-      } 
+    const user = await User.findOne({
+      where: {
+        username: {
+          [Op.iLike]: req.params.username
+        }
+      }
     });
 
     if (!user) {

@@ -144,7 +144,11 @@ export class ServerSocket {
           console.log('already hosting a game');
         } else {
           const gameId = v4();
-          const hostName = user.name;
+          let hostName = user.name;
+          const index = hostName.indexOf("@");
+          if (index !== -1) {
+            hostName = hostName.substring(0, index);
+          }
           const newGame = await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub], hunted: '' });
           await this.UserUpdate('gameId', gameId, 'authId', user.sub);
 
@@ -163,7 +167,7 @@ export class ServerSocket {
     });
 
     socket.on('join_game', async (host, user) => {
-      console.log(host)
+      // console.log(host)
       try {
         const game = await this.GameFindOne('host', host);
 
@@ -284,7 +288,7 @@ export class ServerSocket {
           console.log('made new location')
         }
 
-        const locations = await Locations.findAll({ where: { authId: user.sub } });
+        const locations = await Locations.findAll({ where: { gameId: gameId } });
 
         this.io.to(gameId).emit('update_locations', locations);
       } catch (err) {
@@ -370,90 +374,7 @@ export class ServerSocket {
     });
 
     socket.on('leave_game', async (user) => {
-      try {
-        // get the user so that can get the game
-        const existingUser = await this.FindUserByAuthId(user.sub);
-        const game = await this.FindGameByGameId(existingUser.gameId)
-
-        // if that game exists
-        if (game) {
-          // if the game has this user within the users array
-          if (game.users.includes(user.sub)) {
-
-            // update the user so that they don't have the gameId anymore
-            await this.UserUpdate('gameId', '', 'authId', user.sub);
-
-            const location = await Locations.findByPk(user.sub);
-
-            if (location) {
-              await Locations.destroy({ where: { authId: user.sub } });
-            }
-
-            // update the users list to not have the user in there anymore so the game list can be updated
-            const updatedUserList = game.users.filter((authId: string) => authId !== existingUser?.authId);
-
-            // if there's no more users in the game, destroy the game
-            if (updatedUserList.length === 0) {
-
-              await Game.destroy({ where: { gameId: game.gameId } });
-
-              // making sure there is no trace of the gameId in other users
-              const usersToUpdate = await User.findAll({ where: { gameId: game.gameId } });
-              await Promise.all(usersToUpdate.map(user => user.update({ gameId: '' })));
-              await Locations.destroy({ where: { gameId: game.gameId } });
-
-              console.log('Game deleted, no more users in game');
-              console.log('Locations deleted, no more users in game')
-
-            } else {
-              // the host is the current host
-              let host = game.host;
-              let hostName = game.hostName;
-              let victim = game.hunted;
-
-              // if the host was the user leaving the game, set the new host as the person in the first index of the users array
-              if (game.host === user.sub) {
-                const newHost = await this.FindUserByAuthId(updatedUserList[0]);
-
-                if (newHost) {
-                  host = newHost.authId;
-                  hostName = newHost.username;
-
-                }
-                host = updatedUserList[0];
-
-              }
-
-              if (game.hunted === user.sub) {
-                victim = updatedUserList[Math.floor(Math.random() * updatedUserList.length)];
-
-              }
-
-              // update the game with the new users list and either new host or same host
-              await Game.update(
-                { users: updatedUserList, host: host, hostName: hostName, hunted: victim },
-                { where: { gameId: game.gameId } }
-              )
-
-            }
-
-            // update everyone on the new players and games
-            this.EmitLobbyUpdates(game.gameId);
-            // put that user back into the users room and leave the game room
-            socket.leave(game.gameId);
-            socket.join('users');
-            this.EmitGeneralUpdates()
-
-          } else {
-            console.log('game did not have that user');
-          }
-
-        } else {
-          console.log('no game like that exists')
-        }
-      } catch (err) {
-        console.log(err);
-      }
+      await this.LeaveTheGame(socket, user);
     });
 
     socket.on('update_game_timer', async (time, user) => {
@@ -503,48 +424,22 @@ export class ServerSocket {
 
     // when the disconnect occurs
     socket.on('disconnect', async () => {
-      console.log('there was a socket disconnection')
-
+      console.log('There was a socket disconnection');
       try {
         const user = await this.UserFindOne('socketId', socket.id);
         if (user) {
-          const game = await this.FindGameByGameId(user.gameId)
-
-          // remove user from the list of users in the game since they're disconnected
-          if (game) {
-            const updatedUserList = game.users.filter((authId: string) => authId !== user.authId);
-
-            // if this user was the only user, then delete the game instead
-            if (updatedUserList.length === 0) {
-              await Game.destroy({ where: { gameId: game.gameId } });
-
-              const location = await Locations.findByPk(user.authId);
-
-              if (location) {
-                await Locations.destroy({ where: { authId: user.authId } });
-                console.log('deleted locations')
-              }
-            } else {
-
-              this.GameUpdateUsers(updatedUserList, 'gameId', user.gameId);
-            }
-
-            socket.leave(user.gameId);
-            this.EmitLobbyUpdates(user.gameId);
-          }
-
+          //have the user leave the game
+          const matchFuncParamsForUser = { sub: user.authId }
+          await this.LeaveTheGame(socket, matchFuncParamsForUser);
           // delete the socket id from the user since they're not connected anymore
           await this.UserUpdate('socketId', '', 'socketId', socket.id);
-
-          console.log('removed socket from disconnected user:')
+          console.log('Removed socket from disconnected user');
         }
         socket.leave('users');
-        this.EmitGeneralUpdates()
-
+        this.EmitGeneralUpdates();
       } catch (err) {
-        console.log(err);
+        console.log('error on socket disconnection:', err);
       }
-
     });
   };
 
@@ -615,5 +510,75 @@ export class ServerSocket {
     this.io.to('users').emit('update_games', games);
   }
 
+  //// reusable logic ////
+
+  //leave game
+  LeaveTheGame = async (socket, user) => {
+    try {
+      // get the user so that can get the game
+      const existingUser = await this.FindUserByAuthId(user.sub);
+      const game = await this.FindGameByGameId(existingUser.gameId)
+      // if that game exists
+      if (game) {
+        // if the game has this user within the users array
+        if (game.users.includes(user.sub)) {
+          try {
+            await Locations.destroy({ where: { authId: user.sub } });
+          } catch (err) {
+            console.log('no location to destroy for that user')
+          }
+          // update the users list to not have the user in there anymore so the game list can be updated
+          const updatedUserList = game.users.filter((authId: string) => authId !== user.sub);
+          // if there's no more users in the game, destroy the game
+          if (!updatedUserList.length) {
+            await Game.destroy({ where: { gameId: game.gameId } });
+            // making sure there is no trace of the gameId in other users
+            const usersToUpdate = await User.findAll({ where: { gameId: game.gameId } });
+            await Promise.all(usersToUpdate.map(user => user.update({ gameId: '' })));
+            await Locations.destroy({ where: { gameId: game.gameId } });
+            console.log('Game deleted, no more users in game');
+            console.log('Locations deleted, no more users in game')
+            // if there's still people in the game
+          } else {
+            // the host is the current host
+            let host = game.host;
+            let hostName = game.hostName;
+            let victim = game.hunted;
+            // if the host was the user leaving the game, pick a random host
+            if (game.host === user.sub) {
+              const newHost = await this.FindUserByAuthId(updatedUserList[Math.floor(Math.random() * updatedUserList.length)]);
+              host = newHost.authId;
+              hostName = newHost.username;
+            }
+            // if hunted was the leaving user, pick a random new hunted
+            if (game.hunted === user.sub) {
+              victim = updatedUserList[Math.floor(Math.random() * updatedUserList.length)];
+            }
+            // update the game with the new users list and either new host or same host
+            await Game.update(
+              { users: updatedUserList, host: host, hostName: hostName, hunted: victim },
+              { where: { gameId: game.gameId } }
+            )
+          }
+          // update everyone on the new players and games
+          socket.leave(game.gameId);
+          // update the user so that they don't have the gameId anymore
+          await this.UserUpdate('gameId', '', 'authId', user.sub);
+          this.EmitLobbyUpdates(game.gameId);
+
+          // put that user back into the users room and leave the game room
+          socket.join('users');
+          this.EmitGeneralUpdates()
+        } else {
+          console.log('game did not have that user');
+        }
+      } else {
+        console.log(`tried to leave game, game does not exist with the gameId that the user provided: ${existingUser.gameId}!
+no biggie, it may have been a generic request from the home page.`);
+      }
+    } catch (err) {
+      console.log('something went wrong when trying to leave the game:', err);
+    }
+  }
 
 }
