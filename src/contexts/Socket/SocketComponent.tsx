@@ -47,7 +47,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   useEffect(() => {
 
     // if (user) {
-    console.log('there is a user to send', user)
+    // console.log('there is a user to send', user)
     // opens the socket
     socket.connect();
 
