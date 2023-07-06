@@ -157,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
         </div>
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
-          : <h1>{page}</h1>
+          : <h1 style={{fontSize: '10vw'}}>{page}</h1>
         }
       </div>
     </StyledHeader>

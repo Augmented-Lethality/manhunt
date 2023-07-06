@@ -87,6 +87,7 @@ body {
       1px 1px 0 #000;
     font-size: 2rem;
     margin: -.5rem;
+    filter: none;
   }
 
   .react-icon{
@@ -160,6 +161,7 @@ body {
      1px -1px 0 #000,
     -1px 1px 0 #000,
      1px 1px 0 #000;
+    filter: drop-shadow(-3px 3px 0px #000);
 
     ::after {
       content: attr(data-text);
