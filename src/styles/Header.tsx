@@ -3,7 +3,6 @@ import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import DropDownMenu from '../components/DropDownMenu';
 import { useNavigate } from 'react-router-dom';
-import { User, Home, Award } from 'react-feather/dist/icons/user';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
 
