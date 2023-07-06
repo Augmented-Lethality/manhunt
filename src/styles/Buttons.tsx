@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { useAuth0 } from '@auth0/auth0-react';
 
-
 type ButtonProps = {
-  label: string;
+  label?: string;
   route: string;
   onClick?: () => void;
   primary?: boolean;
   className?: string;
+  buttonType?: string;
 }
 
 const StyledButton1 = styled.button<ButtonProps>`
@@ -26,21 +26,21 @@ const StyledButton1 = styled.button<ButtonProps>`
 `;
 
 const StyledButton2 = styled.button<ButtonProps>`
-  color: white;
-  background: #a43d1a;
-  font-family: Lobster;
-  font-size: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 1000;
-  height: 24vh;
-  width: 50vw;
+  height: 48vw;
+  width: 64vw;
+  margin-top: 50px;
   margin-inline: auto;
-  padding: 2.25em;
-  border: 27px solid #ffffff;
-  border-radius: 60px;
+  border-radius: 50px;
   -webkit-text-stroke: 2px black;
+  background-image: url(/textures/host-a-contract.png);
+  background-size: cover;
+  background-position: center;
+  box-shadow: -5px 7px 10px 3px #00000059;
+  background-image: ${(props) =>
+    props.buttonType === 'host' 
+    ? `url("/textures/host-a-contract.png")` 
+    : `url("/textures/see-the-contract-board.png")`
+  };
 `;
 
 
@@ -70,7 +70,8 @@ export const Button: React.FC<ButtonProps> = ({
 export const LargeButton: React.FC<ButtonProps> = ({
   label,
   route,
-  onClick
+  onClick,
+  buttonType
 }) => {
   const navigate = useNavigate();
 
@@ -82,7 +83,7 @@ export const LargeButton: React.FC<ButtonProps> = ({
   };
 
   return (
-    <StyledButton2 label={label} onClick={handleClick} route={route}>
+    <StyledButton2 buttonType={buttonType} onClick={handleClick} route={route}>
       {label}
     </StyledButton2>
 
@@ -110,7 +111,7 @@ export const ButtonToProfile: React.FC = () => {
 };
 
 export const ButtonToFindGame: React.FC = () => {
-  return <LargeButton label='View The Contract Board' route='/findGame' />;
+  return <LargeButton route='/findGame' />;
 };
 
 export const ButtonToJoinLobby: React.FC = () => {
@@ -119,7 +120,7 @@ export const ButtonToJoinLobby: React.FC = () => {
 
 export const ButtonToHostGame: React.FC = () => {
   const { CreateGame } = useContext(SocketContext);
-  return <LargeButton label='Host a Contract' route='/lobby' onClick={CreateGame} />;
+  return <LargeButton buttonType='host' route='/lobby' onClick={CreateGame} />;
 };
 
 export const LogoutButton = () => {
