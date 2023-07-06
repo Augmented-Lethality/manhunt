@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoginButton, SignupButton } from '../components/Buttons';
+import { LoginButton, SignupButton } from '../styles/Buttons';
 import styled from 'styled-components';
 
 const PageContainer = styled.div`

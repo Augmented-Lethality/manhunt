@@ -38,7 +38,9 @@ const TrophyContainer = styled.div`
 
 //ID card background that user data sits on
 const IdContainer = styled.div`
-  background-color: #1e1e2a;
+  background: url(/textures/paper.png);
+  background-size: cover;
+  background-position: center;
   border-radius: 19px;
   display: flex;
   flex-direction: column;
@@ -87,6 +89,9 @@ function Eyeball() {
 //ID card background that user data sits on
 const VerificationContainer = styled.div`
   background-color: #1e1e2a;
+  background: url(/textures/paper.png);
+  background-size: cover;
+  background-position: center;
   border-radius: 19px 19px 0 0;
   display: flex;
   flex-direction: column;
@@ -100,23 +105,11 @@ const VerificationContainer = styled.div`
   padding: 36px;
   width: 70%;
 `
-export type TrophyData = {
-  id: number;
-  name: string;
-  description: string;
-  createdAt: string;
-  dimension: number;
-  color: string;
-  shape: string;
-  tubularSegments: number;
-  tubeWidth: number;
-};
 
 const ProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
-  const [userTrophy, setUserTrophy] = useState<TrophyData | null>(null)
 
   const winLossRatio =
     userData?.gamesPlayed && userData?.gamesWon

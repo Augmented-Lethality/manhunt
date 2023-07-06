@@ -10,7 +10,7 @@ import UsersList from '../components/UsersList';
 import { useAuth0 } from '@auth0/auth0-react';
 import PageLoader from '../components/Loading';
 import styled from 'styled-components';
-import { ButtonToGame } from '../components/Buttons';
+import { ButtonToGame } from '../styles/Buttons';
 import TimerInput from '../components/GameLobby/TimerInput';
 
 const PlayersContainer = styled.div`

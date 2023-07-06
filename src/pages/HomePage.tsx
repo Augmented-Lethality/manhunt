@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { ButtonToFindGame, ButtonToHostGame } from '../components/Buttons';
+import { ButtonToFindGame, ButtonToHostGame } from '../styles/Buttons';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
 import { Header } from '../styles/Header';
