@@ -45,7 +45,6 @@ const Phone = styled.div`
   animation: ${PhoneAnimate} 4s linear infinite;
   animation-delay: 0.375s;
   left: 150px;
-  transform: translateX(calc(33.33vw - 75px));
 
   &::after {
     content: "";
