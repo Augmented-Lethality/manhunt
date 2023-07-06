@@ -59,7 +59,7 @@ const FriendsPage: React.FC = () => {
   const getFriends = async () => {
     try {
       const res = await axios.get(`/friends/${user?.sub}`);
-      console.log(res.data);
+      // console.log(res.data);
       if (res.status === 200) {
         let online: any[] = [];
         let pending: any[] = [];

@@ -105,6 +105,12 @@ const VerificationContainer = styled.div`
   padding: 36px;
   width: 70%;
 `
+// trying to fix the text not shrinking??
+const Text = styled.h5`
+  color: #444254;
+  letter-spacing: 4px;
+  flex-shrink: 1;
+`;
 
 const ProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -174,11 +180,11 @@ const ProfilePage: React.FC = () => {
           <SingleTrophy />
         </TrophyContainer>
         <IdContainer>
-          {userData?.facialDescriptions ?
-            <h5 style={{ color: '#444254', letterSpacing: '4px' }}>CORPOVERSE OFFICIAL ID</h5>
-            :
-            <h5 style={{ color: '#444254', letterSpacing: '4px' }}>TEMPORARY CORPOVERSE ID</h5>
-          }
+          {userData?.facialDescriptions ? (
+            <Text>CORPOVERSE OFFICIAL ID</Text>
+          ) : (
+            <Text>TEMPORARY CORPOVERSE ID</Text>
+          )}
           <NameContainer>
             {user.picture ? (
               <img

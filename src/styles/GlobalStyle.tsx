@@ -90,6 +90,15 @@ body {
     filter: none;
   }
 
+  .phone-logo {
+    color: #e6a733;
+    font-family: 'Fascinate Inline';
+    text-shadow: -2px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    filter: drop-shadow(-3px 3px 0px #000);
+    text-align: center;
+  }
+
+
   .react-icon{
     font-size: 3rem;
     color: #ffffff;

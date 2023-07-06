@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Header } from '../styles/Header';
 import { Container } from '../styles/Container';
 import { Main } from '../styles/Main';
@@ -75,20 +75,20 @@ const Settings: React.FC = () => {
   const getUserSetting = async () => {
     try {
       const res = await axios.get(`/users/${user?.sub}`);
-      if(res.status === 200) {
+      if (res.status === 200) {
         const largeFont = res.data[0].largeFont
         setChecked(largeFont);
         largeFont ? setFontSize(20) : setFontSize(16);
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   }
 
   const toggleLargeFont = async () => {
     const newFontSetting = !checked;
     try {
-      const res = await axios.patch(`/users/largeFont/${user?.sub}`, {largeFont: newFontSetting});
+      const res = await axios.patch(`/users/largeFont/${user?.sub}`, { largeFont: newFontSetting });
       const resSetting = res.data.largeFont
       if (res.status === 200) {
         setChecked(resSetting);
@@ -99,18 +99,18 @@ const Settings: React.FC = () => {
     }
   }
 
-  if(isLoading || !user || !isAuthenticated){
+  if (isLoading || !user || !isAuthenticated) {
     return null;
   }
 
   return (
     <Container>
-      <Header page='Settings'/>
+      <Header page='Settings' />
       <Main>
-        <div style={{display:'flex', flexDirection:'column', margin:'20px', textAlign:'center'}}>
+        <div style={{ display: 'flex', flexDirection: 'column', margin: '20px', textAlign: 'center' }}>
           <h3>Corpoverse has gifted its citizens with the following setting</h3>
-          <div style={{display:'flex', flexDirection:'row', margin:'20px', alignItems:'baseline'}}>
-            <Switch onChange={toggleLargeFont} checked={checked}/>
+          <div style={{ display: 'flex', flexDirection: 'row', margin: '20px', alignItems: 'baseline' }}>
+            <Switch onChange={toggleLargeFont} checked={checked} />
             <h3>Larger Font</h3>
           </div>
         </div>
