@@ -2,20 +2,34 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
 
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  min-height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  color: black;
+  font-family: 'Source Code Pro';
+  font-size: var(--font-size);
+  word-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+  /* Large screens */
   body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    min-height: 100vh;
-    width: 100vw;
-    box-sizing: border-box;
-    background: linear-gradient(0, #303350, #454860);
-    repeat: no-repeat;
-    color: #8a87ab;
-    font-family: 'Source Code Pro';
-    font-size: var(--font-size);
-    word-wrap: break-word;
+    background: url("/textures/background-large.png") no-repeat;
+    background-size: cover;
   }
+}
+
+@media (max-width: 767px) {
+  /* Phones and smaller screens */
+  body {
+    background: url("/textures/background-small.png") no-repeat;
+    background-size: cover;
+  }
+}
 
   button{
     background: #6e6b8c;
@@ -31,6 +45,9 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
     border-radius: 26px;
   }
 
+  .button-large {
+
+  }
   .alt-user-pic {
     background: #6854bb;
     color: #e0dfe5;
@@ -74,7 +91,7 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
 
   .react-icon{
     font-size: 3rem;
-    color: #6e6b8c;
+    color: #ffffff;
   }
 
   .react-icon-large{
@@ -136,12 +153,23 @@ const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
 
   h1 {
     font-size: 3rem;
+    font-family: 'Sonsie One';
+    color: #7DBAFF;
     text-shadow:
     -1px -1px 0 #000,
      1px -1px 0 #000,
     -1px 1px 0 #000,
-     1px 1px 0 #000; 
+     1px 1px 0 #000;
+
+    ::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      color: #000;
+    }
   }
+
 
   h2 {
     font-size: 2rem;
