@@ -102,7 +102,8 @@ const LogoWithCrossHairs = () => {
       position: 'absolute',
       top: 0,
       left: 0,
-      pointerEvents: 'none' }}>
+      pointerEvents: 'none'
+    }}>
       <Crosshairs />
       <div style={{
         position: 'absolute',
@@ -143,7 +144,7 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
     <StyledHeader>
       <HeaderTextureLarge isPhone={isPhoneScreen} />
       <HeaderTextureSmall isPhone={isPhoneScreen} />
-      <LogoWithCrossHairs/>
+      <LogoWithCrossHairs />
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
           <img
@@ -156,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
         </div>
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
-          : <h1 style={{fontSize: '10vw'}}>{page}</h1>
+          : <h1 style={{ fontSize: '10vw' }}>{page}</h1>
         }
       </div>
     </StyledHeader>

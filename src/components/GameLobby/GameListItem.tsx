@@ -38,7 +38,7 @@ export const GameListItem: React.FC<{ game: Game }> = ({ game }) => {
   };
 
   useEffect(() => {
-    console.log('game host', game.host)
+    // console.log('game host', game.host)
   }, [users])
   return (
     <GameContainer>
