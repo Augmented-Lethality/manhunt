@@ -56,7 +56,7 @@ const Dots = styled(MoreHorizontal)`
 height: 3rem;
 width: 3rem;
 border-radius: 50%;
-border: 3px solid #6e6b8c;
+border: 3px solid #6f5858;
 box-sizing: border-box;
 `;
 
@@ -94,7 +94,7 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
 
   return (
     <div className='dropdown'>
-      <Dots onClick={toggleMenu} />
+      <Dots style={{color:'#6f5858'}} onClick={toggleMenu} />
       <Backdrop isOpen={isMenuOpen} onClick={toggleMenu}/>
       <Menu isOpen={isMenuOpen}>
         <Close onClick={toggleMenu} />
@@ -112,7 +112,6 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
           logout
         </p>
       </Menu>
-
     </div>
   );
 };
