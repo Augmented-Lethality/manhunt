@@ -134,8 +134,8 @@ body {
   }
 
   .react-icon-large{
-    top: 88vh;
-    right: 4vh;
+    position: absolute;
+    left: 50%;
     border-radius: 50%;
     padding: 10px;
     background-color: rgb(48 48 58);

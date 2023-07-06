@@ -186,14 +186,6 @@ const StyledOval = styled.div`
 `;
 
 export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
-  const navigate = useNavigate();
-  const { user } = useAuth0();
-  const { LeaveGame } = useContext(SocketContext);
-
-  const handleHome = () => {
-    LeaveGame(user);
-    navigate('/home');
-  }
 
   return (
     <StyledHeader>
@@ -204,8 +196,8 @@ export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
 }
 
 export const Footer = styled.footer`
-  background-color: #3F404F;
-  border-top: 1px solid #202026;
+  background-color: transparent;
+  border-top: transparent;
   height: 60px;
   padding: 1rem;
   position: absolute;
