@@ -1,5 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
 import SocketContext, { User } from '../contexts/Socket/SocketContext';
+import styled from 'styled-components';
+
+const StartContainer = styled.div`
+  background: grey;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 50px;
+  margin-inline: 20px;
+  padding: 56px;
+  height: 30vh;
+  border-radius: 10px;
+  justify-content: space-around;
+`
 
 interface WhosHuntingProps {
   setBountyName: React.Dispatch<React.SetStateAction<string | null>>;
@@ -28,12 +44,21 @@ const WhosHunting: React.FunctionComponent<WhosHuntingProps> = ({setBountyName})
 
   //dont render the start button until the players are all ready
   return (
-    !hasReadyErrors
-    ? <button
-        onClick={() => pickVictim(users, SetHunted)}
-        style={{maxWidth:'200px'}}>Start
-      </button>
-    : <button style={{maxWidth:'200px'}}>Waiting on Players</button>
+    <StartContainer>
+      { !hasReadyErrors ? (
+      <>
+        <span className='button-label'>Start</span>
+        <button
+          onClick={() => pickVictim(users, SetHunted)}
+          className='metal-button'/>
+      </>
+      ) : (
+        <>
+          <span className='button-label'>Waiting on Players</span>
+          <button style={{maxWidth:'200px'}}/>
+        </>
+      )}
+    </StartContainer>
   )
 };
 

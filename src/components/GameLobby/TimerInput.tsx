@@ -31,6 +31,8 @@ const SelectedTime = styled.div`
   font-size: 2em;
   text-align: center;
   width: 175px;
+  color: green;
+  font-family: 'VT323';
 `;
 
 // TimeItemComponent filters out 'visible' prop to remove a browser error
@@ -92,18 +94,18 @@ const TimerInput: React.FC = () => {
     <>
       {!open && (
         <SelectedTime >
-          <Arrow visible={selectedIndex > 0} onClick={() => handleArrowClick('up')}>
-            ▲
-          </Arrow>
-          <div onClick={() => setOpen(!open)}>
+          <div style={{background: 'black'}} onClick={() => setOpen(!open)}>
             {selected}
           </div>
-          <Arrow
+          <button className='plastic-button' onClick={() => handleArrowClick('down')}>◁</button>
+          <button className='plastic-button' onClick={() => handleArrowClick('up')}>▷</button>
+          
+          {/* <Arrow
             visible={selectedIndex < scrollValues.length - 1}
             onClick={() => handleArrowClick('down')}
           >
             ▼
-          </Arrow>
+          </Arrow> */}
         </SelectedTime>
       )}
       <TimeListContainer open={open} ref={listRef}>

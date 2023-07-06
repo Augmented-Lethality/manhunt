@@ -6,16 +6,13 @@ import SocketContext, { User } from '../contexts/Socket/SocketContext';
 import CheckAccess from './GameLobby/CheckAccess';
 import AccessReady from './GameLobby/AccessReady';
 
-import { GameContainer } from './GameLobby/GameListItem';
-
 const UserContainer = styled.div`
   display: flex;
   align-items: center;
-    padding: 25px;
+  padding: 25px;
   border-radius: 10px;
-    margin-top: 10px;
+  margin-top: 10px;
   margin-inline: 20px;
-  background-color: #1a1b22;
 `;
 
 const UserImage = styled.img`

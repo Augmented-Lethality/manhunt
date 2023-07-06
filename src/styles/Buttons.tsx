@@ -26,13 +26,12 @@ const StyledButton1 = styled.button<ButtonProps>`
 `;
 
 const StyledButton2 = styled.button<ButtonProps>`
-  height: 48vw;
-  width: 64vw;
+  height: 208px;
+  width: 284px;
   margin-top: 50px;
   margin-inline: auto;
-  border-radius: 50px;
+  border-radius: 57px;
   -webkit-text-stroke: 2px black;
-  background-image: url(/textures/host-a-contract.png);
   background-size: cover;
   background-position: center;
   box-shadow: -5px 7px 10px 3px #00000059;
@@ -41,6 +40,14 @@ const StyledButton2 = styled.button<ButtonProps>`
     ? `url("/textures/host-a-contract.png")` 
     : `url("/textures/see-the-contract-board.png")`
   };
+
+  > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 
