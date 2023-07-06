@@ -10,7 +10,8 @@ export const Auth0ProviderWithNavigate = ({ children }) => {
   const redirectUri = `${process.env.REACT_APP_AUTH0_REDIRECTURI}/home`;
 
   const onRedirectCallback = (appState) => {
-    navigate(appState?.returnTo || window.location.pathname);
+    // navigate(appState?.returnTo || window.location.pathname);
+    navigate('/home');
   };
 
   if (!(domain && clientId && redirectUri)) {
