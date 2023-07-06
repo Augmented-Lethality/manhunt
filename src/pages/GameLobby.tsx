@@ -25,45 +25,29 @@ const PlayersContainer = styled.div`
   border-radius: 10px;
   box-shadow: 0 0 10px 10px #0000004d;
 `;
-
-const ControlsContainer = styled.div`
+const ControlsBorder = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   margin: 20px;
   padding: 10px;
+  border-radius: 20px;
   height: 100px;
-  border-radius: 10px;
-  justify-content: space-evenly;
-  background-image: radial-gradient(circle at center, #595755 0.06rem, #000000 0.06rem);
+  background-image: radial-gradient(circle at center, #433222 0.06rem, #17140d 0.06rem);
   background-size: 0.21rem 0.25rem;
-  ::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 10px;
-    box-shadow: 0 0 0 1.5px #ffffff54, 0 0 0 3px grey, 0.5px -0.5px 0 12px #00000069,
-      0 0 0 12px #6f5454, 0 0 0 13.5px #0000004a, 0 0 0 15px grey, -13px 13px 10px 10px #0000004a;
-  // box-shadow:
-  //   0 0 0 1.5px #ffffff54,
-  //   0 0 0 3px grey,
-  //   0.5px -0.5px 0 12px #00000069,
-  //   0 0 0 12px #6f5454,
-  //   0 0 0 13.5px #0000004a,
-  //   0 0 0 15px grey,
-  //   -13px 13px 10px 10px #0000004a;
-  //   display: flex;
-  //   align-items: center;
-  //   margin: 20px;
-  //   padding: 10px;
-  //   height: 100px;
-  //   border-radius: 10px;
-  //   justify-content: space-evenly;
-  //   background-image: radial-gradient( circle at center, #595755 0.06rem, #000000 0.06rem );
-  //   background-size: 0.21rem 0.25rem;
+  box-shadow: 0px 0px 0 4px #000000, 0 0 0 8px #9b7958, 0 0 0 9px #654f39, 0 0 0 10px #8b6d50, 1px -1px 0px 10px #846c43, -1px 1px 0px 10px #91765c;
+  `
+
+  const ControlsContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  height: 90%;
+  width: 75%;
+  border-radius: 31px;
+  background-image: radial-gradient(circle at center, #9a9b98 0.1rem, #a8a884 0.1rem);
+  background-size: 0.15rem 0.25rem;
 `;
 
 const CountdownContainer = styled.div`
@@ -163,21 +147,23 @@ const GameLobby: React.FC<{}> = () => {
     <Container>
       <Header page='Lobby' />
       <Main>
-        <ControlsContainer>
-          {showControls ? (
-            <>
-              <WhosHunting setBountyName={setBountyName} />
-              <TimerInput />
-              {games[0].hunted.length > 0 && !hasReadyErrors && games[0].timeConstraints && <ButtonToGame />}
-            </>
-          ) : (
-            <>
-              <button>Waiting on Host</button>
-              <h2>{games[0].timeConstraints}:00</h2>
-            </>
-          )
-          }
-        </ControlsContainer>
+        <ControlsBorder>
+          <ControlsContainer>
+            {showControls ? (
+              <>
+                <WhosHunting setBountyName={setBountyName} />
+                <TimerInput />
+                {games[0].hunted.length > 0 && !hasReadyErrors && games[0].timeConstraints && <ButtonToGame />}
+              </>
+            ) : (
+              <>
+                <button>Waiting on Host</button>
+                <h2>{games[0].timeConstraints}:00</h2>
+              </>
+            )
+            }
+          </ControlsContainer>
+        </ControlsBorder>
         <PlayersContainer>
           <h1 style={{ fontSize: '2rem', marginBottom: '10px', textAlign: 'center' }}>Liscenced Hunters • {users.length}</h1>
           <UserListItem player={users[0]} />
