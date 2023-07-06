@@ -3,18 +3,15 @@ import SocketContext, { User } from '../contexts/Socket/SocketContext';
 import styled from 'styled-components';
 
 const StartContainer = styled.div`
-  background: grey;
+  color: black;
+  font-weight: 600;
   background-size: cover;
   background-position: center;
   display: flex;
   flex-direction: column;
   text-align: center;
-  margin-top: 50px;
-  margin-inline: 20px;
-  padding: 56px;
-  height: 30vh;
+  padding: 13px;
   border-radius: 10px;
-  justify-content: space-around;
 `
 
 interface WhosHuntingProps {

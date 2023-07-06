@@ -35,6 +35,18 @@ const SelectedTime = styled.div`
   font-family: 'VT323';
 `;
 
+const ArrowContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const TimeDisplayContainer = styled.div`
+  background: black;
+  border: 2px solid #4d4d4d;
+  border-radius: 20px;
+
+`
+
 // TimeItemComponent filters out 'visible' prop to remove a browser error
 const ArrowComponent = ({ visible, ...props }) => <div {...props} />;
 const Arrow = styled(ArrowComponent)<{ visible: boolean }>`
@@ -59,9 +71,9 @@ const TimerInput: React.FC = () => {
 
   //Allow clicking the arrows to change the time
   const handleArrowClick = (direction: 'up' | 'down') => {
-    if (direction === 'up' && selectedIndex > 0) {
+    if (direction === 'down' && selectedIndex > 0) {
       setSelected(`${scrollValues[selectedIndex - 1]}:00`);
-    } else if (direction === 'down' && selectedIndex < scrollValues.length - 1) {
+    } else if (direction === 'up' && selectedIndex < scrollValues.length - 1) {
       setSelected(`${scrollValues[selectedIndex + 1]}:00`);
     }
   };
@@ -94,12 +106,13 @@ const TimerInput: React.FC = () => {
     <>
       {!open && (
         <SelectedTime >
-          <div style={{background: 'black'}} onClick={() => setOpen(!open)}>
-            {selected}
-          </div>
-          <button className='plastic-button' onClick={() => handleArrowClick('down')}>◁</button>
-          <button className='plastic-button' onClick={() => handleArrowClick('up')}>▷</button>
-          
+          <TimeDisplayContainer onClick={() => setOpen(!open)}>
+            Game Time - {selected}
+          </TimeDisplayContainer>
+          <ArrowContainer>
+            <button className='plastic-button' onClick={() => handleArrowClick('down')}>◁</button>
+            <button className='plastic-button' onClick={() => handleArrowClick('up')}>▷</button>
+          </ArrowContainer>
           {/* <Arrow
             visible={selectedIndex < scrollValues.length - 1}
             onClick={() => handleArrowClick('down')}
