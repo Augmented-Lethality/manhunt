@@ -1,4 +1,5 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode, useContext, useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import DropDownMenu from '../components/DropDownMenu';
 import { useNavigate } from 'react-router-dom';
@@ -10,14 +11,54 @@ export const StyledHeader = styled.header`
   display: flex;
   padding: 1rem;
   height: 100px;
-  background-color: #37394a;
-  border-bottom: 1px solid #202026;
+  background-color: #FFB11A;
+  border-bottom: 5px solid #4d3810;
   justify-content: end;
+  box-shadow: 0 10px 10px 2px #00000047;
   position: relative;
 `;
 
+export const HeaderTextureLarge = styled.div<{ isPhone: boolean }>`
+  position: absolute;
+  bottom: 0;
+  margin-inline: -1rem;
+  width: 100%;
+  height: 100%;
+  background-image: url(/textures/header-large.png);
+  background-size: cover;
+  pointer-events: none;
+  mix-blend-mode: darken;
+  opacity: 50%;
+  display: ${(props) => (props.isPhone ? 'none' : 'block')}; /* Show for phone screens */
+`;
+
+export const HeaderTextureSmall = styled.div<{ isPhone: boolean }>`
+  position: absolute;
+  bottom: 0;
+  margin-inline: -1rem;
+  width: 100%;
+  height: 100%;
+  background-image: url(/textures/header-large.png);
+  background-size: cover;
+  pointer-events: none;
+  mix-blend-mode: darken;
+  opacity: 50%;
+  display: ${(props) => (props.isPhone ? 'block' : 'none')}; /* Show for phone screens */
+`;
+
 const Crosshairs = () => {
-  const scale = window.innerWidth / 600;
+  const [scale, setScale] = useState(window.innerWidth / 600);
+  const isPhoneScreen = useMediaQuery({ query: '(max-width: 767px)' });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScale(window.innerWidth / 600)
+    }
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    }
+  }, [])
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +71,8 @@ const Crosshairs = () => {
         top: '55%',
         left: '15%',
         transform: `translate(-50%, -50%) scale(${scale})`,
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+        mixBlendMode: 'overlay'
       }}>
       <circle cx="12" cy="12" r="10" />
       <circle cx="12" cy="12" r="6" strokeWidth=".5" />
@@ -53,7 +95,15 @@ const LogoWithCrossHairs = () => {
   const fontSize = window.innerWidth > 750 ? '55px' : '7vw'
 
   return (
-    <div style={{ overflow: 'hidden', height: '132px', width: '100vw', position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
+    <div style={{
+      overflow: 'hidden',
+      height: '132px',
+      width: '100vw',
+      maxWidth: '500px',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      pointerEvents: 'none' }}>
       <Crosshairs />
       <div style={{
         position: 'absolute',
@@ -63,7 +113,8 @@ const LogoWithCrossHairs = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        mixBlendMode: 'hard-light'
       }}>
         <h1
           style={{ fontSize: fontSize, margin: 0, pointerEvents: 'auto' }}
@@ -85,12 +136,15 @@ interface HeaderProps {
 
 // PLEASE KEEP THIS SOCKET FUNCTION WHEN USING A GOING HOME BUTTON
 export const Header: React.FC<HeaderProps> = ({ page, users }) => {
+  const isPhoneScreen = useMediaQuery({ query: '(max-width: 380px)' });
   const navigate = useNavigate();
   const { user } = useAuth0();
 
   return (
     <StyledHeader>
-      <LogoWithCrossHairs />
+      <HeaderTextureLarge isPhone={isPhoneScreen} />
+      <HeaderTextureSmall isPhone={isPhoneScreen} />
+      <LogoWithCrossHairs/>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
           <img
@@ -159,30 +213,3 @@ export const Footer = styled.footer`
   bottom: 0px;
   width: -webkit-fill-available;
 `;
-
-// const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 600"><defs><filter id="uuid-364a1b21-ff76-46ea-9649-0ffd94dc9e32" filterUnits="userSpaceOnUse"><feOffset dx="0" dy="14"/><feGaussianBlur result="uuid-f8a21010-bcb6-463e-b49c-d72f877ef816" stdDeviation="0"/><feFlood flood-color="#1c1c2d" flood-opacity="1"/><feComposite in2="uuid-f8a21010-bcb6-463e-b49c-d72f877ef816" operator="in"/><feComposite in="SourceGraphic"/></filter></defs><path fill="#40404c" filter="url(#uuid-364a1b21-ff76-46ea-9649-0ffd94dc9e32)" d="M1125.5,0H.5V339.9H153.2c1.8,28.7,13.5,56.4,35.1,82.4,21.6,26,52.1,49.2,90.7,68.9,76.3,38.9,176.9,60.3,283.5,60.3s207.2-21.4,283.5-60.3c38.6-19.7,69.1-42.8,90.7-68.9,21.6-26,33.4-53.7,35.1-82.4h153.7V0ZM563,71.5c140.3,0,254,77.2,254,172.5s-113.7,172.5-254,172.5-254-77.2-254-172.5,113.7-172.5,254-172.5Zm258.3,386.3c-33,16-71.7,28.6-115,37.5-45.5,9.3-93.9,14-143.8,14s-98.4-4.7-143.8-14c-43.3-8.9-82-21.5-115-37.5-59.3-28.7-93.6-65.2-97.7-103.3h85c26.8,58.1,138.4,101.8,272,101.8s245.2-43.6,272-101.8h84c-4.1,38.1-38.4,74.6-97.7,103.3Z"/></svg>`;
-// const svgDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`;
-
-// const GameHeaderContainer = styled.header`
-//   display: flex;
-//   position: absolute;
-//   padding: 1rem;
-//   height: 50vw;
-//   left: -21px;
-//   width: 100%;
-//   justify-content: flex-end;
-//   z-index: 1;
-//   background-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 600" style="width: 100%"><defs><filter id="uuid-364a1b21-ff76-46ea-9649-0ffd94dc9e32" filterUnits="userSpaceOnUse"><feOffset dx="0" dy="14"/><feGaussianBlur result="uuid-f8a21010-bcb6-463e-b49c-d72f877ef816" stdDeviation="0"/><feFlood flood-color="%231c1c2d" flood-opacity="1"/><feComposite in2="uuid-f8a21010-bcb6-463e-b49c-d72f877ef816" operator="in"/><feComposite in="SourceGraphic"/></filter></defs><path fill="%2340404c" filter="url(%23uuid-364a1b21-ff76-46ea-9649-0ffd94dc9e32)" d="M1125.5,0H.5V339.9H153.2c1.8,28.7,13.5,56.4,35.1,82.4,21.6,26,52.1,49.2,90.7,68.9,76.3,38.9,176.9,60.3,283.5,60.3s207.2-21.4,283.5-60.3c38.6-19.7,69.1-42.8,90.7-68.9,21.6-26,33.4-53.7,35.1-82.4h153.7V0ZM563,71.5c140.3,0,254,77.2,254,172.5s-113.7,172.5-254,172.5-254-77.2-254-172.5,113.7-172.5,254-172.5Zm258.3,386.3c-33,16-71.7,28.6-115,37.5-45.5,9.3-93.9,14-143.8,14s-98.4-4.7-143.8-14c-43.3-8.9-82-21.5-115-37.5-59.3-28.7-93.6-65.2-97.7-103.3h85c26.8,58.1,138.4,101.8,272,101.8s245.2-43.6,272-101.8h84c-4.1,38.1-38.4,74.6-97.7,103.3Z"/></svg>');
-//   background-size: cover;
-//   background-position: center;
-// `;
-
-// interface GameHeaderProps {
-//   children?: ReactNode;
-// }
-
-// export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => (
-//   <GameHeaderContainer>
-//     {children}
-//   </GameHeaderContainer>
-// );
