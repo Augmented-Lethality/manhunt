@@ -32,21 +32,51 @@ body {
 }
 
   button{
-    background: #6e6b8c;
+    background: #6e6b8c30;
     border: 2px #6e6b8c solid;
     color: black;
     font-family: 'Source Code Pro';
     font-size: calc(var(--font-size) * 1.5);
     font-weight: 600;
     letter-spacing: 3px;
-    margin: 1em;
-    min-width: 139px;
     padding: 1rem;
     border-radius: 26px;
   }
 
-  .button-large {
+  .metal-button {
+    background: conic-gradient(
+      hsl(74.36deg, 12.38%, 65.19%),
+      hsl(0deg, 0%, 91.72%),
+      hsl(0deg, 0%, 95.32%),
+      hsl(96.76deg, 10.53%, 61.79%),
+      hsl(124.7deg, 13.52%, 72.85%),
+      hsl(0deg, 0%, 96.37%),
+      hsl(0deg, 0%, 99.8%),
+      hsl(73.25deg, 21.84%, 71.66%),
+      hsl(60.31deg, 7.49%, 64.58%)
+    );
+    width: 50px;
+    height: 50px;
+    border: 2px solid #575757;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 0 0.5px white,
+      -3px 2px 5px 1px rgb(0 0 0 / 56%),
+      0 0 0 2px white;
+  }
 
+  .plastic-button{
+    color: #cacaca;
+    background: linear-gradient(10deg, #4a4a4a, #2c2c2c);
+    border: 2px solid black;
+    height: 30px;
+    width: 30px;
+    margin-inline: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    box-shadow: -3px 3px 10px 0px #0000008a, 0 0.5px 0 2px #434343;
   }
   .alt-user-pic {
     background: #6854bb;
@@ -92,7 +122,6 @@ body {
 
   .react-icon{
     font-size: 3rem;
-    color: #ffffff;
   }
 
   .react-icon-large{
@@ -180,7 +209,7 @@ body {
 
   h3 {
     font-size: calc(var(--font-size) * 1.5);
-    color: #b8b8b8;
+    color: black;
     font-weight: 400;    
   }
 
