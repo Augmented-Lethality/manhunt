@@ -44,7 +44,7 @@ const OtherUserProfilePage: React.FC = () => {
         status: 'pending'
       });
       if (res.status === 201) {
-        console.log(res.data)
+        // console.log(res.data)
       }
     } catch (err) {
       console.error('Error adding friend', err);

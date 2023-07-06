@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import PageLoader from './components/Loading';
+// import PageLoader from './components/Loading';
 import { useAuth0 } from '@auth0/auth0-react';
 import { AuthenticationGuard } from './Auth0/authentication-guard';
 import NotFoundPage from './pages/NotFoundPage';
@@ -19,6 +19,8 @@ import Settings from './pages/Settings';
 import { useFontSize } from './contexts/FontSize';
 import TrophyRoom from './pages/TrophyRoom';
 
+import PhoneLoader from '../src/components/Loaders/PhoneLoader'
+
 const App = () => {
   const { isLoading } = useAuth0();
   const [fontSize] = useFontSize();
@@ -30,7 +32,7 @@ const App = () => {
   if (isLoading) {
     return (
       <div className="page-layout">
-        <PageLoader />
+        <PhoneLoader />
       </div>
     );
   }

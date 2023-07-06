@@ -8,7 +8,8 @@ import { Main } from '../styles/Main'
 import UserListItem from '../components/UserListItem';
 import UsersList from '../components/UsersList';
 import { useAuth0 } from '@auth0/auth0-react';
-import PageLoader from '../components/Loading';
+// import PageLoader from '../components/Loading';
+import PhoneLoader from '../components/Loaders/PhoneLoader';
 import styled from 'styled-components';
 import { ButtonToGame } from '../styles/Buttons';
 import TimerInput from '../components/GameLobby/TimerInput';
@@ -108,7 +109,7 @@ const GameLobby: React.FC<{}> = () => {
   }
 
   if (!showLobby) {
-    return <PageLoader />
+    return <PhoneLoader />
   }
 
   if (bountyName) {

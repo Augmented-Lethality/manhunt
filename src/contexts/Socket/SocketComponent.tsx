@@ -3,7 +3,8 @@ import { useSocket } from '../../custom-hooks/useSocket';
 import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 import { useAuth0 } from '@auth0/auth0-react';
 import { User, Ready } from './SocketContext';
-import PageLoader from '../../components/Loading';
+// import PageLoader from '../../components/Loading';
+import PhoneLoader from '../../components/Loaders/PhoneLoader';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -94,31 +95,31 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
     // updating games list, user is not in game if they see this
     socket.on('update_games', async (games) => {
-      console.log('updating games state:', games)
+      // console.log('updating games state:', games)
       SocketDispatch({ type: 'update_games', payload: games });
     });
 
     // updating users not in game
     socket.on('update_users', async (users) => {
-      console.log('updating users state:', users)
+      // console.log('updating users state:', users)
       SocketDispatch({ type: 'update_users', payload: users });
     });
 
     // updating the ready status of the users in the game
     socket.on('update_ready', async (ready) => {
-      console.log('updating ready state:', ready)
+      // console.log('updating ready state:', ready)
       SocketDispatch({ type: 'update_ready', payload: ready });
     });
 
     // updating users in game lobby
     socket.on('update_lobby_users', async (users) => {
-      console.log('updating lobby users state:', users)
+      // console.log('updating lobby users state:', users)
       SocketDispatch({ type: 'update_lobby_users', payload: users });
     });
 
     // updating the games in the lobby (should only be one, but different details about it change)
     socket.on('update_lobby_games', async (games) => {
-      console.log('updating lobby games state:', games)
+      // console.log('updating lobby games state:', games)
       SocketDispatch({ type: 'update_lobby_games', payload: games });
 
       // redirecting the user based on the lobby games state
@@ -126,7 +127,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
         if (!games[0].users.includes(user?.sub) || games.length === 0) {
           // navigate('/home');
           // LeaveGame(user);
-          console.log('should redirect to home? maybe not?')
+          // console.log('should redirect to home? maybe not?')
         } else if (games[0].status === 'complete') {
           navigate('/gameover');
         } else if (games[0].status === 'ongoing') {
@@ -147,13 +148,13 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
         latitude: parseFloat(location.latitude),
         longitude: parseFloat(location.longitude)
       }));
-      console.log('updating locations state:', correctLocations)
+      // console.log('updating locations state:', correctLocations)
       SocketDispatch({ type: 'update_locations', payload: correctLocations });
     });
 
     // redirects the user to a certain endpoint
     socket.on('redirect', async (endpoint) => {
-      console.log('redirecting user to', endpoint)
+      // console.log('redirecting user to', endpoint)
       navigate(endpoint);
     });
   }
@@ -168,7 +169,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
       // sending the player information back if success, if failure it sends a string
       if (typeof response !== 'string') {
-        console.log('updating player state!')
+        // console.log('updating player state!')
         SocketDispatch({ type: 'update_player', payload: response });
         setLoading(false);
       } else {
@@ -235,7 +236,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // showing this on client side while socket isn't connected
   if (loading) {
-    return <PageLoader />
+    return <PhoneLoader />
   };
 
   // provides the socket context to the nested components
