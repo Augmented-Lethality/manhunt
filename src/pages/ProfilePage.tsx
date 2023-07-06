@@ -24,8 +24,9 @@ export type UserData = {
 //ID card background that user data sits on
 const TrophyContainer = styled.div`
   box-sizing: border-box;
-  background-color: #29293F;
-  box-shadow: inset 0 0 60px 5px #9193b2;
+  background-color: #25465157;
+  border: 6px solid #ffffffad;
+  box-shadow: inset 0px 10px 10px 5px #000000b3;
   border-radius: 50%;
   margin: 20px;
   margin-inline: auto;
@@ -52,6 +53,7 @@ const IdContainer = styled.div`
   height: 180px;
   width: 80%;
   max-width: 300px;
+  box-shadow: 0px 10px 10px 2px #00000059;
 `
 //Container For Name and Picture
 const NameContainer = styled.div`
@@ -104,6 +106,7 @@ const VerificationContainer = styled.div`
   margin-bottom: 0;
   padding: 36px;
   width: 70%;
+  box-shadow: 0px 10px 10px 2px #00000059;
 `
 
 const ProfilePage: React.FC = () => {
