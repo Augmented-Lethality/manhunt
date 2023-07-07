@@ -35,8 +35,9 @@ const Menu = styled.div<{ isOpen: boolean }>`
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${dropdownAnimation} 0.4s ease-in-out;
   position: absolute;
-  background: #242429;
-  border-bottom: 1px solid #070707;
+  background-image: linear-gradient( 0deg, #000000 10%, #0f110e 23%, #021814 71%, #131313 90%, #2d4a48 100% );  background-size: 1px 5px;
+  color: cyan;
+  font-family: 'VT323';
   padding-top: 1rem;
   top: 0;
   right: 0;
@@ -46,9 +47,11 @@ const Menu = styled.div<{ isOpen: boolean }>`
     display: flex;
     align-items: end;
     margin: 1.5rem;
+    color: cyan;
   }
   & > * > * {
     margin-right: 10px;
+    color: cyan;
   }
 `;
 

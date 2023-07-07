@@ -165,33 +165,27 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
 }
 
 
+export const GameStyledHeader = styled.header`
+  display: flex;
+  padding: 1rem;
+  justify-content: space-between;
+  position: relative;
+  margin-inline: auto;
+  margin-bottom: 20px;
+  width: 80%;
+`;
+
 interface GameHeaderProps {
   children?: ReactNode;
 }
 
-const leftOvalPosition = `${window.innerWidth / 2}px`
-const StyledOval = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 200px;
-  height: 100px;
-  background-color: #2f303a;
-  border-radius: 50%;
-  border: 2px solid #222225;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 65px;
-  left: ${leftOvalPosition};
-`;
-
 export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
 
   return (
-    <StyledHeader>
-      <StyledOval>{children}</StyledOval>
+    <GameStyledHeader className="digital digital-container">
+      {children}
       <DropDownMenu page={'Game'} />
-    </StyledHeader>
+    </GameStyledHeader>
   );
 }
 

@@ -105,13 +105,14 @@ const VerificationContainer = styled.div`
   margin-inline: auto;
   margin-bottom: 0;
   padding: 36px;
+  padding-bottom: 10px;
   width: 70%;
   box-shadow: 0px 10px 10px 2px #00000059;
 `
 // trying to fix the text not shrinking??
 const Text = styled.h5`
   color: #444254;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   flex-shrink: 1;
 `;
 
@@ -205,15 +206,15 @@ const ProfilePage: React.FC = () => {
             <StatsContainer>
               {userData?.facialDescriptions ? (
                 <>
-                  <h4>Wins: {userData?.gamesWon}</h4>
-                  <h4>Kills: {userData?.killsConfirmed}</h4>
-                  <h4>Total Games: {userData?.gamesPlayed}</h4>
-                  <h4>K\D: {winLossRatio}</h4>
+                  <h5>Wins: {userData?.gamesWon}</h5>
+                  <h5>Kills: {userData?.killsConfirmed}</h5>
+                  <h5>Total Games: {userData?.gamesPlayed}</h5>
+                  <h5>K\D: {winLossRatio}</h5>
                 </>
               ) : (
                 <>
-                  <h4>CITIZEN NOT VERIFIED</h4>
-                  <h4>PLEASE REGISTER BELOW</h4>
+                  <h5>CITIZEN NOT VERIFIED</h5>
+                  <h5>PLEASE REGISTER BELOW</h5>
                 </>
               )}
             </StatsContainer>
@@ -229,25 +230,33 @@ const ProfilePage: React.FC = () => {
               Please send in Biodata to participate in SOCIETY™.
             </h3>
           )}
-          <h4 style={{ margin: '20px', marginInline: 0, textAlign: 'start' }}>
+          <h5 style={{ margin: '20px', marginInline: 0, textAlign: 'start' }}>
             Corpoverse does not recognize the authority of any other
             governing body. Your biodata will only ever be used
             for internal state related activities, and we will never
             give it to any foreign powers. You are safe with us!
-          </h4>
+          </h5>
           {userData?.facialDescriptions ? (
             <>
               <h3>Feeling Patriotic?</h3>
+              <br/>
               <button onClick={() => setPhotoStatus('camera')}>
-                Reverify
+              → Reverify ←
               </button>
+              <br/>
+              <br/>
+              <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           ) : (
             <>
               <h3>↓↓↓VERIFY↓↓↓ </h3>
+              <br/>
               <button onClick={() => setPhotoStatus('camera')}>
-                Send BioData
+              Send BioData
               </button>
+              <br/>
+              <br/>
+              <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           )}
         </VerificationContainer>
