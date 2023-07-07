@@ -44,9 +44,9 @@ export const GameListItem: React.FC<{ game: Game }> = ({ game }) => {
   }, [users])
   return (
     <GameContainer>
-      <div style={{fontSize: '1.5rem'}} onClick={() => handleJoinGame(game.host, user)}>
-        <h4>{game.hostName}</h4>
-        <h4>{game.users.length} Hunter{game.users.length !== 1 ? 's' : ''} in Lobby</h4>
+      <div onClick={() => handleJoinGame(game.host, user)}>
+        <h4 style={{fontSize: '1.5rem'}}>{game.hostName}</h4>
+        <h4 style={{fontSize: '1.5rem'}}>{game.users.length} Hunter{game.users.length !== 1 ? 's' : ''} in Lobby</h4>
       </div>
 
     </GameContainer>

@@ -136,14 +136,12 @@ body {
   }
 
   .react-icon-large{
-    top: 88vh;
-    right: 4vh;
     border-radius: 50%;
     padding: 10px;
-    background-color: rgb(48 48 58);
-    color: #6e6b8c;
-    border: 3px solid #6e6b8c;
-    box-shadow: 0 0 0 4px #1b1b1b;
+    background-color: black;
+    color: cyan;
+    border: 3px solid cyan;
+    box-shadow: 0 0 0 5px black;
   }
   
   .react-icon-logo{

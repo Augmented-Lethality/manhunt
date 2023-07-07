@@ -27,11 +27,11 @@ const ControlsBorder = styled.div`
   display: flex;
   align-items: end;
   margin: 50px;
-  border-radius: 50px 50px 5px 5px;
+  border-radius: 25px 25px 5px 5px;
   height: 150px;
   background-image: radial-gradient(circle at center, #433222 0.06rem, #17140d 0.06rem);
   background-size: 0.21rem 0.25rem;
-  box-shadow: -10px 15px 70px 20px #000000a3, 0px 0px 0 10px #000000, 0 0 0 13px #c8ccb4, 0 0 0 14px #8c8c7c, 0 0 0 18px #b7b897, 0px 2px 0px 20px #796e64;
+  box-shadow: -5px 15px 80px 10px #000000f0, 0px 0px 0 10px #000000, 0 0 0 16px #2eb694, 0 0 0 17px #449086, 0 0 0 20px #1bc3ad, 0 0 0 30px #48d4b9, 0px -2px 0px 32px #76deca;
 `
 
   const ControlsContainer = styled.div`
@@ -41,9 +41,9 @@ const ControlsBorder = styled.div`
     align-items: center;
     padding: 20px;
     height: 55%;
-    width: 70%;
+    width: 80%;
     margin-inline: auto;
-    margin-bottom: 10px;
+    /* margin-bottom: -2px; */
     border-radius: 30px;
     background-image: radial-gradient(circle at center, #9a9b98 0.1rem, #a8a884 0.1rem);
     box-shadow: -3px 5px 7px 3px #00000069, 0 0 0 2px white;
