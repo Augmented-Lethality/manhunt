@@ -53,69 +53,70 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     }
   };
 
-  // fetch, parse and set the trophy data
-  const fetchUserTrophyData = async () => {
-    try {
-      if (userData) {
-        const response = await axios.get<
-          {
-            id: number;
-            name: string;
-            description: string;
-            createdAt: string;
-            generationConditions: string;
-          }[]
-        >(`/trophies/${userData.id}`, {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-        });
-
-        const parsedTrophyData: TrophyData[] = response.data.map((trophy) => {
-          const generationConditions = JSON.parse(trophy.generationConditions);
-
-          //To make the date more readable
-          const dateRegex = /(\d{4})-(\d{2})-(\d{2})/;
-          const [, year, month, day] = dateRegex.exec(trophy.createdAt) || [];
-          function getMonthName(month: string) {
-            const monthNames = [
-              'January',
-              'February',
-              'March',
-              'April',
-              'May',
-              'June',
-              'July',
-              'August',
-              'September',
-              'October',
-              'November',
-              'December',
-            ];
-
-            const monthIndex = parseInt(month, 10) - 1;
-            return monthNames[monthIndex];
-          }
-
-          return {
-            id: trophy.id,
-            name: trophy.name,
-            description: trophy.description,
-            createdAt: `${day} ${getMonthName(month)} ${year}`,
-            dimension: generationConditions.dimension || 0,
-            color: generationConditions.color || '',
-            shape: generationConditions.shape || '',
-            tubularSegments: generationConditions.tubularSegments || 0,
-            tubeWidth: generationConditions.tubeWidth || 0,
-          };
-        });
-
-        setUserTrophyData(parsedTrophyData);
+    // fetch, parse and set the trophy data
+    const fetchUserTrophyData = async () => {
+      try {
+        if (userData) {
+          const response = await axios.get<
+            {
+              id: number;
+              name: string;
+              description: string;
+              createdAt: string;
+              generationConditions: string;
+            }[]
+          >(`/trophies/${userData.id}`, {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+          });
+  
+          const parsedTrophyData: TrophyData[] = response.data.map((trophy) => {
+            const generationConditions = JSON.parse(trophy.generationConditions);
+  
+            //To make the date more readable
+            const dateRegex = /(\d{4})-(\d{2})-(\d{2})/;
+            const [, year, month, day] = dateRegex.exec(trophy.createdAt) || [];
+            function getMonthName(month: string) {
+              const monthNames = [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December',
+              ];
+  
+              const monthIndex = parseInt(month, 10) - 1;
+              return monthNames[monthIndex];
+            }
+  
+            return {
+              id: trophy.id,
+              name: trophy.name,
+              description: trophy.description,
+              createdAt: `${day} ${getMonthName(month)} ${year}`,
+              dimension: generationConditions.dimension || 0,
+              color: generationConditions.color || '',
+              shape: generationConditions.shape || '',
+              tubularSegments: generationConditions.tubularSegments || 0,
+              tubeWidth: generationConditions.tubeWidth || 0,
+            };
+          });
+  
+          setUserTrophyData(parsedTrophyData);
+        }
+      } catch (error) {
+        console.error('Error fetching user trophy data:', error);
       }
-    } catch (error) {
-      console.error('Error fetching user trophy data:', error);
-    }
-  };
+    };
+  
 
   const getColorName = (colorCode) => {
     // Map color codes to more fitting color names
@@ -212,6 +213,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
         setIsLoading(false);
       });
   }, [userData]);
+  
 
   const trophiesPerPage = 9;
   const startIndex = (currentPage - 1) * trophiesPerPage;

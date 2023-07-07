@@ -180,7 +180,15 @@ const ProfilePage: React.FC = () => {
       <Header page='Profile' />
       <Main>
         <TrophyContainer>
-          <SingleTrophy />
+          <SingleTrophy id={0}
+                name={''}
+                description={''}
+                createdAt={''}
+                dimension={0}
+                color={''}
+                shape={''}
+                tubularSegments={0}
+                tubeWidth={0}/>
         </TrophyContainer>
         <IdContainer>
           {userData?.facialDescriptions ? (
