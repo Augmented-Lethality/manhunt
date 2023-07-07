@@ -31,14 +31,26 @@ const StyledButton2 = styled.button<ButtonProps>`
   margin-top: 50px;
   margin-inline: auto;
   border-radius: 57px;
-  -webkit-text-stroke: 2px black;
+  border: none;
+  color: white;
+  padding: 20px;
+  font-size: 3rem;
+  font-family: lobster;
+  text-shadow: -2px -2px 0 #000, 2px -1px 0 #000, -2px 2px 0 #000, 1px 1px 0 #000;
   background-size: cover;
   background-position: center;
   box-shadow: -5px 7px 10px 3px #00000059;
-  background-image: ${(props) =>
-    props.buttonType === 'host' 
-    ? `url("/textures/host-a-contract.png")` 
-    : `url("/textures/see-the-contract-board.png")`
+  background-image: url("/textures/find-game-button.png");
+  font-size: ${(props) =>
+    props.label === 'Host a Contract' 
+    ? `3rem` 
+    : `2.6rem`
+  };
+  line-spacing: ${(props) =>
+    props.label === 'Host a Contract' 
+    ? `1rem` 
+    : `2.9rem`
+  };
   };
 
   > * {
@@ -70,7 +82,6 @@ export const Button: React.FC<ButtonProps> = ({
     <StyledButton1 label={label} primary={!primary} onClick={handleClick} route={route}>
       {label}
     </StyledButton1>
-
   );
 };
 
@@ -90,7 +101,7 @@ export const LargeButton: React.FC<ButtonProps> = ({
   };
 
   return (
-    <StyledButton2 buttonType={buttonType} onClick={handleClick} route={route}>
+    <StyledButton2 label={label} buttonType={buttonType} onClick={handleClick} route={route}>
       {label}
     </StyledButton2>
 
@@ -118,7 +129,7 @@ export const ButtonToProfile: React.FC = () => {
 };
 
 export const ButtonToFindGame: React.FC = () => {
-  return <LargeButton route='/findGame' />;
+  return <LargeButton label='See the Contract Board' route='/findGame' />;
 };
 
 export const ButtonToJoinLobby: React.FC = () => {
@@ -127,7 +138,7 @@ export const ButtonToJoinLobby: React.FC = () => {
 
 export const ButtonToHostGame: React.FC = () => {
   const { CreateGame } = useContext(SocketContext);
-  return <LargeButton buttonType='host' route='/lobby' onClick={CreateGame} />;
+  return <LargeButton label='Host a Contract' route='/lobby' onClick={CreateGame} />;
 };
 
 export const LogoutButton = () => {

@@ -15,39 +15,39 @@ import { ButtonToGame } from '../styles/Buttons';
 import TimerInput from '../components/GameLobby/TimerInput';
 
 const PlayersContainer = styled.div`
-  background: url(/textures/paper.png);
-  background-size: cover;
-  background-position: center;
+  width: 80%;
   padding: 20px;
   margin-inline: 20px;
   margin-bottom: 0;
   flex-grow: 1;
-  border-radius: 10px;
   box-shadow: 0 0 10px 10px #0000004d;
 `;
 const ControlsBorder = styled.div`
   position: relative;
   display: flex;
-  align-items: center;
-  margin: 20px;
-  padding: 10px;
-  border-radius: 20px;
-  height: 100px;
+  align-items: end;
+  margin: 50px;
+  border-radius: 50px 50px 5px 5px;
+  height: 150px;
   background-image: radial-gradient(circle at center, #433222 0.06rem, #17140d 0.06rem);
   background-size: 0.21rem 0.25rem;
-  box-shadow: 0px 0px 0 4px #000000, 0 0 0 8px #9b7958, 0 0 0 9px #654f39, 0 0 0 10px #8b6d50, 1px -1px 0px 10px #846c43, -1px 1px 0px 10px #91765c;
-  `
+  box-shadow: -10px 15px 70px 20px #000000a3, 0px 0px 0 10px #000000, 0 0 0 13px #c8ccb4, 0 0 0 14px #8c8c7c, 0 0 0 18px #b7b897, 0px 2px 0px 20px #796e64;
+`
 
   const ControlsContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  height: 90%;
-  width: 75%;
-  border-radius: 31px;
-  background-image: radial-gradient(circle at center, #9a9b98 0.1rem, #a8a884 0.1rem);
-  background-size: 0.15rem 0.25rem;
+    position: relative;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding: 20px;
+    height: 55%;
+    width: 70%;
+    margin-inline: auto;
+    margin-bottom: 10px;
+    border-radius: 30px;
+    background-image: radial-gradient(circle at center, #9a9b98 0.1rem, #a8a884 0.1rem);
+    box-shadow: -3px 5px 7px 3px #00000069, 0 0 0 2px white;
+    background-size: 0.15rem 0.25rem;
 `;
 
 const CountdownContainer = styled.div`
@@ -164,8 +164,8 @@ const GameLobby: React.FC<{}> = () => {
             }
           </ControlsContainer>
         </ControlsBorder>
-        <PlayersContainer>
-          <h1 style={{ fontSize: '2rem', marginBottom: '10px', textAlign: 'center' }}>Liscenced Hunters • {users.length}</h1>
+        <PlayersContainer className="digital digital-container">
+          <h1 className='digital-h1'>Hunters • {users.length}</h1>
           <UserListItem player={users[0]} />
           <UsersList users={users.slice(1)} />
         </PlayersContainer>

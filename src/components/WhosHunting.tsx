@@ -44,10 +44,10 @@ const WhosHunting: React.FunctionComponent<WhosHuntingProps> = ({setBountyName})
     <StartContainer>
       { !hasReadyErrors ? (
       <>
-        <span className='button-label'>Start</span>
+        <h3 className='button-label'>Start</h3>
         <button
           onClick={() => pickVictim(users, SetHunted)}
-          className='metal-button'/>
+          className='metal-button'>⏻</button>
       </>
       ) : (
         <>
