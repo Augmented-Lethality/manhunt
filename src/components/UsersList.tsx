@@ -20,7 +20,6 @@ const UsersList: React.FC<UsersListProps> = ({ users, header }) => {
       {users.map((user, index) => (
         <React.Fragment key={index}>
           <UserListItem player={user} />
-          <hr />
         </React.Fragment>
       ))}
     </ListContainer>

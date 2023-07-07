@@ -15,39 +15,39 @@ import { ButtonToGame } from '../styles/Buttons';
 import TimerInput from '../components/GameLobby/TimerInput';
 
 const PlayersContainer = styled.div`
-  background: url(/textures/paper.png);
-  background-size: cover;
-  background-position: center;
+  width: 60%;
+  margin: 24px;
+  margin-inline: auto;
   padding: 20px;
-  margin-inline: 20px;
   margin-bottom: 0;
   flex-grow: 1;
-  border-radius: 10px;
-  box-shadow: 0 0 10px 10px #0000004d;
 `;
 const ControlsBorder = styled.div`
   position: relative;
   display: flex;
-  align-items: center;
-  margin: 20px;
-  padding: 10px;
-  border-radius: 20px;
-  height: 100px;
+  align-items: end;
+  margin: 50px;
+  border-radius: 25px 25px 5px 5px;
+  height: 150px;
   background-image: radial-gradient(circle at center, #433222 0.06rem, #17140d 0.06rem);
   background-size: 0.21rem 0.25rem;
-  box-shadow: 0px 0px 0 4px #000000, 0 0 0 8px #9b7958, 0 0 0 9px #654f39, 0 0 0 10px #8b6d50, 1px -1px 0px 10px #846c43, -1px 1px 0px 10px #91765c;
-  `
+  box-shadow: -5px 15px 80px 10px #000000f0, 0px 0px 0 10px #000000, 0 0 0 16px #2eb694, 0 0 0 17px #449086, 0 0 0 20px #1bc3ad, 0 0 0 30px #48d4b9, 0px -2px 0px 32px #76deca;
+`
 
   const ControlsContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  height: 90%;
-  width: 75%;
-  border-radius: 31px;
-  background-image: radial-gradient(circle at center, #9a9b98 0.1rem, #a8a884 0.1rem);
-  background-size: 0.15rem 0.25rem;
+    position: relative;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding: 20px;
+    height: 55%;
+    width: 80%;
+    margin-inline: auto;
+    /* margin-bottom: -2px; */
+    border-radius: 30px;
+    background-image: radial-gradient(circle at center, #9a9b98 0.1rem, #a8a884 0.1rem);
+    box-shadow: -3px 5px 7px 3px #00000069, 0 0 0 2px white;
+    background-size: 0.15rem 0.25rem;
 `;
 
 const CountdownContainer = styled.div`
@@ -157,15 +157,25 @@ const GameLobby: React.FC<{}> = () => {
               </>
             ) : (
               <>
-                <button>Waiting on Host</button>
-                <h2>{games[0].timeConstraints}:00</h2>
-              </>
+              <button className='metal-button'></button>
+                <div style={{
+                  padding: '12px',
+                  margin: '-42px, -13px, -44px',
+                  borderRadius: '26px'}}
+                  className='digital'
+                >
+                  <h5 style={{fontSize:'1.4rem'}}>Waiting on Host</h5>
+                  <h4>{games[0].timeConstraints}:00</h4>
+                  </div>
+                </>
             )
             }
           </ControlsContainer>
         </ControlsBorder>
-        <PlayersContainer>
-          <h1 style={{ fontSize: '2rem', marginBottom: '10px', textAlign: 'center' }}>Liscenced Hunters • {users.length}</h1>
+        <PlayersContainer
+          style={{borderRadius:'12px 12px 0px 0px'}}
+          className="digital digital-container">
+          <h1 className='digital-h1'>Hunters • {users.length}</h1>
           <UserListItem player={users[0]} />
           <UsersList users={users.slice(1)} />
         </PlayersContainer>
