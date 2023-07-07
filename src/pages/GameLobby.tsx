@@ -15,12 +15,12 @@ import { ButtonToGame } from '../styles/Buttons';
 import TimerInput from '../components/GameLobby/TimerInput';
 
 const PlayersContainer = styled.div`
-  width: 80%;
+  width: 60%;
+  margin: 24px;
+  margin-inline: auto;
   padding: 20px;
-  margin-inline: 20px;
   margin-bottom: 0;
   flex-grow: 1;
-  box-shadow: 0 0 10px 10px #0000004d;
 `;
 const ControlsBorder = styled.div`
   position: relative;
@@ -157,14 +157,24 @@ const GameLobby: React.FC<{}> = () => {
               </>
             ) : (
               <>
-                <button>Waiting on Host</button>
-                <h2>{games[0].timeConstraints}:00</h2>
-              </>
+              <button className='metal-button'></button>
+                <div style={{
+                  padding: '12px',
+                  margin: '-42px, -13px, -44px',
+                  borderRadius: '26px'}}
+                  className='digital'
+                >
+                  <h5 style={{fontSize:'1.4rem'}}>Waiting on Host</h5>
+                  <h4>{games[0].timeConstraints}:00</h4>
+                  </div>
+                </>
             )
             }
           </ControlsContainer>
         </ControlsBorder>
-        <PlayersContainer className="digital digital-container">
+        <PlayersContainer
+          style={{borderRadius:'12px 12px 0px 0px'}}
+          className="digital digital-container">
           <h1 className='digital-h1'>Hunters • {users.length}</h1>
           <UserListItem player={users[0]} />
           <UsersList users={users.slice(1)} />

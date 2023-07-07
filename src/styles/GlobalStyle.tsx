@@ -59,6 +59,7 @@ body {
     );
     width: 50px;
     height: 50px;
+    color: black;
     border: 2px solid #575757;
     border-radius: 50%;
     position: relative;
@@ -181,8 +182,7 @@ body {
   .digital {
     background-image: linear-gradient( 0deg, #000000 13%, #001e19 71%, #111111 90%, #000000 100% );    border: 2px solid #4d4d4d;
     background-size: 1px 5px;
-    border: 1px solid #222d3e;
-    border-radius: 20px;
+    border-radius: 12px;
     text-align: center;
     color: cyan;
     text-size: 2rem;
@@ -193,7 +193,13 @@ body {
     font-family: inherit;
     color: black;
     -webkit-text-stroke: 0.1px cyan;
-    font-size: 4rem;
+    font-size: 3rem;
+  }
+  
+  .digital-h1 {
+    font-family: inherit;
+    font-size: 1.6rem;
+    color: cyan;
   }
 
   .digital-container{
@@ -242,7 +248,7 @@ body {
   }
 
   h3 {
-    font-size: calc(var(--font-size) * 1.5);
+    font-size: 1.5;
     color: black;
     font-weight: 400;    
   }

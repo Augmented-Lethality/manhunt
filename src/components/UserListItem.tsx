@@ -9,16 +9,16 @@ import AccessReady from './GameLobby/AccessReady';
 const UserContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 25px;
+  padding: 8px;
   border-radius: 10px;
-  margin-top: 10px;
-  margin-inline: 20px;
+  margin-top: 15px;
+  border: 2px solid cyan;
 `;
 
 const UserImage = styled.img`
-  width: 60px;
-  height: 60px;
-  border-radius: 20px;
+  width: 40px;
+  border: 2px cyan solid;
+  border-radius: 10px;
   margin-right: 10px;
 `;
 

@@ -252,7 +252,7 @@ const ProfilePage: React.FC = () => {
               <h3>↓↓↓VERIFY↓↓↓ </h3>
               <br/>
               <button onClick={() => setPhotoStatus('camera')}>
-              → Send BioData ←
+              Send BioData
               </button>
               <br/>
               <br/>
