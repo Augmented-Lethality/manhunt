@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState, } from 'react';
-import { useLocation } from 'react-router-dom';
-import SocketContext from '../contexts/Socket/SocketContext';
-import WhosHunting from '../components/WhosHunting';
+import React, { useContext, useEffect, useState, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import SocketContext, { User } from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
 import { Header } from '../styles/Header'
 import { Main } from '../styles/Main'
@@ -11,17 +10,84 @@ import { useAuth0 } from '@auth0/auth0-react';
 // import PageLoader from '../components/Loading';
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import styled from 'styled-components';
-import { ButtonToGame } from '../styles/Buttons';
-import TimerInput from '../components/GameLobby/TimerInput';
+
+const Image = styled.div`
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  padding: 1rem;
+  padding-bottom: 0;
+  height: 144vw;
+  width: 100%;
+  box-sizing: border-box;
+  background-image: url(/textures/lobby-host.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+`;
+
+const MinusButton = styled.div`
+  position: absolute;
+  bottom: 92vw;
+  left: 39vw;
+  height: 9vw;
+  width: 9vw;
+  // border: 2px solid blue;
+`;
+
+const PlusButton = styled.div`
+  position: absolute;
+  bottom: 93vw;
+  left: 78vw;
+  height: 8vw;
+  width: 7vw;
+  // border: 2px solid red;
+`;
+
+const PlayButton = styled.div`
+  position: absolute;
+  bottom: 101vw;
+  left: 49vw;
+  height: 27vw;
+  width: 29vw;
+  // border: 2px solid green;
+`;
+const BackButton = styled.div`
+  position: absolute;
+  bottom: 87vw;
+  left: 5vw;
+  height: 48vw;
+  width: 22vw;
+  font-family: lobster;
+  color: white;
+  padding-top: 10vw;
+  text-shadow: -0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000, 0.5px 0.5px 0 #000;
+  font-size: 2rem;
+  transform: rotate(358deg);
+  // border: 2px solid pink;
+`;
 
 const PlayersContainer = styled.div`
-  width: 60%;
-  margin: 24px;
-  margin-inline: auto;
-  padding: 20px;
-  margin-bottom: 0;
-  flex-grow: 1;
+  position: absolute;
+  bottom: 16vw;
+  left: 15vw;
+  height: 57vw;
+  width: 70vw;
+  // border: 2px solid cyan;
 `;
+const TimeContainer = styled.div`
+  position: absolute;
+  bottom: 95vw;
+  left: 49vw;
+  height: 6vw;
+  width: 26vw;
+  display: flex;
+  justify-content: center;
+  color: #009f40;
+  font-size: 1.2rem;
+  // border: 2px solid yellow;
+`;
+
 const ControlsBorder = styled.div`
   position: relative;
   display: flex;
@@ -40,7 +106,7 @@ const ControlsBorder = styled.div`
     justify-content: end;
     align-items: center;
     padding: 20px;
-    height: 55%;
+    height: calc(100vw * 1.8);
     width: 80%;
     margin-inline: auto;
     /* margin-bottom: -2px; */
@@ -66,14 +132,35 @@ const CountdownContainer = styled.div`
 `
 
 const GameLobby: React.FC<{}> = () => {
+  const { Redirect,
+    UpdateGameStatus,
+    AddGameStart,
+    AddGameDuration,
+    SetHunted
+  } = useContext(SocketContext);
   const { isAuthenticated, user } = useAuth0();
   const { games, users, ready } = useContext(SocketContext).SocketState;
-  const { Redirect, UpdateGameStatus, AddGameStart } = useContext(SocketContext);
   const [showLobby, setShowLobby] = useState(false);
   const [bountyName, setBountyName] = useState<string | null>(null)
   const [hasReadyErrors, setHasReadyErrors] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const [countdown, setCountdown] = useState(10);
+  const [selected, setSelected] = useState('03:00');
+  const listRef = useRef<HTMLUListElement>(null);
+  const scrollValues = ['01', '02', '03', '04', '05', '07', '10', '15', '20', '30', '45', '60'];
+  const selectedIndex = scrollValues.indexOf(selected.split(':')[0]);
+  const navigate = useNavigate();
+
+  // if any of the ready objects don't have a value of 'ok', can't start the game
+  useEffect(() => {
+    const hasErrors = Object.values(ready).some((errors: string[]) => !errors.includes('ok'));
+    setHasReadyErrors(hasErrors);
+  }, [ready]);
+
+  //Send the selected time to the socket instance
+  useEffect(() => {
+    AddGameDuration(Number(selected.slice(0, 2)), user);
+  }, [selected])
 
   // checks to see if the user should be redirected if the game doesn't exist
   // const location = useLocation();
@@ -113,6 +200,16 @@ const GameLobby: React.FC<{}> = () => {
   //   return () => clearTimeout(timeoutId);
   // }, [bountyName, countdown])
 
+  //Chose a random victim from the players and send to Socket
+  const pickVictim = (users: User[], SetHunted: (user: User) => void) => {
+    const bounty = users[Math.floor(Math.random() * users.length)];
+    //Set the socket context to include the bounty
+    SetHunted(bounty);
+    //Grab the bounty's username to display to the players
+    const matchingUser = users.filter(player => player.authId === bounty.authId).at(0)?.username || null;
+    setBountyName(matchingUser)
+  };
+
   useEffect(() => {
     if (bountyName) {
       AddGameStart(Date.now(), user);
@@ -120,6 +217,16 @@ const GameLobby: React.FC<{}> = () => {
     }
 
   }, [bountyName])
+  
+  //Allow clicking the arrows to change the time
+  const handleArrowClick = (direction: 'plus' | 'minus') => {
+    if (direction === 'minus' && selectedIndex > 0) {
+      setSelected(`${scrollValues[selectedIndex - 1]}:00`);
+    } else if (direction === 'plus' && selectedIndex < scrollValues.length - 1) {
+      setSelected(`${scrollValues[selectedIndex + 1]}:00`);
+    }
+  };
+
 
   if (!isAuthenticated) {
     return null
@@ -147,39 +254,17 @@ const GameLobby: React.FC<{}> = () => {
     <Container>
       <Header page='Lobby' />
       <Main>
-        <ControlsBorder>
-          <ControlsContainer>
-            {showControls ? (
-              <>
-                <WhosHunting setBountyName={setBountyName} />
-                <TimerInput />
-                {games[0].hunted.length > 0 && !hasReadyErrors && games[0].timeConstraints && <ButtonToGame />}
-              </>
-            ) : (
-              <>
-              <button className='metal-button'></button>
-                <div style={{
-                  padding: '12px',
-                  margin: '-42px, -13px, -44px',
-                  borderRadius: '26px'}}
-                  className='digital'
-                >
-                  <h5 style={{fontSize:'1.4rem'}}>Waiting on Host</h5>
-                  <h4>{games[0].timeConstraints}:00</h4>
-                  </div>
-                </>
-            )
-            }
-          </ControlsContainer>
-        </ControlsBorder>
-        <PlayersContainer
-          style={{borderRadius:'12px 12px 0px 0px'}}
-          className="digital digital-container">
-          <h1 className='digital-h1'>Hunters • {users.length}</h1>
+        <Image/>
+        <BackButton onClick={() => navigate('/home')}>Back</BackButton>
+        <PlayButton onClick={() => pickVictim(users, SetHunted)}/>
+        <MinusButton onClick={() => handleArrowClick('minus')}/>
+        <PlusButton onClick={() => handleArrowClick('plus')}/>
+        <TimeContainer>{selected}</TimeContainer>
+        <PlayersContainer>
+          <h2 className='digital-h1'>Hunters • {users.length}</h2>
           <UserListItem player={users[0]} />
           <UsersList users={users.slice(1)} />
         </PlayersContainer>
-        <br />
       </Main>
     </Container>
   );

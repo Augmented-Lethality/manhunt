@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import DropDownMenu from '../components/DropDownMenu';
@@ -8,27 +8,18 @@ import SocketContext from '../contexts/Socket/SocketContext';
 
 export const StyledHeader = styled.header`
   display: flex;
-  padding: 1rem;
-  padding-bottom: 0;
-  height: 100px;
-  background-color: #FFB11A;
-  border-bottom: 5px solid #4d3810;
+  padding: 2rem;
+  padding-top: 1rem;
+  height: 175px;
   justify-content: space-between;
-  box-shadow: 0 10px 10px 2px #00000047;
-  position: relative;
-`;
-
-export const HeaderTexture = styled.div`
-  position: absolute;
-  bottom: 0;
-  margin-inline: -1rem;
+  position: fixed;
+  top: 0;
   width: 100%;
-  height: 100%;
-  background-image: url(/textures/header-large.png);
+  background-image: url(/textures/header-small.png);
   background-size: cover;
-  pointer-events: none;
-  mix-blend-mode: darken;
-  opacity: 50%;
+  background-position: left bottom;
+  box-sizing: border-box;
+  z-index: 1;
 `;
 
 interface HeaderProps {
@@ -48,9 +39,8 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
   const { user } = useAuth0();
 
   return (
-    <StyledHeader className='header'>
-      <HeaderTexture />
-      <div className='centered column'>
+    <StyledHeader>
+      <div style={{marginBottom:'21px', marginLeft:'-10px'}} className='centered column'>
         <h1 className='logo' onClick={handleHome}>MAN</h1>
         <h1 className='logo' onClick={handleHome}>HUNT</h1>
       </div>
@@ -66,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
         </div>
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
-          : <h1 style={{ fontSize: `${page.length/2}rem` }}>{page}</h1>
+          : <h1 style={{ marginRight: '-20px', }}>{page}</h1>
         }
       </div>
     </StyledHeader>

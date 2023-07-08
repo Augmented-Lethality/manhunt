@@ -18,7 +18,10 @@ body {
   word-wrap: break-word;
   background: url("/textures/background-small.png") no-repeat;
   background-size: cover;
+}
 
+* {
+  box-sizing: border-box;
 }
 
 .glassmorphism{
@@ -124,14 +127,10 @@ button{
 .logo{
   color: #e6a733;
   font-family: 'Fascinate Inline';
-  text-shadow:
-  -2px -1px 0 #000,  
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
-  font-size: 2rem;
-  margin: -.5rem;
+  text-shadow: -4px 3px 0 #000, 1px -1px 0 #000, -3px 1px 0 #000, 1px 1px 0 #000;
+  margin: -0.2rem;
   filter: none;
+  z-index: 2;
 }
 
 .phone-logo {
@@ -231,7 +230,7 @@ h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: clamp(3rem, 1.5rem);
+  font-size: 1.8rem;
   font-family: 'Sonsie One';
   color: #7DBAFF;
   text-shadow:

@@ -12,8 +12,6 @@ import {
   Settings,
   Award } from 'react-feather';
 
-
-
 const dropdownAnimation = keyframes`
   0% { opacity: 0; transform: translateY(-10vh); }
   100% { opacity: 1; transform: translateY(0); }
@@ -29,7 +27,6 @@ const Backdrop = styled.div<{ isOpen: boolean }>`
   background: rgba(0, 0, 0, 0.8);
   z-index: 1;
 `;
-
 
 const Menu = styled.div<{ isOpen: boolean }>`
   display: ${props => props.isOpen ? 'block' : 'none'};
@@ -91,7 +88,6 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
 
   return (
     <div className='dropdown'>
