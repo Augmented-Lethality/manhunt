@@ -61,7 +61,6 @@ const Switch = ({ ...props }) => (
   </SwitchLabel>
 );
 
-
 const Settings: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
   const [fontSize, setFontSize] = useFontSize();
@@ -107,9 +106,9 @@ const Settings: React.FC = () => {
     <Container>
       <Header page='Settings' />
       <Main>
-        <div style={{ display: 'flex', flexDirection: 'column', margin: '20px', textAlign: 'center' }}>
+        <div className="glassmorphism column centered" style={{margin: '20px', padding:'20px'}}>
           <h3>Corpoverse has gifted its citizens with the following setting</h3>
-          <div style={{ display: 'flex', flexDirection: 'row', margin: '20px', alignItems: 'baseline' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
             <Switch onChange={toggleLargeFont} checked={checked} />
             <h3>Larger Font</h3>
           </div>

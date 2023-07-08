@@ -1,8 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
 
-
-
-
 const GlobalStyle: React.NamedExoticComponent<any> = createGlobalStyle`
 
 body {
@@ -255,17 +252,17 @@ h1 {
 
 h2 {
   font-size: 2rem;
-  word-spacing: -10px
+  word-spacing: -10px;
 }
 
 h3 {
   font-size: 1.5;
-  color: black;
-  font-weight: 400;    
+  word-spacing: 10px;
+  font-weight: 400;
 }
 
 h4 {
-  font-size: 2rem;
+  font-size: 1.2rem;
 }
 
 h5 {
@@ -281,11 +278,10 @@ h6 {
 input {
   border: none;
   background: none;
-  height: 100%;
-  width: 100%;
   font-size: calc(var(--font-size) * 1.5);
-  color: #979fd0;
+  color: cyan;
 }
+input:focus {outline:none;}
 
 .drop-down-menu {
   background: linear-gradient(19deg, #ffffff26 0%, #00ffff26 100%), linear-gradient(90deg, #00ffff2b 0%, #ffffff1f 45%);
