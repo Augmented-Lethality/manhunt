@@ -231,7 +231,7 @@ const ProfilePage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <h5>CITIZEN NOT VERIFIED</h5>
+                  <h5 className='bold'>CITIZEN NOT VERIFIED</h5>
                   <h5>PLEASE REGISTER BELOW</h5>
                 </>
               )}
