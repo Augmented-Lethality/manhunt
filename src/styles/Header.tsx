@@ -23,7 +23,7 @@ export const StyledHeader = styled.header`
 `;
 
 interface HeaderProps {
-  page: string;
+  page?: string;
   users?: Array<Object> | null;
 }
 
@@ -52,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
             className='profile__avatar'
             onClick={() => { navigate('/profile') }}
             style={{ height: '3rem', borderRadius: '50%', marginRight: '10px' }} />
-          <DropDownMenu page={page} />
+          <DropDownMenu page={page || ''} />
         </div>
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
