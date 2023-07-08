@@ -11,7 +11,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import styled from 'styled-components';
 
-const Image = styled.div`
+const Image = styled.div<{isHost: boolean}>`
   position: absolute;
   left: 50%;
   bottom: 0;
@@ -21,7 +21,10 @@ const Image = styled.div`
   height: 144vw;
   width: 100%;
   box-sizing: border-box;
-  background-image: url(/textures/lobby-host.png);
+  background-image:
+    ${props => props.isHost
+    ?'url(/textures/lobby-host.png)'
+    : 'url(/textures/lobby-guest.png)'};
   background-size: contain;
   background-repeat: no-repeat;
 `;
@@ -143,7 +146,7 @@ const GameLobby: React.FC<{}> = () => {
   const [showLobby, setShowLobby] = useState(false);
   const [bountyName, setBountyName] = useState<string | null>(null)
   const [hasReadyErrors, setHasReadyErrors] = useState(false);
-  const [showControls, setShowControls] = useState(false);
+  const [isHost, setisHost] = useState(false);
   const [countdown, setCountdown] = useState(10);
   const [selected, setSelected] = useState('03:00');
   const listRef = useRef<HTMLUListElement>(null);
@@ -169,11 +172,11 @@ const GameLobby: React.FC<{}> = () => {
   //   Redirect(currentEndpoint);
   // }, [games]);
 
-  //Determine who can see the controls and who can't
+  //Determine who is the Host
   useEffect(() => {
     (games.length > 0 && games[0].host === user?.sub)
-      ? setShowControls(true)
-      : setShowControls(false);
+      ? setisHost(true)
+      : setisHost(false);
   }, [games]);
 
   //See if things are still loading
@@ -254,11 +257,15 @@ const GameLobby: React.FC<{}> = () => {
     <Container>
       <Header page='Lobby' />
       <Main>
-        <Image/>
+        <Image isHost={isHost}/>
+        {isHost && 
+          <>
+            <PlayButton onClick={() => pickVictim(users, SetHunted)}/>
+            <MinusButton onClick={() => handleArrowClick('minus')}/>
+            <PlusButton onClick={() => handleArrowClick('plus')}/>
+          </>
+        }
         <BackButton onClick={() => navigate('/home')}>Back</BackButton>
-        <PlayButton onClick={() => pickVictim(users, SetHunted)}/>
-        <MinusButton onClick={() => handleArrowClick('minus')}/>
-        <PlusButton onClick={() => handleArrowClick('plus')}/>
         <TimeContainer>{selected}</TimeContainer>
         <PlayersContainer>
           <h2 className='digital-h1'>Hunters • {users.length}</h2>
