@@ -319,7 +319,9 @@ color: cyan;
   position: relative;
 }
 
-
+.bold {
+  font-weight: 600;
+}
 `;
 
 export default GlobalStyle;
