@@ -282,6 +282,9 @@ input {
   color: cyan;
 }
 input:focus {outline:none;}
+input:placeholder
+color: cyan;
+}
 
 .drop-down-menu {
   background: linear-gradient(19deg, #ffffff26 0%, #00ffff26 100%), linear-gradient(90deg, #00ffff2b 0%, #ffffff1f 45%);
