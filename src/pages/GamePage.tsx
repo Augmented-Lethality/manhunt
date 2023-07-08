@@ -9,7 +9,7 @@ import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
 import Countdown from '../components/Countdown';
 import { Container } from '../styles/Container';
-import { GameHeader, Footer } from '../styles/Header';
+import { GameHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import {Crosshair , Eye } from 'react-feather';
 

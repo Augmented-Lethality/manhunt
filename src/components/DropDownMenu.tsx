@@ -35,19 +35,17 @@ const Menu = styled.div<{ isOpen: boolean }>`
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${dropdownAnimation} 0.4s ease-in-out;
   position: absolute;
-  background-image: linear-gradient( 0deg, #000000 10%, #0f110e 23%, #021814 71%, #131313 90%, #2d4a48 100% );  background-size: 1px 5px;
-  color: cyan;
-  font-family: 'VT323';
+  position: absolute;
   padding-top: 1rem;
-  top: 0;
-  right: 0;
-  width: 100%;
+  top: 10px;
+  right: 5vw;
+  width: 90vw;
   z-index: 2;
   & > * {
     display: flex;
     align-items: end;
     margin: 1.5rem;
-    color: cyan;
+    color: white;
   }
   & > * > * {
     margin-right: 10px;
@@ -99,7 +97,7 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
     <div className='dropdown'>
       <Dots style={{color:'#6f5858'}} onClick={toggleMenu} />
       <Backdrop isOpen={isMenuOpen} onClick={toggleMenu}/>
-      <Menu isOpen={isMenuOpen}>
+      <Menu className='glassmorphism drop-down-menu' isOpen={isMenuOpen}>
         <Close onClick={toggleMenu} />
         {pages.map((pageName, index) => {
           if(page.toLowerCase() !== pageName) {
