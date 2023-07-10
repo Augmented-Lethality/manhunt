@@ -9,34 +9,28 @@ import AccessReady from './GameLobby/AccessReady';
 const UserContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 8px;
-  border-radius: 10px;
-  margin-top: 15px;
-  border: 2px solid cyan;
+  padding-left: 10px;
 `;
 
 const UserImage = styled.img`
-  width: 40px;
-  border: 2px cyan solid;
-  border-radius: 10px;
+  width: 30px;
+  border-radius: 3px;
   margin-right: 10px;
 `;
 
 const Username = styled.p`
   font-size: 16px;
-  color: #6e6b8c;
+  color: cyan;
 `;
 const KD = styled.p`
   font-size: 16px;
   color: #6e6b8c;
 `;
 
-
 const UserListItem: React.FC<{ player: User }> = ({ player }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentEndpoint = location.pathname;
-
 
   const { ready } = useContext(SocketContext).SocketState;
   const [errors, setErrors] = useState<string[]>([]);

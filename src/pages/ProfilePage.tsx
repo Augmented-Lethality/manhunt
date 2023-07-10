@@ -3,7 +3,7 @@ import React, { useEffect, useState, lazy, Suspense } from 'react';
 import axios from 'axios';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
 import { Container } from '../styles/Container';
-import { Header, StyledHeader, Footer } from '../styles/Header';
+import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
 import styled from 'styled-components';
@@ -38,7 +38,7 @@ const TrophyContainer = styled.div`
 `
 
 //ID card background that user data sits on
-const IdContainer = styled.div`
+const TempIdContainer = styled.div`
   background: url(/textures/paper.png);
   background-size: cover;
   background-position: center;
@@ -54,6 +54,25 @@ const IdContainer = styled.div`
   width: 80%;
   max-width: 300px;
   box-shadow: 0px 10px 10px 2px #00000059;
+`
+
+//ID card background that user data sits on
+const IdContainer = styled.div`
+  border-radius: 19px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 20px;
+  margin-inline: auto;
+  padding: 20px;
+  height: 180px;
+  width: 80%;
+  max-width: 300px;
+  box-shadow: 0px 10px 10px 2px #00000059;
+  & > * {
+    opacity: 0.85;
+  }
 `
 //Container For Name and Picture
 const NameContainer = styled.div`
@@ -171,7 +190,6 @@ const ProfilePage: React.FC = () => {
           userID={user?.sub}
           setUser={setUserData}
         />
-        <Footer />
       </Container>
     );
   }
@@ -187,7 +205,7 @@ const ProfilePage: React.FC = () => {
           {userData?.facialDescriptions ? (
             <Text>CORPOVERSE OFFICIAL ID</Text>
           ) : (
-            <Text>TEMPORARY CORPOVERSE ID</Text>
+            <Text >TEMPORARY CORPOVERSE ID</Text>
           )}
           <NameContainer>
             {user.picture ? (
@@ -213,7 +231,7 @@ const ProfilePage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <h5>CITIZEN NOT VERIFIED</h5>
+                  <h5 className='bold'>CITIZEN NOT VERIFIED</h5>
                   <h5>PLEASE REGISTER BELOW</h5>
                 </>
               )}
