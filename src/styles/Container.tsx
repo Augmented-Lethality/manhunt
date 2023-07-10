@@ -7,5 +7,4 @@ export const Container = styled.div`
   min-height: 100vh;
   width: 100vw;
   margin: 0;
-  color: #6e6b8c;
 `;

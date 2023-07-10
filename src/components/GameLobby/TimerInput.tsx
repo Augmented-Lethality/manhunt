@@ -29,10 +29,6 @@ const TimeItem = styled(TimeItemComponent)<{ selected: boolean, spacer?: boolean
 
 const SelectedTime = styled.div`
   font-size: 2em;
-  text-align: center;
-  width: 175px;
-  color: green;
-  font-family: 'VT323';
 `;
 
 const ArrowContainer = styled.div`
@@ -41,10 +37,12 @@ const ArrowContainer = styled.div`
 `;
 
 const TimeDisplayContainer = styled.div`
-  background: black;
   border: 2px solid #4d4d4d;
   border-radius: 20px;
-
+  height: 50px;
+  width: 115px;
+  font-size: 3rem;
+  margin: auto;
 `
 
 // TimeItemComponent filters out 'visible' prop to remove a browser error
@@ -106,8 +104,9 @@ const TimerInput: React.FC = () => {
     <>
       {!open && (
         <SelectedTime >
-          <TimeDisplayContainer onClick={() => setOpen(!open)}>
-            Game Time - {selected}
+          <h5>Select Time</h5>
+          <TimeDisplayContainer className="digital" onClick={() => setOpen(!open)}>
+            {selected}
           </TimeDisplayContainer>
           <ArrowContainer>
             <button className='plastic-button' onClick={() => handleArrowClick('down')}>◁</button>

@@ -39,6 +39,21 @@ const GamePage: React.FC = () => {
   return (
     <Container>
       <GameHeader>
+        <div style={{display:'flex', flexDirection:'column'}}>
+          {gameMode === 'Chase' ? (
+            <>
+              <h5>Switch to</h5>
+              <Crosshair className='react-icon-large' onClick={handleGameChange} />
+              <h5>Kill Mode</h5>
+            </>
+          ) : (
+            <>
+              <h5>Switch to</h5>
+              <Eye className='react-icon-large' onClick={handleGameChange} />
+              <h5>Chase Mode</h5>
+            </>
+          )}
+        </div>
         <Countdown />
       </GameHeader>
       <Main>
@@ -52,11 +67,6 @@ const GamePage: React.FC = () => {
           </WebcamProvider>
         )}
       </Main>
-      <Footer style={{ display: 'flex', justifyContent: 'end' }}>
-        {gameMode === 'Chase'
-          ? <Crosshair className='react-icon-large' onClick={handleGameChange} />
-          : <Eye className='react-icon-large' onClick={handleGameChange} />}
-      </Footer>
     </Container>
   );
 }

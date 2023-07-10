@@ -1,11 +1,29 @@
 import React, { useContext, useEffect } from 'react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { GameListItem } from '../components/GameLobby/GameListItem';
-import { GameContainer } from '../components/GameLobby/GameListItem';
-
+import styled from 'styled-components';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { Container } from '../styles/Container';
+
+const NoBountiesSign = styled.div`
+  height: 157px;
+  width: 232px;
+  margin-top: 50px;
+  margin-inline: auto;
+  border-radius: 57px;
+  border: none;
+  color: white;
+  padding: 22px;
+  font-family: lobster;
+  text-shadow: -2px -2px 0 #000, 2px -1px 0 #000, -2px 2px 0 #000, 1px 1px 0 #000;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 13px 23px 30px 2px #00000059;
+  background-image: url(/textures/find-game-button.png);
+  font-size: 2.7rem;
+  text-align: center;
+`
 
 const FindGamePage: React.FC = () => {
   const { games, users } = useContext(SocketContext).SocketState;
@@ -13,12 +31,10 @@ const FindGamePage: React.FC = () => {
   useEffect(() => {
   }, [users, games]);
 
-
   return (
     <Container>
       <Header page={'Contracts'} users={users} />
       <Main>
-        {/* <h3 style={{ textAlign: 'center', marginTop: '10px' }}>{users?.length - 1} Hunter{users?.length - 1 !== 1 ? 's' : ''} Prepared for Slaughter</h3> */}
         {
           Object.keys(games).length > 0 ? (
             <>
@@ -27,12 +43,11 @@ const FindGamePage: React.FC = () => {
               ))}
             </>
           ) : (
-            <GameContainer>
-              <h2>No Bounties Have Been Posted</h2>
-            </GameContainer>
+            <NoBountiesSign>
+              No Bounties Have Been Posted
+            </NoBountiesSign>
           )
         }
-
       </Main>
     </Container>
   );
