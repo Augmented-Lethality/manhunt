@@ -202,8 +202,6 @@ const SingleTrophy: React.FC<TrophyData> = () => {
   return (
     <div >
       {trophyToDisplay
-        .slice(0)
-        .reverse()
         .map((trophy, index) => (
           <div key={index}>
             <div
