@@ -3,7 +3,7 @@ import React, { useEffect, useState, lazy, Suspense } from 'react';
 import axios from 'axios';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
 import { Container } from '../styles/Container';
-import { Header, StyledHeader, Footer } from '../styles/Header';
+import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
 import styled from 'styled-components';
@@ -105,14 +105,13 @@ const VerificationContainer = styled.div`
   margin-inline: auto;
   margin-bottom: 0;
   padding: 36px;
-  padding-bottom: 10px;
   width: 70%;
   box-shadow: 0px 10px 10px 2px #00000059;
 `
 // trying to fix the text not shrinking??
 const Text = styled.h5`
   color: #444254;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   flex-shrink: 1;
 `;
 
@@ -171,7 +170,7 @@ const ProfilePage: React.FC = () => {
           userID={user?.sub}
           setUser={setUserData}
         />
-        <Footer />
+        {/* <Footer /> */}
       </Container>
     );
   }
@@ -214,15 +213,15 @@ const ProfilePage: React.FC = () => {
             <StatsContainer>
               {userData?.facialDescriptions ? (
                 <>
-                  <h5>Wins: {userData?.gamesWon}</h5>
-                  <h5>Kills: {userData?.killsConfirmed}</h5>
-                  <h5>Total Games: {userData?.gamesPlayed}</h5>
-                  <h5>K\D: {winLossRatio}</h5>
+                  <h4>Wins: {userData?.gamesWon}</h4>
+                  <h4>Kills: {userData?.killsConfirmed}</h4>
+                  <h4>Total Games: {userData?.gamesPlayed}</h4>
+                  <h4>K\D: {winLossRatio}</h4>
                 </>
               ) : (
                 <>
-                  <h5>CITIZEN NOT VERIFIED</h5>
-                  <h5>PLEASE REGISTER BELOW</h5>
+                  <h4>CITIZEN NOT VERIFIED</h4>
+                  <h4>PLEASE REGISTER BELOW</h4>
                 </>
               )}
             </StatsContainer>
@@ -238,33 +237,25 @@ const ProfilePage: React.FC = () => {
               Please send in Biodata to participate in SOCIETY™.
             </h3>
           )}
-          <h5 style={{ margin: '20px', marginInline: 0, textAlign: 'start' }}>
+          <h4 style={{ margin: '20px', marginInline: 0, textAlign: 'start' }}>
             Corpoverse does not recognize the authority of any other
             governing body. Your biodata will only ever be used
             for internal state related activities, and we will never
             give it to any foreign powers. You are safe with us!
-          </h5>
+          </h4>
           {userData?.facialDescriptions ? (
             <>
               <h3>Feeling Patriotic?</h3>
-              <br/>
               <button onClick={() => setPhotoStatus('camera')}>
-              → Reverify ←
+                Reverify
               </button>
-              <br/>
-              <br/>
-              <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           ) : (
             <>
               <h3>↓↓↓VERIFY↓↓↓ </h3>
-              <br/>
               <button onClick={() => setPhotoStatus('camera')}>
-              Send BioData
+                Send BioData
               </button>
-              <br/>
-              <br/>
-              <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           )}
         </VerificationContainer>

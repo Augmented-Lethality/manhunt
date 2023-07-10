@@ -118,23 +118,6 @@ const SingleTrophy: React.FC<TrophyData> = () => {
   };
 
 
-  const getColorName = (colorCode) => {
-    // Map color codes to more fitting color names
-    const colorMap = {
-      '#3d6cb8': 'Cerulean',
-      '#19191a': 'Void',
-      lightgreen: 'Radioactive',
-      orange: 'Gold',
-      darkred: 'Crimson',
-      yellow: 'Saffron',
-      pink: 'Rose',
-      aquamarine: 'Aquamarine',
-      // Add color mappings as needed
-    };
-    // Return color name if exists in color map, otherwise return original
-    return colorMap[colorCode] || colorCode;
-  };
-
   const rotateTrophies = () => {
     trophyRefs.current.forEach((trophy) => {
       if (trophy) {
@@ -216,12 +199,12 @@ const SingleTrophy: React.FC<TrophyData> = () => {
   
 
   
-  const trophiesToDisplay = userTrophyData.length > 0 ? [userTrophyData[0]] : [];
+  const trophyToDisplay = userTrophyData.length > 0 ? [userTrophyData[0]] : [];
  
 
   return (
     <div >
-      {trophiesToDisplay
+      {trophyToDisplay
         .slice(0)
         .reverse()
         .map((trophy, index) => (
