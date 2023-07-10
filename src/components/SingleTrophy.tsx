@@ -174,10 +174,7 @@ const SingleTrophy: React.FC<TrophyData> = () => {
     }
   };
 
-  const togglePropsView = () => {
-    setShowProps(!showProps);
-  };
-
+ 
   useEffect(() => {
     if (isAuthenticated) {
       setIsLoading(true);
@@ -199,7 +196,7 @@ const SingleTrophy: React.FC<TrophyData> = () => {
   
 
   
-  const trophyToDisplay = userTrophyData.length > 0 ? [userTrophyData[0]] : [];
+  const trophyToDisplay = userTrophyData.length > 0 ? [userTrophyData[userTrophyData.length - 1]] : [];
  
 
   return (
