@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import DropDownMenu from '../components/DropDownMenu';
@@ -8,129 +8,22 @@ import SocketContext from '../contexts/Socket/SocketContext';
 
 export const StyledHeader = styled.header`
   display: flex;
-  padding: 1rem;
-  height: 100px;
-  background-color: #FFB11A;
-  border-bottom: 5px solid #4d3810;
-  justify-content: end;
-  box-shadow: 0 10px 10px 2px #00000047;
-  position: relative;
-`;
-
-export const HeaderTextureLarge = styled.div<{ isPhone: boolean }>`
-  position: absolute;
-  bottom: 0;
-  margin-inline: -1rem;
+  padding: 2rem;
+  padding-top: 1rem;
+  height: 175px;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
   width: 100%;
-  height: 100%;
-  background-image: url(/textures/header-large.png);
+  background-image: url(/textures/header-small.png);
   background-size: cover;
-  pointer-events: none;
-  mix-blend-mode: darken;
-  opacity: 50%;
-  display: ${(props) => (props.isPhone ? 'none' : 'block')}; /* Show for phone screens */
+  background-position: left bottom;
+  box-sizing: border-box;
+  z-index: 1;
 `;
-
-export const HeaderTextureSmall = styled.div<{ isPhone: boolean }>`
-  position: absolute;
-  bottom: 0;
-  margin-inline: -1rem;
-  width: 100%;
-  height: 100%;
-  background-image: url(/textures/header-large.png);
-  background-size: cover;
-  pointer-events: none;
-  mix-blend-mode: darken;
-  opacity: 50%;
-  display: ${(props) => (props.isPhone ? 'block' : 'none')}; /* Show for phone screens */
-`;
-
-const Crosshairs = () => {
-  const [scale, setScale] = useState(window.innerWidth / 600);
-  const isPhoneScreen = useMediaQuery({ query: '(max-width: 767px)' });
-
-  useEffect(() => {
-    const handleResize = () => {
-      setScale(window.innerWidth / 600)
-    }
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    }
-  }, [])
-
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#4e4c61"
-      strokeWidth="1"
-      style={{
-        position: 'absolute',
-        top: '55%',
-        left: '15%',
-        transform: `translate(-50%, -50%) scale(${scale})`,
-        pointerEvents: 'none',
-        mixBlendMode: 'overlay'
-      }}>
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="6" strokeWidth=".5" />
-      <line x1="22" y1="12" x2="20" y2="12" />
-      <line x1="4" y1="12" x2="2" y2="12" />
-      <line x1="12" y1="4" x2="12" y2="2" />
-      <line x1="12" y1="22" x2="12" y2="20" />
-    </svg>
-  );
-}
-
-const LogoWithCrossHairs = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth0();
-
-  const handleHome = () => {
-    navigate('/home');
-  }
-
-  const fontSize = window.innerWidth > 750 ? '55px' : '7vw'
-
-  return (
-    <div style={{
-      overflow: 'hidden',
-      height: '132px',
-      width: '100vw',
-      maxWidth: '500px',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      pointerEvents: 'none'
-    }}>
-      <Crosshairs />
-      <div style={{
-        position: 'absolute',
-        top: '55%',
-        left: '15%',
-        transform: 'translate(-50%, -50%)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        mixBlendMode: 'hard-light'
-      }}>
-        <h1
-          style={{ fontSize: fontSize, margin: 0, pointerEvents: 'auto' }}
-          className='logo'
-          onClick={handleHome}>MAN</h1>
-        <h1
-          style={{ fontSize: fontSize, margin: 0, pointerEvents: 'auto' }}
-          className='logo'
-          onClick={handleHome}>HUNT</h1>
-      </div>
-    </div>
-  )
-}
 
 interface HeaderProps {
-  page: string;
+  page?: string;
   users?: Array<Object> | null;
 }
 
@@ -138,13 +31,19 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ page, users }) => {
   const isPhoneScreen = useMediaQuery({ query: '(max-width: 380px)' });
   const navigate = useNavigate();
+
+  const handleHome = () => {
+    navigate('/home');
+  }
+
   const { user } = useAuth0();
 
   return (
     <StyledHeader>
-      <HeaderTextureLarge isPhone={isPhoneScreen} />
-      <HeaderTextureSmall isPhone={isPhoneScreen} />
-      <LogoWithCrossHairs />
+      <div style={{ marginBottom: '21px', marginLeft: '-10px' }} className='centered column'>
+        <h1 className='logo' onClick={handleHome}>MAN</h1>
+        <h1 className='logo' onClick={handleHome}>HUNT</h1>
+      </div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
           <img
@@ -153,17 +52,16 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
             className='profile__avatar'
             onClick={() => { navigate('/profile') }}
             style={{ height: '3rem', borderRadius: '50%', marginRight: '10px' }} />
-          <DropDownMenu page={page} />
+          <DropDownMenu page={page || ''} />
         </div>
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
-          : <h1 style={{ fontSize: '10vw' }}>{page}</h1>
+          : <h1 style={{ marginRight: '-20px', }}>{page}</h1>
         }
       </div>
     </StyledHeader>
   );
 }
-
 
 export const GameStyledHeader = styled.header`
   display: flex;

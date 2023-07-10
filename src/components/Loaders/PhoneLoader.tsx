@@ -1,6 +1,8 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
-import { StyledHeader } from "../../styles/Header";
+import { Header } from "../../styles/Header";
+import { Main } from "../../styles/Main";
+import { Container } from "../../styles/Container";
 
 const PhoneColor = '#0D0907';
 
@@ -11,7 +13,7 @@ const Centered = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const Container = styled.div`
+const PhoneContainer2 = styled.div`
   position: fixed;
   top: 25%;
   height: 300px;
@@ -75,7 +77,7 @@ ${Centered};
   height: 100vh;
 `;
 
-const Header = styled.h1`
+const Logo = styled.h1`
   font-size: 3rem;
   margin: 0;
   position: absolute;
@@ -86,14 +88,19 @@ const Header = styled.h1`
 
 const PhoneLoader: React.FC = () => {
   return (
-    <PhoneContainer>
-      <Container>
-        <Phone>
-          <Glass />
-          <Header className='phone-logo'>MAN HUNT</Header>
-        </Phone>
-      </Container>
-    </PhoneContainer>
+    <Container>
+      <Header/>
+      <Main>
+        <PhoneContainer>
+          <PhoneContainer2>
+            <Phone>
+              <Glass />
+              <Logo className='phone-logo'>MAN HUNT</Logo>
+            </Phone>
+          </PhoneContainer2>
+      </PhoneContainer>
+      </Main>
+    </Container>
   );
 }
 
