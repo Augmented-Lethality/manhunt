@@ -38,6 +38,10 @@ const ChaseCam: React.FC = () => {
   // const hardCodeMarker = new Sprite(hardCodeMtl);
 
   // set size of sprites
+
+  // CHANGE SIZE FOR MIN AND MAX FOR PLAYER AMOUNTS !!!!!!!!!!!!!!!!!!!
+
+
   const spriteSize = 0.5;
   killers.scale.set(spriteSize, spriteSize, 1);
   victim.scale.set(spriteSize, spriteSize, 1);
