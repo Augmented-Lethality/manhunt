@@ -233,6 +233,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 borderRadius: '15px',
                 padding: '1em',
                 width: '15em',
+                
               }}
             >
               <Canvas onCreated={({ gl }) => gl.setAnimationLoop(onFrame)}>
