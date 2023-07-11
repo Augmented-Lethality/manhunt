@@ -53,70 +53,69 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     }
   };
 
-    // fetch, parse and set the trophy data
-    const fetchUserTrophyData = async () => {
-      try {
-        if (userData) {
-          const response = await axios.get<
-            {
-              id: number;
-              name: string;
-              description: string;
-              createdAt: string;
-              generationConditions: string;
-            }[]
-          >(`/trophies/${userData.id}`, {
-            headers: {
-              Authorization: `Bearer ${user?.token}`,
-            },
-          });
-  
-          const parsedTrophyData: TrophyData[] = response.data.map((trophy) => {
-            const generationConditions = JSON.parse(trophy.generationConditions);
-  
-            //To make the date more readable
-            const dateRegex = /(\d{4})-(\d{2})-(\d{2})/;
-            const [, year, month, day] = dateRegex.exec(trophy.createdAt) || [];
-            function getMonthName(month: string) {
-              const monthNames = [
-                'January',
-                'February',
-                'March',
-                'April',
-                'May',
-                'June',
-                'July',
-                'August',
-                'September',
-                'October',
-                'November',
-                'December',
-              ];
-  
-              const monthIndex = parseInt(month, 10) - 1;
-              return monthNames[monthIndex];
-            }
-  
-            return {
-              id: trophy.id,
-              name: trophy.name,
-              description: trophy.description,
-              createdAt: `${day} ${getMonthName(month)} ${year}`,
-              dimension: generationConditions.dimension || 0,
-              color: generationConditions.color || '',
-              shape: generationConditions.shape || '',
-              tubularSegments: generationConditions.tubularSegments || 0,
-              tubeWidth: generationConditions.tubeWidth || 0,
-            };
-          });
-  
-          setUserTrophyData(parsedTrophyData);
-        }
-      } catch (error) {
-        console.error('Error fetching user trophy data:', error);
+  // fetch, parse and set the trophy data
+  const fetchUserTrophyData = async () => {
+    try {
+      if (userData) {
+        const response = await axios.get<
+          {
+            id: number;
+            name: string;
+            description: string;
+            createdAt: string;
+            generationConditions: string;
+          }[]
+        >(`/trophies/${userData.id}`, {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+
+        const parsedTrophyData: TrophyData[] = response.data.map((trophy) => {
+          const generationConditions = JSON.parse(trophy.generationConditions);
+
+          //To make the date more readable
+          const dateRegex = /(\d{4})-(\d{2})-(\d{2})/;
+          const [, year, month, day] = dateRegex.exec(trophy.createdAt) || [];
+          function getMonthName(month: string) {
+            const monthNames = [
+              'January',
+              'February',
+              'March',
+              'April',
+              'May',
+              'June',
+              'July',
+              'August',
+              'September',
+              'October',
+              'November',
+              'December',
+            ];
+
+            const monthIndex = parseInt(month, 10) - 1;
+            return monthNames[monthIndex];
+          }
+
+          return {
+            id: trophy.id,
+            name: trophy.name,
+            description: trophy.description,
+            createdAt: `${day} ${getMonthName(month)} ${year}`,
+            dimension: generationConditions.dimension || 0,
+            color: generationConditions.color || '',
+            shape: generationConditions.shape || '',
+            tubularSegments: generationConditions.tubularSegments || 0,
+            tubeWidth: generationConditions.tubeWidth || 0,
+          };
+        });
+
+        setUserTrophyData(parsedTrophyData);
       }
-    };
-  
+    } catch (error) {
+      console.error('Error fetching user trophy data:', error);
+    }
+  };
 
   const getColorName = (colorCode) => {
     // Map color codes to more fitting color names
@@ -191,10 +190,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     }
   };
 
-  const togglePropsView = () => {
-    setShowProps(!showProps);
-  };
-
   useEffect(() => {
     if (isAuthenticated) {
       setIsLoading(true);
@@ -213,7 +208,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
         setIsLoading(false);
       });
   }, [userData]);
-  
 
   const trophiesPerPage = 9;
   const startIndex = (currentPage - 1) * trophiesPerPage;
@@ -222,7 +216,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const totalPages = Math.ceil(userTrophyData.length / trophiesPerPage);
 
   return (
-    <div >
+    <div>
       {trophiesToDisplay
         .slice(0)
         .reverse()
@@ -232,7 +226,13 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               onMouseDown={(e) => handleMouseDown(e, index)}
               onMouseUp={handleMouseUp}
               onMouseMove={(e) => handleMouseMove(e, index)}
-              style={{backgroundColor: '#303350', margin: '3em', borderRadius: '25px', padding: '1em', width: '15em'}}
+              style={{
+                backgroundColor: '#303350',
+                margin: '3em',
+                borderRadius: '25px',
+                padding: '1em',
+                width: '15em',
+              }}
             >
               <Canvas onCreated={({ gl }) => gl.setAnimationLoop(onFrame)}>
                 <ambientLight intensity={0.5} />
@@ -247,7 +247,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                     ]}
                     position={[0, 0, 0]}
                     rotation={[0, 0.4, 0]}
-                  > 
+                  >
                     <meshStandardMaterial
                       attach='material'
                       color={trophy.color}
@@ -304,29 +304,29 @@ const SavedTrophies: React.FC<TrophyData> = () => {
           display: 'flex',
           position: 'sticky',
           bottom: 0,
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         {totalPages > 1 && (
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            Prev
-          </button>
-        )}
-        {totalPages > 1 && (
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            Next
-          </button>
+          <div>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              Prev
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              Next
+            </button>
+            <span style={{ display: 'flex', padding: '1em' }}>
+              Page {currentPage}
+            </span>
+          </div>
         )}
       </div>
-      <span style={{ display: 'flex', padding: '1em'}}>
-        Page {currentPage}
-      </span>
     </div>
   );
 };

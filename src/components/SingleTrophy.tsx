@@ -36,8 +36,6 @@ const SingleTrophy: React.FC<TrophyData> = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userTrophyData, setUserTrophyData] = useState<TrophyData[]>([]);
-  const [showProps, setShowProps] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchUserData = async () => {
