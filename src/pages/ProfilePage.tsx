@@ -99,7 +99,7 @@ const StatsContainer = styled.div`
   align-items: start;
 `
 
-function Eyeball() {
+export function Eyeball() {
   return (
     <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60' width='135' height='60' style={{ transform: 'rotate(180deg' }}>
       <path transform='translate(-10, -20)' fill='#01010b' d='M50.006 20C19.509 20 4.978 50.028 5 50.028l.013-.026s13.984 29.997 44.993 29.997C78.997 80 95 50.002 95 50.002S80.997 20 50.006 20zm16.991 25.007a2 2 0 01-2 2h-11v-4h11a2 2 0 012 2zm-19 4h4v11a2 2 0 01-4 0v-11zm2-21a2 2 0 012 2v11h-4v-11a2 2 0 012-2zm-15 15h11v4h-11a2 2 0 010-4zm15.009 31c-11 0-20.891-4.573-29.399-13.104-4.086-4.096-7.046-8.26-8.61-10.867 2.787-4.546 9.53-13.969 20.187-19.569A22.889 22.889 0 0027 45.002c0 12.704 10.306 23.005 22.994 23.005C62.709 68.007 73 57.707 73 45.002a22.899 22.899 0 00-5.233-14.605c4.113 2.148 7.999 5.06 11.633 8.701 4.018 4.027 7.016 8.292 8.597 10.909-4.53 6.841-18.052 24-37.991 24z'></path>
@@ -257,23 +257,23 @@ const ProfilePage: React.FC = () => {
           {userData?.facialDescriptions ? (
             <>
               <h3>Feeling Patriotic?</h3>
-              <br/>
+              <br />
               <button onClick={() => setPhotoStatus('camera')}>
-              → Reverify ←
+                → Reverify ←
               </button>
-              <br/>
-              <br/>
+              <br />
+              <br />
               <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           ) : (
             <>
               <h3>↓↓↓VERIFY↓↓↓ </h3>
-              <br/>
+              <br />
               <button onClick={() => setPhotoStatus('camera')}>
-              Send BioData
+                Send BioData
               </button>
-              <br/>
-              <br/>
+              <br />
+              <br />
               <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           )}
