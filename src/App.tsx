@@ -18,6 +18,7 @@ import SocketComponent from './contexts/Socket/SocketComponent';
 import Settings from './pages/Settings';
 import { useFontSize } from './contexts/FontSize';
 import TrophyRoom from './pages/TrophyRoom';
+import AccessPage from './pages/AccessPage';
 
 import PhoneLoader from '../src/components/Loaders/PhoneLoader'
 
@@ -77,6 +78,14 @@ const App = () => {
         element={
           <SocketComponent>
             <AuthenticationGuard component={GameLobby} />
+          </SocketComponent>
+        }
+      />
+      <Route
+        path="/access"
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={AccessPage} />
           </SocketComponent>
         }
       />

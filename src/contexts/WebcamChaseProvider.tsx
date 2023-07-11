@@ -3,7 +3,7 @@ import Webcam from 'react-webcam';
 
 const videoConstraints = {
   width: window.innerWidth,
-  height: window.innerHeight - 136,
+  height: window.innerHeight,
   facingMode: "environment"
 };
 

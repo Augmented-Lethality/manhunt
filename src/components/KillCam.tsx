@@ -158,7 +158,7 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
 
   return (
     <>
-      <canvas ref={canvasRef} style={{ position: 'absolute', top: '132px', left: 0 }} />
+      <canvas ref={canvasRef} style={{ position: 'absolute', width: '100%', height: '100%' }} />
       <TargetRecognition progress={targetCounter} />
     </>
   );

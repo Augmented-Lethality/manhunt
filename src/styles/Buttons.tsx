@@ -42,14 +42,14 @@ const StyledButton2 = styled.button<ButtonProps>`
   box-shadow: -5px 7px 10px 3px #00000059;
   background-image: url("/textures/find-game-button.png");
   font-size: ${(props) =>
-    props.label === 'Host a Contract' 
-    ? `3rem` 
-    : `2.6rem`
+    props.label === 'Host a Contract'
+      ? `3rem`
+      : `2.6rem`
   };
   line-spacing: ${(props) =>
-    props.label === 'Host a Contract' 
-    ? `1rem` 
-    : `2.9rem`
+    props.label === 'Host a Contract'
+      ? `1rem`
+      : `2.9rem`
   };
   };
 
@@ -128,17 +128,37 @@ export const ButtonToProfile: React.FC = () => {
   return <Button label='Profile' route='/profile' />;
 };
 
+// export const ButtonToFindGame: React.FC = () => {
+//   return <LargeButton label='See the Contract Board' route='/findGame' />;
+// };
+
 export const ButtonToFindGame: React.FC = () => {
-  return <LargeButton label='See the Contract Board' route='/findGame' />;
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/access', { state: { info: 'join' } });
+  }
+
+  return <LargeButton label='See the Contract Board' route='' onClick={handleClick} />;
 };
 
 export const ButtonToJoinLobby: React.FC = () => {
   return <Button label='Join this game' route='/lobby' />;
 };
 
+// export const ButtonToHostGame: React.FC = () => {
+//   const { CreateGame } = useContext(SocketContext);
+//   return <LargeButton label='Host a Contract' route='/lobby' onClick={CreateGame} />;
+// };
+
 export const ButtonToHostGame: React.FC = () => {
-  const { CreateGame } = useContext(SocketContext);
-  return <LargeButton label='Host a Contract' route='/lobby' onClick={CreateGame} />;
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/access', { state: { info: 'create' } });
+  }
+
+  return <LargeButton label='Host a Contract' route='' onClick={handleClick} />;
 };
 
 export const LogoutButton = () => {
