@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useCameraAccess from '../../custom-hooks/useCameraAccess';
 import useLocationAccess from '../../custom-hooks/useLocationAccess';
 import useOrientationAccess from '../../custom-hooks/useOrientationAccess';
@@ -17,12 +18,24 @@ const AccessCheckContainer = styled.div`
 
 interface AccessCheckProps {
   type: string;
+  count: number;
+  setCount: (count: number) => void;
 }
 
-const AccessCheck: React.FC<AccessCheckProps> = ({ type }) => {
+const AccessCheck: React.FC<AccessCheckProps> = ({ type, setCount, count }) => {
+
+  const updateCount = (checking: boolean, accessMessage: string) => {
+    if (!checking && !accessMessage) {
+      setCount(count + 1);
+    }
+  }
 
   if (type === 'Camera') {
     const { checking, accessMessage, checkCameraAccess } = useCameraAccess();
+
+    useEffect(() => {
+      updateCount(checking, accessMessage);
+    }, [checking, accessMessage])
 
     return (
       <AccessCheckContainer>
@@ -47,6 +60,10 @@ const AccessCheck: React.FC<AccessCheckProps> = ({ type }) => {
   if (type === 'Location') {
     const { checking, accessMessage, checkLocationAccess } = useLocationAccess();
 
+    useEffect(() => {
+      updateCount(checking, accessMessage);
+    }, [checking, accessMessage])
+
     return (
       <AccessCheckContainer>
         {checking ? (
@@ -69,6 +86,10 @@ const AccessCheck: React.FC<AccessCheckProps> = ({ type }) => {
 
   if (type === 'Orientation') {
     const { checking, accessMessage, checkOrientationAccess } = useOrientationAccess();
+
+    useEffect(() => {
+      updateCount(checking, accessMessage);
+    }, [checking, accessMessage])
 
     return (
       <AccessCheckContainer>

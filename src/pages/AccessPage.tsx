@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { Container } from '../styles/Container';
@@ -8,6 +9,7 @@ import { useFontSize } from '../contexts/FontSize';
 import styled from 'styled-components';
 
 import AccessCheck from '../components/Access/AccessCheck';
+import { useNavigate } from 'react-router-dom';
 
 const AccessChecksContainer = styled.div`
   display: flex;
@@ -32,9 +34,29 @@ const AccessCheckContainer = styled.div`
 `;
 
 const AccessPage: React.FC = () => {
-  const { user, isAuthenticated } = useAuth0();
-  const { users, player } = useContext(SocketContext).SocketState;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { info } = location.state;
+
+  const { users } = useContext(SocketContext).SocketState;
+  const { CreateGame } = useContext(SocketContext);
   const [fontSize, setFontSize] = useFontSize();
+
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (count >= 3) {
+      switch (info) {
+        case 'create':
+          CreateGame();
+          navigate('/lobby');
+          break;
+        case 'join':
+          navigate('/findGame');
+          break;
+      }
+    }
+  }, [count])
 
   return (
     <Container>
@@ -42,13 +64,13 @@ const AccessPage: React.FC = () => {
       <Main>
         <AccessChecksContainer>
           <AccessCheckContainer>
-            <AccessCheck type={'Camera'} />
+            <AccessCheck type={'Camera'} setCount={setCount} count={count} />
           </AccessCheckContainer>
           <AccessCheckContainer>
-            <AccessCheck type={'Location'} />
+            <AccessCheck type={'Location'} setCount={setCount} count={count} />
           </AccessCheckContainer>
           <AccessCheckContainer>
-            <AccessCheck type={'Orientation'} />
+            <AccessCheck type={'Orientation'} setCount={setCount} count={count} />
           </AccessCheckContainer>
         </AccessChecksContainer>
       </Main>
