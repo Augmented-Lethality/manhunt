@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
 
   return (
     <StyledHeader>
-      <div style={{marginBottom:'21px', marginLeft:'-10px'}} className='centered column'>
+      <div style={{ marginBottom: '21px', marginLeft: '-10px' }} className='centered column'>
         <h1 className='logo' onClick={handleHome}>MAN</h1>
         <h1 className='logo' onClick={handleHome}>HUNT</h1>
       </div>
@@ -78,9 +78,6 @@ interface GameHeaderProps {
 }
 
 export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
-  const navigate = useNavigate();
-  const { user } = useAuth0();
-  const { LeaveGame } = useContext(SocketContext);
 
   return (
     <GameStyledHeader className="digital digital-container">
@@ -89,3 +86,14 @@ export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
     </GameStyledHeader>
   );
 }
+
+export const Footer = styled.footer`
+  background-color: transparent;
+  border-top: transparent;
+  height: 60px;
+  padding: 1rem;
+  position: absolute;
+  display: flex;
+  bottom: 0px;
+  width: -webkit-fill-available;
+`;

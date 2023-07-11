@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import CapturePhoto from './CapturePhoto'
 import { WebcamProvider } from '../contexts/WebcamProvider';
 import axios from 'axios';
-import {UserData} from '../pages/ProfilePage'
+import { UserData } from '../pages/ProfilePage'
 import Save from 'react-feather/dist/icons/save'
 import Camera from 'react-feather/dist/icons/camera'
 
@@ -20,14 +20,14 @@ interface CreateFaceDescriptionsProps {
   setUser: (user: UserData | null) => void;
 }
 
-const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhotoStatus, username, userID, setUser}) => {
+const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhotoStatus, username, userID, setUser }) => {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   const [verifying, setVerifying] = useState<boolean>(false)
-  
+
   useEffect(() => {
     loadModels();
   }, []);
-  
+
   const loadModels = async () => {
     try {
       await loadSsdMobilenetv1Model('/models')
@@ -45,11 +45,11 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhoto
     try {
       setVerifying(true)
       const labeledFaceDescriptor = await createFaceDescriptor();
-      if(labeledFaceDescriptor){
+      if (labeledFaceDescriptor) {
         sendDescriptionToServer(labeledFaceDescriptor);
         setPhotoStatus('profile')
       }
-    } catch (err){
+    } catch (err) {
       console.error(err)
     }
   }
@@ -72,8 +72,8 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhoto
     try {
       // Convert descriptor to array for easier serialization
       const descriptorArray = Array.from(labeledFaceDescriptor.descriptors[0]);
-      const res = await axios.patch(`/users/face-description/${userID}`, {descriptions: descriptorArray});
-      if(res.status === 200){
+      const res = await axios.patch(`/users/face-description/${userID}`, { descriptions: descriptorArray });
+      if (res.status === 200) {
         setUser(res.data)
       }
     } catch (error) {
@@ -81,21 +81,21 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhoto
     }
   }
 
-  if(img){
+  if (img) {
     return (
       <div>
-        {verifying && <h1 style={{position:'absolute'}}>Verifying</h1>}
+        {verifying && <h1 style={{ position: 'absolute' }}>Verifying</h1>}
         <img src={img.src} alt="Screenshot" style={{ height: '100%', width: '100%', objectFit: 'cover' }} />
         <div style={{
-          position:'absolute',
-          zIndex:'1',
+          position: 'absolute',
+          zIndex: '1',
           bottom: '5vh',
           display: 'flex',
           justifyContent: 'space-around',
-          width:'100%'
-          }}>
-          <Camera className='react-icon-large' onClick={()=>{setImg(null)}}/>
-          <Save className='react-icon-large' onClick={handleSave}/>
+          width: '100%'
+        }}>
+          <Camera className='react-icon-large' onClick={() => { setImg(null) }} />
+          <Save className='react-icon-large' onClick={handleSave} />
         </div>
       </div>
     )
@@ -103,7 +103,7 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({setPhoto
 
   return (
     <WebcamProvider>
-      <CapturePhoto setImg={setImg}/>
+      <CapturePhoto setImg={setImg} />
     </WebcamProvider>
   )
 }

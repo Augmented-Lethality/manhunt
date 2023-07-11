@@ -38,6 +38,10 @@ const ChaseCam: React.FC = () => {
   // const hardCodeMarker = new Sprite(hardCodeMtl);
 
   // set size of sprites
+
+  // CHANGE SIZE FOR MIN AND MAX FOR PLAYER AMOUNTS !!!!!!!!!!!!!!!!!!!
+
+
   const spriteSize = 0.5;
   killers.scale.set(spriteSize, spriteSize, 1);
   victim.scale.set(spriteSize, spriteSize, 1);
@@ -252,13 +256,10 @@ const ChaseCam: React.FC = () => {
 
 
   return (
-    // <div style={{ height: '100%', width: '100%' }}>
     <canvas
       ref={canvasRef}
-      style={{ position: 'absolute', top: '132px', left: 0 }}
-    // style={{ width: '100%', height: '100%' }}
+      style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover' }}
     />
-    // </div>
   );
 };
 

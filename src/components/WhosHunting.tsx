@@ -18,16 +18,16 @@ interface WhosHuntingProps {
   setBountyName: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const WhosHunting: React.FunctionComponent<WhosHuntingProps> = ({setBountyName}) => {
+const WhosHunting: React.FunctionComponent<WhosHuntingProps> = ({ setBountyName }) => {
   const { users, ready } = useContext(SocketContext).SocketState;
   const { SetHunted } = useContext(SocketContext);
   const [hasReadyErrors, setHasReadyErrors] = useState(false);
 
   // if any of the ready objects don't have a value of 'ok', can't start the game
-  useEffect(() => {
-    const hasErrors = Object.values(ready).some((errors: string[]) => !errors.includes('ok'));
-    setHasReadyErrors(hasErrors);
-  }, [ready]);
+  // useEffect(() => {
+  //   const hasErrors = Object.values(ready).some((errors: string[]) => !errors.includes('ok'));
+  //   setHasReadyErrors(hasErrors);
+  // }, [ready]);
 
   const pickVictim = (users: User[], SetHunted: (user: User) => void) => {
     //Chose a random victim from the players
@@ -39,24 +39,36 @@ const WhosHunting: React.FunctionComponent<WhosHuntingProps> = ({setBountyName})
     setBountyName(matchingUser)
   };
 
-  //dont render the start button until the players are all ready
+
   return (
     <StartContainer>
-      { !hasReadyErrors ? (
       <>
         <h3 className='button-label'>Start</h3>
         <button
           onClick={() => pickVictim(users, SetHunted)}
           className='metal-button'>⏻</button>
       </>
-      ) : (
-        <>
-          <span className='button-label'>Waiting on Players</span>
-          <button style={{maxWidth:'200px'}}/>
-        </>
-      )}
+
     </StartContainer>
   )
+
+  // return (
+  //   <StartContainer>
+  //     { !hasReadyErrors ? (
+  //     <>
+  //       <h3 className='button-label'>Start</h3>
+  //       <button
+  //         onClick={() => pickVictim(users, SetHunted)}
+  //         className='metal-button'>⏻</button>
+  //     </>
+  //     ) : (
+  //       <>
+  //         <span className='button-label'>Waiting on Players</span>
+  //         <button style={{maxWidth:'200px'}}/>
+  //       </>
+  //     )}
+  //   </StartContainer>
+  // )
 };
 
 export default WhosHunting;

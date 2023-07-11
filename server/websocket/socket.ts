@@ -152,6 +152,8 @@ export class ServerSocket {
           const newGame = await Game.create({ gameId: gameId, host: user.sub, hostName: hostName, status: 'lobby', users: [user.sub], hunted: '' });
           await this.UserUpdate('gameId', gameId, 'authId', user.sub);
 
+          socket.leave('users');
+          await this.EmitGamesUpdates();
           socket.join(gameId);
           this.EmitLobbyUpdates(newGame.dataValues.gameId);
 

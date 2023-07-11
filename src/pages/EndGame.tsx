@@ -40,6 +40,17 @@ const EndGame: React.FC = () => {
       if (games[0].winnerId === player.authId && games[0].hunted !== player.authId) {
         setGameOverMessage(
           `Great work, ${player.username}.\nYour skip tracing gained you a bounty.`
+
+
+
+          // array, split the sentences
+
+
+
+
+
+
+
         );
         // user is a winner
         setWinner(true);
@@ -87,7 +98,7 @@ const EndGame: React.FC = () => {
       <Main>
         <h1 className='end-main' style={{ fontSize: '3em', marginBottom: '2px', marginTop: '15px', textAlign: 'center', }}>GAME OVER</h1>
         <MessageContainer>
-          <h3 className='game-over' style={{ fontSize: '1.5em', marginBottom: '10px', paddingLeft: '20px', paddingRight: '20px', whiteSpace: 'pre-line', marginTop: '0px', }}>{gameOverMessage}</h3>
+          <h3 className='game-over' style={{ color: 'white', fontSize: '1.5em', marginBottom: '10px', paddingLeft: '20px', paddingRight: '20px', whiteSpace: 'pre-line', marginTop: '0px', }}>{gameOverMessage}</h3>
           {winner ? (
             <div className='trophy-container-end' style={{
               width: '400px', height: '300px', marginBottom: '8px', display: 'flex',

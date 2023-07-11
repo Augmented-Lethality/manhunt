@@ -99,7 +99,7 @@ const StatsContainer = styled.div`
   align-items: start;
 `;
 
-function Eyeball() {
+export function Eyeball() {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -312,14 +312,24 @@ const ProfilePage: React.FC = () => {
           {userData?.facialDescriptions ? (
             <>
               <h3>Feeling Patriotic?</h3>
-              <button onClick={() => setPhotoStatus('camera')}>Reverify</button>
+              <br />
+              <button onClick={() => setPhotoStatus('camera')}>
+                → Reverify ←
+              </button>
+              <br />
+              <br />
+              <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           ) : (
             <>
               <h3>↓↓↓VERIFY↓↓↓ </h3>
+              <br />
               <button onClick={() => setPhotoStatus('camera')}>
                 Send BioData
               </button>
+              <br />
+              <br />
+              <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           )}
         </VerificationContainer>
