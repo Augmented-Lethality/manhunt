@@ -3,8 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import SocketContext, { User } from '../contexts/Socket/SocketContext';
-import CheckAccess from './GameLobby/CheckAccess';
-import AccessReady from './GameLobby/AccessReady';
 
 const UserContainer = styled.div`
   display: flex;
@@ -32,14 +30,14 @@ const UserListItem: React.FC<{ player: User }> = ({ player }) => {
   const location = useLocation();
   const currentEndpoint = location.pathname;
 
-  const { ready } = useContext(SocketContext).SocketState;
-  const [errors, setErrors] = useState<string[]>([]);
+  // const { ready } = useContext(SocketContext).SocketState;
+  // const [errors, setErrors] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (ready[player.authId]) {
-      setErrors(ready[player.authId]);
-    }
-  }, [ready, player.authId]);
+  // useEffect(() => {
+  //   if (ready[player.authId]) {
+  //     setErrors(ready[player.authId]);
+  //   }
+  // }, [ready, player.authId]);
 
   return (
     <UserContainer onClick={() => navigate(`/profile/${player.username}`)}>
@@ -52,12 +50,6 @@ const UserListItem: React.FC<{ player: User }> = ({ player }) => {
       )}
       <Username>{player.username}</Username><br />
       {/* <KD>{player.gamesWon / player.gamesPlayed}</KD><br /> */}
-      {/* {currentEndpoint === 'lobby' && (
-        <> */}
-      <AccessReady player={player} errors={errors} />
-      <CheckAccess />
-      {/* </>
-      )} */}
     </UserContainer>
   );
 };

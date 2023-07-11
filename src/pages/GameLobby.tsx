@@ -11,7 +11,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import styled from 'styled-components';
 
-const Image = styled.div<{isHost: boolean}>`
+const Image = styled.div<{ isHost: boolean }>`
   position: absolute;
   left: 50%;
   bottom: 0;
@@ -23,7 +23,7 @@ const Image = styled.div<{isHost: boolean}>`
   box-sizing: border-box;
   background-image:
     ${props => props.isHost
-    ?'url(/textures/lobby-host.png)'
+    ? 'url(/textures/lobby-host.png)'
     : 'url(/textures/lobby-guest.png)'};
   background-size: contain;
   background-repeat: no-repeat;
@@ -103,7 +103,7 @@ const ControlsBorder = styled.div`
   box-shadow: -5px 15px 80px 10px #000000f0, 0px 0px 0 10px #000000, 0 0 0 16px #2eb694, 0 0 0 17px #449086, 0 0 0 20px #1bc3ad, 0 0 0 30px #48d4b9, 0px -2px 0px 32px #76deca;
 `
 
-  const ControlsContainer = styled.div`
+const ControlsContainer = styled.div`
     position: relative;
     display: flex;
     justify-content: end;
@@ -220,7 +220,7 @@ const GameLobby: React.FC<{}> = () => {
     }
 
   }, [bountyName])
-  
+
   //Allow clicking the arrows to change the time
   const handleArrowClick = (direction: 'plus' | 'minus') => {
     if (direction === 'minus' && selectedIndex > 0) {
@@ -257,12 +257,12 @@ const GameLobby: React.FC<{}> = () => {
     <Container>
       <Header page='Lobby' />
       <Main>
-        <Image isHost={isHost}/>
-        {isHost && 
+        <Image isHost={isHost} />
+        {isHost &&
           <>
-            <PlayButton onClick={() => pickVictim(users, SetHunted)}/>
-            <MinusButton onClick={() => handleArrowClick('minus')}/>
-            <PlusButton onClick={() => handleArrowClick('plus')}/>
+            <PlayButton onClick={() => pickVictim(users, SetHunted)} />
+            <MinusButton onClick={() => handleArrowClick('minus')} />
+            <PlusButton onClick={() => handleArrowClick('plus')} />
           </>
         }
         <BackButton onClick={() => navigate('/home')}>Back</BackButton>

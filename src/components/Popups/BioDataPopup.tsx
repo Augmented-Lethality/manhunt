@@ -48,7 +48,7 @@ export const BioDataPopup: React.FC = () => {
               viewBox="0 0 100 60"
               width="135"
               height="60"
-              style={{ transform: 'rotate(180deg)', borderColor: 'black' }}
+              style={{ transform: 'rotate(180deg)' }}
               dangerouslySetInnerHTML={{ __html: decodeURIComponent(eyeballSvg) }}
             />
           </button>
