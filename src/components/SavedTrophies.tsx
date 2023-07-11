@@ -229,7 +229,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               style={{
                 backgroundColor: '#303350',
                 margin: '3em',
-                borderRadius: '25px',
+                borderRadius: '15px',
                 padding: '1em',
                 width: '15em',
               }}
@@ -287,7 +287,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 )}
               </Canvas>
 
-              <details style={{ textAlign: 'center' }}>
+              <details style={{ textAlign: 'left'}}>
                 <summary style={{ textAlign: 'right' }}>Details</summary>
                 <h6>Designation: {trophy.name}</h6>
                 <h6>Report: {trophy.description}</h6>

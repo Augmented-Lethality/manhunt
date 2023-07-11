@@ -233,7 +233,11 @@ const ProfilePage: React.FC = () => {
               tubeWidth={0}
             />
           </TrophyContainer>
-        ) : null}
+        ) : (
+          <TrophyContainer>
+            <iframe src="https://giphy.com/embed/DcTN1NEaLjw4E0xvAE" width="90" height="160" frameBorder="0" allowFullScreen></iframe>
+          </TrophyContainer>
+        )}
         <IdContainer>
           {userData?.facialDescriptions ? (
             <Text>CORPOVERSE OFFICIAL ID</Text>
