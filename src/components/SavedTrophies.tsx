@@ -223,11 +223,12 @@ const SavedTrophies: React.FC<TrophyData> = () => {
         .map((trophy, index) => (
           <div key={index}>
             <div
+            className='glassmorphism'
               onMouseDown={(e) => handleMouseDown(e, index)}
               onMouseUp={handleMouseUp}
               onMouseMove={(e) => handleMouseMove(e, index)}
               style={{
-                backgroundColor: '#303350',
+                color: '#2d2d2d',
                 margin: '3em',
                 borderRadius: '15px',
                 padding: '1em',
