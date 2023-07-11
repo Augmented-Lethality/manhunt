@@ -16,7 +16,7 @@ const UsersList: React.FC<UsersListProps> = ({ users, header }) => {
 
   return (
     <ListContainer>
-      {header && <h1>{header}</h1>}
+      {header && <h2 className='digital-h1'>{header}</h2>}
       {users.map((user, index) => (
         <React.Fragment key={index}>
           <UserListItem player={user} />

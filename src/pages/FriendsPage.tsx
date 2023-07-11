@@ -8,33 +8,71 @@ import { Main } from '../styles/Main';
 import { Header } from '../styles/Header';
 import { Search, XCircle, Bell } from 'react-feather';
 
-
-const FriendsContainer = styled.div`
-  background-color: #26262d;
-  padding: 20px;
-  margin-inline: 20px;
-  flex-grow: 1;
+const Image = styled.div`
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  padding: 1rem;
+  padding-bottom: 0;
+  height: 134.5vw;
+  width: 100%;
+  box-sizing: border-box;
+  background-image: url(/textures/computer.png);
+  background-size: contain;
+  background-repeat: no-repeat;
 `;
+
 
 const SearchBar = styled.div`
+  position: absolute;
+  bottom: 28vw;
+  left: 34vw;
+  height: 17vw;
+  width: 56vw;
   display: flex;
   align-items: center;
-  margin: 20px;
-  margin-inline: auto;
-  background-color: #2b2b36;
-  padding: 10px;
-  width: 70%;
-  height: 30px;
+  & > * {
+    display: flex;
+    align-items: end;
+    margin: 1.5rem;
+    color: cyan;
+  }
+  & > * > * {
+    margin-right: 10px;
+    color: cyan;
+  }
+`;
+
+const FriendsContainer = styled.div`
+  position: absolute;
+  bottom: 64vw;
+  left: 14vw;
+  height: 53vw;
+  width: 73vw;
+  // border: 2px solid green;
 `;
 
 
-const SearchIcon = styled(Search)`
-  color: #fff;
-`;
 
-const CloseIcon = styled(XCircle)`
-  color: #fff;
-`;
+// const FriendsContainer = styled.div`
+//   background-color: #26262d;
+//   padding: 20px;
+//   margin-inline: 20px;
+//   flex-grow: 1;
+// `;
+
+// const SearchBar = styled.div`
+//   display: flex;
+//   align-items: center;
+//   margin: 20px;
+//   margin-inline: auto;
+//   background-color: #2b2b36;
+//   padding: 10px;
+//   width: 70%;
+//   height: 30px;
+// `;
+
 
 const FriendsPage: React.FC = () => {
   const [searchText, setSearchText] = useState('');
@@ -98,7 +136,6 @@ const FriendsPage: React.FC = () => {
     }
   };
 
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
@@ -107,36 +144,37 @@ const FriendsPage: React.FC = () => {
     return null;
   }
 
-
   return (
     <Container>
       <Header page='Friends' />
       <Main>
+        <Image/>
         <SearchBar>
+          {searchText === '' 
+            ? <Search className='digital-h1' />
+            : <XCircle className='digital-h1' onClick={() => { setSearchText('') }} />
+          }
           <input
             type='text'
             placeholder="Find a Hunter"
             value={searchText}
             onChange={handleInputChange}
           />
-          {searchText === '' ?
-            <SearchIcon className='react-icon' />
-            : <CloseIcon onClick={() => { setSearchText('') }} className='react-icon' />}
         </SearchBar>
         <FriendsContainer>
+          <Bell className='digital-h1' onClick={() => { setViewingPending(viewingPending => !viewingPending) }} />
           {searchText === '' ? (
             <>
-              <Bell onClick={() => { setViewingPending(viewingPending => !viewingPending) }} />
               {viewingPending &&
-                <UsersList users={pendingRequests} header={`Requests • ${pendingRequests.length}`} />
+                <UsersList users={pendingRequests} header={`Pending • ${pendingRequests.length}`} />
               }
               <UsersList users={onlineFriends} header={`Online • ${onlineFriends.length}`} />
               <UsersList users={offlineFriends} header={`Offline • ${offlineFriends.length}`} />
             </>
           ) : searchResults.length === 0 ? (
-            <h3 style={{ textAlign: 'center' }}>You've got the wrong guy!</h3>
+            <h2 className='digital-h1' style={{ textAlign: 'center' }}>You've got the wrong guy!</h2>
           ) : (
-            <UsersList users={searchResults} />
+            <UsersList header={`Results • ${onlineFriends.length}`} users={searchResults} />
           )}
         </FriendsContainer>
       </Main>

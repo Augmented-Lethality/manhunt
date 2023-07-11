@@ -38,7 +38,7 @@ const TrophyContainer = styled.div`
 `;
 
 //ID card background that user data sits on
-const IdContainer = styled.div`
+const TempIdContainer = styled.div`
   background: url(/textures/paper.png);
   background-size: cover;
   background-position: center;
@@ -54,7 +54,26 @@ const IdContainer = styled.div`
   width: 80%;
   max-width: 300px;
   box-shadow: 0px 10px 10px 2px #00000059;
-`;
+`
+
+//ID card background that user data sits on
+const IdContainer = styled.div`
+  border-radius: 19px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 20px;
+  margin-inline: auto;
+  padding: 20px;
+  height: 180px;
+  width: 80%;
+  max-width: 300px;
+  box-shadow: 0px 10px 10px 2px #00000059;
+  & > * {
+    opacity: 0.85;
+  }
+`
 //Container For Name and Picture
 const NameContainer = styled.div`
   display: flex;
@@ -210,7 +229,6 @@ const ProfilePage: React.FC = () => {
           userID={user?.sub}
           setUser={setUserData}
         />
-        {/* <Footer /> */}
       </Container>
     );
   }
@@ -242,7 +260,7 @@ const ProfilePage: React.FC = () => {
           {userData?.facialDescriptions ? (
             <Text>CORPOVERSE OFFICIAL ID</Text>
           ) : (
-            <Text>TEMPORARY CORPOVERSE ID</Text>
+            <Text >TEMPORARY CORPOVERSE ID</Text>
           )}
           <NameContainer>
             {user.picture ? (
@@ -268,8 +286,8 @@ const ProfilePage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <h4>CITIZEN NOT VERIFIED</h4>
-                  <h4>PLEASE REGISTER BELOW</h4>
+                  <h5 className='bold'>CITIZEN NOT VERIFIED</h5>
+                  <h5>PLEASE REGISTER BELOW</h5>
                 </>
               )}
             </StatsContainer>

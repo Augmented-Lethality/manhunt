@@ -5,4 +5,6 @@ export const Main = styled.main`
   flex-direction: column;
   flex-grow: 1;
   overflow: auto;
+  position: relative;
+  padding-top: 130px;
 `;
