@@ -11,7 +11,17 @@ import Countdown from '../components/Countdown';
 import { Container } from '../styles/Container';
 import { GameHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
-import {Crosshair , Eye } from 'react-feather';
+import { Crosshair, Eye } from 'react-feather';
+
+import styled from 'styled-components';
+
+const MainGame = styled.main`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+  position: relative;
+`;
 
 const GamePage: React.FC = () => {
 
@@ -39,7 +49,7 @@ const GamePage: React.FC = () => {
   return (
     <Container>
       <GameHeader>
-        <div style={{display:'flex', flexDirection:'column'}}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           {gameMode === 'Chase' ? (
             <>
               <h5>Switch to</h5>
@@ -56,7 +66,7 @@ const GamePage: React.FC = () => {
         </div>
         <Countdown />
       </GameHeader>
-      <Main>
+      <MainGame>
         {gameMode === 'Chase' ? (
           <WebcamChaseProvider key="chaseCam">
             <ChaseCam />
@@ -66,7 +76,7 @@ const GamePage: React.FC = () => {
             <KillCam />
           </WebcamProvider>
         )}
-      </Main>
+      </MainGame>
     </Container>
   );
 }

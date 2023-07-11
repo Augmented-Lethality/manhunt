@@ -155,10 +155,10 @@ const GameLobby: React.FC<{}> = () => {
   const navigate = useNavigate();
 
   // if any of the ready objects don't have a value of 'ok', can't start the game
-  useEffect(() => {
-    const hasErrors = Object.values(ready).some((errors: string[]) => !errors.includes('ok'));
-    setHasReadyErrors(hasErrors);
-  }, [ready]);
+  // useEffect(() => {
+  //   const hasErrors = Object.values(ready).some((errors: string[]) => !errors.includes('ok'));
+  //   setHasReadyErrors(hasErrors);
+  // }, [ready]);
 
   //Send the selected time to the socket instance
   useEffect(() => {
