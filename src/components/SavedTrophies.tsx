@@ -135,6 +135,11 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   };
 
   const rotateTrophies = () => {
+    const getRandomRotationAxis = () => {
+      const axes = ['x', 'y', 'z'];
+      return axes[Math.floor(Math.random() * axes.length)];
+    };
+
     trophyRefs.current.forEach((trophy) => {
       if (trophy) {
         if (!trophy.userData.initialRotationSet) {
@@ -149,11 +154,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
         trophy.rotation[rotationAxis] += rotationSpeed * rotationDirection; // Adjust rotation speed and direction around the chosen axis
       }
     });
-  };
-
-  const getRandomRotationAxis = () => {
-    const axes = ['x', 'y', 'z'];
-    return axes[Math.floor(Math.random() * axes.length)];
   };
 
   const onFrame = () => {
@@ -190,10 +190,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     }
   };
 
-  const togglePropsView = () => {
-    setShowProps(!showProps);
-  };
-
   useEffect(() => {
     if (isAuthenticated) {
       setIsLoading(true);
@@ -220,17 +216,25 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const totalPages = Math.ceil(userTrophyData.length / trophiesPerPage);
 
   return (
-    <div >
+    <div>
       {trophiesToDisplay
         .slice(0)
         .reverse()
         .map((trophy, index) => (
           <div key={index}>
             <div
+            className='glassmorphism'
               onMouseDown={(e) => handleMouseDown(e, index)}
               onMouseUp={handleMouseUp}
               onMouseMove={(e) => handleMouseMove(e, index)}
-              style={{backgroundColor: '#303350', margin: '3em', borderRadius: '25px', padding: '1em', width: '15em'}}
+              style={{
+                color: '#2d2d2d',
+                margin: '3em',
+                borderRadius: '15px',
+                padding: '1em',
+                width: '15em',
+                
+              }}
             >
               <Canvas onCreated={({ gl }) => gl.setAnimationLoop(onFrame)}>
                 <ambientLight intensity={0.5} />
@@ -245,7 +249,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                     ]}
                     position={[0, 0, 0]}
                     rotation={[0, 0.4, 0]}
-                  > 
+                  >
                     <meshStandardMaterial
                       attach='material'
                       color={trophy.color}
@@ -285,7 +289,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 )}
               </Canvas>
 
-              <details style={{ textAlign: 'center' }}>
+              <details style={{ textAlign: 'left'}}>
                 <summary style={{ textAlign: 'right' }}>Details</summary>
                 <h6>Designation: {trophy.name}</h6>
                 <h6>Report: {trophy.description}</h6>
@@ -302,29 +306,29 @@ const SavedTrophies: React.FC<TrophyData> = () => {
           display: 'flex',
           position: 'sticky',
           bottom: 0,
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         {totalPages > 1 && (
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            Prev
-          </button>
-        )}
-        {totalPages > 1 && (
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            Next
-          </button>
+          <div>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              Prev
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              Next
+            </button>
+            <span style={{ display: 'flex', padding: '1em' }}>
+              Page {currentPage}
+            </span>
+          </div>
         )}
       </div>
-      <span style={{ display: 'flex', padding: '1em'}}>
-        Page {currentPage}
-      </span>
     </div>
   );
 };
