@@ -3,6 +3,8 @@ import useCameraAccess from '../../custom-hooks/useCameraAccess';
 import useLocationAccess from '../../custom-hooks/useLocationAccess';
 import useOrientationAccess from '../../custom-hooks/useOrientationAccess';
 import styled from 'styled-components';
+import CheckCircle from 'react-feather/dist/icons/check-circle';
+import AlertCircle from 'react-feather/dist/icons/alert-circle';
 
 const AccessCheckContainer = styled.div`
   margin: 20px;
@@ -10,8 +12,6 @@ const AccessCheckContainer = styled.div`
   height: 100%;
   overflow: scroll;
   text-align: center;
-  display: grid;
-  grid-gap: 20px;
 `;
 
 
@@ -31,12 +31,12 @@ const AccessCheck: React.FC<AccessCheckProps> = ({ type }) => {
         ) : (
           <>
             {accessMessage && (
-              <>
-                <h4 style={{ whiteSpace: 'pre-line' }}>{accessMessage}</h4>
-                <button onClick={checkCameraAccess}>Retry Camera Access</button>
+              <><AlertCircle color="red" size={20} />
+                <h4 style={{ whiteSpace: 'pre-line', marginBottom: '5px' }}>{accessMessage}</h4>
+                {/* <button onClick={checkCameraAccess}>Retry Camera Access</button> */}
               </>
             )}
-            {!accessMessage && !checking && <h4>Camera Check Complete</h4>}
+            {!accessMessage && !checking && (<><h4>Camera </h4><CheckCircle color="green" size={20} /></>)}
           </>
         )}
       </AccessCheckContainer>
@@ -54,12 +54,12 @@ const AccessCheck: React.FC<AccessCheckProps> = ({ type }) => {
         ) : (
           <>
             {accessMessage && (
-              <>
-                <h4 style={{ whiteSpace: 'pre-line' }}>{accessMessage}</h4>
-                <button onClick={checkLocationAccess}>Retry Location Access</button>
+              <><AlertCircle color="red" size={20} />
+                <h4 style={{ whiteSpace: 'pre-line', marginBottom: '5px' }}>{accessMessage}</h4>
+                {/* <button onClick={checkLocationAccess}>Retry Location Access</button> */}
               </>
             )}
-            {!accessMessage && !checking && <h4>Location Check Complete</h4>}
+            {!accessMessage && !checking && (<><h4>Location </h4><CheckCircle color="green" size={20} /></>)}
           </>
         )}
       </AccessCheckContainer>
@@ -77,12 +77,12 @@ const AccessCheck: React.FC<AccessCheckProps> = ({ type }) => {
         ) : (
           <>
             {accessMessage && (
-              <>
-                <h4 style={{ whiteSpace: 'pre-line' }}>{accessMessage}</h4>
+              <><AlertCircle color="red" size={20} />
+                <h4 style={{ whiteSpace: 'pre-line', marginBottom: '5px' }}>{accessMessage}</h4>
                 <button onClick={checkOrientationAccess}>Enable Device Orientation</button>
               </>
             )}
-            {!accessMessage && !checking && <h4>Orientation Check Complete</h4>}
+            {!accessMessage && !checking && (<><h4>Device Orientation</h4><CheckCircle color="green" size={20} /></>)}
           </>
         )}
       </AccessCheckContainer>

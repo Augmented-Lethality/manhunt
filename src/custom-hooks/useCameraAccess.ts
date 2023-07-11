@@ -21,7 +21,7 @@ const useCameraAccess = (): CameraAccessState => {
       .catch((error) => {
         setChecking(false);
         setAccessMessage(
-          `Your camera isn't working because ${error.message.toLowerCase()}.\nGear up, fix the issue, and click that re-check button like a true bounty hunter you are.`
+          `Your camera isn't working because ${error.message.toLowerCase()}.\n\nTrue bounty hunters check their mobile browser's camera access in settings.`
         );
       });
   };

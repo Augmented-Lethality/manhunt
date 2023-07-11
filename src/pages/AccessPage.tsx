@@ -27,7 +27,7 @@ const AccessCheckContainer = styled.div`
   border-radius: 4px;
   margin: 20px;
   height: 100%;
-  overflow: scroll;
+  overflow: auto;
   justify-items: center;
 `;
 

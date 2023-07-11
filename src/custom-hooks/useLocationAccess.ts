@@ -24,7 +24,7 @@ const useLocationAccess = (): LocationAccessState => {
         (error) => {
           setChecking(false);
           setAccessMessage(
-            `Your journey into the Corpoverse awaits, but ${error.message.toLowerCase()}.\n\nCheck your device's location access, then come back and try again.`);
+            `Your journey into the Corpoverse awaits, but ${error.message.toLowerCase()}.\n\nCheck your browser's location settings, then come back and refresh the page.`);
         },
         {}
       );

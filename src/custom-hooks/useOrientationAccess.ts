@@ -26,8 +26,7 @@ const useOrientationAccess = (): OrientationAccessState => {
         .catch(function (error: any) {
           setChecking(false);
           setAccessMessage(
-            `No device orientation means no hunting. ${error.message.charAt(0).toUpperCase() + error.message.slice(1).toLowerCase()}.
-          Click the button to allow access.`);
+            `No device orientation means no hunting. ${error.message.charAt(0).toUpperCase() + error.message.slice(1).toLowerCase()}.\n\nClick the button to allow access.`);
         });
     } else {
       // they are on a computer so they can't check for this
