@@ -1,5 +1,6 @@
-import React, { createContext, useCallback, useRef, useContext, ReactNode, useState } from 'react';
+import React, { createContext, useCallback, useRef, useContext, ReactNode, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
+import { useLocation } from 'react-router-dom';
 
 // Create a context
 const WebcamContext = createContext<{
@@ -13,9 +14,14 @@ interface WebcamProviderProps {
 }
 
 // Create a context provider component
-export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }, selfieMode) => {
+export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
   const webcamRef = useRef<Webcam | null>(null);
   const [videoStarted, setVideoStarted] = useState(false);
+
+  const location = useLocation();
+  const path = location.pathname;
+
+  const [mode, setMode] = useState('environment');
 
   const setRef = useCallback((webcam: Webcam | null) => {
     webcamRef.current = webcam;
@@ -25,10 +31,19 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }, self
     setVideoStarted(true);
   };
 
+  // if the endpoint is profile, have the webcam face the user. otherwise, it faces the environment
+  useEffect(() => {
+    if (path === '/profile') {
+      setMode('user');
+    } else {
+      setMode('environment');
+    }
+  }, [path]);
+
   const videoConstraints = {
     width: window.innerWidth,
     height: window.innerHeight - 136,
-    facingMode: selfieMode ? "environment" : "user"
+    facingMode: mode
   };
 
   return (
@@ -38,7 +53,7 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }, self
         ref={setRef}
         screenshotFormat="image/jpeg"
         onUserMedia={handleUserMedia}
-        videoConstraints={videoConstraints}/>
+        videoConstraints={videoConstraints} />
       {children}
     </WebcamContext.Provider>
   );
