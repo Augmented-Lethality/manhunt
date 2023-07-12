@@ -17,8 +17,8 @@ const dropdownAnimation = keyframes`
   100% { opacity: 1; transform: translateY(0); }
 `;
 
-const Backdrop = styled.div<{ isOpen: boolean }>`
-  display: ${props => props.isOpen ? 'block' : 'none'};
+const Backdrop = styled.div<{ open: boolean }>`
+  display: ${props => props.open ? 'block' : 'none'};
   position: fixed;
   width: 100%;
   height: 100%;
@@ -28,8 +28,8 @@ const Backdrop = styled.div<{ isOpen: boolean }>`
   z-index: 1;
 `;
 
-const Menu = styled.div<{ isOpen: boolean }>`
-  display: ${props => props.isOpen ? 'block' : 'none'};
+const Menu = styled.div<{ open: boolean }>`
+  display: ${props => props.open ? 'block' : 'none'};
   animation: ${dropdownAnimation} 0.4s ease-in-out;
   position: absolute;
   position: absolute;
@@ -92,8 +92,8 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
   return (
     <div className='dropdown'>
       <Dots style={{color:'#6f5858'}} onClick={toggleMenu} />
-      <Backdrop isOpen={isMenuOpen} onClick={toggleMenu}/>
-      <Menu className='glassmorphism drop-down-menu' isOpen={isMenuOpen}>
+      <Backdrop open={isMenuOpen} onClick={toggleMenu}/>
+      <Menu className='glassmorphism drop-down-menu' open={isMenuOpen}>
         <Close onClick={toggleMenu} />
         {pages.map((pageName, index) => {
           if(page.toLowerCase() !== pageName) {
