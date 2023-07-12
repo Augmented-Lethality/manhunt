@@ -25,7 +25,7 @@ const PhoneAnimate = keyframes`
     transform: translateX(calc(33.33vw - 75px));
   }
   25% {
-    transform: translateX(calc(33.33vw - 75px));
+    transform: translateX(calc(50vw - 75px));
   }
   50% {
     transform: translateX(calc(66.66vw - 75px));
@@ -37,6 +37,7 @@ const PhoneAnimate = keyframes`
     transform: translateX(calc(33.33vw - 75px));
   }
 `;
+
 
 const Phone = styled.div`
   ${Centered};
@@ -89,7 +90,7 @@ const Logo = styled.h1`
 const PhoneLoader: React.FC = () => {
   return (
     <Container>
-      <Header/>
+      <Header />
       <Main>
         <PhoneContainer>
           <PhoneContainer2>
@@ -98,7 +99,7 @@ const PhoneLoader: React.FC = () => {
               <Logo className='phone-logo'>MAN HUNT</Logo>
             </Phone>
           </PhoneContainer2>
-      </PhoneContainer>
+        </PhoneContainer>
       </Main>
     </Container>
   );
