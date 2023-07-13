@@ -1,18 +1,15 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import SocketContext, { User } from '../contexts/Socket/SocketContext';
 import { Header } from '../styles/Header'
 import { Main } from '../styles/Main'
 import UserListItem from '../components/UserListItem';
 import UsersList from '../components/UsersList';
 import { useAuth0 } from '@auth0/auth0-react';
-// import PageLoader from '../components/Loading';
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import styled from 'styled-components';
 
-
-
-const Image = styled.div<{ isHost: boolean}>`
+const Image = styled.div<{ ishost: string}>`
   position: absolute;
   left: 50%;
   bottom: 0vw;
@@ -23,7 +20,7 @@ const Image = styled.div<{ isHost: boolean}>`
   width: 100%;
   box-sizing: border-box;
   background-image:
-    ${props => props.isHost
+    ${props => props.ishost
     ? 'url(/textures/lobby-host.png)'
     : 'url(/textures/lobby-guest.png)'};
   background-size: contain;
@@ -86,34 +83,6 @@ const TimeContainer = styled.div`
   font-size: 1.2rem;
   // border: 2px solid yellow;
 `;
-
-// const ControlsBorder = styled.div`
-//   position: relative;
-//   display: flex;
-//   align-items: end;
-//   margin: 50px;
-//   border-radius: 25px 25px 5px 5px;
-//   height: 150px;
-//   background-image: radial-gradient(circle at center, #433222 0.06rem, #17140d 0.06rem);
-//   background-size: 0.21rem 0.25rem;
-//   box-shadow: -5px 15px 80px 10px #000000f0, 0px 0px 0 10px #000000, 0 0 0 16px #2eb694, 0 0 0 17px #449086, 0 0 0 20px #1bc3ad, 0 0 0 30px #48d4b9, 0px -2px 0px 32px #76deca;
-// `
-
-// const ControlsContainer = styled.div`
-//     position: relative;
-//     display: flex;
-//     justify-content: end;
-//     align-items: center;
-//     padding: 20px;
-//     height: calc(100vw * 1.8);
-//     width: 80%;
-//     margin-inline: auto;
-//     /* margin-bottom: -2px; */
-//     border-radius: 30px;
-//     background-image: radial-gradient(circle at center, #9a9b98 0.1rem, #a8a884 0.1rem);
-//     box-shadow: -3px 5px 7px 3px #00000069, 0 0 0 2px white;
-//     background-size: 0.15rem 0.25rem;
-// `;
 
 const CountdownContainer = styled.div`
   background: url(/textures/paper.png);
@@ -251,8 +220,8 @@ const GameLobby: React.FC<{}> = () => {
   return (
     <>
       <Header page='Lobby' />
-      <Main>
-        <Image isHost={isHost} />
+      <Main style={{height: '100vh'}}>
+        <Image ishost={isHost.toString()} />
         {isHost &&
           <>
             <PlayButton onClick={() => pickVictim(users, SetHunted)} />
