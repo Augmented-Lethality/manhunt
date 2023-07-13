@@ -15,6 +15,8 @@ body {
   word-wrap: break-word;
   background: url("/textures/background-small.png") no-repeat;
   background-size: cover;
+  display: flex;
+  flex-direction: column;
 }
 
 * {
@@ -28,6 +30,12 @@ body {
   color: white;
   border-radius: 45px 43px;
   box-shadow: 0 5px 10px 2px #00000030;
+}
+
+.paper{
+  background: url(/textures/paper.png);
+  background-size: cover;
+  background-position: center;
 }
 
 button{
@@ -139,16 +147,20 @@ button{
 }
 
 .react-icon{
-  font-size: 3rem;
+  width: 50px;
+  height: 50px;
 }
 
 .react-icon-large{
   border-radius: 50%;
-  padding: 10px;
-  background-color: black;
-  color: cyan;
-  border: 3px solid cyan;
-  box-shadow: 0 0 0 5px black;
+  width: 100px;
+  height: 100px;
+  padding: 4px;
+  background-color: #4141419e;
+  color: #c9c9c9;
+  backdrop-filter: blur(4px);
+  border: 4px solid #66666659;
+  box-shadow: 0 -1px 0 1px #ffffff91, 0 1px 0 1px #79797991, 0 2px 20px 3px #0000006e;
 }
 
 .react-icon-logo{
