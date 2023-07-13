@@ -236,7 +236,7 @@ const GameLobby: React.FC<{}> = () => {
 
   if (bountyName) {
     return (
-      <Container>
+      <>
         <Header page='Lobby' />
         <Main>
           <CountdownContainer>
@@ -244,7 +244,7 @@ const GameLobby: React.FC<{}> = () => {
             <h2>{bountyName} is being Hunted</h2>
           </CountdownContainer>
         </Main>
-      </Container>
+      </>
     )
   }
 
