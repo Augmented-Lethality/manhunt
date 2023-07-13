@@ -54,7 +54,6 @@ const TempIdContainer = styled.div`
 
 //ID card background that user data sits on
 const IdContainer = styled.div`
-  border-radius: 19px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,13 +61,8 @@ const IdContainer = styled.div`
   margin: 20px;
   margin-inline: auto;
   padding: 20px;
-  height: 180px;
-  width: 80%;
-  max-width: 300px;
-  box-shadow: 0px 10px 10px 2px #00000059;
-  & > * {
-    opacity: 0.85;
-  }
+  height: 60vw;
+  width: 90vw;
   overflow: hidden;
 `
 //Container For Name and Picture
@@ -92,8 +86,12 @@ const BottomofIdContainer = styled.div`
 //Container For Player Stas
 const StatsContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: start;
+  align-items: space-between;
+  width: 89%
+  div {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 export function Eyeball() {
@@ -127,8 +125,9 @@ const VerificationContainer = styled.div`
   align-items: center;
   margin-inline: auto;
   margin-bottom: 0;
+  border-radius: 45px 45px 0 0 !important;
   padding: 25px;
-  width: 85%;
+  width: 90vw;
 `;
 // trying to fix the text not shrinking??
 const Text = styled.h5`
@@ -269,24 +268,29 @@ const ProfilePage: React.FC = () => {
             <StatsContainer>
               {userData?.facialDescriptions ? (
                 <>
-                  <h4>Wins: {userData?.gamesWon}</h4>
-                  <h4>Kills: {userData?.killsConfirmed}</h4>
-                  <h4>Total Games: {userData?.gamesPlayed}</h4>
-                  <h4>K\D: {winLossRatio}</h4>
+                  <div>
+                    <h5>Wins: {userData?.gamesWon}</h5>
+                    <h5>Kills: {userData?.killsConfirmed}</h5>
+                  </div>
+                  <div>
+                    <h5>Total Games: {userData?.gamesPlayed}</h5>
+                    <h5>K\D: {winLossRatio}</h5>
+                  </div>
                 </>
               ) : (
-                <>
+                <div>
                   <h5 className='bold'>CITIZEN NOT VERIFIED</h5>
                   <h5>PLEASE REGISTER BELOW</h5>
-                </>
+                </div>
               )}
             </StatsContainer>
             <Eyeball />
           </BottomofIdContainer>
+          <h2 style={{marginBottom: '-50px',}}className='barcode'>asdfkjflekjgldaj</h2>
         </IdContainer>
-        <VerificationContainer>
+        <VerificationContainer className='glassmorphism'>
           {userData?.facialDescriptions ? (
-            <h3>Citizen Verified!</h3>
+            <h2 style={{fontSize: '1.6rem',}}>Citizen Verified!</h2>
           ) : (
             <h3>
               Citizen has not been processed by the CorpoReality Police. Please
@@ -302,24 +306,16 @@ const ProfilePage: React.FC = () => {
           {userData?.facialDescriptions ? (
             <>
               <h3>Feeling Patriotic?</h3>
-              <br />
-              <button onClick={() => setPhotoStatus('camera')}>
+              <button className="glassmorphism" onClick={() => setPhotoStatus('camera')}>
                 → Reverify ←
               </button>
-              <br />
-              <br />
-              <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           ) : (
             <>
               <h3>↓↓↓VERIFY↓↓↓ </h3>
-              <br />
-              <button onClick={() => setPhotoStatus('camera')}>
+              <button className="glassmorphism" onClick={() => setPhotoStatus('camera')}>
                 Send BioData
               </button>
-              <br />
-              <br />
-              <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           )}
         </VerificationContainer>
