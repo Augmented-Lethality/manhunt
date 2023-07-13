@@ -1,11 +1,6 @@
-import React, { ReactNode, useContext } from 'react';
-import { useMediaQuery } from 'react-responsive';
-import styled from 'styled-components';
+import React, { ReactNode } from 'react';import styled from 'styled-components';
 import DropDownMenu from '../components/DropDownMenu';
 import { useNavigate } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
-import SocketContext from '../contexts/Socket/SocketContext';
-
 export const StyledHeader = styled.header`
   display: flex;
   padding: 2rem;
@@ -37,28 +32,23 @@ interface HeaderProps {
 
 // PLEASE KEEP THIS SOCKET FUNCTION WHEN USING A GOING HOME BUTTON
 export const Header: React.FC<HeaderProps> = ({ page, users }) => {
-  const isPhoneScreen = useMediaQuery({ query: '(max-width: 380px)' });
   const navigate = useNavigate();
 
   const handleHome = () => {
     navigate('/home');
   }
 
-  const { user } = useAuth0();
-
   return (
     <StyledHeader>
       <LogoContainer onClick={handleHome}></LogoContainer>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
-          <img
-            src={user?.picture}
-            alt='Profile'
-            className='profile__avatar'
-            onClick={() => { navigate('/profile') }}
-            style={{ height: '3rem', borderRadius: '50%', marginRight: '10px' }} />
-          <DropDownMenu page={page || ''} />
-        </div>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '87%',
+        width: '100%',
+        textAlign: 'center',
+      }}>
+        <DropDownMenu page={page || ''} />
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
           : <h1 style={{ marginRight: '-20px', }}>{page}</h1>
