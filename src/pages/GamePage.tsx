@@ -39,12 +39,12 @@ const GamePage: React.FC = () => {
       <GameHeader>
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent:'space-between' }}>
           {gameMode === 'Chase' ? (
-            <div className='column'>
+            <div className='column centered'>
               <h5>Kill Mode</h5>
               <Crosshair className='react-icon' onClick={handleGameChange} />
             </div>
           ) : (
-            <div className='column'>
+            <div className='column centered'>
               <h5>Chase Mode</h5>
               <Eye className='react-icon' onClick={handleGameChange} />
             </div>
