@@ -123,7 +123,7 @@ const TrophyGenerator: React.FC = () => {
 
   const postTrophyData = async () => {
     try {
-      if (player.authId) {
+      if (player.authId && trophyName && trophyDescription) {
         await axios.post('/trophies', {
           name: trophyName,
           description: trophyDescription,
@@ -156,7 +156,7 @@ const TrophyGenerator: React.FC = () => {
 
   useEffect(() => {
     postTrophyData();
-  }, [player]);
+  }, [trophyDescription]);
 
   return (
     <div

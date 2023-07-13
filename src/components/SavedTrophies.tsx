@@ -220,7 +220,14 @@ const SavedTrophies: React.FC<TrophyData> = () => {
 
   return (
     <div>
-      {trophiesToDisplay
+      {trophiesToDisplay.length === 0 ? (
+         <div>
+        <div className="glassmorphism" style ={{justifyContent: 'top', height: '40vh', alignItems: 'center', display: 'flex'}}>
+          <h3>No Trophies?!?! Get out there and get to hunting!</h3>
+        </div>
+        </div>
+      ) : (
+        trophiesToDisplay
         .slice(0)
         .reverse()
         .map((trophy, index) => (
@@ -303,7 +310,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               </details>
             </div>
           </div>
-        ))}
+        )))}
       <div
         style={{
           display: 'flex',
