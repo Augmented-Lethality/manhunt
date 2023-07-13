@@ -7,11 +7,10 @@ import {
 } from 'face-api.js';
 import React, { useState, useEffect } from 'react';
 import CapturePhoto from './CapturePhoto'
-import { WebcamProvider } from '../contexts/WebcamProvider';
 import axios from 'axios';
+import { WebcamProvider } from '../contexts/WebcamProvider';
 import { UserData } from '../pages/ProfilePage'
-import Save from 'react-feather/dist/icons/save'
-import Camera from 'react-feather/dist/icons/camera'
+import {Save, Camera} from 'react-feather'
 
 interface CreateFaceDescriptionsProps {
   setPhotoStatus: (verify: string) => void;
