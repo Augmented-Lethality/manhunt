@@ -8,6 +8,7 @@ import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
 import styled from 'styled-components';
 import SingleTrophy from '../components/SingleTrophy';
+import InfoPopup from '../components/Popups/InfoPopup';
 
 export type UserData = {
   id: number;
@@ -193,8 +194,8 @@ const ProfilePage: React.FC = () => {
           },
         });
         response.data.length === 0 ?
-        setTrophiesExist(false) :
-        setTrophiesExist(true);
+          setTrophiesExist(false) :
+          setTrophiesExist(true);
       }
     } catch (error) {
       console.error('Error fetching user trophy data:', error);
@@ -233,10 +234,16 @@ const ProfilePage: React.FC = () => {
     );
   }
 
+  const infoMessage = 'View your stats and either add or reverify your biodata. \n\n' +
+    'Biodata? I hardly know her. \n\n' +
+    'Biodata is your facial structure described in vectors, not the picture itself, that allows for facial recognition. \n\n';
+
+
   return (
     <Container>
       <Header page='Profile' />
       <Main>
+        <InfoPopup message={infoMessage} />
         {trophiesExist ? (
           <TrophyContainer>
             <SingleTrophy
@@ -268,7 +275,7 @@ const ProfilePage: React.FC = () => {
                 src={user?.picture}
                 className='profile__avatar'
                 style={{ height: '100%', borderRadius: '50%' }}
-                // style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
+              // style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
               />
             ) : (
               <h1 className='alt-user-pic-large'>{user.name?.slice(0, 1)}</h1>
