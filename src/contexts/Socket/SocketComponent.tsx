@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useReducer, useState, useEffect } from 'react';
 import { useSocket } from '../../custom-hooks/useSocket';
-import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
+import { PlayerCoords, SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 import { useAuth0 } from '@auth0/auth0-react';
 import { User, Ready } from './SocketContext';
 // import PageLoader from '../../components/Loading';
@@ -234,6 +234,11 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.emit('update_game_start', time, user);
   };
 
+  const UpdatePlayerCoordinates = (coordinates: PlayerCoords) => {
+    SocketDispatch({ type: 'update_player_coordinates', payload: coordinates });
+
+  }
+
   // showing this on client side while socket isn't connected
   if (loading) {
     return <PhoneLoader />
@@ -244,7 +249,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   return (
     <SocketContextProvider value={{
       SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, LeaveGame, UpdateGameStatus,
-      AddGameStats, UpdateReady, AddGameDuration, AddGameStart,
+      AddGameStats, UpdateReady, AddGameDuration, AddGameStart, UpdatePlayerCoordinates
     }}>
       {children}
     </SocketContextProvider>
