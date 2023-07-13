@@ -5,28 +5,15 @@ import axios from 'axios';
 // import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext, { Player } from '../contexts/Socket/SocketContext';
 
-// export type UserData = {
-//   id: number;
-//   username: string;
-//   email: string;
-//   authId: string;
-//   gamesPlayed: number;
-//   gamesWon: number;
-//   killsConfirmed: number;
-//   facialDescriptions: Array<number> | null;
-//   // Add other user data properties as needed
-// };
+
 
 const TrophyGenerator: React.FC = () => {
   const trophyRef = useRef<THREE.Mesh>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [prevMouseX, setPrevMouseX] = useState(0);
   const [prevMouseY, setPrevMouseY] = useState(0);
-  // const { user, isAuthenticated } = useAuth0();
-  // const [userData, setUserData] = useState<UserData | null>(null);
   const [trophyName, setTrophyName] = useState('');
   const [trophyDescription, setTrophyDescription] = useState('');
-
   const { player } = useContext(SocketContext).SocketState;
 
 
@@ -63,7 +50,9 @@ const TrophyGenerator: React.FC = () => {
   };
 
   const trophyData = {
-    dimension: useMemo(() => getRandomElement([1, 2, 3]), []),
+    dimension: useMemo(() => getRandomElement([1, 2, 2.5]), []),
+    dimensionTwo: useMemo(() => getRandomElement([1, 2, 2.5]), []),
+    dimensionThree: useMemo(() => getRandomElement([1, 2, 2.5]), []),
     color: useMemo(
       () =>
         getRandomElement([
@@ -72,7 +61,7 @@ const TrophyGenerator: React.FC = () => {
           '#3d6cb8',
           'yellow',
           'orange',
-          '#19191a',
+          '#202021',
           'pink',
           'aquamarine',
         ]),
@@ -132,20 +121,6 @@ const TrophyGenerator: React.FC = () => {
     return description;
   };
 
-  // data related functions
-  // const fetchUserData = async () => {
-  //   try {
-  //     const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${user?.token}`,
-  //       },
-  //     });
-  //     setUserData(response.data[0]);
-  //   } catch (error) {
-  //     console.error('Error fetching user data:', error);
-  //   }
-  // };
-
   const postTrophyData = async () => {
     try {
       if (player.authId) {
@@ -164,8 +139,17 @@ const TrophyGenerator: React.FC = () => {
     }
   };
 
+  const rotateTrophy = () => {
+    if (trophyRef.current) {
+      trophyRef.current.rotation.y += 0.01; // Adjust rotation speed 
+    }
+  };
+  
+  const onFrame = () => {
+    rotateTrophy();
+  };
+
   useEffect(() => {
-    // fetchUserData();
     generateRandomName();
     generateRandomDescription();
   }, []);
@@ -181,7 +165,7 @@ const TrophyGenerator: React.FC = () => {
       onMouseMove={handleMouseMove}
       className="trophy-container"
     >
-      <Canvas>
+      <Canvas onCreated={({ gl }) => gl.setAnimationLoop(onFrame)}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
         {trophyData.shape === 'box' && (
@@ -189,8 +173,8 @@ const TrophyGenerator: React.FC = () => {
             ref={trophyRef}
             args={[
               trophyData.dimension,
-              trophyData.dimension,
-              trophyData.dimension,
+              trophyData.dimensionTwo,
+              trophyData.dimensionThree,
             ]}
             position={[0, 0, 0]}
             rotation={[0, 0.4, 0]}
@@ -226,8 +210,8 @@ const TrophyGenerator: React.FC = () => {
       </Canvas>
       {player && (
         <div>
-          <h4 style={{ marginBottom: '2px', marginTop: '20px' }}>{trophyName}</h4>
-          <h5>{trophyDescription}</h5>
+          <h3 style={{ marginBottom: '2px', marginTop: '1em', marginRight: '3em', marginLeft: '3em'}}>{trophyName}</h3>
+          <h4 style={{ marginBottom: '2px', marginTop: '1em', marginRight: '3em', marginLeft: '3em'}}>{trophyDescription}</h4>
         </div>
       )}
     </div>

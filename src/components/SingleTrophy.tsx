@@ -10,6 +10,8 @@ export type TrophyData = {
   description: string;
   createdAt: string;
   dimension: number;
+  dimensionTwo: number;
+  dimensionThree: number;
   color: string;
   shape: string;
   tubularSegments: number;
@@ -101,6 +103,8 @@ const SingleTrophy: React.FC<TrophyData> = () => {
             description: trophy.description,
             createdAt: `${day} ${getMonthName(month)} ${year}`,
             dimension: generationConditions.dimension || 0,
+            dimensionTwo: generationConditions.dimensionTwo || 0,
+            dimensionThree: generationConditions.dimensionThree || 0,
             color: generationConditions.color || '',
             shape: generationConditions.shape || '',
             tubularSegments: generationConditions.tubularSegments || 0,
@@ -215,8 +219,8 @@ const SingleTrophy: React.FC<TrophyData> = () => {
                     ref={(ref) => (trophyRefs.current[index] = ref)}
                     args={[
                       trophy.dimension,
-                      trophy.dimension,
-                      trophy.dimension,
+                      trophy.dimensionTwo,
+                      trophy.dimensionThree,
                     ]}
                     position={[0, 0, 0]}
                     rotation={[0, 0.4, 0]}
