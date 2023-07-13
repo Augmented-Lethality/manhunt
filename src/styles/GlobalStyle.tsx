@@ -43,11 +43,16 @@ body {
 button{
   width: 200px;
   height: 70px;
-  border-radius: 20px;
-  background: #bf360c;
-  border: 2px solid black;
-  font-size: 1.5rem;
-  color: white;
+  background: #779baa45;
+  backdrop-filter: blur(3px);
+  color: #e1fffbc7;
+  border: none;
+  font-size: 1.4rem;
+  border-radius: 45px;
+  box-shadow:
+    0 -1px 0 2px #afd5d66b,
+    0 1px 0 2px #00000063,
+    5px 10px 2px #00000030;
 }
 
 .neon-button {
