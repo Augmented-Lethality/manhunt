@@ -5,8 +5,37 @@ const Radar: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   let rotatingLine: THREE.Line;
 
+  // constants that can be altered throughout the radar
   const radarColour = '#008000';
   const radius = 2;
+  const maxMapDistance = 3200; // in meters, this is about 2 miles
+
+  // hardcoded locations until I sync this up with the user locations from socket.io
+  const fakeLocations = [
+    { longitude: -90.074620, latitude: 29.951760 },
+    { longitude: -90.09, latitude: 29.955 },
+
+  ]
+
+  // calculates the distance in meters between two sets of lat/long coordinates using the Haversine Equation
+  const haversineDistCoords = (playerCoords: { longitude: number; latitude: number; }, otherCoords: { longitude: number; latitude: number; }) => {
+    const deltaLongitude = THREE.MathUtils.degToRad(otherCoords.longitude - playerCoords.longitude);
+    const deltaLatitude = THREE.MathUtils.degToRad(otherCoords.latitude - playerCoords.latitude);
+
+    const a =
+      Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
+      Math.cos(THREE.MathUtils.degToRad(playerCoords.latitude)) *
+      Math.cos(THREE.MathUtils.degToRad(otherCoords.latitude)) *
+      (Math.sin(deltaLongitude / 2) * Math.sin(deltaLongitude / 2));
+
+    const distanceLatitude = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 6371000;
+    const distanceLongitude = deltaLongitude * 6371000 * Math.cos(THREE.MathUtils.degToRad(playerCoords.latitude));
+
+    return { distanceLatitude, distanceLongitude };
+  }
+
+  // console.log(haversineDistCoords(fakeLocations[0], fakeLocations[1]), 'm')
+
 
   useEffect(() => {
     let scene: THREE.Scene;
@@ -87,6 +116,29 @@ const Radar: React.FC = () => {
       const lineMaterial = new THREE.LineBasicMaterial({ color: radarColour });
       rotatingLine = new THREE.Line(lineGeometry, lineMaterial);
       scene.add(rotatingLine);
+
+
+
+      // RADAR DOTS
+      const dotGeometry = new THREE.CircleGeometry(0.1, 32);
+      const dotMaterial = new THREE.MeshBasicMaterial({ color: 'red' });
+      const dotMarker = new THREE.Mesh(dotGeometry, dotMaterial);
+
+      // getting the coordinates in meters to be used
+      const meterCoords = haversineDistCoords(fakeLocations[0], fakeLocations[1]);
+
+      if (meterCoords.distanceLatitude < maxMapDistance) {
+
+        // scaling the dot's x/y
+        const dotX = ((meterCoords.distanceLatitude / maxMapDistance) * radius);
+        const dotY = ((meterCoords.distanceLongitude / maxMapDistance) * radius)
+
+        // adding the dot to the radar, scaled to the radar's radius and max distance
+        dotMarker.position.set(dotX, dotY, 0);
+
+        // add dot marker to the scene
+        scene.add(dotMarker);
+      }
 
       // render the scene with the animate function so the rotating line updates
       animate();
