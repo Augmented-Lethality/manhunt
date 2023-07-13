@@ -12,14 +12,13 @@ const Radar: React.FC = () => {
   // constants that can be altered throughout the radar
   const radarColour = '#008000';
   const radius = 2;
-  const maxMapDistance = 3200; // in meters, this is about 2 miles
+  const maxMapDistance = 4000; // in meters, this is about 2 miles
   const height = 250;
 
   // hardcoded locations until I sync this up with the user locations from socket.io
   const fakeLocations = [
     { longitude: -90.074620, latitude: 29.951760 },
     { longitude: -90.09, latitude: 29.955 },
-
   ]
 
   // calculates the distance in meters between two sets of lat/long coordinates using the Haversine Equation
@@ -127,23 +126,21 @@ const Radar: React.FC = () => {
       sceneRadarRef.current.add(rotatingLine);
 
 
+      // IF NEED TO USE FAKE DATA, UNCOMMENT THIS:
+      // const meterCoords = haversineDistCoords(fakeLocations[0], fakeLocations[1]);
 
+      // if (meterCoords.distanceLatitude < maxMapDistance) {
 
-      // getting the coordinates in meters to be used
-      const meterCoords = haversineDistCoords(fakeLocations[0], fakeLocations[1]);
+      //   // scaling the dot's x/y
+      //   const dotX = ((meterCoords.distanceLatitude / maxMapDistance) * radius);
+      //   const dotY = ((meterCoords.distanceLongitude / maxMapDistance) * radius)
 
-      if (meterCoords.distanceLatitude < maxMapDistance) {
+      //   // adding the dot to the radar, scaled to the radar's radius and max distance
+      //   dotMarker.position.set(dotX, dotY, 0);
 
-        // scaling the dot's x/y
-        const dotX = ((meterCoords.distanceLatitude / maxMapDistance) * radius);
-        const dotY = ((meterCoords.distanceLongitude / maxMapDistance) * radius)
-
-        // adding the dot to the radar, scaled to the radar's radius and max distance
-        dotMarker.position.set(dotX, dotY, 0);
-
-        // add dot marker to the sceneRadar
-        sceneRadarRef.current.add(dotMarker);
-      }
+      //   // add dot marker to the sceneRadar
+      //   sceneRadarRef.current.add(dotMarker);
+      // }
 
       // render the sceneRadar with the animate function so the rotating line updates
       animate();
@@ -177,6 +174,7 @@ const Radar: React.FC = () => {
 
     // iterating through the locations in socket.io (all locations of players in the current game)
     for (const playerLocation of locations) {
+      // console.log('playerLocation:', playerLocation)
 
       // place dots for other players, not the current player
       if (playerLocation.authId !== player.authId) {
@@ -190,7 +188,6 @@ const Radar: React.FC = () => {
 
         // see if there's an existing dot
         const dotToUpdate = sceneRadarRef.current.children.find((child) => child.userData.id === playerLocation.authId);
-
         // update dot
         if (dotToUpdate) {
           meterCoords.distanceLatitude < maxMapDistance ? dotToUpdate.position.set(dotX, dotY, 0) : dotToUpdate.remove();
