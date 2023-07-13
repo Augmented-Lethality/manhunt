@@ -39,17 +39,7 @@ const EndGame: React.FC = () => {
       if (games[0].winnerId === player.authId && games[0].hunted !== player.authId) {
         setGameOverMessage(
           `Great work, ${player.username}.\nYour skip tracing gained you a bounty.`
-
-
-
           // array, split the sentences
-
-
-
-
-
-
-
         );
         // user is a winner
         setWinner(true);
@@ -59,7 +49,7 @@ const EndGame: React.FC = () => {
         games[0].hunted === player.authId
       ) {
         setGameOverMessage(
-          `Congratulations citizen. Here is your reward.`
+          `Target aquired thanks to you, ${player.username}.`
         );
         // user is a winner
         setWinner(true);
@@ -93,9 +83,8 @@ const EndGame: React.FC = () => {
 
   return (
     <>
-      <Header page={''} users={users} />
+      <Header page={'Game Over'}/>
       <Main>
-        <h1 className='end-main' style={{ fontSize: '3em', marginBottom: '2px', marginTop: '15px', textAlign: 'center', }}>GAME OVER</h1>
         <MessageContainer className='glassmorphism'>
           <h3 className='game-over' style={{ color: 'white', fontSize: '1.5em', marginBottom: '10px', paddingLeft: '20px', paddingRight: '20px', whiteSpace: 'pre-line', marginTop: '0px', }}>{gameOverMessage}</h3>
           {winner ? (
@@ -109,7 +98,16 @@ const EndGame: React.FC = () => {
             </div>
           ) : null}
         </MessageContainer>
-        <ButtonToHome />
+        <div className='glassmorphism column centered padded margined'>
+          Justice can wait, time to 
+          <button>
+            GO HOME
+          </button>
+          Put more scum in their place?
+          <button>
+            GO AGAIN
+          </button>
+        </div>
       </Main>
     </ >
   );
