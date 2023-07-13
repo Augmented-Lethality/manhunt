@@ -8,7 +8,6 @@ import { WebcamChaseProvider } from '../contexts/WebcamChaseProvider';
 import ChaseCam from '../components/ChaseCam';
 import KillCam from '../components/KillCam';
 import Countdown from '../components/Countdown';
-import { Container } from '../styles/Container';
 import { GameHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { Crosshair, Eye } from 'react-feather';
@@ -47,7 +46,7 @@ const GamePage: React.FC = () => {
   }
 
   return (
-    <Container>
+    <>
       <GameHeader>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           {gameMode === 'Chase' ? (
@@ -77,7 +76,7 @@ const GamePage: React.FC = () => {
           </WebcamProvider>
         )}
       </MainGame>
-    </Container>
+    </>
   );
 }
 

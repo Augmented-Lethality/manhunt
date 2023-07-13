@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 import UsersList from '../components/UsersList';
-import { Container } from '../styles/Container';
 import { Main } from '../styles/Main';
 import { Header } from '../styles/Header';
 import { Search, XCircle, Bell } from 'react-feather';
@@ -145,7 +144,7 @@ const FriendsPage: React.FC = () => {
   }
 
   return (
-    <Container>
+    <>
       <Header page='Friends' />
       <Main>
         <Image/>
@@ -178,7 +177,7 @@ const FriendsPage: React.FC = () => {
           )}
         </FriendsContainer>
       </Main>
-    </Container>
+    </>
   )
 };
 

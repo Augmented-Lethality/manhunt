@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext, lazy, Suspense } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { useNavigate } from 'react-router-dom';
-import { Container } from '../styles/Container';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 
@@ -93,7 +92,7 @@ const EndGame: React.FC = () => {
   }
 
   return (
-    <Container>
+    <>
       <Header page={''} users={users} />
       <Main>
         <h1 className='end-main' style={{ fontSize: '3em', marginBottom: '2px', marginTop: '15px', textAlign: 'center', }}>GAME OVER</h1>
@@ -112,7 +111,7 @@ const EndGame: React.FC = () => {
           ) : null}
         </MessageContainer>
       </Main>
-    </Container >
+    </ >
   );
 
 };

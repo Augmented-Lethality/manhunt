@@ -2,7 +2,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import axios from 'axios';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
-import { Container } from '../styles/Container';
 import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
@@ -42,7 +41,6 @@ const TempIdContainer = styled.div`
   background: url(/textures/paper.png);
   background-size: cover;
   background-position: center;
-  border-radius: 19px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,8 +50,6 @@ const TempIdContainer = styled.div`
   padding: 20px;
   height: 180px;
   width: 80%;
-  max-width: 300px;
-  box-shadow: 0px 10px 10px 2px #00000059;
 `
 
 //ID card background that user data sits on
@@ -73,6 +69,7 @@ const IdContainer = styled.div`
   & > * {
     opacity: 0.85;
   }
+  overflow: hidden;
 `
 //Container For Name and Picture
 const NameContainer = styled.div`
@@ -106,7 +103,12 @@ export function Eyeball() {
       viewBox='0 0 100 60'
       width='135'
       height='60'
-      style={{ transform: 'rotate(180deg' }}
+      style={{
+        transform: 'rotate(180deg) scale(3)',
+        position: 'absolute',
+        right: '15vw',
+        opacity: '.2'
+      }}
     >
       <path
         transform='translate(-10, -20)'
@@ -119,23 +121,14 @@ export function Eyeball() {
 
 //ID card background that user data sits on
 const VerificationContainer = styled.div`
-  background-color: #1e1e2a;
-  background: url(/textures/paper.png);
-  background-size: cover;
-  background-position: center;
-  border-radius: 19px 19px 0 0;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   align-items: center;
-  text-align: center;
-  justify-content: space-evenly;
-  margin: 20px;
   margin-inline: auto;
   margin-bottom: 0;
-  padding: 36px;
-  width: 70%;
-  box-shadow: 0px 10px 10px 2px #00000059;
+  padding: 25px;
+  width: 85%;
 `;
 // trying to fix the text not shrinking??
 const Text = styled.h5`
@@ -149,6 +142,7 @@ const ProfilePage: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
   const [trophiesExist, setTrophiesExist] = useState(false);
+
 
   const winLossRatio =
     userData?.gamesPlayed && userData?.gamesWon
@@ -208,20 +202,16 @@ const ProfilePage: React.FC = () => {
   if (photoStatus === 'camera') {
     return (
       <Container>
-        <StyledHeader style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h2>BioData Collection Process</h2>
+        <StyledHeader style={{ display: 'flex', alignItems:'start', justifyContent:'end' }}>
+          <div style={{ display: 'flex', flexDirection:'column', alignItems: 'end' }}>
             <XCircle
               className='react-icon'
               onClick={() => {
                 setPhotoStatus('profile');
               }}
             />
+            <h1 style={{fontSize:'2.3rem'}}>Bio Data</h1>
           </div>
-          <h6>
-            We don't save the photo, we just use it to collect information on
-            the shape of your face.
-          </h6>
         </StyledHeader>
         <CreateFaceDescriptions
           setPhotoStatus={setPhotoStatus}
@@ -234,7 +224,7 @@ const ProfilePage: React.FC = () => {
   }
 
   return (
-    <Container>
+    <>
       <Header page='Profile' />
       <Main>
         {trophiesExist ? (
@@ -256,7 +246,7 @@ const ProfilePage: React.FC = () => {
             <iframe src="https://giphy.com/embed/DcTN1NEaLjw4E0xvAE" width="90" height="160" frameBorder="0" allowFullScreen></iframe>
           </TrophyContainer>
         )}
-        <IdContainer>
+        <IdContainer className={userData?.facialDescriptions ? 'glassmorphism' : 'paper'} >
           {userData?.facialDescriptions ? (
             <Text>CORPOVERSE OFFICIAL ID</Text>
           ) : (
@@ -334,7 +324,7 @@ const ProfilePage: React.FC = () => {
           )}
         </VerificationContainer>
       </Main>
-    </Container>
+    </>
   );
 };
 

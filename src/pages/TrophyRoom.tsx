@@ -1,5 +1,4 @@
 import React, { lazy, Suspense } from 'react';
-import { Container } from '../styles/Container';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 // import PageLoader from '../components/Loading';
@@ -10,7 +9,7 @@ const SavedTrophies = lazy(() => import('../components/SavedTrophies'));
 const TrophyRoom: React.FC = () => {
 
   return (
-    <Container>
+    <>
       <Header page='Trophies' />
       <Main>
         <div className='content__body'>
@@ -31,7 +30,7 @@ const TrophyRoom: React.FC = () => {
           </div>
         </div>
       </Main>
-    </Container>
+    </>
   );
 };
 

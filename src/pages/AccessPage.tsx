@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
-import { Container } from '../styles/Container';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { useFontSize } from '../contexts/FontSize';
@@ -59,7 +58,7 @@ const AccessPage: React.FC = () => {
   }, [count])
 
   return (
-    <Container>
+    <>
       <Header page={'Access'} users={users} />
       <Main>
         <AccessChecksContainer>
@@ -74,7 +73,7 @@ const AccessPage: React.FC = () => {
           </AccessCheckContainer>
         </AccessChecksContainer>
       </Main>
-    </Container>
+    </>
   );
 };
 
