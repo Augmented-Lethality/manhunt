@@ -61,7 +61,7 @@ const IdContainer = styled.div`
   margin: 20px;
   margin-inline: auto;
   padding: 20px;
-  height: 60vw;
+  height: auto;
   width: 90vw;
   overflow: hidden;
 `
@@ -260,7 +260,6 @@ const ProfilePage: React.FC = () => {
                 src={user?.picture}
                 className='profile__avatar'
                 style={{ height: '100%', borderRadius: '50%' }}
-                // style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
               />
             ) : (
               <h1 className='alt-user-pic-large'>{user.name?.slice(0, 1)}</h1>
