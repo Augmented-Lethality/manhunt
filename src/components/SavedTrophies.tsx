@@ -10,6 +10,8 @@ export type TrophyData = {
   description: string;
   createdAt: string;
   dimension: number;
+  dimensionTwo: number;
+  dimensionThree: number;
   color: string;
   shape: string;
   tubularSegments: number;
@@ -36,7 +38,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userTrophyData, setUserTrophyData] = useState<TrophyData[]>([]);
-  const [showProps, setShowProps] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -103,6 +104,8 @@ const SavedTrophies: React.FC<TrophyData> = () => {
             description: trophy.description,
             createdAt: `${day} ${getMonthName(month)} ${year}`,
             dimension: generationConditions.dimension || 0,
+            dimensionTwo: generationConditions.dimensionTwo || 0,
+            dimensionThree: generationConditions.dimensionThree || 0,
             color: generationConditions.color || '',
             shape: generationConditions.shape || '',
             tubularSegments: generationConditions.tubularSegments || 0,
@@ -121,7 +124,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     // Map color codes to more fitting color names
     const colorMap = {
       '#3d6cb8': 'Cerulean',
-      '#19191a': 'Void',
+      '#202021': 'Void',
       lightgreen: 'Radioactive',
       orange: 'Gold',
       darkred: 'Crimson',
@@ -217,7 +220,14 @@ const SavedTrophies: React.FC<TrophyData> = () => {
 
   return (
     <div>
-      {trophiesToDisplay
+      {trophiesToDisplay.length === 0 ? (
+         <div>
+        <div className="glassmorphism" style ={{justifyContent: 'top', height: '40vh', alignItems: 'center', display: 'flex'}}>
+          <h3>No Trophies?!?! Get out there and get to hunting!</h3>
+        </div>
+        </div>
+      ) : (
+        trophiesToDisplay
         .slice(0)
         .reverse()
         .map((trophy, index) => (
@@ -232,7 +242,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 margin: '3em',
                 borderRadius: '15px',
                 padding: '1em',
-                width: '15em',
+                width: '100%',
                 
               }}
             >
@@ -244,8 +254,8 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                     ref={(ref) => (trophyRefs.current[index] = ref)}
                     args={[
                       trophy.dimension,
-                      trophy.dimension,
-                      trophy.dimension,
+                      trophy.dimensionTwo,
+                      trophy.dimensionThree,
                     ]}
                     position={[0, 0, 0]}
                     rotation={[0, 0.4, 0]}
@@ -300,7 +310,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               </details>
             </div>
           </div>
-        ))}
+        )))}
       <div
         style={{
           display: 'flex',

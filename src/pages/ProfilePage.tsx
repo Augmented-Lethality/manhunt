@@ -66,7 +66,7 @@ const IdContainer = styled.div`
   margin: 20px;
   margin-inline: auto;
   padding: 20px;
-  height: 180px;
+  height: auto;
   width: 80%;
   max-width: 300px;
   box-shadow: 0px 10px 10px 2px #00000059;
@@ -96,7 +96,7 @@ const BottomofIdContainer = styled.div`
 const StatsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
 `;
 
 export function Eyeball() {
@@ -268,7 +268,6 @@ const ProfilePage: React.FC = () => {
                 src={user?.picture}
                 className='profile__avatar'
                 style={{ height: '100%', borderRadius: '50%' }}
-                // style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
               />
             ) : (
               <h1 className='alt-user-pic-large'>{user.name?.slice(0, 1)}</h1>

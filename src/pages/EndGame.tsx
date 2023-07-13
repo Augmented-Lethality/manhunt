@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container } from '../styles/Container';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
-
+import { ButtonToHome } from '../styles/Buttons';
 import styled from 'styled-components';
 
 const MessageContainer = styled.div`
@@ -60,7 +60,7 @@ const EndGame: React.FC = () => {
         games[0].hunted === player.authId
       ) {
         setGameOverMessage(
-          `Go put your feet up and crack open a cold one.`
+          `Congratulations citizen. Here is your reward.`
         );
         // user is a winner
         setWinner(true);
@@ -97,20 +97,20 @@ const EndGame: React.FC = () => {
       <Header page={''} users={users} />
       <Main>
         <h1 className='end-main' style={{ fontSize: '3em', marginBottom: '2px', marginTop: '15px', textAlign: 'center', }}>GAME OVER</h1>
-        <MessageContainer>
+        <MessageContainer className='glassmorphism'>
           <h3 className='game-over' style={{ color: 'white', fontSize: '1.5em', marginBottom: '10px', paddingLeft: '20px', paddingRight: '20px', whiteSpace: 'pre-line', marginTop: '0px', }}>{gameOverMessage}</h3>
           {winner ? (
             <div className='trophy-container-end' style={{
               width: '400px', height: '300px', marginBottom: '8px', display: 'flex',
               flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             }}>
-              <h3 className='earned-reward' style={{ fontSize: '1.2em', marginBottom: '15px' }}>You've Earned a Reward.</h3>
               <Suspense fallback={<div>Loading Trophy...</div>}>
                 <TrophyGenerator />
               </Suspense>
             </div>
           ) : null}
         </MessageContainer>
+        <ButtonToHome />
       </Main>
     </Container >
   );
