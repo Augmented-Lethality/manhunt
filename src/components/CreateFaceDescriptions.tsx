@@ -93,8 +93,26 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhot
           justifyContent: 'space-around',
           width: '100%'
         }}>
-          <Camera className='react-icon-large' onClick={() => { setImg(null) }} />
-          <Save className='react-icon-large' onClick={handleSave} />
+          <div className='column' style={{color:'white'}}>
+            <Camera className='react-icon-large' onClick={() => { setImg(null) }} />
+            <h4 style={{
+                  wordSpacing: '10px',
+                  marginTop: '-12px',
+                  fontWeight: '400',
+                  textAlign: 'center',
+                  zIndex: '1'
+            }}>retake</h4>
+          </div>
+          <div className='column' style={{color:'white'}}>
+            <Save className='react-icon-large' onClick={handleSave} />
+            <h4 style={{
+                  wordSpacing: '10px',
+                  marginTop: '-12px',
+                  fontWeight: '400',
+                  textAlign: 'center',
+                  zIndex: '1'
+            }}>save</h4>
+          </div>
         </div>
       </div>
     )
