@@ -4,10 +4,13 @@ import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 // import PageLoader from '../components/Loading';
 import PhoneLoader from '../components/Loaders/PhoneLoader';
+import InfoPopup from '../components/Popups/InfoPopup';
 
 const SavedTrophies = lazy(() => import('../components/SavedTrophies'));
 
 const TrophyRoom: React.FC = () => {
+
+  const infoMessage = 'Oooh, shiny!\n\nEarn trophies when you win games.'
 
   return (
     <Container>
@@ -30,6 +33,8 @@ const TrophyRoom: React.FC = () => {
             </Suspense>
           </div>
         </div>
+        <InfoPopup message={infoMessage} />
+
       </Main>
     </Container>
   );

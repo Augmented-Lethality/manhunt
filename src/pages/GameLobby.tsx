@@ -11,6 +11,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import styled from 'styled-components';
 
+import InfoPopup from '../components/Popups/InfoPopup';
+
 const Image = styled.div<{ isHost: boolean }>`
   position: absolute;
   left: 50%;
@@ -239,6 +241,7 @@ const GameLobby: React.FC<{}> = () => {
     return <PhoneLoader />
   }
 
+
   if (bountyName) {
     return (
       <Container>
@@ -253,6 +256,9 @@ const GameLobby: React.FC<{}> = () => {
     )
   }
 
+  const hostInfoMessage = 'Use the knobs to change the game duration. Click the play button when you\'re ready to start.'
+  const playersInfoMessage = 'Be patient and wait for the host to start the game.'
+
   return (
     <Container>
       <Header page='Lobby' />
@@ -263,6 +269,7 @@ const GameLobby: React.FC<{}> = () => {
             <PlayButton onClick={() => pickVictim(users, SetHunted)} />
             <MinusButton onClick={() => handleArrowClick('minus')} />
             <PlusButton onClick={() => handleArrowClick('plus')} />
+            <InfoPopup message={hostInfoMessage} />
           </>
         }
         <BackButton onClick={() => navigate('/home')}>Back</BackButton>
@@ -272,6 +279,7 @@ const GameLobby: React.FC<{}> = () => {
           <UserListItem player={users[0]} />
           <UsersList users={users.slice(1)} />
         </PlayersContainer>
+        {!isHost && <InfoPopup message={playersInfoMessage} />}
       </Main>
     </Container>
   );
