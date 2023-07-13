@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';import styled from 'styled-components';
 import DropDownMenu from '../components/DropDownMenu';
 import { useNavigate } from 'react-router-dom';
+
 export const StyledHeader = styled.header`
   display: flex;
   padding: 2rem;
@@ -14,6 +15,7 @@ export const StyledHeader = styled.header`
   background-size: cover;
   background-position: left bottom;
   box-sizing: border-box;
+  align-items: center;
   z-index: 1;
 `;
 
@@ -67,6 +69,7 @@ export const GameStyledHeader = styled.header`
   top: 0;
   border-radius: 0px 0px 45px 45px !important;
   z-index: 1;
+  text-align: center;
   width: 100vw;
 `;
 
