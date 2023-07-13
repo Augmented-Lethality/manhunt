@@ -22,6 +22,14 @@ export const StyledHeader = styled.header`
   z-index: 1;
 `;
 
+const LogoContainer = styled.div `
+  height: 100%;
+  width: 23vw;
+  position: relative;
+  bottom: 2vw;
+  left: -5vw;
+`;
+
 interface HeaderProps {
   page?: string;
   users?: Array<Object> | null;
@@ -40,10 +48,7 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
 
   return (
     <StyledHeader>
-      <div style={{ marginBottom: '21px', marginLeft: '-10px' }} className='centered column'>
-        <h1 className='logo' onClick={handleHome}>MAN</h1>
-        <h1 className='logo' onClick={handleHome}>HUNT</h1>
-      </div>
+      <LogoContainer onClick={handleHome}></LogoContainer>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
           <img
