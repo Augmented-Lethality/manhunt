@@ -86,8 +86,8 @@ const BottomofIdContainer = styled.div`
 //Container For Player Stas
 const StatsContainer = styled.div`
   display: flex;
-  align-items: space-between;
-  width: 89%
+  justify-content: space-between;
+  width: 90%;
   div {
     display: flex;
     flex-direction: column;
@@ -267,28 +267,26 @@ const ProfilePage: React.FC = () => {
             )}
             <h2 className='profile__title'>{user?.name}</h2>
           </NameContainer>
-          <BottomofIdContainer>
-            <StatsContainer>
-              {userData?.facialDescriptions ? (
-                <>
-                  <div>
-                    <h5>Wins: {userData?.gamesWon}</h5>
-                    <h5>Kills: {userData?.killsConfirmed}</h5>
-                  </div>
-                  <div>
-                    <h5>Total Games: {userData?.gamesPlayed}</h5>
-                    <h5>K\D: {winLossRatio}</h5>
-                  </div>
-                </>
-              ) : (
+          <StatsContainer>
+            {userData?.facialDescriptions ? (
+              <>
                 <div>
-                  <h5 className='bold'>CITIZEN NOT VERIFIED</h5>
-                  <h5>PLEASE REGISTER BELOW</h5>
+                  <h5>Wins: {userData?.gamesWon}</h5>
+                  <h5>Kills: {userData?.killsConfirmed}</h5>
                 </div>
-              )}
-            </StatsContainer>
-            <Eyeball />
-          </BottomofIdContainer>
+                <div>
+                  <h5>Total Games: {userData?.gamesPlayed}</h5>
+                  <h5>K\D: {winLossRatio}</h5>
+                </div>
+              </>
+            ) : (
+              <div>
+                <h5 className='bold'>CITIZEN NOT VERIFIED</h5>
+                <h5>PLEASE REGISTER BELOW</h5>
+              </div>
+            )}
+          </StatsContainer>
+          <Eyeball />
           <h2 style={{marginBottom: '-50px',}}className='barcode'>asdfkjflekjgldaj</h2>
         </IdContainer>
         <VerificationContainer className='glassmorphism'>
