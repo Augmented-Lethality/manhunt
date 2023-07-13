@@ -43,6 +43,7 @@ body {
 button{
   width: 200px;
   height: 70px;
+  margin: 10px;
   background: #779baa45;
   backdrop-filter: blur(3px);
   color: #e1fffbc7;
@@ -315,6 +316,14 @@ input::placeholder{color: cyan;}
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.padded {
+  padding: 10px;
+}
+
+.margined {
+  margin: 10px;
 }
 
 .row {
