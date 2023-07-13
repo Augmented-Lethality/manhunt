@@ -24,12 +24,14 @@ body {
 }
 
 .glassmorphism{
-  background: #ffffff1f;
-  border: solid 1px #ffffff3d;
-  backdrop-filter: blur(5px);
-  color: white;
+  background: #779baa45;
+  backdrop-filter: blur(3px);
+  color: #e1fffbc7;
   border-radius: 45px 43px;
-  box-shadow: 0 5px 10px 2px #00000030;
+  box-shadow:
+    0 -1px 0 2px #afd5d66b,
+    0 1px 0 2px #00000063,
+    5px 10px 2px #00000030;
 }
 
 .paper{
@@ -61,6 +63,8 @@ button{
 
 .barcode {
   font-family: 'Libre Barcode 39';
+  color: #202020;
+  font-size: 3rem;
 }
 
 .metal-button {
@@ -239,7 +243,7 @@ h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 1.8rem;
+  font-size: 3rem;
   font-family: 'Sonsie One';
   color: #7DBAFF;
   text-shadow:
@@ -292,11 +296,10 @@ input {
   background: none;
   font-size: calc(var(--font-size) * 1.5);
   color: cyan;
+  width: 100%
 }
 input:focus {outline:none;}
-input:placeholder
-color: cyan;
-}
+input::placeholder{color: cyan;}
 
 .drop-down-menu {
   background: linear-gradient(19deg, #ffffff26 0%, #00ffff26 100%), linear-gradient(90deg, #00ffff2b 0%, #ffffff1f 45%);
