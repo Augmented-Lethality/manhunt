@@ -201,7 +201,7 @@ const ProfilePage: React.FC = () => {
 
   if (photoStatus === 'camera') {
     return (
-      <Container>
+      <>
         <StyledHeader style={{ display: 'flex', alignItems:'start', justifyContent:'end' }}>
           <div style={{ display: 'flex', flexDirection:'column', alignItems: 'end' }}>
             <XCircle
@@ -219,7 +219,7 @@ const ProfilePage: React.FC = () => {
           userID={user?.sub}
           setUser={setUserData}
         />
-      </Container>
+      </>
     );
   }
 
