@@ -46,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
         flexDirection: 'column',
         height: '87%',
         width: '100%',
-        textAlign: 'center',
+        textAlign: 'end',
       }}>
         <DropDownMenu page={page || ''} />
         {(page === 'Find')
@@ -60,12 +60,14 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
 
 export const GameStyledHeader = styled.header`
   display: flex;
+  flex-direction: column;
   padding: 1rem;
   justify-content: space-between;
-  position: relative;
-  margin-inline: auto;
-  margin-bottom: 20px;
-  width: 80%;
+  position: absolute;
+  top: 0;
+  border-radius: 0px 0px 45px 45px !important;
+  z-index: 1;
+  width: 100vw;
 `;
 
 interface GameHeaderProps {
@@ -73,22 +75,9 @@ interface GameHeaderProps {
 }
 
 export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
-
   return (
-    <GameStyledHeader className="digital digital-container">
+    <GameStyledHeader className='glassmorphism'>
       {children}
-      <DropDownMenu page={'Game'} />
     </GameStyledHeader>
   );
 }
-
-export const Footer = styled.footer`
-  background-color: transparent;
-  border-top: transparent;
-  height: 60px;
-  padding: 1rem;
-  position: absolute;
-  display: flex;
-  bottom: 0px;
-  width: -webkit-fill-available;
-`;
