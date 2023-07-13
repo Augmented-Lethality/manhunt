@@ -9,7 +9,7 @@ import { useFontSize } from '../contexts/FontSize';
 
 import { BioDataPopup } from '../components/Popups/BioDataPopup';
 
-import InfoComponent from '../components/Popups/InfoPopup';
+import InfoPopup from '../components/Popups/InfoPopup';
 
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -48,7 +48,7 @@ const HomePage = () => {
         {showBioPopup && <BioDataPopup />}
         <ButtonToHostGame />
         <ButtonToFindGame />
-        <InfoComponent message={infoMessage} />
+        <InfoPopup message={infoMessage} />
       </Main>
     </Container>
   );

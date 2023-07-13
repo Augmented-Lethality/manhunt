@@ -31,11 +31,11 @@ const StyledInfo = styled(Info)`
   font-weight: bold;
 `;
 
-interface InfoComponentProps {
+interface InfoPopupProps {
   message: string
 }
 
-const InfoComponent: React.FC<InfoComponentProps> = ({ message }) => {
+const InfoPopup: React.FC<InfoPopupProps> = ({ message }) => {
   return (
     <Popup
       trigger={
@@ -53,4 +53,4 @@ const InfoComponent: React.FC<InfoComponentProps> = ({ message }) => {
   );
 };
 
-export default InfoComponent;
+export default InfoPopup;
