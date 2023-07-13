@@ -27,7 +27,7 @@ body {
   background: #779baa45;
   backdrop-filter: blur(3px);
   color: #e1fffbc7;
-  border-radius: 45px 43px;
+  border-radius: 45px;
   box-shadow:
     0 -1px 0 2px #afd5d66b,
     0 1px 0 2px #00000063,
@@ -248,7 +248,7 @@ h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-family: 'Sonsie One';
   color: #7DBAFF;
   text-shadow:
