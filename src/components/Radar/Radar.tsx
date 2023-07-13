@@ -1,13 +1,28 @@
 import React, { useRef, useEffect, useContext } from 'react';
-import * as THREE from 'three';
+
+import {
+  MathUtils,
+  Scene,
+  Line,
+  PerspectiveCamera,
+  WebGLRenderer,
+  Mesh,
+  MeshBasicMaterial,
+  CircleGeometry,
+  LineBasicMaterial,
+  BufferGeometry,
+  Path,
+  Vector3,
+
+} from '../webcam.js'
 
 import SocketContext, { PlayerCoords } from '../../contexts/Socket/SocketContext';
 
 const Radar: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  let rotatingLine: THREE.Line;
+  let rotatingLine: Line;
 
-  const { locations, users, player, playerCoords } = useContext(SocketContext).SocketState;
+  const { locations, player, playerCoords } = useContext(SocketContext).SocketState;
 
   // constants that can be altered throughout the radar
   const radarColour = '#008000';
@@ -23,51 +38,51 @@ const Radar: React.FC = () => {
 
   // calculates the distance in meters between two sets of lat/long coordinates using the Haversine Equation
   const haversineDistCoords = (playerCoords: PlayerCoords, otherCoords: { longitude: number; latitude: number; }) => {
-    const deltaLongitude = THREE.MathUtils.degToRad(otherCoords.longitude - playerCoords.longitude);
-    const deltaLatitude = THREE.MathUtils.degToRad(otherCoords.latitude - playerCoords.latitude);
+    const deltaLongitude = MathUtils.degToRad(otherCoords.longitude - playerCoords.longitude);
+    const deltaLatitude = MathUtils.degToRad(otherCoords.latitude - playerCoords.latitude);
 
     const a =
       Math.sin(deltaLatitude / 2) * Math.sin(deltaLatitude / 2) +
-      Math.cos(THREE.MathUtils.degToRad(playerCoords.latitude)) *
-      Math.cos(THREE.MathUtils.degToRad(otherCoords.latitude)) *
+      Math.cos(MathUtils.degToRad(playerCoords.latitude)) *
+      Math.cos(MathUtils.degToRad(otherCoords.latitude)) *
       (Math.sin(deltaLongitude / 2) * Math.sin(deltaLongitude / 2));
 
     const distanceLatitude = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 6371000;
-    const distanceLongitude = deltaLongitude * 6371000 * Math.cos(THREE.MathUtils.degToRad(playerCoords.latitude));
+    const distanceLongitude = deltaLongitude * 6371000 * Math.cos(MathUtils.degToRad(playerCoords.latitude));
 
     return { distanceLatitude, distanceLongitude };
   }
 
   // console.log(haversineDistCoords(fakeLocations[0], fakeLocations[1]), 'm')
-  const sceneRadarRef = useRef<THREE.Scene>(new THREE.Scene());
+  const sceneRadarRef = useRef<Scene>(new Scene());
 
   // RADAR DOTS
-  const dotGeometry = new THREE.CircleGeometry(0.1, 32);
-  const dotMaterial = new THREE.MeshBasicMaterial({ color: 'red' });
-  const dotMarker = new THREE.Mesh(dotGeometry, dotMaterial);
+  const dotGeometry = new CircleGeometry(0.1, 32);
+  const dotMaterial = new MeshBasicMaterial({ color: 'red' });
+  const dotMarker = new Mesh(dotGeometry, dotMaterial);
 
 
   useEffect(() => {
-    // let sceneRadar: THREE.Scene;
-    let cameraRadar: THREE.PerspectiveCamera;
-    let rendererRadar: THREE.WebGLRenderer;
-    let radar: THREE.Mesh;
+    // let sceneRadar: Scene;
+    let cameraRadar: PerspectiveCamera;
+    let rendererRadar: WebGLRenderer;
+    let radar: Mesh;
 
     const init = () => {
 
       // camera, camera perspective using 400 pixels right now
-      cameraRadar = new THREE.PerspectiveCamera(75, containerRef.current!.clientWidth / height, 0.1, 1000);
+      cameraRadar = new PerspectiveCamera(75, containerRef.current!.clientWidth / height, 0.1, 1000);
       cameraRadar.position.set(0, 0, 5);
 
       // renderer, currently at height pixels
-      rendererRadar = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      rendererRadar = new WebGLRenderer({ antialias: true, alpha: true });
       rendererRadar.setSize(containerRef.current!.clientWidth, height);
       containerRef.current!.appendChild(rendererRadar.domElement);
 
       // radar circle
-      const geometry = new THREE.CircleGeometry(radius, 32);
-      const material = new THREE.MeshBasicMaterial({ color: 'black' });
-      radar = new THREE.Mesh(geometry, material);
+      const geometry = new CircleGeometry(radius, 32);
+      const material = new MeshBasicMaterial({ color: 'black' });
+      radar = new Mesh(geometry, material);
       sceneRadarRef.current.add(radar);
 
       // smaller circle lines in the radar
@@ -75,54 +90,54 @@ const Radar: React.FC = () => {
       const radiusDecrement = 0.5;
 
       // colour for the smaller circles
-      const circColor = new THREE.LineBasicMaterial({ color: radarColour });
+      const circColor = new LineBasicMaterial({ color: radarColour });
 
       // adding the largest circle line for the radar border
-      const borderCircle = new THREE.BufferGeometry().setFromPoints(
-        new THREE.Path().absarc(0, 0, radius, 0, Math.PI * 2, false).getSpacedPoints(50)
+      const borderCircle = new BufferGeometry().setFromPoints(
+        new Path().absarc(0, 0, radius, 0, Math.PI * 2, false).getSpacedPoints(50)
       );
-      const border = new THREE.Line(borderCircle, circColor);
+      const border = new Line(borderCircle, circColor);
       sceneRadarRef.current.add(border);
 
       // adding 5 smaller circles of a decrementing radius to look like a radar
       for (let i = 1; i <= numCircles; i++) {
-        let circSetup = new THREE.BufferGeometry().setFromPoints(
-          new THREE.Path().absarc(0, 0, radius - i * radiusDecrement, 0, Math.PI * radius, false).getSpacedPoints(50)
+        let circSetup = new BufferGeometry().setFromPoints(
+          new Path().absarc(0, 0, radius - i * radiusDecrement, 0, Math.PI * radius, false).getSpacedPoints(50)
         );
-        let smallerCirc = new THREE.Line(circSetup, circColor);
+        let smallerCirc = new Line(circSetup, circColor);
         sceneRadarRef.current.add(smallerCirc);
       }
 
       // the cross lines
       // vertical
-      const verticalLineGeometry = new THREE.BufferGeometry();
+      const verticalLineGeometry = new BufferGeometry();
 
       verticalLineGeometry.setFromPoints([
-        new THREE.Vector3(0, -radius, 0),
-        new THREE.Vector3(0, radius, 0)
+        new Vector3(0, -radius, 0),
+        new Vector3(0, radius, 0)
       ]);
 
-      const verticalLineMaterial = new THREE.LineBasicMaterial({ color: radarColour });
-      const verticalLine = new THREE.Line(verticalLineGeometry, verticalLineMaterial);
+      const verticalLineMaterial = new LineBasicMaterial({ color: radarColour });
+      const verticalLine = new Line(verticalLineGeometry, verticalLineMaterial);
       sceneRadarRef.current.add(verticalLine);
 
       // horizontal
-      const horizontalLineGeometry = new THREE.BufferGeometry();
+      const horizontalLineGeometry = new BufferGeometry();
       horizontalLineGeometry.setFromPoints([
-        new THREE.Vector3(-radius, 0, 0),
-        new THREE.Vector3(radius, 0, 0)
+        new Vector3(-radius, 0, 0),
+        new Vector3(radius, 0, 0)
       ]);
 
-      const horizontalLineMaterial = new THREE.LineBasicMaterial({ color: radarColour });
-      const horizontalLine = new THREE.Line(horizontalLineGeometry, horizontalLineMaterial);
+      const horizontalLineMaterial = new LineBasicMaterial({ color: radarColour });
+      const horizontalLine = new Line(horizontalLineGeometry, horizontalLineMaterial);
       sceneRadarRef.current.add(horizontalLine);
 
 
       // rotating radar line
-      const lineGeometry = new THREE.BufferGeometry();
-      lineGeometry.setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(radius, 0, 0)]);
-      const lineMaterial = new THREE.LineBasicMaterial({ color: radarColour });
-      rotatingLine = new THREE.Line(lineGeometry, lineMaterial);
+      const lineGeometry = new BufferGeometry();
+      lineGeometry.setFromPoints([new Vector3(0, 0, 0), new Vector3(radius, 0, 0)]);
+      const lineMaterial = new LineBasicMaterial({ color: radarColour });
+      rotatingLine = new Line(lineGeometry, lineMaterial);
       sceneRadarRef.current.add(rotatingLine);
 
 
