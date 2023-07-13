@@ -88,7 +88,7 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
             alt='Profile'
             className='profile__avatar'
             onClick={toggleMenu}
-            style={{ height: '3rem', borderRadius: '50%', marginRight: '10px' }} />
+            style={{ height: '3rem', borderRadius: '50%' }} />
       <Backdrop open={isMenuOpen} onClick={toggleMenu}/>
       <Menu className='glassmorphism' open={isMenuOpen}>
         <Close onClick={toggleMenu} />
