@@ -235,8 +235,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   };
 
   const UpdatePlayerCoordinates = (coordinates: PlayerCoords) => {
+    // console.log('updating player coordinates:', coordinates)
     SocketDispatch({ type: 'update_player_coordinates', payload: coordinates });
-
   }
 
   // showing this on client side while socket isn't connected

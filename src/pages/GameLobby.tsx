@@ -181,7 +181,7 @@ const GameLobby: React.FC<{}> = () => {
 
   //See if things are still loading
   useEffect(() => {
-    if (games.length > 0 && users.length > 0) {
+    if (games.length && games.length < 2 && users.length > 0) {
       setShowLobby(true);
     } else {
       setShowLobby(false);
