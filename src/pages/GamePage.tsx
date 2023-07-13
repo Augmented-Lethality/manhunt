@@ -37,25 +37,23 @@ const GamePage: React.FC = () => {
   return (
     <>
       <GameHeader>
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent:'space-between' }}>
           {gameMode === 'Chase' ? (
-            <>
-              <h5>Go to</h5>
-              <Crosshair className='react-icon' onClick={handleGameChange} />
+            <div className='column'>
               <h5>Kill Mode</h5>
-            </>
+              <Crosshair className='react-icon' onClick={handleGameChange} />
+            </div>
           ) : (
-            <>
-              <h5>Go to</h5>
-              <Eye className='react-icon' onClick={handleGameChange} />
+            <div className='column'>
               <h5>Chase Mode</h5>
-            </>
+              <Eye className='react-icon' onClick={handleGameChange} />
+            </div>
           )}
           <DropDownMenu page={'Game'} />
         </div>
         <Countdown />
       </GameHeader>
-      <Main style={{height:'100vh', paddingTop:0}}>
+      <Main style={{height:'100vh', paddingTop:'0px'}}>
         {gameMode === 'Chase' ? (
           <WebcamChaseProvider key="chaseCam">
             <ChaseCam />
