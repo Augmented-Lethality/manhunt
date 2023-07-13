@@ -58,6 +58,7 @@ const TempIdContainer = styled.div`
 
 //ID card background that user data sits on
 const IdContainer = styled.div`
+background: url(/textures/paper.png);
   border-radius: 19px;
   display: flex;
   flex-direction: column;
@@ -97,7 +98,14 @@ const StatsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  h4 {
+    font-size: 1em;
+    font-weight: bold;
+    color: #262626;
+  }
 `;
+
 
 export function Eyeball() {
   return (
@@ -106,7 +114,7 @@ export function Eyeball() {
       viewBox='0 0 100 60'
       width='135'
       height='60'
-      style={{ transform: 'rotate(180deg' }}
+      style={{ transform: 'rotate(180deg', marginLeft: '2em'}}
     >
       <path
         transform='translate(-10, -20)'
@@ -142,7 +150,11 @@ const Text = styled.h5`
   color: #444254;
   letter-spacing: 4px;
   flex-shrink: 1;
+  font-weight: bold;
+  font-size: 0.8em;
+  marginBottom: 1em;
 `;
+
 
 const ProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -248,8 +260,7 @@ const ProfilePage: React.FC = () => {
               color={''}
               shape={''}
               tubularSegments={0}
-              tubeWidth={0}
-            />
+              tubeWidth={0} dimensionTwo={0} dimensionThree={0}            />
           </TrophyContainer>
         ) : (
           <TrophyContainer>
@@ -260,7 +271,7 @@ const ProfilePage: React.FC = () => {
           {userData?.facialDescriptions ? (
             <Text>CORPOVERSE OFFICIAL ID</Text>
           ) : (
-            <Text >TEMPORARY CORPOVERSE ID</Text>
+            <Text>TEMPORARY CORPOVERSE ID</Text>
           )}
           <NameContainer>
             {user.picture ? (
@@ -272,17 +283,17 @@ const ProfilePage: React.FC = () => {
             ) : (
               <h1 className='alt-user-pic-large'>{user.name?.slice(0, 1)}</h1>
             )}
-            <h2 className='profile__title'>{user?.name}</h2>
+            <h2 className='profile__title' style={{marginLeft: '0.5em', fontSize: '1.75em'}}>{user?.name}</h2>
           </NameContainer>
           <BottomofIdContainer>
             <StatsContainer>
               {userData?.facialDescriptions ? (
-                <>
+                <div style={{fontSize: '0.70em'}}>
                   <h4>Wins: {userData?.gamesWon}</h4>
                   <h4>Kills: {userData?.killsConfirmed}</h4>
                   <h4>Total Games: {userData?.gamesPlayed}</h4>
                   <h4>K\D: {winLossRatio}</h4>
-                </>
+                </div>
               ) : (
                 <>
                   <h5 className='bold'>CITIZEN NOT VERIFIED</h5>
