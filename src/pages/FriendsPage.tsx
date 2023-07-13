@@ -45,6 +45,7 @@ const FriendsContainer = styled.div`
   left: 14vw;
   height: 53vw;
   width: 73vw;
+  overflow: auto;
   // border: 2px solid green;
 `;
 
