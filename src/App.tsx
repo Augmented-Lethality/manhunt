@@ -99,7 +99,7 @@ const App = () => {
       />
       <Route
         path="/test"
-        element={<AuthenticationGuard component={TestPage} />}
+        element={<SocketComponent><AuthenticationGuard component={TestPage} /></SocketComponent>}
       />
       <Route
         path="/trophies"
