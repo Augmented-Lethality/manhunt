@@ -61,7 +61,7 @@ const IdContainer = styled.div`
   margin: 20px;
   margin-inline: auto;
   padding: 20px;
-  height: auto;
+  height: 220px;
   width: 90vw;
   overflow: hidden;
 `
@@ -241,6 +241,8 @@ const ProfilePage: React.FC = () => {
               shape={''}
               tubularSegments={0}
               tubeWidth={0}
+              dimensionTwo={0}
+              dimensionThree={0}
             />
           </TrophyContainer>
         ) : (
