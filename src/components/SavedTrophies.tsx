@@ -225,6 +225,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
           <div
             className='glassmorphism'
             style={{
+              fontWeight: 'bold', 
               borderRadius: '1em',
               padding: '1em',
               width: '100%',
@@ -309,29 +310,29 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   )}
                 </Canvas>
 
-                <details style={{ textAlign: 'left' }}>
-                  <summary style={{ textAlign: 'right' }}>Details</summary>
-                  <h6>Designation: {trophy.name}</h6>
-                  <h6>Report: {trophy.description}</h6>
-                  <h6>Class: {trophy.shape}</h6>
-                  <h6>Magnitude: {trophy.dimension}</h6>
-                  <h6>Chroma: {getColorName(trophy.color)}</h6>
-                  <h6>Earned on: {trophy.createdAt}</h6>
+                <details style={{ textAlign: 'left', }}>
+                  <summary style={{ textAlign: 'right', marginInline: '0px'}}>Details</summary>
+                  <div style={{fontSize: '0.75rem', padding: '1rem'}}>
+                  <div><strong>Designation:</strong> {trophy.name}</div>
+                  <div><strong>Report:</strong> {trophy.description}</div>
+                  <div><strong>Class:</strong> {trophy.shape}</div>
+                  <div><strong>Magnitude:</strong> {trophy.dimension}</div>
+                  <div><strong>Chroma:</strong> {getColorName(trophy.color)}</div>
+                  <div><strong>Earned on:</strong> {trophy.createdAt}</div>
+                  </div>
                 </details>
               </div>
             </div>
           ))
       )}
-      <div
-        style={{
-          display: 'flex',
-          position: 'sticky',
-          bottom: 0,
-          alignItems: 'center',
-        }}
-      >
+      <div>
         {totalPages > 1 && (
-          <div>
+          <div style={{
+            display: 'flex',
+            position: 'sticky',
+            bottom: 0,
+            alignItems: 'center',
+          }}>
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
