@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
 import UsersList from '../components/UsersList';
-import { Container } from '../styles/Container';
 import { Main } from '../styles/Main';
 import { Header } from '../styles/Header';
 import { Search, XCircle, Bell } from 'react-feather';
@@ -15,7 +14,7 @@ const Image = styled.div`
   transform: translateX(-50%);
   padding: 1rem;
   padding-bottom: 0;
-  height: 134.5vw;
+  height: 145.5vw;
   width: 100%;
   box-sizing: border-box;
   background-image: url(/textures/computer.png);
@@ -23,56 +22,32 @@ const Image = styled.div`
   background-repeat: no-repeat;
 `;
 
-
 const SearchBar = styled.div`
   position: absolute;
-  bottom: 28vw;
-  left: 34vw;
-  height: 17vw;
-  width: 56vw;
+  bottom: 37vw;
+  left: 35vw;
+  height: 19vw;
+  width: 53vw;
   display: flex;
+  overflow: inherit;
   align-items: center;
   & > * {
     display: flex;
     align-items: end;
     margin: 1.5rem;
-    color: cyan;
-  }
-  & > * > * {
-    margin-right: 10px;
-    color: cyan;
+    color: cyan !important;
   }
 `;
 
 const FriendsContainer = styled.div`
   position: absolute;
-  bottom: 64vw;
+  bottom: 72vw;
   left: 14vw;
   height: 53vw;
   width: 73vw;
+  overflow: auto;
   // border: 2px solid green;
 `;
-
-
-
-// const FriendsContainer = styled.div`
-//   background-color: #26262d;
-//   padding: 20px;
-//   margin-inline: 20px;
-//   flex-grow: 1;
-// `;
-
-// const SearchBar = styled.div`
-//   display: flex;
-//   align-items: center;
-//   margin: 20px;
-//   margin-inline: auto;
-//   background-color: #2b2b36;
-//   padding: 10px;
-//   width: 70%;
-//   height: 30px;
-// `;
-
 
 const FriendsPage: React.FC = () => {
   const [searchText, setSearchText] = useState('');
@@ -145,24 +120,30 @@ const FriendsPage: React.FC = () => {
   }
 
   return (
-    <Container>
+    <>
       <Header page='Friends' />
-      <Main>
+      <Main style={{height: '100vh'}}>
         <Image/>
         <SearchBar>
-          {searchText === '' 
-            ? <Search className='digital-h1' />
-            : <XCircle className='digital-h1' onClick={() => { setSearchText('') }} />
+        {searchText === '' 
+            ? <Search className='react-icon' style={{margin: '5px'}} />
+            : <XCircle className='react-icon' style={{margin: '5px'}} 
+                onClick={() => { setSearchText('') }}
+              />
           }
           <input
             type='text'
-            placeholder="Find a Hunter"
+            placeholder='Find a Hunter'
             value={searchText}
+            style={{marginLeft: '0px'}}
             onChange={handleInputChange}
           />
         </SearchBar>
         <FriendsContainer>
-          <Bell className='digital-h1' onClick={() => { setViewingPending(viewingPending => !viewingPending) }} />
+          <Bell
+            className='digital-h1'
+            style={{position:'absolute', right: 0}}
+            onClick={() => { setViewingPending(viewingPending => !viewingPending) }} />
           {searchText === '' ? (
             <>
               {viewingPending &&
@@ -172,13 +153,13 @@ const FriendsPage: React.FC = () => {
               <UsersList users={offlineFriends} header={`Offline • ${offlineFriends.length}`} />
             </>
           ) : searchResults.length === 0 ? (
-            <h2 className='digital-h1' style={{ textAlign: 'center' }}>You've got the wrong guy!</h2>
+            <h2 className='digital-h1' style={{ textAlign: 'center' }}>Target not found</h2>
           ) : (
             <UsersList header={`Results • ${onlineFriends.length}`} users={searchResults} />
           )}
         </FriendsContainer>
       </Main>
-    </Container>
+    </>
   )
 };
 

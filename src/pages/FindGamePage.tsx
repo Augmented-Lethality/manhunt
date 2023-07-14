@@ -4,7 +4,6 @@ import { GameListItem } from '../components/GameLobby/GameListItem';
 import styled from 'styled-components';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
-import { Container } from '../styles/Container';
 
 const NoBountiesSign = styled.div`
   height: 157px;
@@ -32,7 +31,7 @@ const FindGamePage: React.FC = () => {
   }, [users, games]);
 
   return (
-    <Container>
+    <>
       <Header page={'Contracts'} users={users} />
       <Main>
         {
@@ -49,7 +48,7 @@ const FindGamePage: React.FC = () => {
           )
         }
       </Main>
-    </Container>
+    </>
   );
 }
 

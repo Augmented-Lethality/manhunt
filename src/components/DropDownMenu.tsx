@@ -6,7 +6,6 @@ import {
   Home,
   User,
   Users,
-  MoreHorizontal,
   XCircle,
   LogOut,
   Settings,
@@ -17,8 +16,8 @@ const dropdownAnimation = keyframes`
   100% { opacity: 1; transform: translateY(0); }
 `;
 
-const Backdrop = styled.div<{ isOpen: boolean }>`
-  display: ${props => props.isOpen ? 'block' : 'none'};
+const Backdrop = styled.div<{ open: boolean }>`
+  display: ${props => props.open ? 'block' : 'none'};
   position: fixed;
   width: 100%;
   height: 100%;
@@ -28,8 +27,8 @@ const Backdrop = styled.div<{ isOpen: boolean }>`
   z-index: 1;
 `;
 
-const Menu = styled.div<{ isOpen: boolean }>`
-  display: ${props => props.isOpen ? 'block' : 'none'};
+const Menu = styled.div<{ open: boolean }>`
+  display: ${props => props.open ? 'block' : 'none'};
   animation: ${dropdownAnimation} 0.4s ease-in-out;
   position: absolute;
   position: absolute;
@@ -50,14 +49,6 @@ const Menu = styled.div<{ isOpen: boolean }>`
   }
 `;
 
-const Dots = styled(MoreHorizontal)`
-height: 3rem;
-width: 3rem;
-border-radius: 50%;
-border: 3px solid #6f5858;
-box-sizing: border-box;
-`;
-
 const Close = styled(XCircle)`
 height: 3rem;
 width: 3rem;
@@ -75,7 +66,8 @@ interface DropDownMenuProps {
 const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const { logout } = useAuth0();
+  const { logout, user } = useAuth0();
+
   const icons = {
     home: <Home />,
     profile: <User />,
@@ -90,10 +82,15 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
   };
 
   return (
-    <div className='dropdown'>
-      <Dots style={{color:'#6f5858'}} onClick={toggleMenu} />
-      <Backdrop isOpen={isMenuOpen} onClick={toggleMenu}/>
-      <Menu className='glassmorphism drop-down-menu' isOpen={isMenuOpen}>
+    <div style={{display:'flex', justifyContent:'end'}}>
+      <img
+            src={user?.picture}
+            alt='Profile'
+            className='profile__avatar'
+            onClick={toggleMenu}
+            style={{ height: '3rem', borderRadius: '50%' }} />
+      <Backdrop open={isMenuOpen} onClick={toggleMenu}/>
+      <Menu className='glassmorphism' open={isMenuOpen}>
         <Close onClick={toggleMenu} />
         {pages.map((pageName, index) => {
           if(page.toLowerCase() !== pageName) {

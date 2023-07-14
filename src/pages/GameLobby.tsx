@@ -1,28 +1,26 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import SocketContext, { User } from '../contexts/Socket/SocketContext';
-import { Container } from '../styles/Container';
 import { Header } from '../styles/Header'
 import { Main } from '../styles/Main'
 import UserListItem from '../components/UserListItem';
 import UsersList from '../components/UsersList';
 import { useAuth0 } from '@auth0/auth0-react';
-// import PageLoader from '../components/Loading';
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import styled from 'styled-components';
 
-const Image = styled.div<{ isHost: boolean }>`
+const Image = styled.div<{ ishost: string}>`
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: 0vw;
   transform: translateX(-50%);
   padding: 1rem;
   padding-bottom: 0;
-  height: 144vw;
+  height: 176vw;
   width: 100%;
   box-sizing: border-box;
   background-image:
-    ${props => props.isHost
+    ${props => props.ishost
     ? 'url(/textures/lobby-host.png)'
     : 'url(/textures/lobby-guest.png)'};
   background-size: contain;
@@ -31,8 +29,8 @@ const Image = styled.div<{ isHost: boolean }>`
 
 const MinusButton = styled.div`
   position: absolute;
-  bottom: 92vw;
-  left: 39vw;
+  bottom: 131vw;
+  left: 47vw;
   height: 9vw;
   width: 9vw;
   // border: 2px solid blue;
@@ -40,48 +38,43 @@ const MinusButton = styled.div`
 
 const PlusButton = styled.div`
   position: absolute;
-  bottom: 93vw;
-  left: 78vw;
-  height: 8vw;
-  width: 7vw;
+  bottom: 130vw;
+  left: 81vw;
+  width: 9vw;
+  height: 9vw;
   // border: 2px solid red;
 `;
 
 const PlayButton = styled.div`
   position: absolute;
-  bottom: 101vw;
-  left: 49vw;
-  height: 27vw;
-  width: 29vw;
+  bottom: 140vw;
+  left: 58vw;
+  height: 22vw;
+  width: 21vw;
   // border: 2px solid green;
 `;
 const BackButton = styled.div`
   position: absolute;
-  bottom: 87vw;
-  left: 5vw;
-  height: 48vw;
+  bottom: 134vw;
+  left: 8vw;
+  height: 22vw;
   width: 22vw;
-  font-family: lobster;
-  color: white;
-  padding-top: 10vw;
-  text-shadow: -0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000, 0.5px 0.5px 0 #000;
-  font-size: 2rem;
-  transform: rotate(358deg);
   // border: 2px solid pink;
 `;
 
 const PlayersContainer = styled.div`
   position: absolute;
-  bottom: 16vw;
+  bottom: 54vw;
   left: 15vw;
   height: 57vw;
   width: 70vw;
+  overflow: auto;
   // border: 2px solid cyan;
 `;
 const TimeContainer = styled.div`
   position: absolute;
-  bottom: 95vw;
-  left: 49vw;
+  bottom: 133vw;
+  left: 55vw;
   height: 6vw;
   width: 26vw;
   display: flex;
@@ -89,34 +82,6 @@ const TimeContainer = styled.div`
   color: #009f40;
   font-size: 1.2rem;
   // border: 2px solid yellow;
-`;
-
-const ControlsBorder = styled.div`
-  position: relative;
-  display: flex;
-  align-items: end;
-  margin: 50px;
-  border-radius: 25px 25px 5px 5px;
-  height: 150px;
-  background-image: radial-gradient(circle at center, #433222 0.06rem, #17140d 0.06rem);
-  background-size: 0.21rem 0.25rem;
-  box-shadow: -5px 15px 80px 10px #000000f0, 0px 0px 0 10px #000000, 0 0 0 16px #2eb694, 0 0 0 17px #449086, 0 0 0 20px #1bc3ad, 0 0 0 30px #48d4b9, 0px -2px 0px 32px #76deca;
-`
-
-const ControlsContainer = styled.div`
-    position: relative;
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    padding: 20px;
-    height: calc(100vw * 1.8);
-    width: 80%;
-    margin-inline: auto;
-    /* margin-bottom: -2px; */
-    border-radius: 30px;
-    background-image: radial-gradient(circle at center, #9a9b98 0.1rem, #a8a884 0.1rem);
-    box-shadow: -3px 5px 7px 3px #00000069, 0 0 0 2px white;
-    background-size: 0.15rem 0.25rem;
 `;
 
 const CountdownContainer = styled.div`
@@ -153,7 +118,6 @@ const GameLobby: React.FC<{}> = () => {
   const scrollValues = ['01', '02', '03', '04', '05', '07', '10', '15', '20', '30', '45', '60'];
   const selectedIndex = scrollValues.indexOf(selected.split(':')[0]);
   const navigate = useNavigate();
-
   // if any of the ready objects don't have a value of 'ok', can't start the game
   // useEffect(() => {
   //   const hasErrors = Object.values(ready).some((errors: string[]) => !errors.includes('ok'));
@@ -241,7 +205,7 @@ const GameLobby: React.FC<{}> = () => {
 
   if (bountyName) {
     return (
-      <Container>
+      <>
         <Header page='Lobby' />
         <Main>
           <CountdownContainer>
@@ -249,15 +213,15 @@ const GameLobby: React.FC<{}> = () => {
             <h2>{bountyName} is being Hunted</h2>
           </CountdownContainer>
         </Main>
-      </Container>
+      </>
     )
   }
 
   return (
-    <Container>
+    <>
       <Header page='Lobby' />
-      <Main>
-        <Image isHost={isHost} />
+      <Main style={{height: '100vh'}}>
+        <Image ishost={isHost.toString()} />
         {isHost &&
           <>
             <PlayButton onClick={() => pickVictim(users, SetHunted)} />
@@ -265,7 +229,7 @@ const GameLobby: React.FC<{}> = () => {
             <PlusButton onClick={() => handleArrowClick('plus')} />
           </>
         }
-        <BackButton onClick={() => navigate('/home')}>Back</BackButton>
+        <BackButton onClick={() => navigate('/home')}/>
         <TimeContainer>{selected}</TimeContainer>
         <PlayersContainer>
           <h2 className='digital-h1'>Hunters • {users.length}</h2>
@@ -273,7 +237,7 @@ const GameLobby: React.FC<{}> = () => {
           <UsersList users={users.slice(1)} />
         </PlayersContainer>
       </Main>
-    </Container>
+    </>
   );
 };
 
