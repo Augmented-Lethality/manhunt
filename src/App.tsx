@@ -116,7 +116,9 @@ const App = () => {
       />
       <Route
         path="/friends"
-        element={<AuthenticationGuard component={FriendsPage} />
+        element={<SocketComponent>
+          <AuthenticationGuard component={FriendsPage} />
+        </SocketComponent>
         }
       />
       <Route
