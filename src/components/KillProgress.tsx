@@ -3,7 +3,9 @@ import styled from 'styled-components';
 
 const StyledSvg = styled.svg`
   position: absolute;
-  transform: rotate(-90deg);
+  transform: rotate(-90deg) scale(5);
+  bottom: 12vh;
+  left: 47vw;
 `;
 
 const ProgressCircle = styled.circle<{ progress: number, circumference: number }>`
