@@ -283,15 +283,15 @@ const ProfilePage: React.FC = () => {
             ) : (
               <h1 className='alt-user-pic-large'>{user.name?.slice(0, 1)}</h1>
             )}
-            <h2 className='profile__title' style={{marginLeft: '0.5em', fontSize: '1.75em'}}>{user?.name}</h2>
+            <h2 className='profile__title' style={{marginLeft: '0.5em', fontSize: '1.6em'}}>{user?.name}</h2>
           </NameContainer>
           <BottomofIdContainer>
             <StatsContainer>
               {userData?.facialDescriptions ? (
-                <div style={{fontSize: '0.70em'}}>
+                <div style={{fontSize: '0.75em', marginLeft: '1em', height: '5em'}}>
                   <h4>Wins: {userData?.gamesWon}</h4>
                   <h4>Kills: {userData?.killsConfirmed}</h4>
-                  <h4>Total Games: {userData?.gamesPlayed}</h4>
+                  <h4>Hunts: {userData?.gamesPlayed}</h4>
                   <h4>K\D: {winLossRatio}</h4>
                 </div>
               ) : (
