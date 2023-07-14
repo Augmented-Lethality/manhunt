@@ -2,6 +2,8 @@ import React, { useContext, useEffect, } from 'react';
 import styled from "styled-components";
 import SocketContext from '../contexts/Socket/SocketContext'
 
+const lightGrey = '#717174'
+
 // Holds the entire ID
 const IdContainer = styled.div`
   display: flex;
@@ -14,7 +16,7 @@ const IdContainer = styled.div`
   height: 385px;
   width: 90vw;
   overflow: hidden;
-  background: white;
+  background: #fbfbfb;
   border-radius: 30px;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
   border: 2px solid black;
@@ -28,7 +30,7 @@ padding-inline: 100%;
 `;
 
 const Corpoverse = styled.h3`
-color: #717174;
+color: ${lightGrey};
 letter-spacing: 4px;
 flex-shrink: 1;
 text-align: left;
