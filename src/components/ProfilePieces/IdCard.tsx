@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, } from 'react';
 import styled from "styled-components";
-import SocketContext from '../contexts/Socket/SocketContext'
+import SocketContext from '../../contexts/Socket/SocketContext'
 
 const lightGrey = '#717174'
 
@@ -111,7 +111,9 @@ const IdCard: React.FC = () => {
           </div>
           <div>
             <h5>Total Matches: {player.gamesPlayed}</h5>
-            <h5 style={{ textAlign: 'center' }}>K\D: {(player.killsConfirmed / player.gamesPlayed).toFixed(2)}</h5>
+            <h5 style={{ textAlign: 'center' }}>
+              K\D: {player.gamesPlayed !== 0 ? (player.killsConfirmed / player.gamesPlayed).toFixed(2) : 0}
+            </h5>
           </div>
         </>
       </StatsContainer>

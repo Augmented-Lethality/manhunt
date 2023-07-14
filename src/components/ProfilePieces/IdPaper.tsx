@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import styled from "styled-components";
 
-import SocketContext from '../contexts/Socket/SocketContext'
+import SocketContext from '../../contexts/Socket/SocketContext'
 
 const lightGrey = '#717174'
 
