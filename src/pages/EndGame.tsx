@@ -24,7 +24,7 @@ const MessageContainer = styled.div`
 
 
 
-const TrophyGenerator = lazy(() => import('../components/TrophyGenerator'));
+const TrophyGenerator = lazy(() => import('../components/Trophies/TrophyGenerator'));
 
 const EndGame: React.FC = () => {
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ const EndGame: React.FC = () => {
 
   return (
     <>
-      <Header page={'Game Over'}/>
+      <Header page={'Game Over'} />
       <Main>
         <MessageContainer className='glassmorphism'>
           <h3 className='game-over' style={{ color: 'white', fontSize: '1.5em', marginBottom: '10px', paddingLeft: '20px', paddingRight: '20px', whiteSpace: 'pre-line', marginTop: '0px', }}>{gameOverMessage}</h3>
@@ -99,7 +99,7 @@ const EndGame: React.FC = () => {
           ) : null}
         </MessageContainer>
         <div className='glassmorphism column centered padded margined'>
-          Justice can wait, time to 
+          Justice can wait, time to
           <button>
             GO HOME
           </button>

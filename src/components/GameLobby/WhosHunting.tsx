@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import SocketContext, { User } from '../contexts/Socket/SocketContext';
+import SocketContext, { User } from '../../contexts/Socket/SocketContext';
 import styled from 'styled-components';
 
 const StartContainer = styled.div`

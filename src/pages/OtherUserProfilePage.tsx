@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { UserPlus } from 'react-feather';
-import Loading from '../components/Loading';
+import Loading from '../components/Loaders/Loading';
 
 type ProfileData = {
   authId: string;

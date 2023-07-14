@@ -9,7 +9,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import styled from 'styled-components';
 
-const Image = styled.div<{ ishost: string}>`
+import InfoPopup from '../components/Popups/InfoPopup';
+
+const Image = styled.div<{ ishost: string }>`
   position: absolute;
   left: 50%;
   bottom: 0vw;
@@ -145,7 +147,7 @@ const GameLobby: React.FC<{}> = () => {
 
   //See if things are still loading
   useEffect(() => {
-    if (games.length > 0 && users.length > 0) {
+    if (games.length && games.length < 2 && users.length > 0) {
       setShowLobby(true);
     } else {
       setShowLobby(false);
@@ -203,6 +205,7 @@ const GameLobby: React.FC<{}> = () => {
     return <PhoneLoader />
   }
 
+
   if (bountyName) {
     return (
       <>
@@ -217,25 +220,30 @@ const GameLobby: React.FC<{}> = () => {
     )
   }
 
+  const hostInfoMessage = 'Use the knobs to change the game duration. Click the play button when you\'re ready to start.'
+  const playersInfoMessage = 'Be patient and wait for the host to start the game.'
+
   return (
     <>
       <Header page='Lobby' />
-      <Main style={{height: '100vh'}}>
+      <Main style={{ height: '100vh' }}>
         <Image ishost={isHost.toString()} />
         {isHost &&
           <>
             <PlayButton onClick={() => pickVictim(users, SetHunted)} />
             <MinusButton onClick={() => handleArrowClick('minus')} />
             <PlusButton onClick={() => handleArrowClick('plus')} />
+            <InfoPopup message={hostInfoMessage} />
           </>
         }
-        <BackButton onClick={() => navigate('/home')}/>
+        <BackButton onClick={() => navigate('/home')} />
         <TimeContainer>{selected}</TimeContainer>
         <PlayersContainer>
           <h2 className='digital-h1'>Hunters • {users.length}</h2>
           <UserListItem player={users[0]} />
           <UsersList users={users.slice(1)} />
         </PlayersContainer>
+        {!isHost && <InfoPopup message={playersInfoMessage} />}
       </Main>
     </>
   );

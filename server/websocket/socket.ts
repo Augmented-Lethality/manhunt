@@ -183,9 +183,10 @@ export class ServerSocket {
           }
 
           socket.join(game.gameId);
+          socket.leave('users');
+
           this.EmitLobbyUpdates(game.gameId);
 
-          socket.leave('users');
           this.EmitGeneralUpdates()
 
 
@@ -209,11 +210,12 @@ export class ServerSocket {
             // this.io.to('users').emit('update_games');
           }
 
+          socket.join(game.gameId);
           socket.leave('users');
+
+          this.EmitLobbyUpdates(game.gameId);
           this.EmitGeneralUpdates()
 
-          socket.join(game.gameId);
-          this.EmitLobbyUpdates(game.gameId);
 
         }
       } catch (err) {
@@ -432,7 +434,11 @@ export class ServerSocket {
         if (user) {
           //have the user leave the game
           const matchFuncParamsForUser = { sub: user.authId }
-          await this.LeaveTheGame(socket, matchFuncParamsForUser);
+          if (user.gameId) {
+            await this.LeaveTheGame(socket, matchFuncParamsForUser);
+            socket.leave(user.gameId);
+            await this.EmitLobbyGamesUpdates(user.gameId)
+          }
           // delete the socket id from the user since they're not connected anymore
           await this.UserUpdate('socketId', '', 'socketId', socket.id);
           console.log('Removed socket from disconnected user');

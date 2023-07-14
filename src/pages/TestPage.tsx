@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 // import * as faceapi from 'face-api.js';
 
 import PhoneLoader from '../components/Loaders/PhoneLoader';
+import Radar from '../components/Radar/Radar';
 
 function TestPage() {
   // const [faceMatcher, setFaceMatcher] = useState<faceapi.FaceMatcher | null>(null);
@@ -42,7 +43,7 @@ function TestPage() {
   //   </WebcamProvider>
   // )
   return (
-    <PhoneLoader />
+    <Radar />
   )
 
 }

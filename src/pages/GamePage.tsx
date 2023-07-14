@@ -4,9 +4,9 @@ import { useLocation } from 'react-router-dom';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { WebcamProvider } from '../contexts/WebcamProvider'
 import { WebcamChaseProvider } from '../contexts/WebcamChaseProvider';
-import ChaseCam from '../components/ChaseCam';
-import KillCam from '../components/KillCam';
-import Countdown from '../components/Countdown';
+import ChaseCam from '../components/GamePlay/ChaseCam';
+import KillCam from '../components/GamePlay/KillCam';
+import Countdown from '../components/GameLobby/Countdown';
 import { GameHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { Crosshair, Eye } from 'react-feather';
@@ -37,7 +37,7 @@ const GamePage: React.FC = () => {
   return (
     <>
       <GameHeader>
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent:'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
           {gameMode === 'Chase' ? (
             <div className='column centered'>
               <h5>Kill Mode</h5>
@@ -53,7 +53,7 @@ const GamePage: React.FC = () => {
         </div>
         <Countdown />
       </GameHeader>
-      <Main style={{height:'100vh', paddingTop:'0px'}}>
+      <Main style={{ height: '100vh', paddingTop: '0px' }}>
         {gameMode === 'Chase' ? (
           <WebcamChaseProvider key="chaseCam">
             <ChaseCam />
