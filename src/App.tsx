@@ -92,7 +92,11 @@ const App = () => {
       />
       <Route
         path="profile"
-        element={<AuthenticationGuard component={ProfilePage} />}
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={ProfilePage} />
+          </SocketComponent>
+        }
       />
       <Route
         path="/profile/:username"
