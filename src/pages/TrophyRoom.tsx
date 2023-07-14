@@ -11,7 +11,7 @@ const TrophyRoom: React.FC = () => {
   return (
     <>
       <Header page='Trophies' />
-      <Main>
+      <Main style={{height: '100vh'}}>
         <div className='content__body'>
           <div style={{ width: '300px', height: '300px' }}>
             <Suspense fallback={<PhoneLoader />}>
