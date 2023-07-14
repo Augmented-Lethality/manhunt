@@ -7,7 +7,7 @@ import { Main } from '../styles/Main';
 import { useFontSize } from '../contexts/FontSize';
 import styled from 'styled-components';
 
-import AccessCheck from '../components/Access/AccessCheck';
+import AccessCheck from '../components/GameLobby/AccessCheck';
 import { useNavigate } from 'react-router-dom';
 
 const AccessChecksContainer = styled.div`

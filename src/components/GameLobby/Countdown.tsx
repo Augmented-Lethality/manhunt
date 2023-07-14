@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import SocketContext from '../contexts/Socket/SocketContext';
+import SocketContext from '../../contexts/Socket/SocketContext';
 import { useAuth0 } from "@auth0/auth0-react";
 
 const CountdownContainer = styled.div`

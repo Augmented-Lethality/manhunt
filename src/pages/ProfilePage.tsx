@@ -6,7 +6,7 @@ import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
 import styled from 'styled-components';
-import SingleTrophy from '../components/SingleTrophy';
+import SingleTrophy from '../components/Trophies/SingleTrophy';
 import InfoPopup from '../components/Popups/InfoPopup';
 import IdCard from '../components/ProfilePieces/IdCard';
 import IdPaper from '../components/ProfilePieces/IdPaper';

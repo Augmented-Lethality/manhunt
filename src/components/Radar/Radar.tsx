@@ -14,7 +14,7 @@ import {
   Path,
   Vector3,
 
-} from '../webcam.js'
+} from '../GamePlay/webcam.js'
 
 import SocketContext, { PlayerCoords } from '../../contexts/Socket/SocketContext';
 
