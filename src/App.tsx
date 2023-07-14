@@ -19,6 +19,7 @@ import Settings from './pages/Settings';
 import { useFontSize } from './contexts/FontSize';
 import TrophyRoom from './pages/TrophyRoom';
 import AccessPage from './pages/AccessPage';
+import AboutPage from './pages/AboutPage'
 
 import PhoneLoader from '../src/components/Loaders/PhoneLoader'
 
@@ -104,6 +105,10 @@ const App = () => {
       <Route
         path="/trophies"
         element={<AuthenticationGuard component={TrophyRoom} />}
+      />
+      <Route
+        path="/about"
+        element={<AboutPage />}
       />
       <Route
         path="/friends"
