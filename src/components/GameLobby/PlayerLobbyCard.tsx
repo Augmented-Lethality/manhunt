@@ -1,9 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container } from '../../styles/Container';
 import { Main } from '../../styles/Main';
-
 
 // MAY BE USED LATER
 
@@ -13,9 +11,6 @@ export type PlayerInfo = {
   gamesWon: number;
   killsConfirmed: number;
 };
-
-
-
 
 const PlayerLobbyCard: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
@@ -45,7 +40,7 @@ const PlayerLobbyCard: React.FC = () => {
   }
 
   return (
-    <Container>
+    <>
       <Main>
         <div className='content__body'>
           <div className='profile-grid'>
@@ -80,7 +75,7 @@ const PlayerLobbyCard: React.FC = () => {
           </div>
         </div>
       </Main>
-    </Container>
+    </>
   );
 };
 

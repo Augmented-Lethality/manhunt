@@ -77,7 +77,6 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
   // creating the canvas when the component mounts
   useEffect(() => {
     createCanvas();
-
   }, [])
 
   // if faceMatcher and huntedUsername are both set, start the handleVideoPlay()
@@ -106,7 +105,6 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
     }
   }, [users])
 
-
   const updateCounter = () => {
     if (wasBountyDetected) {
       setTargetCounter(prevCounter => Math.min(prevCounter + 1, 10));
@@ -114,7 +112,6 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
     } else {
       setTargetCounter(prevCounter => Math.max(prevCounter - 1, 0));
     }
-
   };
 
   const handleVideoOnPlay = () => {

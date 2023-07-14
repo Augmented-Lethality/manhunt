@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Header } from '../styles/Header';
-import { Container } from '../styles/Container';
 import { Main } from '../styles/Main';
 import styled from 'styled-components';
 import { useFontSize } from '../contexts/FontSize';
@@ -103,7 +102,7 @@ const Settings: React.FC = () => {
   }
 
   return (
-    <Container>
+    <>
       <Header page='Settings' />
       <Main>
         <div className="glassmorphism column centered" style={{margin: '20px', padding:'20px'}}>
@@ -114,7 +113,7 @@ const Settings: React.FC = () => {
           </div>
         </div>
       </Main>
-    </Container>
+    </>
   )
 }
 

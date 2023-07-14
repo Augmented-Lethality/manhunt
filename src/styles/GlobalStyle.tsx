@@ -15,6 +15,8 @@ body {
   word-wrap: break-word;
   background: url("/textures/background-small.png") no-repeat;
   background-size: cover;
+  display: flex;
+  flex-direction: column;
 }
 
 * {
@@ -22,22 +24,36 @@ body {
 }
 
 .glassmorphism{
-  background: #ffffff1f;
-  border: solid 1px #ffffff3d;
-  backdrop-filter: blur(5px);
-  color: white;
-  border-radius: 45px 43px;
-  box-shadow: 0 5px 10px 2px #00000030;
+  background: #779baa45;
+  backdrop-filter: blur(3px);
+  color: #e1fffbc7;
+  border-radius: 45px;
+  box-shadow:
+    0 -1px 0 2px #afd5d66b,
+    0 1px 0 2px #00000063,
+    5px 10px 2px #00000030;
+}
+
+.paper{
+  background: url(/textures/paper.png);
+  background-size: cover;
+  background-position: center;
 }
 
 button{
   width: 200px;
   height: 70px;
-  border-radius: 20px;
-  background: #bf360c;
-  border: 2px solid black;
-  font-size: 1.5rem;
-  color: white;
+  margin: 10px;
+  background: #779baa45;
+  backdrop-filter: blur(3px);
+  color: #e1fffbc7;
+  border: none;
+  font-size: 1.4rem;
+  border-radius: 45px;
+  box-shadow:
+    0 -1px 0 2px #afd5d66b,
+    0 1px 0 2px #00000063,
+    5px 10px 2px #00000030;
 }
 
 .neon-button {
@@ -53,6 +69,8 @@ button{
 
 .barcode {
   font-family: 'Libre Barcode 39';
+  color: #202020;
+  font-size: 3rem;
 }
 
 .metal-button {
@@ -139,16 +157,20 @@ button{
 }
 
 .react-icon{
-  font-size: 3rem;
+  width: 50px;
+  height: 50px;
 }
 
 .react-icon-large{
   border-radius: 50%;
-  padding: 10px;
-  background-color: black;
-  color: cyan;
-  border: 3px solid cyan;
-  box-shadow: 0 0 0 5px black;
+  width: 100px;
+  height: 100px;
+  padding: 4px;
+  background-color: #4141419e;
+  color: #c9c9c9;
+  backdrop-filter: blur(4px);
+  border: 4px solid #66666659;
+  box-shadow: 0 -1px 0 1px #ffffff91, 0 1px 0 1px #79797991, 0 2px 20px 3px #0000006e;
 }
 
 .react-icon-logo{
@@ -227,9 +249,9 @@ h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 1.8rem;
+  font-size: 2.5rem;
   font-family: 'Sonsie One';
-  color: #7DBAFF;
+  color: #76dfe4;
   text-shadow:
   -1px -1px 0 #000,
     1px -1px 0 #000,
@@ -280,11 +302,10 @@ input {
   background: none;
   font-size: calc(var(--font-size) * 1.5);
   color: cyan;
+  width: 100%
 }
 input:focus {outline:none;}
-input:placeholder
-color: cyan;
-}
+input::placeholder{color: cyan;}
 
 .drop-down-menu {
   background: linear-gradient(19deg, #ffffff26 0%, #00ffff26 100%), linear-gradient(90deg, #00ffff2b 0%, #ffffff1f 45%);
@@ -295,6 +316,14 @@ color: cyan;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.padded {
+  padding: 10px;
+}
+
+.margined {
+  margin: 10px;
 }
 
 .row {

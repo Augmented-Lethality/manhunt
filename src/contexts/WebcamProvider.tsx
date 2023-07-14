@@ -42,7 +42,7 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
 
   const videoConstraints = {
     width: window.innerWidth,
-    height: window.innerHeight - 136,
+    height: window.innerHeight,
     facingMode: mode
   };
 
@@ -53,7 +53,9 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
         ref={setRef}
         screenshotFormat="image/jpeg"
         onUserMedia={handleUserMedia}
-        videoConstraints={videoConstraints} />
+        videoConstraints={videoConstraints}
+        style={{height:'100vh'}}
+      />
       {children}
     </WebcamContext.Provider>
   );

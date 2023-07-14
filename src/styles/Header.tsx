@@ -1,10 +1,6 @@
-import React, { ReactNode, useContext } from 'react';
-import { useMediaQuery } from 'react-responsive';
-import styled from 'styled-components';
+import React, { ReactNode } from 'react';import styled from 'styled-components';
 import DropDownMenu from '../components/DropDownMenu';
 import { useNavigate } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
-import SocketContext from '../contexts/Socket/SocketContext';
 
 export const StyledHeader = styled.header`
   display: flex;
@@ -19,7 +15,16 @@ export const StyledHeader = styled.header`
   background-size: cover;
   background-position: left bottom;
   box-sizing: border-box;
+  align-items: center;
   z-index: 1;
+`;
+
+const LogoContainer = styled.div `
+  height: 100%;
+  width: 23vw;
+  position: relative;
+  bottom: 2vw;
+  left: -5vw;
 `;
 
 interface HeaderProps {
@@ -29,33 +34,27 @@ interface HeaderProps {
 
 // PLEASE KEEP THIS SOCKET FUNCTION WHEN USING A GOING HOME BUTTON
 export const Header: React.FC<HeaderProps> = ({ page, users }) => {
-  const isPhoneScreen = useMediaQuery({ query: '(max-width: 380px)' });
   const navigate = useNavigate();
 
   const handleHome = () => {
     navigate('/home');
   }
 
-  const { user } = useAuth0();
-
   return (
     <StyledHeader>
-      <div style={{ marginBottom: '21px', marginLeft: '-10px' }} className='centered column'>
-        <h1 className='logo' onClick={handleHome}>MAN</h1>
-        <h1 className='logo' onClick={handleHome}>HUNT</h1>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'end' }}>
-          <img
-            src={user?.picture}
-            alt='Profile'
-            className='profile__avatar'
-            onClick={() => { navigate('/profile') }}
-            style={{ height: '3rem', borderRadius: '50%', marginRight: '10px' }} />
-          <DropDownMenu page={page || ''} />
-        </div>
+      <LogoContainer onClick={handleHome}></LogoContainer>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '87%',
+        width: '100%',
+        textAlign: 'end',
+      }}>
+        <DropDownMenu page={page || ''} />
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
+          : page==='Game Over'
+          ? <h1 style={{ fontSize: '2rem', marginRight: '-20px', }}>{page}</h1>
           : <h1 style={{ marginRight: '-20px', }}>{page}</h1>
         }
       </div>
@@ -65,12 +64,15 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
 
 export const GameStyledHeader = styled.header`
   display: flex;
+  flex-direction: column;
   padding: 1rem;
   justify-content: space-between;
-  position: relative;
-  margin-inline: auto;
-  margin-bottom: 20px;
-  width: 80%;
+  position: absolute;
+  top: 0;
+  border-radius: 0px 0px 45px 45px !important;
+  z-index: 1;
+  text-align: center;
+  width: 100vw;
 `;
 
 interface GameHeaderProps {
@@ -78,22 +80,9 @@ interface GameHeaderProps {
 }
 
 export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
-
   return (
-    <GameStyledHeader className="digital digital-container">
+    <GameStyledHeader className='glassmorphism'>
       {children}
-      <DropDownMenu page={'Game'} />
     </GameStyledHeader>
   );
 }
-
-export const Footer = styled.footer`
-  background-color: transparent;
-  border-top: transparent;
-  height: 60px;
-  padding: 1rem;
-  position: absolute;
-  display: flex;
-  bottom: 0px;
-  width: -webkit-fill-available;
-`;

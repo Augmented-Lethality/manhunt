@@ -1,8 +1,16 @@
 import React from 'react';
-import { Container } from '../styles/Container';
+import { Main } from '../styles/Main';
+import { Header } from '../styles/Header';
 
 function NotFoundPage() {
-  return <Container>404 PAGE NOT FOUND</Container>;
+  return (
+    <>
+      <Header/>
+      <Main>
+        404 PAGE NOT FOUND
+      </Main>
+    </>
+  );
 }
 
 export default NotFoundPage;

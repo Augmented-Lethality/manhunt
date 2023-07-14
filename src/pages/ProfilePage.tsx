@@ -2,7 +2,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import axios from 'axios';
 import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
-import { Container } from '../styles/Container';
 import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
@@ -25,8 +24,7 @@ export type UserData = {
 const TrophyContainer = styled.div`
   box-sizing: border-box;
   background-color: #25465157;
-  border: 6px solid #ffffffad;
-  box-shadow: inset 0px 10px 10px 5px #000000b3;
+  box-shadow: inset 0px 10px 10px 5px #000000b3, 0 0 10px 1px #ffffff47;
   border-radius: 50%;
   margin: 20px;
   margin-inline: auto;
@@ -42,7 +40,6 @@ const TempIdContainer = styled.div`
   background: url(/textures/paper.png);
   background-size: cover;
   background-position: center;
-  border-radius: 19px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,13 +49,10 @@ const TempIdContainer = styled.div`
   padding: 20px;
   height: 180px;
   width: 80%;
-  max-width: 300px;
-  box-shadow: 0px 10px 10px 2px #00000059;
 `
 
 //ID card background that user data sits on
 const IdContainer = styled.div`
-  border-radius: 19px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -66,13 +60,9 @@ const IdContainer = styled.div`
   margin: 20px;
   margin-inline: auto;
   padding: 20px;
-  height: auto;
-  width: 80%;
-  max-width: 300px;
-  box-shadow: 0px 10px 10px 2px #00000059;
-  & > * {
-    opacity: 0.85;
-  }
+  height: 220px;
+  width: 90vw;
+  overflow: hidden;
 `
 //Container For Name and Picture
 const NameContainer = styled.div`
@@ -95,8 +85,12 @@ const BottomofIdContainer = styled.div`
 //Container For Player Stas
 const StatsContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  justify-content: space-between;
+  width: 90%;
+  div {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 export function Eyeball() {
@@ -106,7 +100,13 @@ export function Eyeball() {
       viewBox='0 0 100 60'
       width='135'
       height='60'
-      style={{ transform: 'rotate(180deg' }}
+      style={{
+        transform: 'rotate(180deg) scale(4)',
+        position: 'absolute',
+        right: '10vw',
+        bottom: '27px',
+        opacity: '.2'
+      }}
     >
       <path
         transform='translate(-10, -20)'
@@ -119,23 +119,15 @@ export function Eyeball() {
 
 //ID card background that user data sits on
 const VerificationContainer = styled.div`
-  background-color: #1e1e2a;
-  background: url(/textures/paper.png);
-  background-size: cover;
-  background-position: center;
-  border-radius: 19px 19px 0 0;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   align-items: center;
-  text-align: center;
-  justify-content: space-evenly;
-  margin: 20px;
   margin-inline: auto;
   margin-bottom: 0;
-  padding: 36px;
-  width: 70%;
-  box-shadow: 0px 10px 10px 2px #00000059;
+  border-radius: 45px 45px 0 0 !important;
+  padding: 25px;
+  width: 90vw;
 `;
 // trying to fix the text not shrinking??
 const Text = styled.h5`
@@ -149,6 +141,7 @@ const ProfilePage: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
   const [trophiesExist, setTrophiesExist] = useState(false);
+
 
   const winLossRatio =
     userData?.gamesPlayed && userData?.gamesWon
@@ -207,34 +200,32 @@ const ProfilePage: React.FC = () => {
 
   if (photoStatus === 'camera') {
     return (
-      <Container>
-        <StyledHeader style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <h2>BioData Collection Process</h2>
+      <>
+        <StyledHeader style={{ display: 'flex', alignItems:'start', justifyContent:'end' }}>
+          <div style={{ display: 'flex', flexDirection:'column', alignItems: 'end' }}>
             <XCircle
               className='react-icon'
               onClick={() => {
                 setPhotoStatus('profile');
               }}
             />
+            <h1 style={{fontSize:'2.3rem'}}>Bio Data</h1>
           </div>
-          <h6>
-            We don't save the photo, we just use it to collect information on
-            the shape of your face.
-          </h6>
         </StyledHeader>
-        <CreateFaceDescriptions
-          setPhotoStatus={setPhotoStatus}
-          username={user?.name}
-          userID={user?.sub}
-          setUser={setUserData}
-        />
-      </Container>
+        <Main>
+          <CreateFaceDescriptions
+            setPhotoStatus={setPhotoStatus}
+            username={user?.name}
+            userID={user?.sub}
+            setUser={setUserData}
+          />
+        </Main>
+      </>
     );
   }
 
   return (
-    <Container>
+    <>
       <Header page='Profile' />
       <Main>
         {trophiesExist ? (
@@ -249,6 +240,8 @@ const ProfilePage: React.FC = () => {
               shape={''}
               tubularSegments={0}
               tubeWidth={0}
+              dimensionTwo={0}
+              dimensionThree={0}
             />
           </TrophyContainer>
         ) : (
@@ -256,7 +249,7 @@ const ProfilePage: React.FC = () => {
             <iframe src="https://giphy.com/embed/DcTN1NEaLjw4E0xvAE" width="90" height="160" frameBorder="0" allowFullScreen></iframe>
           </TrophyContainer>
         )}
-        <IdContainer>
+        <IdContainer className={userData?.facialDescriptions ? 'glassmorphism' : 'paper'} >
           {userData?.facialDescriptions ? (
             <Text>CORPOVERSE OFFICIAL ID</Text>
           ) : (
@@ -274,28 +267,31 @@ const ProfilePage: React.FC = () => {
             )}
             <h2 className='profile__title'>{user?.name}</h2>
           </NameContainer>
-          <BottomofIdContainer>
-            <StatsContainer>
-              {userData?.facialDescriptions ? (
-                <>
-                  <h4>Wins: {userData?.gamesWon}</h4>
-                  <h4>Kills: {userData?.killsConfirmed}</h4>
-                  <h4>Total Games: {userData?.gamesPlayed}</h4>
-                  <h4>K\D: {winLossRatio}</h4>
-                </>
-              ) : (
-                <>
-                  <h5 className='bold'>CITIZEN NOT VERIFIED</h5>
-                  <h5>PLEASE REGISTER BELOW</h5>
-                </>
-              )}
-            </StatsContainer>
-            <Eyeball />
-          </BottomofIdContainer>
+          <StatsContainer>
+            {userData?.facialDescriptions ? (
+              <>
+                <div>
+                  <h5>Wins: {userData?.gamesWon}</h5>
+                  <h5>Kills: {userData?.killsConfirmed}</h5>
+                </div>
+                <div>
+                  <h5>Total Games: {userData?.gamesPlayed}</h5>
+                  <h5>K\D: {winLossRatio}</h5>
+                </div>
+              </>
+            ) : (
+              <div>
+                <h5 className='bold'>CITIZEN NOT VERIFIED</h5>
+                <h5>PLEASE REGISTER BELOW</h5>
+              </div>
+            )}
+          </StatsContainer>
+          <Eyeball />
+          <h2 style={{marginBottom: '-50px',}}className='barcode'>asdfkjflekjgldaj</h2>
         </IdContainer>
-        <VerificationContainer>
+        <VerificationContainer className='glassmorphism'>
           {userData?.facialDescriptions ? (
-            <h3>Citizen Verified!</h3>
+            <h2 style={{fontSize: '1.6rem',}}>Citizen Verified!</h2>
           ) : (
             <h3>
               Citizen has not been processed by the CorpoReality Police. Please
@@ -311,29 +307,21 @@ const ProfilePage: React.FC = () => {
           {userData?.facialDescriptions ? (
             <>
               <h3>Feeling Patriotic?</h3>
-              <br />
-              <button onClick={() => setPhotoStatus('camera')}>
+              <button className="glassmorphism" onClick={() => setPhotoStatus('camera')}>
                 → Reverify ←
               </button>
-              <br />
-              <br />
-              <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           ) : (
             <>
               <h3>↓↓↓VERIFY↓↓↓ </h3>
-              <br />
-              <button onClick={() => setPhotoStatus('camera')}>
+              <button className="glassmorphism" onClick={() => setPhotoStatus('camera')}>
                 Send BioData
               </button>
-              <br />
-              <br />
-              <h2 className='barcode'>asdfkjflekjgldaj</h2>
             </>
           )}
         </VerificationContainer>
       </Main>
-    </Container>
+    </>
   );
 };
 
