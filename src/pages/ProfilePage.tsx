@@ -24,8 +24,7 @@ export type UserData = {
 const TrophyContainer = styled.div`
   box-sizing: border-box;
   background-color: #25465157;
-  border: 6px solid #ffffffad;
-  box-shadow: inset 0px 10px 10px 5px #000000b3;
+  box-shadow: inset 0px 10px 10px 5px #000000b3, 0 0 10px 1px #ffffff47;
   border-radius: 50%;
   margin: 20px;
   margin-inline: auto;
