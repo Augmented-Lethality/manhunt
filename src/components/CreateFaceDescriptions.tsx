@@ -7,11 +7,10 @@ import {
 } from 'face-api.js';
 import React, { useState, useEffect } from 'react';
 import CapturePhoto from './CapturePhoto'
-import { WebcamProvider } from '../contexts/WebcamProvider';
 import axios from 'axios';
+import { WebcamProvider } from '../contexts/WebcamProvider';
 import { UserData } from '../pages/ProfilePage'
-import Save from 'react-feather/dist/icons/save'
-import Camera from 'react-feather/dist/icons/camera'
+import {Save, Camera} from 'react-feather'
 
 interface CreateFaceDescriptionsProps {
   setPhotoStatus: (verify: string) => void;
@@ -94,8 +93,26 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhot
           justifyContent: 'space-around',
           width: '100%'
         }}>
-          <Camera className='react-icon-large' onClick={() => { setImg(null) }} />
-          <Save className='react-icon-large' onClick={handleSave} />
+          <div className='column' style={{color:'white'}}>
+            <Camera className='react-icon-large' onClick={() => { setImg(null) }} />
+            <h4 style={{
+                  wordSpacing: '10px',
+                  marginTop: '-12px',
+                  fontWeight: '400',
+                  textAlign: 'center',
+                  zIndex: '1'
+            }}>retake</h4>
+          </div>
+          <div className='column' style={{color:'white'}}>
+            <Save className='react-icon-large' onClick={handleSave} />
+            <h4 style={{
+                  wordSpacing: '10px',
+                  marginTop: '-12px',
+                  fontWeight: '400',
+                  textAlign: 'center',
+                  zIndex: '1'
+            }}>save</h4>
+          </div>
         </div>
       </div>
     )

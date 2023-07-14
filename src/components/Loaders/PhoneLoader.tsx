@@ -2,7 +2,6 @@ import React from "react";
 import styled, { keyframes } from "styled-components";
 import { Header } from "../../styles/Header";
 import { Main } from "../../styles/Main";
-import { Container } from "../../styles/Container";
 
 const PhoneColor = '#0D0907';
 
@@ -89,7 +88,7 @@ const Logo = styled.h1`
 
 const PhoneLoader: React.FC = () => {
   return (
-    <Container>
+    <>
       <Header />
       <Main>
         <PhoneContainer>
@@ -101,7 +100,7 @@ const PhoneLoader: React.FC = () => {
           </PhoneContainer2>
         </PhoneContainer>
       </Main>
-    </Container>
+    </>
   );
 }
 

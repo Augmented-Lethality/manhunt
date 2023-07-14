@@ -2,7 +2,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import { Container } from '../styles/Container';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { UserPlus } from 'react-feather';
@@ -64,7 +63,7 @@ const OtherUserProfilePage: React.FC = () => {
   }
 
   return (
-    <Container>
+    <>
       <Header page='Profile' />
       <Main>
         <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px' }}>
@@ -92,7 +91,7 @@ const OtherUserProfilePage: React.FC = () => {
           <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
         </div>
       </Main>
-    </Container>
+    </>
   );
 };
 

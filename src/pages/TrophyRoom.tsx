@@ -1,8 +1,7 @@
 import React, { lazy, Suspense } from 'react';
-import { Container } from '../styles/Container';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
-// import PageLoader from '../components/Loading';
+
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import InfoPopup from '../components/Popups/InfoPopup';
 
@@ -13,9 +12,9 @@ const TrophyRoom: React.FC = () => {
   const infoMessage = 'Oooh, shiny!\n\nEarn trophies when you win games.'
 
   return (
-    <Container>
+    <>
       <Header page='Trophies' />
-      <Main>
+      <Main style={{height: '100vh'}}>
         <div className='content__body'>
           <div style={{ width: '300px', height: '300px' }}>
             <Suspense fallback={<PhoneLoader />}>
@@ -25,6 +24,8 @@ const TrophyRoom: React.FC = () => {
                 description={''}
                 createdAt={''}
                 dimension={0}
+                dimensionTwo={0}
+                dimensionThree={0}
                 color={''}
                 shape={''}
                 tubularSegments={0}
@@ -36,7 +37,7 @@ const TrophyRoom: React.FC = () => {
         <InfoPopup message={infoMessage} />
 
       </Main>
-    </Container>
+    </>
   );
 };
 
