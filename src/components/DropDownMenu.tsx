@@ -9,7 +9,8 @@ import {
   XCircle,
   LogOut,
   Settings,
-  Award } from 'react-feather';
+  Award
+} from 'react-feather';
 
 const dropdownAnimation = keyframes`
   0% { opacity: 0; transform: translateY(-10vh); }
@@ -82,27 +83,29 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
   };
 
   return (
-    <div style={{display:'flex', justifyContent:'end'}}>
-      <img
-            src={user?.picture}
-            alt='Profile'
-            className='profile__avatar'
-            onClick={toggleMenu}
-            style={{ height: '3rem', borderRadius: '50%' }} />
-      <Backdrop open={isMenuOpen} onClick={toggleMenu}/>
+    <div style={{ display: 'flex', justifyContent: 'end' }}>
+      {user &&
+        <img
+          src={user.picture}
+          alt='Profile'
+          className='profile__avatar'
+          onClick={toggleMenu}
+          style={{ height: '3rem', borderRadius: '50%' }} />
+      }
+      <Backdrop open={isMenuOpen} onClick={toggleMenu} />
       <Menu className='glassmorphism' open={isMenuOpen}>
         <Close onClick={toggleMenu} />
         {pages.map((pageName, index) => {
-          if(page.toLowerCase() !== pageName) {
+          if (page.toLowerCase() !== pageName) {
             const PageComponent = icons[pageName]
-            return <p key={index} onClick={()=>{navigate(`/${pageName}`)}}>
+            return <p key={index} onClick={() => { navigate(`/${pageName}`) }}>
               {PageComponent}
               {pageName}
             </p>
-          } 
+          }
         })}
-        <p onClick={()=>{logout({logoutParams: {returnTo: window.location.origin}})}}>
-          <LogOut/>
+        <p onClick={() => { logout({ logoutParams: { returnTo: window.location.origin } }) }}>
+          <LogOut />
           logout
         </p>
       </Menu>
