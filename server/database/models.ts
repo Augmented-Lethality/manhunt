@@ -82,42 +82,37 @@ User.init({
 
 class Friend extends Model {
   status!: string;
-  userId!: number;
-  friendId!: number;
+  initiatorId!: number;
+  requesteeId!: number;
 }
+
 Friend.init({
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
   },
-  userId: {
-    type: DataTypes.STRING,
+  initiatorId: {
+    type: DataTypes.INTEGER,
     references: {
       model: User,
-      key: 'authId'
-    }
+      key: 'id'
+    },
+    allowNull: false
   },
-  friendId: {
-    type: DataTypes.STRING,
+  requesteeId: {
+    type: DataTypes.INTEGER,
     references: {
       model: User,
-      key: 'authId'
-    }
+      key: 'id'
+    },
+    allowNull: false
   },
   status: {
     type: DataTypes.ENUM('pending', 'accepted', 'blocked'),
     allowNull: false,
     defaultValue: 'pending'
   },
-  initiator: {
-    type: DataTypes.STRING,
-    references: {
-      model: User,
-      key: 'authId'
-    },
-    allowNull: false
-  }
 }, { sequelize });
 
 ////////////////////////////////////////////////
@@ -250,10 +245,8 @@ UserTrophy.init({
 User.belongsToMany(Trophy, { through: UserTrophy });
 Trophy.belongsToMany(User, { through: UserTrophy });
 
-User.hasMany(Friend, { foreignKey: 'userId' });
-Friend.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(Friend, { foreignKey: 'friendId' });
-Friend.belongsTo(User, { foreignKey: 'friendId' });
+User.belongsToMany(User, { as: 'requestees', through: Friend, foreignKey: 'initiatorId', otherKey: 'requesteeId'});
+User.belongsToMany(User, { as: 'initiators', through: Friend, foreignKey: 'requesteeId', otherKey: 'initiatorId'});
 
 export { User, Friend, Game, Trophy, UserTrophy, Locations };
 

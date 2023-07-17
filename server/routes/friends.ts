@@ -68,55 +68,48 @@ Friends.get('/:userId', async (req, res) => {
 //FRIEND REQUEST
 Friends.post('/', async (req, res) => {
   try {
-    const { userId, friendId, status } = req.body;
-    // Check if userId and friendId are not the same
-    if (userId === friendId) {
+    const { initiator, requestee } = req.body;
+    if (initiator === requestee) {
       return res.status(400).send({ message: "User ID and Friend ID cannot be the same." });
     }
-    // Check that userIds exists
-    const user = await User.findOne({ where: { authId: userId } });
-    if (!user) {
-      res.status(404).send({message: 'Could not find User'});
-    }
-    const friend = await User.findOne({ where: { authId: friendId } });
-    if (!friend) {
-      res.status(404).send({message: 'Could not find Friend'});
+    
+    // Ensure both users exist
+    const user1 = await User.findOne({ where: { authId: initiator } });
+    const user2 = await User.findOne({ where: { authId: requestee } });
+    if (!user1 || !user2) {
+      return res.status(404).send({message: 'Could not find user(s)'});
     }
 
     // Check if this friendship already exists
     const existingFriendship = await Friend.findOne({
       where: {
         [Op.or]: [
-          { userId: userId,
-            friendId: friendId
-          },
-          { friendId: userId,
-            userId: friendId
-          }
+          { initiatorId: initiator, requesteeId: requestee },
+          { initiatorId: requestee, requesteeId: initiator }
         ]
       }
     });
+
     if (existingFriendship) {
       if(existingFriendship.status === 'accepted'){
         return res.status(400).send({ message: "This relationship already exists." });
-      } else if(existingFriendship.status === 'pending' && existingFriendship.userId === userId) {
+      } else if(existingFriendship.status === 'pending' && existingFriendship.initiatorId === initiator) {
         return res.status(400).send({ message: "There is already a pending friend request" });
-      } else if(existingFriendship.status === 'pending' && existingFriendship.friendId === userId) {
+      } else if(existingFriendship.status === 'pending' && existingFriendship.requesteeId === initiator) {
         existingFriendship.status = 'accepted';
+        await existingFriendship.save();
         return res.status(200).send({ message: "User accepted an existing request" });
       }
     }
 
     // Create the new friendship
     const newFriendship = await Friend.create({
-      userId: userId,
-      friendId: friendId,
-      initiator: userId,
-      status: status || 'pending'
+      initiatorId: initiator,
+      requesteeId: requestee,
+      status: 'pending'
     });
 
     return res.status(201).send(newFriendship);
-    
   } catch (error) {
     console.error(error);
     return res.status(500).send({ message: "An error occurred while adding the friend." });
