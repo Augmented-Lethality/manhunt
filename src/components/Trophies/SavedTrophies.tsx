@@ -234,7 +234,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
             }}
           >
             <h3>No Trophies?!?</h3>
-            <h3>Get Out There and Hunt Some Men!</h3>
+            <h3>Get Out There and Hunt!</h3>
             <iframe src="https://giphy.com/embed/v3mSElAsyJSqA" width="250" height="250" frameBorder="0" allowFullScreen></iframe>
           </div>
          
