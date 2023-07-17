@@ -16,6 +16,12 @@ import {
   Sprite,
   SpriteMaterial,
   TextureLoader,
+  Line,
+  CircleGeometry,
+  LineBasicMaterial,
+  BufferGeometry,
+  Path,
+
 } from 'three';
 
 
@@ -638,4 +644,10 @@ export {
   Sprite,
   SpriteMaterial,
   TextureLoader,
+  MathUtils,
+  Line,
+  CircleGeometry,
+  LineBasicMaterial,
+  BufferGeometry,
+  Path,
 };

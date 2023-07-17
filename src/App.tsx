@@ -19,6 +19,7 @@ import Settings from './pages/Settings';
 import { useFontSize } from './contexts/FontSize';
 import TrophyRoom from './pages/TrophyRoom';
 import AccessPage from './pages/AccessPage';
+import AboutPage from './pages/AboutPage'
 
 import PhoneLoader from '../src/components/Loaders/PhoneLoader'
 
@@ -91,7 +92,11 @@ const App = () => {
       />
       <Route
         path="profile"
-        element={<AuthenticationGuard component={ProfilePage} />}
+        element={
+          <SocketComponent>
+            <AuthenticationGuard component={ProfilePage} />
+          </SocketComponent>
+        }
       />
       <Route
         path="/profile/:username"
@@ -99,15 +104,21 @@ const App = () => {
       />
       <Route
         path="/test"
-        element={<AuthenticationGuard component={TestPage} />}
+        element={<SocketComponent><AuthenticationGuard component={TestPage} /></SocketComponent>}
       />
       <Route
         path="/trophies"
         element={<AuthenticationGuard component={TrophyRoom} />}
       />
       <Route
+        path="/about"
+        element={<AboutPage />}
+      />
+      <Route
         path="/friends"
-        element={<AuthenticationGuard component={FriendsPage} />
+        element={<SocketComponent>
+          <AuthenticationGuard component={FriendsPage} />
+        </SocketComponent>
         }
       />
       <Route

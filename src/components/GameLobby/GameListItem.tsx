@@ -24,7 +24,7 @@ export const GameContainer = styled.div`
   text-align: center;
 `;
 
-export const GameListItem: React.FC<{ game: Game }> = ({ game }) => {
+export const GameListItem: React.FC<{ game: Game, setJoining: (joining: boolean) => void }> = ({ game, setJoining }) => {
 
   const { JoinGame } = useContext(SocketContext);
   const { users } = useContext(SocketContext).SocketState;
@@ -36,7 +36,8 @@ export const GameListItem: React.FC<{ game: Game }> = ({ game }) => {
 
   const handleJoinGame = async (host: string, user: any) => {
     JoinGame(host, user);
-    navigate('/lobby');
+    setJoining(true);
+    // navigate('/lobby');
   };
 
   useEffect(() => {
@@ -45,8 +46,8 @@ export const GameListItem: React.FC<{ game: Game }> = ({ game }) => {
   return (
     <GameContainer>
       <div onClick={() => handleJoinGame(game.host, user)}>
-        <h4 style={{fontSize: '1.5rem'}}>{game.hostName}</h4>
-        <h4 style={{fontSize: '1.5rem'}}>{game.users.length} Hunter{game.users.length !== 1 ? 's' : ''} in Lobby</h4>
+        <h4 style={{ fontSize: '1.5rem' }}>{game.hostName}</h4>
+        <h4 style={{ fontSize: '1.5rem' }}>{game.users.length} Hunter{game.users.length !== 1 ? 's' : ''} in Lobby</h4>
       </div>
 
     </GameContainer>
