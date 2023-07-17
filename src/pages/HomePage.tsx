@@ -27,9 +27,9 @@ const HomePage = () => {
     }
   }, [player])
 
-  useEffect(() => {
-    LeaveGame(user);
-  }, [])
+  // useEffect(() => {
+  //   LeaveGame(user);
+  // }, [])
 
 
   if (!isAuthenticated || !user) {

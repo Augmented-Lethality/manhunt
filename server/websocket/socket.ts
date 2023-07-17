@@ -69,36 +69,80 @@ export class ServerSocket {
   StartListeners = (socket: Socket) => {
 
     // client is asking to make a socket connection to the server, also known as a handshake
-    socket.on('handshake', async (user) => {
-      console.log(user)
+    socket.on('handshake', async (user, pathname) => {
+
+      if (!user) {
+        socket.emit('handshake_reply', {}, 'fail');
+        console.log('user was null for some reason, dang it Auth0!');
+      }
+
+      console.log('handshake from:', user.nickname, 'at', pathname)
 
       let player = null;
 
       try {
-        // if the user exists, update the new socket connection
         const existingUser = await this.FindUserByAuthId(user.sub);
-        if (existingUser) {
 
+        if (existingUser) {
           player = existingUser;
-          // If the user exists, update the socket.id
+
+          // if the user exists, update the socket.id
           await this.UserUpdate('socketId', socket.id, 'authId', user.sub);
 
-          // now see if they were part of the game
-          const existingGame = await this.FindGameByGameId(existingUser.gameId)
-          // if the game exists on their model and the user isn't in the game list, add them back
-          if (existingGame) {
-            if (!existingGame.users.includes(existingUser.authId)) {
-              await this.GameUpdateUsers([...existingGame.users, existingUser.authId], 'gameId', existingUser.gameId);
+          if (existingUser.gameId.length) {
+            // now see if they were part of the game
+            const existingGame = await this.FindGameByGameId(existingUser.gameId)
+
+            // if they have a gameId
+            if (existingGame && existingGame.dataValues !== undefined) {
+              console.log('existing game on handshake:', existingGame.dataValues)
+
+              const endpoint = await this.RedirectIfGaming(existingGame.dataValues.status);
+
+              // if the game is over, redirect them home, delete the game if there was only one user
+              if (endpoint === '/gameover' || endpoint === '/home') {
+                await this.UserUpdate('gameId', '', 'authId', user.sub);
+                socket.leave(existingGame.gameId);
+                socket.join('users');
+                await this.EmitGeneralUpdates()
+
+                if (existingGame.users.length < 2) {
+                  await Game.destroy({ where: { gameId: existingGame.gameId } });
+                }
+
+                socket.emit('handshake_reply', player, '/home');
+
+              } else {
+
+                // if the game isn't over, but there's only one player in the game WHICH IS THEM, delete the game and send them home
+                if (existingGame.users.length < 2 && existingGame.users.includes(user.sub)) {
+                  await Game.destroy({ where: { gameId: existingGame.gameId } });
+                  await this.UserUpdate('gameId', '', 'authId', user.sub);
+                  socket.leave(existingGame.gameId);
+                  socket.join('users');
+                  await this.EmitGeneralUpdates()
+                  socket.emit('handshake_reply', player, '/home');
+
+                  // the game isn't over and there's more than one player, add them back into the game
+                } else if (!existingGame.users.includes(existingUser.authId) && existingGame.users.length > 2) {
+                  await this.GameUpdateUsers([...existingGame.users, existingUser.authId], 'gameId', existingUser.gameId);
+                  await this.UserUpdate('gameId', existingGame.gameId, 'authId', user.sub);
+                  console.log('put user back in game')
+                  socket.leave('users');
+                  socket.join(existingUser.gameId);
+                  await this.EmitLobbyUpdates(existingUser.gameId);
+                  socket.emit('handshake_reply', player, endpoint);
+                }
+              }
+
+              // no existing game exists
+            } else {
+              await this.UserUpdate('gameId', '', 'authId', user.sub);
+              socket.join('users');
+              // send new user to all connected users to update their state
+              await this.EmitGeneralUpdates()
             }
-            console.log('put user back in game')
-            socket.join(existingUser.gameId);
-            this.EmitLobbyUpdates(existingUser.gameId);
-
-          } else {
-            await this.UserUpdate('gameId', '', 'authId', user.sub);
-            socket.join('users');
           }
-
 
         } else {
           console.log('new user, adding them to the database first');
@@ -121,15 +165,18 @@ export class ServerSocket {
           player = newUser.dataValues;
 
           socket.join('users');
+          await this.EmitGeneralUpdates()
         }
-        // send new user to all connected users to update their state
-        this.EmitGeneralUpdates()
-        socket.emit('handshake_reply', player);
 
+        if (pathname === '/lobby' || pathname === '/onthehunt' || pathname === '/gameover') {
+          socket.emit('handshake_reply', player, '/home');
+        } else {
+          socket.emit('handshake_reply', player, '');
+        }
 
       } catch (err) {
         console.error('the user is null, are they not?', err);
-        socket.emit('handshake_reply', 'fail');
+        socket.emit('handshake_reply', {}, 'fail');
       }
 
     });
@@ -140,9 +187,21 @@ export class ServerSocket {
       try {
         const hostingGame = await Game.findOne({ where: { host: user.sub } });
         if (hostingGame) {
-          socket.leave('users');
-          // await this.EmitGamesUpdates();
-          console.log('already hosting a game');
+
+          const endpoint = await this.RedirectIfGaming(hostingGame.dataValues.status);
+
+          if (endpoint === '/home') {
+            await this.LeaveTheGame(socket, user);
+            await this.EmitLobbyGamesUpdates(hostingGame.dataValues.gameId);
+            socket.leave(hostingGame.dataValues.gameId);
+            socket.join('users');
+          } else {
+            socket.leave('users');
+            socket.join(hostingGame.dataValues.gameId);
+            console.log('already hosting a game');
+          }
+          toClient(endpoint);
+
         } else {
           const gameId = v4();
           let hostName = user.name;
@@ -157,10 +216,8 @@ export class ServerSocket {
           await this.EmitGamesUpdates();
           socket.join(gameId);
           await this.EmitLobbyUpdates(newGame.dataValues.gameId);
-
+          toClient('/lobby');
         }
-
-        toClient('/lobby');
 
       } catch (err) {
         console.log(err);
@@ -417,7 +474,7 @@ export class ServerSocket {
           }
           // delete the socket id from the user since they're not connected anymore
           await this.UserUpdate('socketId', '', 'socketId', socket.id);
-          console.log('Removed socket from disconnected user');
+          // console.log('Removed socket from disconnected user');
         }
         socket.leave('users');
         this.EmitGeneralUpdates();
@@ -546,14 +603,14 @@ export class ServerSocket {
             )
           }
           // update everyone on the new players and games
-          socket.leave(game.gameId);
+          await socket.leave(game.gameId);
           // update the user so that they don't have the gameId anymore
           await this.UserUpdate('gameId', '', 'authId', user.sub);
-          this.EmitLobbyUpdates(game.gameId);
+          await this.EmitLobbyUpdates(game.gameId);
 
           // put that user back into the users room and leave the game room
-          socket.join('users');
-          this.EmitGeneralUpdates()
+          await socket.join('users');
+          await this.EmitGeneralUpdates()
         } else {
           console.log('game did not have that user');
         }
@@ -563,6 +620,19 @@ no biggie, it may have been a generic request from the home page.`);
       }
     } catch (err) {
       console.log('something went wrong when trying to leave the game:', err);
+    }
+  }
+
+  RedirectIfGaming = async (status: string) => {
+    switch (status) {
+      case 'complete':
+        return '/gameover'
+      case 'ongoing':
+        return '/onthehunt'
+      case 'lobby':
+        return '/lobby'
+      default:
+        return '/home'
     }
   }
 

@@ -184,10 +184,7 @@ const GameLobby: React.FC<{}> = () => {
       <>
         <Header page='Lobby' />
         <Main>
-          <CountdownContainer>
-            <h1>{countdown}</h1>
-            <h2>{bountyName} is being Hunted</h2>
-          </CountdownContainer>
+          <PhoneLoader />
         </Main>
       </>
     )
