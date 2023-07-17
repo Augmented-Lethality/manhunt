@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useContext, } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useWebcam } from '../contexts/WebcamChaseProvider';
+import { useWebcam } from '../../contexts/WebcamChaseProvider';
 
 import {
   LocationBasedLocal,
@@ -13,13 +13,15 @@ import {
   TextureLoader,
 } from "./webcam.js"
 
-import SocketContext from '../contexts/Socket/SocketContext';
+import SocketContext from '../../contexts/Socket/SocketContext';
+import Radar from '../Radar/Radar';
 
 
 const ChaseCam: React.FC = () => {
 
   const { user } = useAuth0();
-  const { games, locations, users } = useContext(SocketContext).SocketState;
+  const { games, locations, users, playerCoords } = useContext(SocketContext).SocketState;
+  const { UpdatePlayerCoordinates, AddLocation } = useContext(SocketContext);
   const [userTextures, setUserTextures] = useState({});
 
   // comes from the webcam context that this component is wrapped in
@@ -50,10 +52,6 @@ const ChaseCam: React.FC = () => {
   // loads the pictures of the users onto the markers if they have a google photo
   const textureLoader = new TextureLoader();
   //////////////////////////////////////////////////////////////////
-
-
-  // this will add the location to the DB
-  const { AddLocation } = useContext(SocketContext);
 
   // storing the marker long/lat so we can compare new coordinates to the old ones
   const [userLatitude, setUserLatitude] = useState<number>(0);
@@ -176,9 +174,10 @@ const ChaseCam: React.FC = () => {
     if (userLongitude) {
       AddLocation(user, games[0].gameId, userLongitude, userLatitude);
       // console.log('added userLong and userLat', typeof userLongitude);
+      UpdatePlayerCoordinates({ longitude: userLongitude, latitude: userLatitude })
     }
 
-  }, [userLatitude, userLongitude]) // happens every time the userLat and userLong is updated by the AR.js LocationBasedLocal
+  }, [userLatitude, userLongitude])
 
 
   // NOTE: THIS IS VERY TIME COMPLEX SO I WILL BE POLISHING THIS IN POLISH WEEK
@@ -256,10 +255,13 @@ const ChaseCam: React.FC = () => {
 
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover' }}
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        style={{ position: 'absolute', width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+      <Radar />
+    </>
   );
 };
 

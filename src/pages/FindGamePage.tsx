@@ -1,9 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { GameListItem } from '../components/GameLobby/GameListItem';
 import styled from 'styled-components';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
+
+import PhoneLoader from '../components/Loaders/PhoneLoader';
 
 const NoBountiesSign = styled.div`
   height: 157px;
@@ -27,6 +29,8 @@ const NoBountiesSign = styled.div`
 const FindGamePage: React.FC = () => {
   const { games, users } = useContext(SocketContext).SocketState;
 
+  const [joining, setJoining] = useState(false);
+
   useEffect(() => {
   }, [users, games]);
 
@@ -34,19 +38,21 @@ const FindGamePage: React.FC = () => {
     <>
       <Header page={'Contracts'} users={users} />
       <Main>
-        {
-          Object.keys(games).length > 0 ? (
-            <>
-              {games.map((game) => (
-                <GameListItem key={game.gameId} game={game} />
-              ))}
-            </>
-          ) : (
-            <NoBountiesSign>
-              No Bounties Have Been Posted
-            </NoBountiesSign>
-          )
-        }
+        {joining ? (
+          <PhoneLoader />
+        ) : (
+          <>
+            {games.length > 0 ? (
+              games.map((game) => (
+                <GameListItem key={game.gameId} game={game} setJoining={setJoining} />
+              ))
+            ) : (
+              <NoBountiesSign>
+                No Bounties Have Been Posted
+              </NoBountiesSign>
+            )}
+          </>
+        )}
       </Main>
     </>
   );

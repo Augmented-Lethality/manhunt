@@ -64,6 +64,11 @@ export interface Ready {
   [authId: string]: string[];
 }
 
+export interface PlayerCoords {
+  longitude: number,
+  latitude: number
+}
+
 // syntax that the context state must conform to, gives properties and types of those properties
 // server will be passing this information back and forth with client as needed
 export interface ISocketContextState {
@@ -74,6 +79,7 @@ export interface ISocketContextState {
   locations: Locations[],
   ready: Ready,
   player: Player,
+  playerCoords: PlayerCoords,
 };
 
 // initial context state, will be overwritten eventually, but need the default state
@@ -101,14 +107,15 @@ export const defaultSocketContextState: ISocketContextState = {
     createdAt: '',
     updatedAt: ''
   },
+  playerCoords: { longitude: 0, latitude: 0 }
 };
 
 // these actions will each have their own functions in the reducer
 export type TSocketContextActions = 'update_socket' | 'update_users' | 'remove_user' | 'update_games' |
-  'update_locations' | 'update_lobby_users' | 'update_lobby_games' | 'update_ready' | 'update_player'
+  'update_locations' | 'update_lobby_users' | 'update_lobby_games' | 'update_ready' | 'update_player' | 'update_player_coordinates'
 
 // payload represents the data that is associated with each action that is within this context
-export type TSocketContextPayload = Socket | User[] | Game[] | string | Locations[] | Ready | Player
+export type TSocketContextPayload = Socket | User[] | Game[] | string | Locations[] | Ready | Player | PlayerCoords
 
 // describes the shape of the actions in this context
 export type ISocketContextActions = {
@@ -131,6 +138,8 @@ export const SocketReducer = (state: ISocketContextState, action: ISocketContext
       return { ...state, games: action.payload as Game[] };
     case 'update_locations':
       return { ...state, locations: action.payload as Locations[] };
+    case 'update_player_coordinates':
+      return { ...state, playerCoords: action.payload as PlayerCoords };
     case 'update_lobby_users':
       return { ...state, users: action.payload as User[] };
     case 'update_lobby_games':
@@ -158,6 +167,7 @@ export interface ISocketContextProps {
   UpdateReady: (ready: Ready) => void;
   AddGameDuration: (time: number, user: any) => void;
   AddGameStart: (time: number, user: any) => void;
+  UpdatePlayerCoordinates: (coordinates: PlayerCoords) => void;
 }
 
 // context object that creates the context using the createContext() method
@@ -178,6 +188,7 @@ const SocketContext = createContext<ISocketContextProps>({
   UpdateReady: () => { },
   AddGameDuration: () => { },
   AddGameStart: () => { },
+  UpdatePlayerCoordinates: () => { },
 });
 
 // shares data between components without having to pass props around (react feature):

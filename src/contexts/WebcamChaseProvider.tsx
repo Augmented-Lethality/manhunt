@@ -2,8 +2,8 @@ import React, { createContext, useCallback, useRef, useContext, ReactNode, useSt
 import Webcam from 'react-webcam';
 
 const videoConstraints = {
-  width: window.innerWidth,
-  height: window.innerHeight,
+  // width: window.innerWidth,
+  // height: window.innerHeight,
   facingMode: "environment"
 };
 
@@ -33,7 +33,14 @@ export const WebcamChaseProvider: React.FC<WebcamProviderProps> = ({ children })
         audio={false}
         ref={setRef}
         screenshotFormat="image/jpeg"
-        videoConstraints={videoConstraints} />
+        videoConstraints={videoConstraints}
+        style={{
+          position: "absolute",
+          height: "100%",
+          width: "100%",
+          objectFit: "cover",
+        }}
+      />
       {children}
     </WebcamChaseContext.Provider>
   );
