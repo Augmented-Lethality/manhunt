@@ -1,11 +1,11 @@
 import React, { PropsWithChildren, useReducer, useState, useEffect } from 'react';
 import { useSocket } from '../../custom-hooks/useSocket';
-import { SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
+import { PlayerCoords, SocketContextProvider, SocketReducer, defaultSocketContextState } from './SocketContext'; // custom by meee
 import { useAuth0 } from '@auth0/auth0-react';
 import { User, Ready } from './SocketContext';
 // import PageLoader from '../../components/Loading';
 import PhoneLoader from '../../components/Loaders/PhoneLoader';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
 // THIS CAN BE REUSED TO PASS THE SOCKET INFORMATION AROUND THE CLIENT SIDE
@@ -22,6 +22,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   const { user } = useAuth0();
 
   const navigate = useNavigate();
+
+  const location = useLocation();
 
 
   // making a local state to store the created reducer and the default socket context state
@@ -121,14 +123,9 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.on('update_lobby_games', async (games) => {
       // console.log('updating lobby games state:', games)
       SocketDispatch({ type: 'update_lobby_games', payload: games });
-
       // redirecting the user based on the lobby games state
       const redirect = () => {
-        if (!games[0].users.includes(user?.sub) || games.length === 0) {
-          // navigate('/home');
-          // LeaveGame(user);
-          // console.log('should redirect to home? maybe not?')
-        } else if (games[0].status === 'complete') {
+        if (games[0].status === 'complete') {
           navigate('/gameover');
         } else if (games[0].status === 'ongoing') {
           navigate('/onthehunt');
@@ -148,7 +145,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
         latitude: parseFloat(location.latitude),
         longitude: parseFloat(location.longitude)
       }));
-      // console.log('updating locations state:', correctLocations)
+      console.log('updating locations state:', correctLocations)
       SocketDispatch({ type: 'update_locations', payload: correctLocations });
     });
 
@@ -161,26 +158,32 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // sending the handshake to the server, meaning it's trying to establish a connection to the server using websocket
   const SendHandshake = () => {
-    socket.emit('handshake', user, () => {
+
+    // console.log(location.pathname)
+    socket.emit('handshake', user, location.pathname, () => {
       setLoading(false);
     });
 
-    socket.on('handshake_reply', (response) => {
+    socket.on('handshake_reply', (playerObj, endpoint) => {
 
-      // sending the player information back if success, if failure it sends a string
-      if (typeof response !== 'string') {
-        // console.log('updating player state!')
-        SocketDispatch({ type: 'update_player', payload: response });
+      if (endpoint !== 'fail') {
+        SocketDispatch({ type: 'update_player', payload: playerObj });
+        console.log(playerObj)
         setLoading(false);
+        if (endpoint.length) {
+          navigate(endpoint);
+        }
       } else {
         navigate('/');
+
       }
     });
   };
 
   // sending createRoom to the server
   const CreateGame = () => {
-    socket.emit('create_game', user, () => {
+    socket.emit('create_game', user, (endpoint: string) => {
+      navigate(endpoint);
     });
   }
 
@@ -193,11 +196,10 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   const JoinGame = (host: string, user: User) => {
     // console.info('Client wants to join a game...');
 
-    socket.emit('join_game', host, user, () => {
+    socket.emit('join_game', host, user, (endpoint: string) => {
+      navigate(endpoint);
     });
 
-    socket.emit('join_lobby', host, user, () => {
-    });
   };
 
   // sending leave game to the server
@@ -234,6 +236,11 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.emit('update_game_start', time, user);
   };
 
+  const UpdatePlayerCoordinates = (coordinates: PlayerCoords) => {
+    // console.log('updating player coordinates:', coordinates)
+    SocketDispatch({ type: 'update_player_coordinates', payload: coordinates });
+  }
+
   // showing this on client side while socket isn't connected
   if (loading) {
     return <PhoneLoader />
@@ -244,7 +251,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   return (
     <SocketContextProvider value={{
       SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, LeaveGame, UpdateGameStatus,
-      AddGameStats, UpdateReady, AddGameDuration, AddGameStart,
+      AddGameStats, UpdateReady, AddGameDuration, AddGameStart, UpdatePlayerCoordinates
     }}>
       {children}
     </SocketContextProvider>

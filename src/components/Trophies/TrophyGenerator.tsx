@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 // import { useAuth0 } from '@auth0/auth0-react';
-import SocketContext, { Player } from '../contexts/Socket/SocketContext';
+import SocketContext, { Player } from '../../contexts/Socket/SocketContext';
 
 
 
@@ -15,7 +15,6 @@ const TrophyGenerator: React.FC = () => {
   const [trophyName, setTrophyName] = useState('');
   const [trophyDescription, setTrophyDescription] = useState('');
   const { player } = useContext(SocketContext).SocketState;
-
 
   // event handlers
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -144,7 +143,7 @@ const TrophyGenerator: React.FC = () => {
       trophyRef.current.rotation.y += 0.01; // Adjust rotation speed 
     }
   };
-  
+
   const onFrame = () => {
     rotateTrophy();
   };
@@ -155,8 +154,10 @@ const TrophyGenerator: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    postTrophyData();
-  }, [trophyDescription]);
+    if (player) {
+      postTrophyData();
+    }
+  }, [trophyDescription, player]);
 
   return (
     <div
@@ -210,8 +211,8 @@ const TrophyGenerator: React.FC = () => {
       </Canvas>
       {player && (
         <div>
-          <h3 style={{ marginBottom: '2px', marginTop: '1em', marginRight: '3em', marginLeft: '3em'}}>{trophyName}</h3>
-          <h4 style={{ marginBottom: '2px', marginTop: '1em', marginRight: '3em', marginLeft: '3em'}}>{trophyDescription}</h4>
+          <h3 style={{ marginBottom: '2px', marginTop: '1em', marginRight: '3em', marginLeft: '3em' }}>{trophyName}</h3>
+          <h4 style={{ marginBottom: '2px', marginTop: '1em', marginRight: '3em', marginLeft: '3em' }}>{trophyDescription}</h4>
         </div>
       )}
     </div>

@@ -9,8 +9,7 @@ export const Auth0ProviderWithNavigate = ({ children }) => {
   const clientId = process.env.REACT_APP_AUTH0_CLIENTID;
   const redirectUri = `${process.env.REACT_APP_AUTH0_REDIRECTURI}/home`;
 
-  const onRedirectCallback = (appState) => {
-    // navigate(appState?.returnTo || window.location.pathname);
+  const onRedirectCallback = () => {
     navigate('/home');
   };
 
@@ -28,6 +27,8 @@ export const Auth0ProviderWithNavigate = ({ children }) => {
         redirect_uri: redirectUri,
       }}
       onRedirectCallback={onRedirectCallback}
+      useRefreshTokens
+      cacheLocation="localstorage"
     >
       {children}
     </Auth0Provider>

@@ -46,7 +46,6 @@ const AccessCheck: React.FC<AccessCheckProps> = ({ type, setCount, count }) => {
             {accessMessage && (
               <><AlertCircle color="red" size={20} />
                 <h4 style={{ whiteSpace: 'pre-line', marginBottom: '5px' }}>{accessMessage}</h4>
-                {/* <button onClick={checkCameraAccess}>Retry Camera Access</button> */}
               </>
             )}
             {!accessMessage && !checking && (<><h4>Camera </h4><CheckCircle color="green" size={20} /></>)}
@@ -67,13 +66,14 @@ const AccessCheck: React.FC<AccessCheckProps> = ({ type, setCount, count }) => {
     return (
       <AccessCheckContainer>
         {checking ? (
-          <h4>Checking Location Access...</h4>
+          <>
+            <h4>Checking Location Access...</h4>
+          </>
         ) : (
           <>
             {accessMessage && (
               <><AlertCircle color="red" size={20} />
                 <h4 style={{ whiteSpace: 'pre-line', marginBottom: '5px' }}>{accessMessage}</h4>
-                {/* <button onClick={checkLocationAccess}>Retry Location Access</button> */}
               </>
             )}
             {!accessMessage && !checking && (<><h4>Location </h4><CheckCircle color="green" size={20} /></>)}

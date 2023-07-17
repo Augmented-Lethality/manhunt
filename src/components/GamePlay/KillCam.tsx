@@ -12,10 +12,10 @@ import {
   loadFaceRecognitionModel,
   LabeledFaceDescriptors
 } from 'face-api.js';
-import { useWebcam } from '../contexts/WebcamProvider';
+import { useWebcam } from '../../contexts/WebcamProvider';
 import TargetRecognition from './KillProgress';
 import { useAuth0 } from "@auth0/auth0-react";
-import SocketContext from '../contexts/Socket/SocketContext';
+import SocketContext from '../../contexts/Socket/SocketContext';
 
 interface KillCamProps {
   setImg?: (img: ImageData | null) => void;
