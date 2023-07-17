@@ -69,10 +69,6 @@ const ProfilePage: React.FC = () => {
 
   const { player } = useContext(SocketContext).SocketState;
 
-  if (!player.username.length) {
-    return null;
-  }
-
 
   useEffect(() => {
     fetchUserData();
@@ -152,15 +148,18 @@ const ProfilePage: React.FC = () => {
   }
 
 
-  const infoMessage = 'At Corpoverse, we prioritize your privacy and security.\n\n' +
-    'Your biodata is used for internal state-related activities and is stored as vectors, not the picture itself, ensuring your utmost safety.\n\n' +
+  const verifiedMessage = 'At Corpoverse, we prioritize your privacy and security.\n\n' +
+    'Your Bio Data is used for internal state-related activities and is stored as vectors, not the picture itself, ensuring your utmost safety.\n\n' +
     'We operate independently, disregarding any external governing body; your data is safe with us!'
+
+  const notVerifiedMessage = 'Citizen has not been processed by the CorpoReality Police.\n\n' +
+    'Use the button below to verify your Bio Data and Corpoverse may gift you an official ID; depends on if you\'re deemed a proper bounty hunter by your mug.';
 
   return (
     <>
       <Header page='Profile' />
       <Main>
-        <InfoPopup message={infoMessage} />
+        {player.facialDescriptions ? <InfoPopup message={verifiedMessage} /> : <InfoPopup message={notVerifiedMessage} />}
         {player.facialDescriptions && (
           trophiesExist ? (
             <TrophyContainer>
@@ -191,8 +190,7 @@ const ProfilePage: React.FC = () => {
               <h2 style={{ fontSize: '1.6rem', }}>Citizen Verified!</h2>
             ) : (
               <h3>
-                Citizen has not been processed by the CorpoReality Police. Please
-                send in Biodata to participate in SOCIETY™.
+                Please send in Bio Data to participate in SOCIETY™.
               </h3>
             )}
             {player.facialDescriptions ? (
