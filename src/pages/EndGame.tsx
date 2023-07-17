@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { ButtonToHome } from '../styles/Buttons';
+
+import PhoneLoader from '../components/Loaders/PhoneLoader';
 import styled from 'styled-components';
 
 const MessageContainer = styled.div`
@@ -73,31 +75,27 @@ const EndGame: React.FC = () => {
     }
   }, [games]);
 
-  if (!gameOverMessage.length) {
-    return <img
-      src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjFyb2Z6ODR3b3UzaDc4YXMwMWNsMjhqaTY1d2d5em52bTduMnNnZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CdhxVrdRN4YFi/giphy.gif"
-      alt="Game Over GIF"
-      style={{ width: '400px', height: '400px', marginBottom: '20px' }}
-    />
-  }
-
   return (
     <>
       <Header page={'Game Over'} />
       <Main>
-        <MessageContainer className='glassmorphism'>
-          <h3 className='game-over' style={{ color: 'white', fontSize: '1.5em', marginBottom: '10px', paddingLeft: '20px', paddingRight: '20px', whiteSpace: 'pre-line', marginTop: '0px', }}>{gameOverMessage}</h3>
-          {winner ? (
-            <div className='trophy-container-end' style={{
-              width: '400px', height: '300px', marginBottom: '8px', display: 'flex',
-              flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <Suspense fallback={<div>Loading Trophy...</div>}>
-                <TrophyGenerator />
-              </Suspense>
-            </div>
-          ) : null}
-        </MessageContainer>
+
+        {gameOverMessage.length ? (
+          <MessageContainer className='glassmorphism'>
+            <h3 className='game-over' style={{ color: 'white', fontSize: '1.5em', marginBottom: '10px', paddingLeft: '20px', paddingRight: '20px', whiteSpace: 'pre-line', marginTop: '0px', }}>{gameOverMessage}</h3>
+            {winner ? (
+              <div className='trophy-container-end' style={{
+                width: '400px', height: '300px', marginBottom: '8px', display: 'flex',
+                flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Suspense fallback={<div>Loading Trophy...</div>}>
+                  <TrophyGenerator />
+                </Suspense>
+              </div>
+            ) : null}
+          </MessageContainer>
+        ) :
+          <PhoneLoader />}
         <div className='glassmorphism column centered padded margined'>
           Justice can wait, time to
           <button>

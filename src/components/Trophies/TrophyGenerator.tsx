@@ -16,7 +16,6 @@ const TrophyGenerator: React.FC = () => {
   const [trophyDescription, setTrophyDescription] = useState('');
   const { player } = useContext(SocketContext).SocketState;
 
-
   // event handlers
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
@@ -155,8 +154,10 @@ const TrophyGenerator: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    postTrophyData();
-  }, [trophyDescription]);
+    if (player) {
+      postTrophyData();
+    }
+  }, [trophyDescription, player]);
 
   return (
     <div
