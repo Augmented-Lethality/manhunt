@@ -27,7 +27,7 @@ const Radar: React.FC = () => {
   // constants that can be altered throughout the radar
   const radarColour = '#008000';
   const radius = 2;
-  const maxMapDistance = 4000; // in meters, this is about 2 miles
+  const maxMapDistance = 100; // in meters, this is about a block, or 330 feet
   const height = 250;
 
   // hardcoded locations until I sync this up with the user locations from socket.io
@@ -196,6 +196,8 @@ const Radar: React.FC = () => {
 
         // calculate the coordinates in meters
         const meterCoords = haversineDistCoords(playerCoords, playerLocation);
+
+        console.log('distance:', meterCoords)
 
         // scaling the dot's x/y to the radar coordinate system
         const dotX = ((meterCoords.distanceLatitude / maxMapDistance) * radius);
