@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext from '../contexts/Socket/SocketContext';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { useFontSize } from '../contexts/FontSize';
 import styled from 'styled-components';
+
+import PhoneLoader from '../components/Loaders/PhoneLoader';
 
 import AccessCheck from '../components/GameLobby/AccessCheck';
 import { useNavigate } from 'react-router-dom';
@@ -41,6 +42,8 @@ const AccessPage: React.FC = () => {
   const { CreateGame } = useContext(SocketContext);
   const [fontSize, setFontSize] = useFontSize();
 
+  const [joining, setJoining] = useState(false);
+
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const AccessPage: React.FC = () => {
       switch (info) {
         case 'create':
           CreateGame();
-          navigate('/lobby');
+          setJoining(true);
           break;
         case 'join':
           navigate('/findGame');
@@ -61,17 +64,20 @@ const AccessPage: React.FC = () => {
     <>
       <Header page={'Access'} users={users} />
       <Main>
-        <AccessChecksContainer>
-          <AccessCheckContainer>
-            <AccessCheck type={'Camera'} setCount={setCount} count={count} />
-          </AccessCheckContainer>
-          <AccessCheckContainer>
-            <AccessCheck type={'Location'} setCount={setCount} count={count} />
-          </AccessCheckContainer>
-          <AccessCheckContainer>
-            <AccessCheck type={'Orientation'} setCount={setCount} count={count} />
-          </AccessCheckContainer>
-        </AccessChecksContainer>
+        {joining ? <PhoneLoader /> : (
+          <AccessChecksContainer>
+            <AccessCheckContainer>
+              <AccessCheck type={'Camera'} setCount={setCount} count={count} />
+            </AccessCheckContainer>
+            <AccessCheckContainer>
+              <AccessCheck type={'Location'} setCount={setCount} count={count} />
+            </AccessCheckContainer>
+            <AccessCheckContainer>
+              <AccessCheck type={'Orientation'} setCount={setCount} count={count} />
+            </AccessCheckContainer>
+          </AccessChecksContainer>
+
+        )}
       </Main>
     </>
   );

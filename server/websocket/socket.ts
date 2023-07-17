@@ -135,12 +135,13 @@ export class ServerSocket {
     });
 
     // when client emits a createGame event, make the new game
-    socket.on('create_game', async (user) => {
+    socket.on('create_game', async (user, toClient) => {
 
       try {
         const hostingGame = await Game.findOne({ where: { host: user.sub } });
         if (hostingGame) {
           socket.leave('users');
+          // await this.EmitGamesUpdates();
           console.log('already hosting a game');
         } else {
           const gameId = v4();
@@ -155,12 +156,11 @@ export class ServerSocket {
           socket.leave('users');
           await this.EmitGamesUpdates();
           socket.join(gameId);
-          this.EmitLobbyUpdates(newGame.dataValues.gameId);
+          await this.EmitLobbyUpdates(newGame.dataValues.gameId);
 
         }
-        // send new user to all connected users to update their games lists
-        socket.leave('users');
-        await this.EmitGamesUpdates();
+
+        toClient('/lobby');
 
       } catch (err) {
         console.log(err);

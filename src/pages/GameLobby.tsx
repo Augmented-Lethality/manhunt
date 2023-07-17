@@ -102,17 +102,15 @@ const CountdownContainer = styled.div`
 `
 
 const GameLobby: React.FC<{}> = () => {
-  const { Redirect,
+  const {
     UpdateGameStatus,
     AddGameStart,
     AddGameDuration,
     SetHunted
   } = useContext(SocketContext);
   const { isAuthenticated, user } = useAuth0();
-  const { games, users, ready } = useContext(SocketContext).SocketState;
-  const [showLobby, setShowLobby] = useState(false);
+  const { games, users, player } = useContext(SocketContext).SocketState;
   const [bountyName, setBountyName] = useState<string | null>(null)
-  const [hasReadyErrors, setHasReadyErrors] = useState(false);
   const [isHost, setisHost] = useState(false);
   const [countdown, setCountdown] = useState(10);
   const [selected, setSelected] = useState('03:00');
@@ -120,23 +118,11 @@ const GameLobby: React.FC<{}> = () => {
   const scrollValues = ['01', '02', '03', '04', '05', '07', '10', '15', '20', '30', '45', '60'];
   const selectedIndex = scrollValues.indexOf(selected.split(':')[0]);
   const navigate = useNavigate();
-  // if any of the ready objects don't have a value of 'ok', can't start the game
-  // useEffect(() => {
-  //   const hasErrors = Object.values(ready).some((errors: string[]) => !errors.includes('ok'));
-  //   setHasReadyErrors(hasErrors);
-  // }, [ready]);
 
   //Send the selected time to the socket instance
   useEffect(() => {
     AddGameDuration(Number(selected.slice(0, 2)), user);
   }, [selected])
-
-  // checks to see if the user should be redirected if the game doesn't exist
-  // const location = useLocation();
-  // const currentEndpoint = location.pathname;
-  // useEffect(() => {
-  //   Redirect(currentEndpoint);
-  // }, [games]);
 
   //Determine who is the Host
   useEffect(() => {
@@ -144,15 +130,6 @@ const GameLobby: React.FC<{}> = () => {
       ? setisHost(true)
       : setisHost(false);
   }, [games]);
-
-  //See if things are still loading
-  useEffect(() => {
-    if (games.length && games.length < 2 && users.length > 0) {
-      setShowLobby(true);
-    } else {
-      setShowLobby(false);
-    }
-  }, [games, users]);
 
   //starts the countdown to enter the game
   // useEffect(() => {
@@ -199,10 +176,6 @@ const GameLobby: React.FC<{}> = () => {
 
   if (!isAuthenticated) {
     return null
-  }
-
-  if (!showLobby) {
-    return <PhoneLoader />
   }
 
 

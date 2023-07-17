@@ -180,7 +180,8 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // sending createRoom to the server
   const CreateGame = () => {
-    socket.emit('create_game', user, () => {
+    socket.emit('create_game', user, (endpoint: string) => {
+      navigate(endpoint);
     });
   }
 
