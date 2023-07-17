@@ -168,13 +168,14 @@ export class ServerSocket {
 
     });
 
-    socket.on('join_game', async (host, user) => {
+    socket.on('join_game', async (host, user, toClient) => {
       // console.log(host)
       try {
         const game = await this.GameFindOne('host', host);
 
         if (game) {
           if (game.users.includes(user.sub)) {
+            socket.leave('users');
             console.log('user already in that game')
           } else {
             await this.UserUpdate('gameId', game.gameId, 'authId', user.sub);
@@ -182,41 +183,16 @@ export class ServerSocket {
 
           }
 
-          socket.join(game.gameId);
           socket.leave('users');
+          await this.EmitGeneralUpdates()
+          socket.join(game.gameId);
+          await this.EmitLobbyUpdates(game.gameId);
 
-          this.EmitLobbyUpdates(game.gameId);
-
-          this.EmitGeneralUpdates()
-
+          // redirecting the user to the lobby
+          toClient('/lobby');
 
         } else {
           console.log('no game with that host exists')
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    socket.on('join_lobby', async (host, user) => {
-      try {
-        const game = await this.GameFindOne('host', host);
-        if (game) {
-          if (game.users.includes(user.sub)) {
-            // they're already in the game, don't need to add them
-          } else {
-            await this.UserUpdate('gameId', game.gameId, 'authId', user.sub);
-            await this.GameUpdateUsers([...game.users, user.sub], 'host', host);
-            // this.io.to('users').emit('update_games');
-          }
-
-          socket.join(game.gameId);
-          socket.leave('users');
-
-          this.EmitLobbyUpdates(game.gameId);
-          this.EmitGeneralUpdates()
-
-
         }
       } catch (err) {
         console.log(err);
@@ -506,11 +482,12 @@ export class ServerSocket {
   }
 
   EmitGeneralUpdates = async () => {
+    const games = await Game.findAll();
+    this.io.to('users').emit('update_games', games);
+
     const users = await User.findAll({ where: { socketId: { [Op.and]: [{ [Op.not]: null }, { [Op.not]: '' }] } } });
     this.io.to('users').emit('update_users', users);
 
-    const games = await Game.findAll();
-    this.io.to('users').emit('update_games', games);
   }
 
   EmitGamesUpdates = async () => {

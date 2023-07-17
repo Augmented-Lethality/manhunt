@@ -148,7 +148,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
         latitude: parseFloat(location.latitude),
         longitude: parseFloat(location.longitude)
       }));
-      // console.log('updating locations state:', correctLocations)
+      console.log('updating locations state:', correctLocations)
       SocketDispatch({ type: 'update_locations', payload: correctLocations });
     });
 
@@ -193,11 +193,10 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   const JoinGame = (host: string, user: User) => {
     // console.info('Client wants to join a game...');
 
-    socket.emit('join_game', host, user, () => {
+    socket.emit('join_game', host, user, (endpoint: string) => {
+      navigate(endpoint);
     });
 
-    socket.emit('join_lobby', host, user, () => {
-    });
   };
 
   // sending leave game to the server
