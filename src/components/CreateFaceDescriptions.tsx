@@ -52,7 +52,6 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhot
       const labeledFaceDescriptor = await createFaceDescriptor();
       if (labeledFaceDescriptor) {
         sendDescriptionToServer(labeledFaceDescriptor);
-        setPhotoStatus('profile')
       }
     } catch (err) {
       console.error(err)
@@ -81,6 +80,7 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhot
       if (res.status === 200) {
         setUser(res.data);
         UpdateSocketPlayer(player.authId);
+        setPhotoStatus('profile')
       }
     } catch (error) {
       console.error('Error sending descriptor to server:', error);
@@ -100,35 +100,39 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhot
           width: '100%',
           top: '78%',
         }}>
-          <div className='column' style={{ color: 'white' }}>
-            <Camera className='react-icon-large' onClick={() => { setImg(null) }} />
-            <h4 style={{
-              wordSpacing: '10px',
-              marginTop: '-12px',
-              fontWeight: '400',
-              textAlign: 'center',
-              zIndex: '1'
-            }}>retake</h4>
-          </div>
-          <div className='column' style={{ color: 'white' }}>
-            <Save className='react-icon-large' onClick={handleSave} />
-            <h4 style={{
-              wordSpacing: '10px',
-              marginTop: '-12px',
-              fontWeight: '400',
-              textAlign: 'center',
-              zIndex: '1'
-            }}>save</h4>
-          </div>
+          {!verifying && (
+            <>
+              <div className='column' style={{ color: 'white' }}>
+                <Camera className='react-icon-large' onClick={() => { setImg(null) }} />
+                <h4 style={{
+                  wordSpacing: '10px',
+                  marginTop: '-12px',
+                  fontWeight: '400',
+                  textAlign: 'center',
+                  zIndex: '1'
+                }}>retake</h4>
+              </div>
+              <div className='column' style={{ color: 'white' }}>
+                <Save className='react-icon-large' onClick={handleSave} />
+                <h4 style={{
+                  wordSpacing: '10px',
+                  marginTop: '-12px',
+                  fontWeight: '400',
+                  textAlign: 'center',
+                  zIndex: '1'
+                }}>save</h4>
+              </div>
+            </>
+          )}
         </div>
       </div>
     )
   }
 
-  const infoMessage = 'CorpoPolice require your Mug Shot, Bounty Hunter.\n\n' +
-    'Step 1. Position your face within the frame, making sure it\'s fully visible.\n\n' +
-    'Step 2. Hold still and take the shot!\n\n' +
-    'Step 3. If you\'re happy with it, click the submit button and wait for the process to verify. Otherwise, feel free to retake if you need.\n\n'
+  const infoMessage = `CorpoPolice require your mug shot, ${player ? player.username : 'Bounty Hunter'}.\n\n` +
+    'Step 1.\nPosition your face within the frame, making sure it\'s fully visible.\n\n' +
+    'Step 2.\nHold still and take the shot!\n\n' +
+    'Step 3.\nIf you\'re happy with it, click the submit button and wait for the process to verify. Otherwise, feel free to retake if you need.';
 
 
   return (
