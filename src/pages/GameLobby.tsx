@@ -190,8 +190,10 @@ const GameLobby: React.FC<{}> = () => {
     )
   }
 
-  const hostInfoMessage = 'Use the knobs to change the game duration. Click the play button when you\'re ready to start.'
-  const playersInfoMessage = 'Be patient and wait for the host to start the game.'
+  const hostInfoMessage = 'Your controls are on that blue radio over to your right.\n\n'
+    + 'To change the game duration, use the red knobs.\n\nWhen you\'re ready to start, hit that big play button!\n\n' +
+    'Happy Hunting.';
+  const playersInfoMessage = 'Be patient and wait for the host to start the game!'
 
   return (
     <>
