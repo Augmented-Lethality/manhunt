@@ -4,27 +4,27 @@ import styled from 'styled-components';
 import Info from 'react-feather/dist/icons/info';
 
 const Wrapper = styled.div`
-  width: 100%;
   border-bottom: 1px solid gray;
   font-size: 18px;
   text-align: center;
-  padding: 5px;
-  bottom: 0;
   position: fixed;
+  left: 1%;
 `;
 
 const PopupContent = styled.span`
-  display: block;
-  padding: 10px;
-  background-color: white;
-  color: #333;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  margin-left: 10px;
-  margin-right: 10px;
-  white-space: pre-line;
-  text-align: center;
-  font-size: 20px;
+display: block;
+padding: 10px;
+background-color: #ffffff;
+color: #333;
+border-radius: 4px;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+white-space: pre-line;
+text-align: center;
+font-size: 20px;
+max-height: 250px;
+overflow-y: scroll;
+max-width: 300px;
+border: solid black 2px;
 `;
 
 const StyledInfo = styled(Info)`
@@ -32,7 +32,7 @@ const StyledInfo = styled(Info)`
 `;
 
 interface InfoPopupProps {
-  message: string
+  message: string;
 }
 
 const InfoPopup: React.FC<InfoPopupProps> = ({ message }) => {
@@ -43,12 +43,11 @@ const InfoPopup: React.FC<InfoPopupProps> = ({ message }) => {
           <StyledInfo size={30} strokeWidth={3} />
         </Wrapper>
       }
-      position="top center"
+      position="right center"
       closeOnDocumentClick
+      contentStyle={{ padding: '0', border: 'none' }}
     >
-      <PopupContent>
-        {message}
-      </PopupContent>
+      <PopupContent>{message}</PopupContent>
     </Popup>
   );
 };
