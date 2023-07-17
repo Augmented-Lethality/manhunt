@@ -15,15 +15,28 @@ import DropDownMenu from '../components/DropDownMenu';
 const GamePage: React.FC = () => {
   // which component do we render? kill or chase?
   const [gameMode, setGameMode] = useState<string>('Chase');
-  const { games } = useContext(SocketContext).SocketState;
+  const { games, users } = useContext(SocketContext).SocketState;
   const { Redirect } = useContext(SocketContext);
 
+  const [huntedMessage, setHuntedMessage] = useState('');
+
   // checks to see if the user should be redirected if the game doesn't exist
-  const location = useLocation();
-  const currentEndpoint = location.pathname;
+  // const location = useLocation();
+  // const currentEndpoint = location.pathname;
+  // useEffect(() => {
+  //   Redirect(currentEndpoint);
+  // }, [games]);
+
   useEffect(() => {
-    Redirect(currentEndpoint);
-  }, [games]);
+    if (users.length > 0) {
+      const huntedObj = users.find(person => person.authId === games[0].hunted);
+
+      if (huntedObj) {
+        setHuntedMessage(`${huntedObj.username} is being hunted!`)
+      }
+    }
+
+  }, [])
 
 
   const handleGameChange = () => {
@@ -52,6 +65,7 @@ const GamePage: React.FC = () => {
           <DropDownMenu page={'Game'} />
         </div>
         <Countdown />
+        {huntedMessage && <h3>{huntedMessage}</h3>}
       </GameHeader>
       <Main style={{ height: '100vh', paddingTop: '0px' }}>
         {gameMode === 'Chase' ? (
