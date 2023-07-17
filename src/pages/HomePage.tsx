@@ -37,8 +37,9 @@ const HomePage = () => {
   }
 
   const infoMessage = 'Corpoverse provides two options: Host a Contract or Find Available Contracts. \n\n' +
-    'If you host, you decide the parameters of the game, otherwise you\'re at the mercy of the other hunters. \n\n' +
-    'Not sure what the game is about? Head over to our About section.'
+    'If you host, you decide the parameters of the game, otherwise you\'re at the mercy of the other hunters. \n\n'
+  // +
+  // 'Not sure what the game is about? Head over to our About section.'
 
   return (
     <>
