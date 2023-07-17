@@ -52,8 +52,7 @@ const Phone = styled.div`
     content: "";
     position: absolute;
     top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 30px;
     width: 50px;
     height: 24px;
     border-radius: 0 0 18% 18%;
