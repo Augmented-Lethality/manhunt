@@ -143,7 +143,7 @@ const ProfilePage: React.FC = () => {
           <CreateFaceDescriptions
             setPhotoStatus={setPhotoStatus}
             username={user?.name}
-            userID={player.authId}
+            userID={user?.sub}
             setUser={setUserData}
           />
         </Main>
@@ -153,37 +153,39 @@ const ProfilePage: React.FC = () => {
 
 
   const infoMessage = 'At Corpoverse, we prioritize your privacy and security.\n\n' +
-    'Your biodata is used for internal state-related activities and is stored as vectors, not the picture itself, ensuring your utmost safety.\n' +
+    'Your biodata is used for internal state-related activities and is stored as vectors, not the picture itself, ensuring your utmost safety.\n\n' +
     'We operate independently, disregarding any external governing body; your data is safe with us!'
 
   return (
     <>
       <Header page='Profile' />
       <Main>
-        {trophiesExist ? (
-          <TrophyContainer>
-            <SingleTrophy
-              id={0}
-              name={''}
-              description={''}
-              createdAt={''}
-              dimension={0}
-              color={''}
-              shape={''}
-              tubularSegments={0}
-              tubeWidth={0}
-              dimensionTwo={0}
-              dimensionThree={0}
-            />
-          </TrophyContainer>
-        ) : (
-          <TrophyContainer>
-            <iframe src="https://giphy.com/embed/DcTN1NEaLjw4E0xvAE" width="90" height="160" frameBorder="0" allowFullScreen></iframe>
-          </TrophyContainer>
+        <InfoPopup message={infoMessage} />
+        {player.facialDescriptions && (
+          trophiesExist ? (
+            <TrophyContainer>
+              <SingleTrophy
+                id={0}
+                name={''}
+                description={''}
+                createdAt={''}
+                dimension={0}
+                color={''}
+                shape={''}
+                tubularSegments={0}
+                tubeWidth={0}
+                dimensionTwo={0}
+                dimensionThree={0}
+              />
+            </TrophyContainer>
+          ) : (
+            <TrophyContainer>
+              <iframe src="https://giphy.com/embed/DcTN1NEaLjw4E0xvAE" width="90" height="160" frameBorder="0" allowFullScreen></iframe>
+            </TrophyContainer>
+          )
         )}
         {player.facialDescriptions ? <IdCard /> : <IdPaper />}
         <VerificationContainer className='glassmorphism'>
-          <InfoPopup message={infoMessage} />
           <VerTitleContainer>
             {player.facialDescriptions ? (
               <h2 style={{ fontSize: '1.6rem', }}>Citizen Verified!</h2>
