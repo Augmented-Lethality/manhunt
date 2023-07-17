@@ -53,6 +53,11 @@ const TempIdContainer = styled.div`
 
 //ID card background that user data sits on
 const IdContainer = styled.div`
+<<<<<<< HEAD
+background: url(/textures/paper.png);
+  border-radius: 19px;
+=======
+>>>>>>> d903d56e347e1bf43fd3256d3dc602241b25e97b
   display: flex;
   flex-direction: column;
   align-items: center;
