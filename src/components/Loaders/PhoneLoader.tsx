@@ -45,19 +45,18 @@ const Phone = styled.div`
   border: 20px solid ${PhoneColor};
   border-radius: 50px;
   animation: ${PhoneAnimate} 4s linear infinite;
-  animation-delay: 0.375s;
   left: 150px;
 
   &::after {
     content: "";
     position: absolute;
-    top: -15px;
-    left: 30px;
+    top: -5%;
+    left: 50%;
     width: 50px;
     height: 24px;
     border-radius: 0 0 18% 18%;
     background-color: ${PhoneColor};
-  }
+    transform: translateX(-50%);  }
 `;
 
 const Glass = styled.div`
