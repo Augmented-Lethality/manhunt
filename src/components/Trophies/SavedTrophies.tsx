@@ -221,106 +221,118 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   return (
     <div>
       {trophiesToDisplay.length === 0 ? (
-         <div>
-        <div className="glassmorphism" style ={{justifyContent: 'top', height: '40vh', alignItems: 'center', display: 'flex'}}>
-          <h3>No Trophies?!?! Get out there and get to hunting!</h3>
-        </div>
-        </div>
+        
+          <div
+            className='glassmorphism'
+            style={{
+              fontWeight: 'bold', 
+              borderRadius: '1em',
+              padding: '1em',
+              width: '100%',
+              textAlign: 'center',
+              margin: '1em 3em 1em 3em',
+            }}
+          >
+            <h3>No Trophies?!?</h3>
+            <h3>Get Out There and Hunt!</h3>
+            <iframe src="https://giphy.com/embed/v3mSElAsyJSqA" width="250" height="250" frameBorder="0" allowFullScreen></iframe>
+          </div>
+         
       ) : (
         trophiesToDisplay
-        .slice(0)
-        .reverse()
-        .map((trophy, index) => (
-          <div key={index}>
-            <div
-            className='glassmorphism'
-              onMouseDown={(e) => handleMouseDown(e, index)}
-              onMouseUp={handleMouseUp}
-              onMouseMove={(e) => handleMouseMove(e, index)}
-              style={{
-                color: '#2d2d2d',
-                margin: '3em',
-                borderRadius: '15px',
-                padding: '1em',
-                width: '100%',
-                
-              }}
-            >
-              <Canvas onCreated={({ gl }) => gl.setAnimationLoop(onFrame)}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} />
-                {trophy.shape === 'box' && (
-                  <Box
-                    ref={(ref) => (trophyRefs.current[index] = ref)}
-                    args={[
-                      trophy.dimension,
-                      trophy.dimensionTwo,
-                      trophy.dimensionThree,
-                    ]}
-                    position={[0, 0, 0]}
-                    rotation={[0, 0.4, 0]}
-                  >
-                    <meshStandardMaterial
-                      attach='material'
-                      color={trophy.color}
-                    />
-                  </Box>
-                )}
-                {trophy.shape === 'polyhedron' && (
-                  <Dodecahedron
-                    ref={(ref) => (trophyRefs.current[index] = ref)}
-                    args={[trophy.dimension, 0]}
-                    position={[0, 0, 0]}
-                    rotation={[0, 0.4, 0]}
-                  >
-                    <meshStandardMaterial
-                      attach='material'
-                      color={trophy.color}
-                    />
-                  </Dodecahedron>
-                )}
-                {trophy.shape === 'torus' && (
-                  <Torus
-                    ref={(ref) => (trophyRefs.current[index] = ref)}
-                    args={[
-                      trophy.dimension,
-                      trophy.tubeWidth,
-                      16,
-                      trophy.tubularSegments,
-                    ]}
-                    position={[0, 0, 0]}
-                    rotation={[0, 0.4, 0]}
-                  >
-                    <meshStandardMaterial
-                      attach='material'
-                      color={trophy.color}
-                    />
-                  </Torus>
-                )}
-              </Canvas>
+          .slice(0)
+          .reverse()
+          .map((trophy, index) => (
+            <div key={index}>
+              <div
+                className='glassmorphism'
+                onMouseDown={(e) => handleMouseDown(e, index)}
+                onMouseUp={handleMouseUp}
+                onMouseMove={(e) => handleMouseMove(e, index)}
+                style={{
+                  color: '#2d2d2d',
+                  margin: '1em 2em 1em 2em',
+                  borderRadius: '1em',
+                  padding: '1em',
+                  width: '100%',
+                }}
+              >
+                <Canvas onCreated={({ gl }) => gl.setAnimationLoop(onFrame)}>
+                  <ambientLight intensity={0.5} />
+                  <pointLight position={[10, 10, 10]} />
+                  {trophy.shape === 'box' && (
+                    <Box
+                      ref={(ref) => (trophyRefs.current[index] = ref)}
+                      args={[
+                        trophy.dimension,
+                        trophy.dimensionTwo,
+                        trophy.dimensionThree,
+                      ]}
+                      position={[0, 0, 0]}
+                      rotation={[0, 0.4, 0]}
+                    >
+                      <meshStandardMaterial
+                        attach='material'
+                        color={trophy.color}
+                      />
+                    </Box>
+                  )}
+                  {trophy.shape === 'polyhedron' && (
+                    <Dodecahedron
+                      ref={(ref) => (trophyRefs.current[index] = ref)}
+                      args={[trophy.dimension, 0]}
+                      position={[0, 0, 0]}
+                      rotation={[0, 0.4, 0]}
+                    >
+                      <meshStandardMaterial
+                        attach='material'
+                        color={trophy.color}
+                      />
+                    </Dodecahedron>
+                  )}
+                  {trophy.shape === 'torus' && (
+                    <Torus
+                      ref={(ref) => (trophyRefs.current[index] = ref)}
+                      args={[
+                        trophy.dimension,
+                        trophy.tubeWidth,
+                        16,
+                        trophy.tubularSegments,
+                      ]}
+                      position={[0, 0, 0]}
+                      rotation={[0, 0.4, 0]}
+                    >
+                      <meshStandardMaterial
+                        attach='material'
+                        color={trophy.color}
+                      />
+                    </Torus>
+                  )}
+                </Canvas>
 
-              <details style={{ textAlign: 'left'}}>
-                <summary style={{ textAlign: 'right' }}>Details</summary>
-                <h6>Designation: {trophy.name}</h6>
-                <h6>Report: {trophy.description}</h6>
-                <h6>Class: {trophy.shape}</h6>
-                <h6>Magnitude: {trophy.dimension}</h6>
-                <h6>Chroma: {getColorName(trophy.color)}</h6>
-                <h6>Earned on: {trophy.createdAt}</h6>
-              </details>
+                <details style={{ textAlign: 'left', }}>
+                  <summary style={{ textAlign: 'right', marginInline: '0px'}}>Details</summary>
+                  <div style={{fontSize: '0.75rem', padding: '1rem'}}>
+                  <div><strong>Designation:</strong> {trophy.name}</div>
+                  <div><strong>Report:</strong> {trophy.description}</div>
+                  <div><strong>Class:</strong> {trophy.shape}</div>
+                  <div><strong>Magnitude:</strong> {trophy.dimension}</div>
+                  <div><strong>Chroma:</strong> {getColorName(trophy.color)}</div>
+                  <div><strong>Earned on:</strong> {trophy.createdAt}</div>
+                  </div>
+                </details>
+              </div>
             </div>
-          </div>
-        )))}
-      <div
-        style={{
-          display: 'flex',
-          position: 'sticky',
-          bottom: 0,
-          alignItems: 'center',
-        }}
-      >
+          ))
+      )}
+      <div>
         {totalPages > 1 && (
-          <div>
+          <div style={{
+            display: 'flex',
+            position: 'sticky',
+            bottom: 0,
+            alignItems: 'center',
+          }}>
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}

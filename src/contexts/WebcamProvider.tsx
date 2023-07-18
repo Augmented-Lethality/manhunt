@@ -22,6 +22,7 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
   const path = location.pathname;
 
   const [mode, setMode] = useState('environment');
+  const [style, setStyle] = useState({});
 
   const setRef = useCallback((webcam: Webcam | null) => {
     webcamRef.current = webcam;
@@ -35,8 +36,19 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
   useEffect(() => {
     if (path === '/profile') {
       setMode('user');
+      setStyle({
+        height: "100%",
+        width: "100%",
+        objectFit: "cover",
+      })
     } else {
       setMode('environment');
+      setStyle({
+        position: "absolute",
+        height: "100%",
+        width: "100%",
+        objectFit: "cover",
+      })
     }
   }, [path]);
 
@@ -54,12 +66,7 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
         screenshotFormat="image/jpeg"
         onUserMedia={handleUserMedia}
         videoConstraints={videoConstraints}
-        style={{
-          position: "absolute",
-          height: "100%",
-          width: "100%",
-          objectFit: "cover",
-        }}
+        style={style}
       />
       {children}
     </WebcamContext.Provider>

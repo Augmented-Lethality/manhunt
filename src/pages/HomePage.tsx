@@ -13,7 +13,6 @@ import InfoPopup from '../components/Popups/InfoPopup';
 const HomePage = () => {
   const { user, isAuthenticated } = useAuth0();
   const { users, player } = useContext(SocketContext).SocketState;
-  const { LeaveGame } = useContext(SocketContext);
   const [fontSize, setFontSize] = useFontSize();
 
   const [showBioPopup, setBioPopUp] = useState(false);
@@ -26,10 +25,6 @@ const HomePage = () => {
       setBioPopUp(true);
     }
   }, [player])
-
-  // useEffect(() => {
-  //   LeaveGame(user);
-  // }, [])
 
 
   if (!isAuthenticated || !user) {
