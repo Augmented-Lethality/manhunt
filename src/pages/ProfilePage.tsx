@@ -61,6 +61,7 @@ align-items: center;
 margin: 10px;
 `;
 
+
 const ProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
