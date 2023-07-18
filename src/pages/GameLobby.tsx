@@ -32,18 +32,18 @@ const Image = styled.div<{ ishost: string }>`
 const MinusButton = styled.div`
   position: absolute;
   bottom: 131vw;
-  left: 47vw;
-  height: 9vw;
-  width: 9vw;
+  left: 41vw;
+  height: 13vw;
+  width: 12vw;
   // border: 2px solid blue;
 `;
 
 const PlusButton = styled.div`
   position: absolute;
   bottom: 130vw;
-  left: 81vw;
-  width: 9vw;
-  height: 9vw;
+  left: 83vw;
+  width: 13vw;
+  height: 14vw;
   // border: 2px solid red;
 `;
 
