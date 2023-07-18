@@ -5,12 +5,14 @@ import {
   detectSingleFace,
   LabeledFaceDescriptors
 } from 'face-api.js';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import CapturePhoto from './CapturePhoto'
 import axios from 'axios';
 import { WebcamProvider } from '../contexts/WebcamProvider';
 import { UserData } from '../pages/ProfilePage'
-import {Save, Camera} from 'react-feather'
+import { Save, Camera } from 'react-feather'
+import InfoPopup from './Popups/InfoPopup';
+import SocketContext from '../contexts/Socket/SocketContext';
 
 interface CreateFaceDescriptionsProps {
   setPhotoStatus: (verify: string) => void;
@@ -21,7 +23,11 @@ interface CreateFaceDescriptionsProps {
 
 const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhotoStatus, username, userID, setUser }) => {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
-  const [verifying, setVerifying] = useState<boolean>(false)
+  const [verifying, setVerifying] = useState<boolean>(false);
+
+  const { UpdateSocketPlayer } = useContext(SocketContext);
+  const { player } = useContext(SocketContext).SocketState;
+
 
   useEffect(() => {
     loadModels();
@@ -46,7 +52,6 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhot
       const labeledFaceDescriptor = await createFaceDescriptor();
       if (labeledFaceDescriptor) {
         sendDescriptionToServer(labeledFaceDescriptor);
-        setPhotoStatus('profile')
       }
     } catch (err) {
       console.error(err)
@@ -73,7 +78,9 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhot
       const descriptorArray = Array.from(labeledFaceDescriptor.descriptors[0]);
       const res = await axios.patch(`/users/face-description/${userID}`, { descriptions: descriptorArray });
       if (res.status === 200) {
-        setUser(res.data)
+        setUser(res.data);
+        UpdateSocketPlayer(player.authId);
+        setPhotoStatus('profile')
       }
     } catch (error) {
       console.error('Error sending descriptor to server:', error);
@@ -88,38 +95,49 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhot
         <div style={{
           position: 'absolute',
           zIndex: '1',
-          bottom: '5vh',
           display: 'flex',
           justifyContent: 'space-around',
-          width: '100%'
+          width: '100%',
+          top: '78%',
         }}>
-          <div className='column' style={{color:'white'}}>
-            <Camera className='react-icon-large' onClick={() => { setImg(null) }} />
-            <h4 style={{
+          {!verifying && (
+            <>
+              <div className='column' style={{ color: 'white' }}>
+                <Camera className='react-icon-large' onClick={() => { setImg(null) }} />
+                <h4 style={{
                   wordSpacing: '10px',
                   marginTop: '-12px',
                   fontWeight: '400',
                   textAlign: 'center',
                   zIndex: '1'
-            }}>retake</h4>
-          </div>
-          <div className='column' style={{color:'white'}}>
-            <Save className='react-icon-large' onClick={handleSave} />
-            <h4 style={{
+                }}>retake</h4>
+              </div>
+              <div className='column' style={{ color: 'white' }}>
+                <Save className='react-icon-large' onClick={handleSave} />
+                <h4 style={{
                   wordSpacing: '10px',
                   marginTop: '-12px',
                   fontWeight: '400',
                   textAlign: 'center',
                   zIndex: '1'
-            }}>save</h4>
-          </div>
+                }}>save</h4>
+              </div>
+            </>
+          )}
         </div>
       </div>
     )
   }
 
+  const infoMessage = `CorpoPolice require your mug shot, ${player ? player.username : 'Bounty Hunter'}.\n\n` +
+    'Step 1.\nPosition your face within the frame, making sure it\'s fully visible.\n\n' +
+    'Step 2.\nHold still and take the shot!\n\n' +
+    'Step 3.\nIf you\'re happy with it, click the submit button and wait for the process to verify. Otherwise, feel free to retake if you need.';
+
+
   return (
     <WebcamProvider>
+      <InfoPopup message={infoMessage} />
       <CapturePhoto setImg={setImg} />
     </WebcamProvider>
   )
