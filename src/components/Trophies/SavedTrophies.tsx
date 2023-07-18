@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
-
+import InfoPopup from '../Popups/InfoPopup'
 
 export type TrophyData = {
   id: number;
@@ -219,13 +219,14 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const trophiesToDisplay = userTrophyData.slice(startIndex, endIndex);
   const totalPages = Math.ceil(userTrophyData.length / trophiesPerPage);
 
+  const infoMessage = 'Oooh, shiny!\n\nEarn trophies when you win games.'
   return (
     <div
       style={{
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        
       }}
     >
       {trophiesToDisplay.length === 0 ? (
@@ -249,6 +250,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
             frameBorder='0'
             allowFullScreen
           ></iframe>
+          <InfoPopup message={infoMessage} />
         </div>
       ) : (
         trophiesToDisplay
@@ -385,6 +387,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
             </div>
             
           )}
+          {totalPages > 1 && (
            <span
           style={{
             display: 'flex',
@@ -393,7 +396,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
           }}
         >
           Page {currentPage}
-        </span>
+        </span>)}
         </div>
       </div>
     </div>

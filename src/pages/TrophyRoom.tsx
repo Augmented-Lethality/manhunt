@@ -35,7 +35,7 @@ const TrophyRoom: React.FC = () => {
             </Suspense>
           </div>
         </div>
-        <InfoPopup message={infoMessage} />
+        
 
       </Main>
     </>
