@@ -348,6 +348,16 @@ input::placeholder{color: cyan;}
   position: relative;
 }
 
+.dropdownicon {
+  width: 3rem;
+  height: 3rem;
+  padding: 5px;
+  border-radius: 50%;
+  background: #00000070;
+  color: #20e4e1;
+  box-shadow: 0 0 0 1px black, 0 0 0 4px #76dfe4, 0 0 0 7px black;
+}
+
 .bold {
   font-weight: 600;
 }
