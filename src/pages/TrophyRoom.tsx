@@ -14,9 +14,9 @@ const TrophyRoom: React.FC = () => {
   return (
     <>
       <Header page='Trophies' />
-      <Main style={{ height: '100vh' }}>
-        <div className='content__body'>
-          <div style={{ width: '300px', height: '300px' }}>
+      <Main style={{ height: '100vh'}}>
+        <div className='content__body' style={{ display: 'flex', justifyContent: 'center', height: '100%'}}>
+          <div style={{ width: '20em', height: '20em'}}>
             <Suspense fallback={<PhoneLoader />}>
               <SavedTrophies
                 id={0}
@@ -30,6 +30,7 @@ const TrophyRoom: React.FC = () => {
                 shape={''}
                 tubularSegments={0}
                 tubeWidth={0}
+                
               />
             </Suspense>
           </div>

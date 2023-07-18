@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -197,7 +197,6 @@ const SingleTrophy: React.FC<TrophyData> = () => {
   }, [userData]);
   
 
-  
   const trophyToDisplay = userTrophyData.length > 0 ? [userTrophyData[userTrophyData.length - 1]] : [];
  
 

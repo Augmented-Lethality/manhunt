@@ -221,23 +221,27 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   return (
     <div>
       {trophiesToDisplay.length === 0 ? (
-        
-          <div
-            className='glassmorphism'
-            style={{
-              fontWeight: 'bold', 
-              borderRadius: '1em',
-              padding: '1em',
-              width: '100%',
-              textAlign: 'center',
-              margin: '1em 3em 1em 3em',
-            }}
-          >
-            <h3>No Trophies?!?</h3>
-            <h3>Get Out There and Hunt!</h3>
-            <iframe src="https://giphy.com/embed/v3mSElAsyJSqA" width="250" height="250" frameBorder="0" allowFullScreen></iframe>
-          </div>
-         
+        <div
+          className='glassmorphism'
+          style={{
+            fontWeight: 'bold',
+            borderRadius: '1em',
+            padding: '1em',
+            width: '100%',
+            textAlign: 'center',
+            marginTop: '1em',
+          }}
+        >
+          <h3>No Trophies?!?</h3>
+          <h3>Get Out There and Hunt!</h3>
+          <iframe
+            src='https://giphy.com/embed/v3mSElAsyJSqA'
+            width='250'
+            height='250'
+            frameBorder='0'
+            allowFullScreen
+          ></iframe>
+        </div>
       ) : (
         trophiesToDisplay
           .slice(0)
@@ -251,7 +255,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 onMouseMove={(e) => handleMouseMove(e, index)}
                 style={{
                   color: '#2d2d2d',
-                  margin: '1em 2em 1em 2em',
+                  marginTop: '2em',
                   borderRadius: '1em',
                   padding: '1em',
                   width: '100%',
@@ -310,49 +314,78 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   )}
                 </Canvas>
 
-                <details style={{ textAlign: 'left', }}>
-                  <summary style={{ textAlign: 'right', marginInline: '0px'}}>Details</summary>
-                  <div style={{fontSize: '0.75rem', padding: '1rem'}}>
-                  <div><strong>Designation:</strong> {trophy.name}</div>
-                  <div><strong>Report:</strong> {trophy.description}</div>
-                  <div><strong>Class:</strong> {trophy.shape}</div>
-                  <div><strong>Magnitude:</strong> {trophy.dimension}</div>
-                  <div><strong>Chroma:</strong> {getColorName(trophy.color)}</div>
-                  <div><strong>Earned on:</strong> {trophy.createdAt}</div>
+                <details style={{ textAlign: 'left' }}>
+                  <summary style={{ textAlign: 'right', marginInline: '0px' }}>
+                    Details
+                  </summary>
+                  <div style={{ fontSize: '0.75rem', padding: '1rem' }}>
+                    <div>
+                      <strong>Designation:</strong> {trophy.name}
+                    </div>
+                    <div>
+                      <strong>Report:</strong> {trophy.description}
+                    </div>
+                    <div>
+                      <strong>Class:</strong> {trophy.shape}
+                    </div>
+                    <div>
+                      <strong>Magnitude:</strong> {trophy.dimension}
+                    </div>
+                    <div>
+                      <strong>Chroma:</strong> {getColorName(trophy.color)}
+                    </div>
+                    <div>
+                      <strong>Earned on:</strong> {trophy.createdAt}
+                    </div>
                   </div>
                 </details>
               </div>
             </div>
           ))
       )}
-      <div>
-        {totalPages > 1 && (
-          <div style={{
-            display: 'flex',
-            position: 'sticky',
-            bottom: 0,
-            alignItems: 'center',
-          }}>
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
+
+      <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                position: 'sticky',
+                bottom: 5,
+                alignItems: 'center',
+              }}>
+        <div >
+          {totalPages > 1 && (
+            <div
+              style={{
+                display: 'flex',
+              }}
             >
-              Prev
-            </button>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
-              Next
-            </button>
-            <span style={{ display: 'flex', padding: '1em' }}>
-              Page {currentPage}
-            </span>
-          </div>
-        )}
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(currentPage - 1)}
+              >
+                Prev
+              </button>
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(currentPage + 1)}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </div>
+        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          Page {currentPage}
+        </span>
       </div>
     </div>
   );
 };
 
 export default SavedTrophies;
+
+
+
+// display: 'flex'
+// flexDirection: 'column'
+// alignItems: 'center'
+// justifyContent: 'center'
