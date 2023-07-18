@@ -16,10 +16,9 @@ const IdContainer = styled.div`
   height: 385px;
   width: 90vw;
   overflow: hidden;
-  background: #fbfbfb;
+  background: linear-gradient(161deg, #e6e6e6ed, #acacace6);
   border-radius: 30px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
-  border: 2px solid black;
+  box-shadow: 0 -2px 2px 0 white, 0 2px 2px 0 #424242, 0 0 8px rgba(0, 0, 0, 0.8);
 `
 // Black band that holds Corpoverse and Official ID (TitleText)
 const TitleContainer = styled.div`
@@ -55,6 +54,7 @@ margin: 10px;
 const ProfilePic = styled.img`
   height: 100px;
   border: 6px solid black;
+  overflow:hidden;
 `;
 
 const Username = styled.h2`
@@ -74,6 +74,9 @@ const StatsContainer = styled.div`
   }
   padding: 10px;
   border-top: 1px solid black;
+  * {
+    align-items: start;
+  }
 `;
 
 // Barcode, still uses the className='barcode'
@@ -112,7 +115,7 @@ const IdCard: React.FC = () => {
           <div>
             <h5>Total Matches: {player.gamesPlayed}</h5>
             <h5 style={{ textAlign: 'center' }}>
-              K\D: {player.gamesPlayed !== 0 ? (player.killsConfirmed / player.gamesPlayed).toFixed(2) : 0}
+              K|D Ratio: {player.gamesPlayed !== 0 ? (player.killsConfirmed / player.gamesPlayed).toFixed(2) : 0}
             </h5>
           </div>
         </>
