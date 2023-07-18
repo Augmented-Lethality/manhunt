@@ -249,24 +249,3 @@ User.belongsToMany(User, { as: 'requestees', through: Friend, foreignKey: 'initi
 User.belongsToMany(User, { as: 'initiators', through: Friend, foreignKey: 'requesteeId', otherKey: 'initiatorId'});
 
 export { User, Friend, Game, Trophy, UserTrophy, Locations };
-
-/*** THE FOLLOWING EXISTS INCASE YOU NEED TO DROP INDIVIDUAL TABLES ***/
-/*** JUST UNCOMMENT THE TABLE FROM THE LIST BELOW ***/
-/*** THEN RECOMMENT IT SO YOU DON'T ACCIDENTALLY DELETE A TABLE YOU DONT WANT TO ***/
-
-// async function dropTables(): Promise<void> {
-//   try {
-//     // Drop the tables in reverse order of their dependencies
-//     await UserTrophy.drop();
-//     await Trophy.drop();
-//     await Friend.drop();
-//     await Game.drop();
-//     await User.drop();
-
-//     console.log('Tables listed have been dropped.');
-//   } catch (error) {
-//     console.error('An error occurred while dropping the tables:', error);
-//   }
-// }
-
-// dropTables();
