@@ -9,7 +9,8 @@ import {
   XCircle,
   LogOut,
   Settings,
-  Award
+  Award,
+  Menu
 } from 'react-feather';
 
 const dropdownAnimation = keyframes`
@@ -28,7 +29,7 @@ const Backdrop = styled.div<{ open: boolean }>`
   z-index: 1;
 `;
 
-const Menu = styled.div<{ open: boolean }>`
+const MenuContainer = styled.div<{ open: boolean }>`
   display: ${props => props.open ? 'block' : 'none'};
   animation: ${dropdownAnimation} 0.4s ease-in-out;
   position: absolute;
@@ -84,16 +85,9 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'end' }}>
-      {user &&
-        <img
-          src={user.picture}
-          alt='Profile'
-          className='profile__avatar'
-          onClick={toggleMenu}
-          style={{ height: '3.4rem', borderRadius: '50%', border: 'solid 2px' }} />
-      }
+      <Menu onClick={toggleMenu} className='dropdownicon'/>
       <Backdrop open={isMenuOpen} onClick={toggleMenu} />
-      <Menu className='glassmorphism' open={isMenuOpen}>
+      <MenuContainer className='glassmorphism' open={isMenuOpen}>
         <Close onClick={toggleMenu} />
         {pages.map((pageName, index) => {
           if (page.toLowerCase() !== pageName) {
@@ -108,7 +102,7 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
           <LogOut />
           logout
         </p>
-      </Menu>
+      </MenuContainer>
     </div>
   );
 };
