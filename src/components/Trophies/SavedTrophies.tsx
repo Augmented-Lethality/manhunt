@@ -4,6 +4,7 @@ import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
+
 export type TrophyData = {
   id: number;
   name: string;
@@ -382,7 +383,17 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 Next
               </button>
             </div>
+            
           )}
+           <span
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          Page {currentPage}
+        </span>
         </div>
       </div>
     </div>
