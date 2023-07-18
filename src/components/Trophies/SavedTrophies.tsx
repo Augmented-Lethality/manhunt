@@ -219,7 +219,14 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const totalPages = Math.ceil(userTrophyData.length / trophiesPerPage);
 
   return (
-    <div>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
+    >
       {trophiesToDisplay.length === 0 ? (
         <div
           className='glassmorphism'
@@ -344,20 +351,24 @@ const SavedTrophies: React.FC<TrophyData> = () => {
           ))
       )}
 
-      <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                position: 'sticky',
-                bottom: 5,
-                alignItems: 'center',
-              }}>
-        <div >
+      <div
+        style={{
+          display: 'flex',
+          alignSelf: 'center',
+          position: 'sticky',
+          bottom: 1,
+        }}
+      >
+        <div>
           {totalPages > 1 && (
             <div
               style={{
                 display: 'flex',
+                width: '70%',
+                margin: 'auto',
               }}
             >
+              <div></div>
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
@@ -373,19 +384,9 @@ const SavedTrophies: React.FC<TrophyData> = () => {
             </div>
           )}
         </div>
-        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-          Page {currentPage}
-        </span>
       </div>
     </div>
   );
 };
 
 export default SavedTrophies;
-
-
-
-// display: 'flex'
-// flexDirection: 'column'
-// alignItems: 'center'
-// justifyContent: 'center'

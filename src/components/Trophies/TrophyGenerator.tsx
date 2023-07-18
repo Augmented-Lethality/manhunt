@@ -49,9 +49,9 @@ const TrophyGenerator: React.FC = () => {
   };
 
   const trophyData = {
-    dimension: useMemo(() => getRandomElement([1, 2, 2.5]), []),
-    dimensionTwo: useMemo(() => getRandomElement([1, 2, 2.5]), []),
-    dimensionThree: useMemo(() => getRandomElement([1, 2, 2.5]), []),
+    dimension: useMemo(() => getRandomElement([1, 2, 3]), []),
+    dimensionTwo: useMemo(() => getRandomElement([1, 2, 3]), []),
+    dimensionThree: useMemo(() => getRandomElement([1, 2, 3]), []),
     color: useMemo(
       () =>
         getRandomElement([
