@@ -21,7 +21,7 @@ const NoBountiesSign = styled.div`
   background-size: cover;
   background-position: center;
   box-shadow: 13px 23px 30px 2px #00000059;
-  background-image: url(/textures/find-game-button.png);
+  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/find-game-button.png");
   font-size: 2.7rem;
   text-align: center;
 `

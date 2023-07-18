@@ -13,7 +13,7 @@ body {
   font-family: 'Source Code Pro';
   font-size: var(--font-size);
   word-wrap: break-word;
-  background: url("/textures/background-small.png") no-repeat;
+  background: url("https://d3d9qwhf4u1hj.cloudfront.net/images/background-small.png") no-repeat;
   background-size: cover;
   display: flex;
   flex-direction: column;
@@ -35,7 +35,7 @@ body {
 }
 
 .paper{
-  background: url(/textures/paper.png);
+  background: url("https://d3d9qwhf4u1hj.cloudfront.net/images/paper.png");
   background-size: cover;
   background-position: center;
 }

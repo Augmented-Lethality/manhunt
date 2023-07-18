@@ -19,7 +19,7 @@ const Image = styled.div`
   height: 145.5vw;
   width: 100%;
   box-sizing: border-box;
-  background-image: url(/textures/computer.png);
+  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/computer.png");
   background-size: contain;
   background-repeat: no-repeat;
 `;

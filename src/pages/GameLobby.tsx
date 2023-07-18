@@ -23,8 +23,8 @@ const Image = styled.div<{ ishost: string }>`
   box-sizing: border-box;
   background-image:
     ${props => props.ishost
-    ? 'url(/textures/lobby-host.png)'
-    : 'url(/textures/lobby-guest.png)'};
+    ? 'url("https://d3d9qwhf4u1hj.cloudfront.net/images/lobby-host.png")'
+    : 'url("https://d3d9qwhf4u1hj.cloudfront.net/images/lobby-guest.png")'};
   background-size: contain;
   background-repeat: no-repeat;
 `;
@@ -87,7 +87,7 @@ const TimeContainer = styled.div`
 `;
 
 const CountdownContainer = styled.div`
-  background: url(/textures/paper.png);
+  background: url("https://d3d9qwhf4u1hj.cloudfront.net/images/paper.png");
   background-size: cover;
   background-position: center;
   display: flex;

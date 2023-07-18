@@ -14,7 +14,7 @@ export const BioDataPopup: React.FC = () => {
   );
 
   const backgroundStyle: CSSProperties = {
-    background: 'url(/textures/paper.png)',
+    background: 'url("https://d3d9qwhf4u1hj.cloudfront.net/images/paper.png")',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',

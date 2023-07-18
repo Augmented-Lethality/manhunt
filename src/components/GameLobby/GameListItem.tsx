@@ -19,7 +19,7 @@ export const GameContainer = styled.div`
   text-shadow: -2px -2px 0 #000, 2px -1px 0 #000, -2px 2px 0 #000, 1px 1px 0 #000;
   background-size: cover;
   background-position: center;
-  background-image: url(/textures/find-a-contract.png);
+  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/find-a-contract.png");
   font-size: 1rem;
   text-align: center;
 `;
