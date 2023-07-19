@@ -2,7 +2,6 @@ import React, { useRef, useState, useMemo, useEffect, useContext } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
-// import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext, { Player } from '../../contexts/Socket/SocketContext';
 
 
@@ -16,7 +15,7 @@ const TrophyGenerator: React.FC = () => {
   const [trophyDescription, setTrophyDescription] = useState('');
   const { player } = useContext(SocketContext).SocketState;
 
-  // event handlers
+  
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
     setPrevMouseX(e.clientX);
@@ -49,9 +48,9 @@ const TrophyGenerator: React.FC = () => {
   };
 
   const trophyData = {
-    dimension: useMemo(() => getRandomElement([1, 2, 3]), []),
-    dimensionTwo: useMemo(() => getRandomElement([1, 2, 3]), []),
-    dimensionThree: useMemo(() => getRandomElement([1, 2, 3]), []),
+    dimension: useMemo(() => getRandomElement([1, 2, 2.5]), []),
+    dimensionTwo: useMemo(() => getRandomElement([1, 2, 2.5]), []),
+    dimensionThree: useMemo(() => getRandomElement([1, 2, 2.5]), []),
     color: useMemo(
       () =>
         getRandomElement([
