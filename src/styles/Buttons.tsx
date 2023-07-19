@@ -135,8 +135,14 @@ export const ButtonToProfile: React.FC = () => {
 export const ButtonToFindGame: React.FC = () => {
   const navigate = useNavigate();
 
+  const { player } = useContext(SocketContext).SocketState;
+
   const handleClick = () => {
-    navigate('/access', { state: { info: 'join' } });
+    if (player.facialDescriptions) {
+      navigate('/access', { state: { info: 'join' } });
+    } else {
+      window.location.reload(); // refreshes page to show popup about adding Bio Data
+    }
   }
 
   return <LargeButton label='See the Contract Board' route='' onClick={handleClick} />;
@@ -153,9 +159,14 @@ export const ButtonToJoinLobby: React.FC = () => {
 
 export const ButtonToHostGame: React.FC = () => {
   const navigate = useNavigate();
+  const { player } = useContext(SocketContext).SocketState;
 
   const handleClick = () => {
-    navigate('/access', { state: { info: 'create' } });
+    if (player.facialDescriptions) {
+      navigate('/access', { state: { info: 'create' } });
+    } else {
+      window.location.reload(); // refreshes page to show popup about adding Bio Data
+    }
   }
 
   return <LargeButton label='Host a Contract' route='' onClick={handleClick} />;

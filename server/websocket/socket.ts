@@ -76,7 +76,7 @@ export class ServerSocket {
         console.log('user was null for some reason, dang it Auth0!');
       }
 
-      console.log('handshake from:', user.nickname, 'at', pathname)
+      console.log('handshake from:', user, 'at', pathname)
 
       let player = null;
 
@@ -447,6 +447,19 @@ export class ServerSocket {
         console.log(err);
       }
 
+    });
+
+    socket.on('update_socket_player', async (id, toClient) => {
+      try {
+        const existingUser = await this.FindUserByAuthId(id);
+        if (existingUser) {
+          toClient(existingUser);
+        } else {
+          console.log('no existing person the database to grab with that id');
+        }
+      } catch (err) {
+        console.log('error updating socket player:', err);
+      }
     });
 
     socket.on('nav_to_endpoint', async (endpoint) => {

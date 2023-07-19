@@ -70,10 +70,6 @@ const ProfilePage: React.FC = () => {
 
   const { player } = useContext(SocketContext).SocketState;
 
-  if (!player.username.length) {
-    return null;
-  }
-
 
   useEffect(() => {
     fetchUserData();
@@ -144,7 +140,7 @@ const ProfilePage: React.FC = () => {
           <CreateFaceDescriptions
             setPhotoStatus={setPhotoStatus}
             username={user?.name}
-            userID={player.authId}
+            userID={user?.sub}
             setUser={setUserData}
           />
         </Main>
@@ -153,45 +149,49 @@ const ProfilePage: React.FC = () => {
   }
 
 
-  const infoMessage = 'At Corpoverse, we prioritize your privacy and security.\n\n' +
-    'Your biodata is used for internal state-related activities and is stored as vectors, not the picture itself, ensuring your utmost safety.\n' +
+  const verifiedMessage = 'At Corpoverse, we prioritize your privacy and security.\n\n' +
+    'Your Bio Data is used for internal state-related activities and is stored as vectors, not the picture itself, ensuring your utmost safety.\n\n' +
     'We operate independently, disregarding any external governing body; your data is safe with us!'
+
+  const notVerifiedMessage = 'Citizen has not been processed by the CorpoReality Police.\n\n' +
+    'Use the button below to verify your Bio Data and Corpoverse may gift you an official ID; depends on if you\'re deemed a proper bounty hunter by your mug.';
 
   return (
     <>
       <Header page='Profile' />
       <Main>
-        {trophiesExist ? (
-          <TrophyContainer>
-            <SingleTrophy
-              id={0}
-              name={''}
-              description={''}
-              createdAt={''}
-              dimension={0}
-              color={''}
-              shape={''}
-              tubularSegments={0}
-              tubeWidth={0}
-              dimensionTwo={0}
-              dimensionThree={0}
-            />
-          </TrophyContainer>
-        ) : (
-          <TrophyContainer>
-            <iframe src="https://giphy.com/embed/DcTN1NEaLjw4E0xvAE" width="90" height="160" frameBorder="0" allowFullScreen></iframe>
-          </TrophyContainer>
+        {player.facialDescriptions ? <InfoPopup message={verifiedMessage} /> : <InfoPopup message={notVerifiedMessage} />}
+        {player.facialDescriptions && (
+          trophiesExist ? (
+            <TrophyContainer>
+              <SingleTrophy
+                id={0}
+                name={''}
+                description={''}
+                createdAt={''}
+                dimension={0}
+                color={''}
+                shape={''}
+                tubularSegments={0}
+                tubeWidth={0}
+                dimensionTwo={0}
+                dimensionThree={0}
+              />
+            </TrophyContainer>
+          ) : (
+            <TrophyContainer>
+              <iframe src="https://giphy.com/embed/DcTN1NEaLjw4E0xvAE" width="90" height="160" frameBorder="0" allowFullScreen></iframe>
+            </TrophyContainer>
+          )
         )}
         {player.facialDescriptions ? <IdCard /> : <IdPaper />}
         <VerificationContainer className='glassmorphism'>
-          <InfoPopup message={infoMessage} />
           <VerTitleContainer>
             {player.facialDescriptions ? (
               <h2 style={{ fontSize: '1.6rem', }}>Citizen Verified!</h2>
             ) : (
               <h3>
-                Citizen has not been processed by the CorpoReality Police. Please
-                send in Biodata to participate in SOCIETY™.
+                Please send in Bio Data to participate in SOCIETY™.
               </h3>
             )}
             {player.facialDescriptions ? (

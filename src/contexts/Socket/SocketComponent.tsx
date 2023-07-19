@@ -241,6 +241,14 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     SocketDispatch({ type: 'update_player_coordinates', payload: coordinates });
   }
 
+  const UpdateSocketPlayer = (id: string) => {
+    socket.emit('update_socket_player', id, (updatedUser) => {
+      if (updatedUser) {
+        SocketDispatch({ type: 'update_player', payload: updatedUser });
+      }
+    });
+  }
+
   // showing this on client side while socket isn't connected
   if (loading) {
     return <PhoneLoader />
@@ -251,7 +259,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
   return (
     <SocketContextProvider value={{
       SocketState, SocketDispatch, CreateGame, AddLocation, JoinGame, Redirect, SetHunted, LeaveGame, UpdateGameStatus,
-      AddGameStats, UpdateReady, AddGameDuration, AddGameStart, UpdatePlayerCoordinates
+      AddGameStats, UpdateReady, AddGameDuration, AddGameStart, UpdatePlayerCoordinates, UpdateSocketPlayer
     }}>
       {children}
     </SocketContextProvider>
