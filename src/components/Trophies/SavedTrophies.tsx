@@ -4,6 +4,18 @@ import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import InfoPopup from '../Popups/InfoPopup';
+import styled from 'styled-components';
+
+const LoadingMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  height: 100vh;
+  color: transparent;
+  text-shadow: 0 0 4px black;
+`;
 
 export type TrophyData = {
   id: number;
@@ -41,8 +53,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   const [userTrophyData, setUserTrophyData] = useState<TrophyData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasLoaded, setHasLoaded] = useState(false);
-  
-  
+
   const fetchUserData = async () => {
     try {
       const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
@@ -203,14 +214,10 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     }
   }, [isAuthenticated]);
 
-  
   useEffect(() => {
-    fetchUserTrophyData()
-     
-      .catch((error) => {
-        console.error('Error fetching user trophy data:', error);
-        
-      });
+    fetchUserTrophyData().catch((error) => {
+      console.error('Error fetching user trophy data:', error);
+    });
   }, [userData]);
 
   const trophiesPerPage = 9;
@@ -229,11 +236,13 @@ const SavedTrophies: React.FC<TrophyData> = () => {
         flexDirection: 'column',
       }}
     >
-            {hasLoaded === false ? (
-        <div>LOADING...</div>
+      {hasLoaded === false ? (
+        <LoadingMessage>
+          <h2>LOADING...</h2>
+        </LoadingMessage>
       ) : (
         <div>
-          {trophiesToDisplay.length === 0  ? (
+          {trophiesToDisplay.length === 0 ? (
             <div
               className='glassmorphism'
               style={{
@@ -257,7 +266,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               <InfoPopup message={infoMessage} />
             </div>
           ) : (
-
             trophiesToDisplay
               .slice(0)
               .reverse()
