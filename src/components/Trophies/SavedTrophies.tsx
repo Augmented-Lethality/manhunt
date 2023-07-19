@@ -10,12 +10,12 @@ const LoadingMessage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2rem;
   font-weight: bold;
   height: 100vh;
   color: transparent;
   text-shadow: 0 0 4px black;
 `;
+
 
 export type TrophyData = {
   id: number;
