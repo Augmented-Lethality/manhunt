@@ -27,6 +27,9 @@ const Image = styled.div<{ ishost: string }>`
     : 'url("https://d3d9qwhf4u1hj.cloudfront.net/images/lobby-guest.png")'};
   background-size: contain;
   background-repeat: no-repeat;
+  @media (min-aspect-ratio: 334/700) {
+    background-position: center 100px;
+  }
 `;
 
 const MinusButton = styled.div`
@@ -36,6 +39,9 @@ const MinusButton = styled.div`
   height: 13vw;
   width: 12vw;
   // border: 2px solid blue;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(131vw - 100px);
+  }
 `;
 
 const PlusButton = styled.div`
@@ -45,6 +51,9 @@ const PlusButton = styled.div`
   width: 13vw;
   height: 14vw;
   // border: 2px solid red;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(130vw - 100px);
+  }
 `;
 
 const PlayButton = styled.div`
@@ -54,6 +63,9 @@ const PlayButton = styled.div`
   height: 22vw;
   width: 21vw;
   // border: 2px solid green;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(140vw - 100px);
+  }
 `;
 const BackButton = styled.div`
   position: absolute;
@@ -62,6 +74,9 @@ const BackButton = styled.div`
   height: 22vw;
   width: 22vw;
   // border: 2px solid pink;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(134vw - 100px);
+  }
 `;
 
 const PlayersContainer = styled.div`
@@ -72,6 +87,9 @@ const PlayersContainer = styled.div`
   width: 70vw;
   overflow: auto;
   // border: 2px solid cyan;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(54vw - 100px);
+  }
 `;
 const TimeContainer = styled.div`
   position: absolute;
@@ -84,6 +102,9 @@ const TimeContainer = styled.div`
   color: #009f40;
   font-size: 1.2rem;
   // border: 2px solid yellow;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(133vw - 100px);
+  }
 `;
 
 const CountdownContainer = styled.div`
