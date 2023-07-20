@@ -5,9 +5,7 @@ import SocketContext from '../contexts/Socket/SocketContext';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { useFontSize } from '../contexts/FontSize';
-
 import { BioDataPopup } from '../components/Popups/BioDataPopup';
-
 import InfoPopup from '../components/Popups/InfoPopup';
 
 const HomePage = () => {
