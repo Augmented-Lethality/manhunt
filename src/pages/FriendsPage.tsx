@@ -157,7 +157,7 @@ const FriendsPage: React.FC = () => {
               <UsersList users={offlineFriends} header={`Offline • ${offlineFriends.length}`} />
             </>
           ) : searchResults.length === 0 ? (
-            <h2 className='digital-h1' style={{ textAlign: 'left' }}>Target not found.</h2>
+            <h2 className='digital-h1' style={{ textAlign: 'left' }}>Target not found</h2>
           ) : (
             <UsersList header={`Results • ${onlineFriends.length}`} users={searchResults} />
           )}
