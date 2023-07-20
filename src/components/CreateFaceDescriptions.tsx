@@ -89,7 +89,7 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhot
 
   if (img) {
     return (
-      <div>
+      <>
         {verifying && <h1 style={{ position: 'absolute' }}>Verifying</h1>}
         <img src={img.src} alt="Screenshot" style={{ height: '100%', width: '100%', objectFit: 'cover' }} />
         <div style={{
@@ -125,7 +125,7 @@ const CreateFaceDescriptions: React.FC<CreateFaceDescriptionsProps> = ({ setPhot
             </>
           )}
         </div>
-      </div>
+      </>
     )
   }
 
