@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
-import InfoPopup from '../Popups/InfoPopup';
+import NoTrophyInfoPopup from '../Popups/NoTrophyInfoPopup';
 import TrophyInfoPopup from '../Popups/TrophyInfoPopup';
 import styled from 'styled-components';
 
@@ -263,7 +263,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 frameBorder='0'
                 allowFullScreen
               ></iframe>
-              <InfoPopup message={infoMessage} />
+              <NoTrophyInfoPopup message={infoMessage} />
             </div>
           ) : (
             trophiesToDisplay
@@ -413,7 +413,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   </button>
                 </div>
               )}
-              {totalPages > 1 && <span>Page {currentPage}</span>}
+              {totalPages > 1 && <span>Pg {currentPage}</span>}
             </div>
           </div>
         </div>
