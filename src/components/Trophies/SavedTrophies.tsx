@@ -277,9 +277,9 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                     onMouseUp={handleMouseUp}
                     onMouseMove={(e) => handleMouseMove(e, index)}
                     style={{
-                      marginTop: '3em',
+                      marginTop: '4em',
                       borderRadius: '1em',
-                      padding: '1em',
+                      padding: '4em',
                       width: '100%',
                     }}
                   >
