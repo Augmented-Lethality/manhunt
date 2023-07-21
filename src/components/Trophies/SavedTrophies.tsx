@@ -4,6 +4,7 @@ import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import InfoPopup from '../Popups/InfoPopup';
+import TrophyInfoPopup from '../Popups/TrophyInfoPopup';
 import styled from 'styled-components';
 
 const LoadingMessage = styled.div`
@@ -15,7 +16,6 @@ const LoadingMessage = styled.div`
   color: transparent;
   text-shadow: 0 0 4px black;
 `;
-
 
 export type TrophyData = {
   id: number;
@@ -277,8 +277,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                     onMouseUp={handleMouseUp}
                     onMouseMove={(e) => handleMouseMove(e, index)}
                     style={{
-                      color: '#2d2d2d',
-                      marginTop: '2em',
+                      marginTop: '3em',
                       borderRadius: '1em',
                       padding: '1em',
                       width: '100%',
@@ -338,8 +337,19 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                         </Torus>
                       )}
                     </Canvas>
+                    <div>
+                      <TrophyInfoPopup
+                        message={`${trophy.name}
+                      Report: ${trophy.description}
+                      Class: ${trophy.shape}
+                      Magnitude: ${trophy.dimension}
+                      Chroma: ${getColorName(trophy.color)}
+                      Earned On: ${trophy.createdAt}
+                    `}
+                      />
+                    </div>
 
-                    <details style={{ textAlign: 'left' }}>
+                    {/* <details style={{ textAlign: 'left' }}>
                       <summary
                         style={{ textAlign: 'right', marginInline: '0px' }}
                       >
@@ -365,7 +375,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                           <strong>Earned on:</strong> {trophy.createdAt}
                         </div>
                       </div>
-                    </details>
+                    </details> */}
                   </div>
                 </div>
               ))
@@ -385,7 +395,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   style={{
                     display: 'flex',
                     width: '70%',
-                    margin: 'auto',
                   }}
                 >
                   <div></div>
@@ -395,6 +404,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   >
                     Prev
                   </button>
+
                   <button
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage(currentPage + 1)}
@@ -403,17 +413,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   </button>
                 </div>
               )}
-              {totalPages > 1 && (
-                <span
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  Page {currentPage}
-                </span>
-              )}
+              {totalPages > 1 && <span>Page {currentPage}</span>}
             </div>
           </div>
         </div>
