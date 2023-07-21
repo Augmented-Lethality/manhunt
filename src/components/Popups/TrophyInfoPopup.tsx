@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   text-align: center;
   position: absolute;
   bottom: 0.5em;
-  right: 1em; /* Adjust this value as needed */
+  right: 1em; 
 `;
 
 const PopupContent = styled.div`
@@ -26,6 +26,7 @@ const PopupContent = styled.div`
   overflow-y: auto;
   max-width: 300px;
   border: solid black 2px;
+  text-decoration: none; 
 `;
 
 const TrophyName = styled.div`
@@ -43,13 +44,14 @@ const TrophyName = styled.div`
 
 const StyledInfo = styled(Info)`
   font-weight: bold;
+  text-decoration: none; 
 `;
 
-interface InfoPopupProps {
+interface TrophyInfoPopupProps {
   message: string;
 }
 
-const InfoPopup: React.FC<InfoPopupProps> = ({ message }) => {
+const TrophyInfoPopup: React.FC<TrophyInfoPopupProps> = ({ message }) => {
   return (
     <Popup
       trigger={
@@ -84,5 +86,5 @@ const InfoPopup: React.FC<InfoPopupProps> = ({ message }) => {
   );
 };
 
-export default InfoPopup;
+export default TrophyInfoPopup;
 
