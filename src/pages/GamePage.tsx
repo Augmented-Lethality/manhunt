@@ -10,7 +10,7 @@ import Countdown from '../components/GameLobby/Countdown';
 import { GameHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { Crosshair, Eye } from 'react-feather';
-import DropDownMenu from '../components/DropDownMenu';
+import DropDownMenu from '../styles/DropDownMenu';
 
 const GamePage: React.FC = () => {
   // which component do we render? kill or chase?
