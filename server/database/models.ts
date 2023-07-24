@@ -3,11 +3,15 @@ import sequelize from './index';
 
 ////////////////////////////////////////////////
 class User extends Model {
-  gamesPlayed: any;
-  gamesWon: any;
-  killsConfirmed: any;
+  id!: number;
+  gamesPlayed!: number;
+  gamesWon!: number;
+  killsConfirmed!: number;
   facialDescriptions: any;
-  largeFont: any;
+  largeFont!: boolean;
+  friends!: Array<number>;
+  sentRequests!: Array<number>;
+  receivedRequests!: Array<number>;
 }
 User.init({
   id: {
@@ -75,44 +79,22 @@ User.init({
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
-  }
-}, { sequelize });
-
-////////////////////////////////////////////////
-
-class Friend extends Model {
-  status!: string;
-  initiatorId!: number;
-  requesteeId!: number;
-}
-
-Friend.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
   },
-  initiatorId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: User,
-      key: 'id'
-    },
-    allowNull: false
-  },
-  requesteeId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: User,
-      key: 'id'
-    },
-    allowNull: false
-  },
-  status: {
-    type: DataTypes.ENUM('pending', 'accepted', 'blocked'),
+  friends: {
+    type: DataTypes.ARRAY(DataTypes.INTEGER),
     allowNull: false,
-    defaultValue: 'pending'
+    defaultValue: []
   },
+  sentRequests: {
+    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    allowNull: false,
+    defaultValue: []
+  },
+  receivedRequests: {
+    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    allowNull: false,
+    defaultValue: []
+  }
 }, { sequelize });
 
 ////////////////////////////////////////////////
@@ -245,7 +227,4 @@ UserTrophy.init({
 User.belongsToMany(Trophy, { through: UserTrophy });
 Trophy.belongsToMany(User, { through: UserTrophy });
 
-User.belongsToMany(User, { as: 'requestees', through: Friend, foreignKey: 'initiatorId', otherKey: 'requesteeId'});
-User.belongsToMany(User, { as: 'initiators', through: Friend, foreignKey: 'requesteeId', otherKey: 'initiatorId'});
-
-export { User, Friend, Game, Trophy, UserTrophy, Locations };
+export { User, Game, Trophy, UserTrophy, Locations };
