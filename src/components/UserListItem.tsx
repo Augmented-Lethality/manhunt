@@ -49,7 +49,6 @@ const UserListItem: React.FC<{ player: User }> = ({ player }) => {
         </h1>
       )}
       <Username>{player.username}</Username><br />
-      {/* <KD>{player.gamesWon / player.gamesPlayed}</KD><br /> */}
     </UserContainer>
   );
 };
