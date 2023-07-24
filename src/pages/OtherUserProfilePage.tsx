@@ -6,6 +6,7 @@ import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
 import { UserPlus } from 'react-feather';
 import Loading from '../components/Loaders/Loading';
+import FriendRequestPopup from '../components/Popups/FriendRequest';
 
 type ProfileData = {
   authId: string;
@@ -17,7 +18,7 @@ type ProfileData = {
 
 const OtherUserProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
-  const { username } = useParams();
+  const { username } = useParams()
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
@@ -35,18 +36,18 @@ const OtherUserProfilePage: React.FC = () => {
     }
   };
 
-  const addFriend = async () => {
+
+  const sendFriendRequest = async (username: string) => {
     try {
       const res = await axios.post(`/friends`, {
         userId: user?.sub,
-        friendId: profileData?.authId,
-        status: 'pending'
+        friendName: username,
       });
-      if (res.status === 201) {
-        // console.log(res.data)
-      }
-    } catch (err) {
-      console.error('Error adding friend', err);
+      console.log(res.data.message)
+      return { message: res.data.message };
+    } catch (err: any) {
+      console.error('Error adding friend', err.response.data.message);
+      return { message: err.response.data.message };
     }
   }
 
@@ -66,30 +67,34 @@ const OtherUserProfilePage: React.FC = () => {
     <>
       <Header page='Profile' />
       <Main>
-        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px' }}>
-          {profileData?.image ? (
-            <img
-              src={profileData?.image}
-              className='profile__avatar'
-              style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
-            />
-          ) : (
-            <h1 className='alt-user-pic-large'>
-              {username?.slice(0, 1)}
-            </h1>
-          )}
-          <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
-            <h2 className='profile__title'>{username}</h2>
-            <UserPlus className='react-icon' onClick={addFriend} />
+        {username &&
+          <>
+          <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px' }}>
+            {profileData?.image ? (
+              <img
+                src={profileData?.image}
+                className='profile__avatar'
+                style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
+              />
+            ) : (
+              <h1 className='alt-user-pic-large'>
+                {username?.slice(0, 1)}
+              </h1>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
+              <h2 className='profile__title'>{username}</h2>
+                <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
+            </div>
           </div>
-        </div>
-        <div className='profile__details' style={{ marginLeft: '20px' }}>
-          <br />
-          <br />
-          <h2>Games Played: {profileData?.gamesPlayed}</h2>
-          <h2>Games Won: {profileData?.gamesWon}</h2>
-          <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
-        </div>
+          <div className='profile__details' style={{ marginLeft: '20px' }}>
+            <br />
+            <br />
+            <h2>Games Played: {profileData?.gamesPlayed}</h2>
+            <h2>Games Won: {profileData?.gamesWon}</h2>
+            <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
+          </div>
+        </>
+        }
       </Main>
     </>
   );
