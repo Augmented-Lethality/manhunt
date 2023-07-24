@@ -12,6 +12,7 @@ import IdCard from '../components/ProfilePieces/IdCard';
 import IdPaper from '../components/ProfilePieces/IdPaper';
 import SocketContext from '../contexts/Socket/SocketContext'
 
+
 export type UserData = {
   id: number;
   username: string;
@@ -66,7 +67,7 @@ const ProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
-  const [trophiesExist, setTrophiesExist] = useState(false);
+  const [trophiesExist, setTrophiesExist] = useState(true);
 
   const { player } = useContext(SocketContext).SocketState;
 

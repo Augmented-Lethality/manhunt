@@ -2,7 +2,6 @@ import React, { useRef, useState, useMemo, useEffect, useContext } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
-// import { useAuth0 } from '@auth0/auth0-react';
 import SocketContext, { Player } from '../../contexts/Socket/SocketContext';
 
 
@@ -16,7 +15,7 @@ const TrophyGenerator: React.FC = () => {
   const [trophyDescription, setTrophyDescription] = useState('');
   const { player } = useContext(SocketContext).SocketState;
 
-  // event handlers
+  
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setIsDragging(true);
     setPrevMouseX(e.clientX);
@@ -71,11 +70,14 @@ const TrophyGenerator: React.FC = () => {
       () => getRandomElement([3, 4, 5, 6, 7, 8, 100]),
       []
     ),
-    tubeWidth: useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []),
+    tubeWidth: useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.7,]), []),
   };
 
   const generateRandomName = () => {
     const adjectives = [
+      'Very Important',
+      'Top Secret',
+      'Forgotten',
       'Atomic',
       'Elite',
       'Stellar',
