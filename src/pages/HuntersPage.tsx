@@ -63,6 +63,7 @@ const HuntersPage: React.FC = () => {
 
   const { player } = useContext(SocketContext).SocketState;
 
+  console.log(user, 'user')
   useEffect(() => {
     if (user && isAuthenticated) {
       getFriends();
@@ -100,8 +101,10 @@ const HuntersPage: React.FC = () => {
     try {
       const res = await axios.get(`/users/search/${searchText}`);
       if (res.status === 200) {
-        console.log(res.data)
-        const filteredFriends = res.data.filter(player => player.authId !== user?.sub);
+        //remove yourself from the results
+        const filteredFriends = res.data.filter(
+          player => player.username !== user?.name
+        );
         setSearchResults(filteredFriends);
       }
     } catch (err) {
