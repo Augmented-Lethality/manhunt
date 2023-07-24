@@ -4,7 +4,6 @@ import SocketContext from '../contexts/Socket/SocketContext';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
-import { ButtonToHome } from '../styles/Buttons';
 
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import styled from 'styled-components';
@@ -24,16 +23,22 @@ const MessageContainer = styled.div`
   border: 2px solid #e6a733;
 `;
 
-
-
 const TrophyGenerator = lazy(() => import('../components/Trophies/TrophyGenerator'));
 
-const EndGame: React.FC = () => {
+export const EndGame: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth0();
   const { games, users, player } = useContext(SocketContext).SocketState;
   const [gameOverMessage, setGameOverMessage] = useState('');
   const [winner, setWinner] = useState(false);
+
+  const handleGoHome = () => {
+    navigate('/home'); 
+  };
+  
+  const handleGoAgain = () => {
+    navigate('/lobby'); 
+  };
 
   useEffect(() => {
     if (games.length > 0) {
@@ -98,11 +103,11 @@ const EndGame: React.FC = () => {
           <PhoneLoader />}
         <div className='glassmorphism column centered padded margined'>
           Justice can wait, time to
-          <button>
+          <button onClick={handleGoHome}>
             GO HOME
           </button>
           Put more scum in their place?
-          <button>
+          <button onClick={handleGoAgain}>
             GO AGAIN
           </button>
         </div>

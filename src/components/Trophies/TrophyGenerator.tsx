@@ -70,11 +70,14 @@ const TrophyGenerator: React.FC = () => {
       () => getRandomElement([3, 4, 5, 6, 7, 8, 100]),
       []
     ),
-    tubeWidth: useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.5]), []),
+    tubeWidth: useMemo(() => getRandomElement([0.1, 0.2, 0.3, 0.4, 0.7,]), []),
   };
 
   const generateRandomName = () => {
     const adjectives = [
+      'Very Important',
+      'Top Secret',
+      'Forgotten',
       'Atomic',
       'Elite',
       'Stellar',
