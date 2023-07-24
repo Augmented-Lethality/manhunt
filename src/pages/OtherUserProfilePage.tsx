@@ -7,6 +7,8 @@ import { Main } from '../styles/Main';
 import { UserPlus } from 'react-feather';
 import Loading from '../components/Loaders/Loading';
 
+import OtherSavedTrophies from '../components/Trophies/OtherSavedTrophies';
+
 type ProfileData = {
   authId: string;
   gamesPlayed: number;
@@ -28,6 +30,7 @@ const OtherUserProfilePage: React.FC = () => {
   const fetchUserData = async () => {
     try {
       const res = await axios.get<ProfileData>(`/users/name/${username}`);
+      console.log(res.data)
       setProfileData(res.data)
       setLoading(false);
     } catch (err) {
@@ -90,6 +93,7 @@ const OtherUserProfilePage: React.FC = () => {
           <h2>Games Won: {profileData?.gamesWon}</h2>
           <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
         </div>
+        <OtherSavedTrophies id={0} name={''} description={''} createdAt={''} dimension={0} dimensionTwo={0} dimensionThree={0} color={''} shape={''} tubularSegments={0} tubeWidth={0} />
       </Main>
     </>
   );

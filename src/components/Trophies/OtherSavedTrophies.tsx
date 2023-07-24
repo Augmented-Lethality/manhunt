@@ -6,6 +6,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import NoTrophyInfoPopup from '../Popups/NoTrophyInfoPopup';
 import TrophyInfoPopup from '../Popups/TrophyInfoPopup';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 
 const LoadingMessage = styled.div`
   display: flex;
@@ -16,6 +17,30 @@ const LoadingMessage = styled.div`
   color: transparent;
   text-shadow: 0 0 4px black;
 `;
+
+const TrophyContainer = styled.div`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
+
+const GlassmorphismDiv = styled.div`
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 1em;
+  padding: 1em;
+  width: 100%;
+  text-align: center;
+  margin-top: 1em;
+`;
+
+const CanvasWrapper = styled.div`
+  margin-top: 4em;
+  border-radius: 1em;
+  padding: 4em;
+  width: 100%;
+`;
+
 
 export type TrophyData = {
   id: number;
@@ -31,46 +56,52 @@ export type TrophyData = {
   tubeWidth: number;
 };
 
-export type UserData = {
+type ProfileData = {
   id: number;
-  username: string;
-  email: string;
   authId: string;
   gamesPlayed: number;
   gamesWon: number;
   killsConfirmed: number;
-  facialDescriptions: Array<number> | null;
-  // Add other user data properties as needed
+  image: string;
 };
 
-const SavedTrophies: React.FC<TrophyData> = () => {
+
+const OtherSavedTrophies: React.FC<TrophyData> = () => {
   const trophyRefs = useRef<(THREE.Mesh | null)[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const [prevMouseX, setPrevMouseX] = useState(0);
-  const [prevMouseY, setPrevMouseY] = useState(0);
   const { user, isAuthenticated } = useAuth0();
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const { username } = useParams();
+
   const [userTrophyData, setUserTrophyData] = useState<TrophyData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasLoaded, setHasLoaded] = useState(false);
 
+  
+  const infoMessage = 'Oooh, shiny!\n\nEarn trophies when you win games.';
+
+  const calculateTrophyPosition = (index: number, totalTrophies: number) => {
+    const angle = (2 * Math.PI * index) / totalTrophies;
+    const radius = 5; // Adjust the radius as needed
+    const x = Math.cos(angle) * radius;
+    const z = Math.sin(angle) * radius;
+    return [x, 0, z] as [number, number, number]; // Convert the array to Vector3
+  };
+ 
+
   const fetchUserData = async () => {
     try {
-      const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setUserData(response.data[0]);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
+      const res = await axios.get<ProfileData>(`/users/name/${username}`);
+      setProfileData(res.data);
+      setHasLoaded(false);
+    } catch (err) {
+      console.error('Error fetching user data:', err);
     }
   };
 
   // fetch, parse and set the trophy data
   const fetchUserTrophyData = async () => {
     try {
-      if (userData) {
+      if (profileData) {
         const response = await axios.get<
           {
             id: number;
@@ -79,7 +110,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
             createdAt: string;
             generationConditions: string;
           }[]
-        >(`/trophies/${userData.id}`, {
+        >(`/trophies/${profileData.id}`, {
           headers: {
             Authorization: `Bearer ${user?.token}`,
           },
@@ -135,79 +166,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     }
   };
 
-  const getColorName = (colorCode) => {
-    // Map color codes to more fitting color names
-    const colorMap = {
-      '#3d6cb8': 'Cerulean',
-      '#202021': 'Void',
-      lightgreen: 'Radioactive',
-      orange: 'Gold',
-      darkred: 'Crimson',
-      yellow: 'Saffron',
-      pink: 'Rose',
-      aquamarine: 'Aquamarine',
-      // Add color mappings as needed
-    };
-    // Return color name if exists in color map, otherwise return original
-    return colorMap[colorCode] || colorCode;
-  };
-
-  const rotateTrophies = () => {
-    const getRandomRotationAxis = () => {
-      const axes = ['x', 'y', 'z'];
-      return axes[Math.floor(Math.random() * axes.length)];
-    };
-
-    trophyRefs.current.forEach((trophy) => {
-      if (trophy) {
-        if (!trophy.userData.initialRotationSet) {
-          // Set initial rotation values
-          trophy.userData.initialRotationSet = true;
-          trophy.userData.rotationSpeed = Math.random() * 0.004; // Random speed between 0 and 0.01
-          trophy.userData.rotationDirection = Math.random() < 0.5 ? -1 : 1; // Random direction: -1 or 1
-          trophy.userData.rotationAxis = getRandomRotationAxis(); // Random rotation axis: 'x', 'y', or 'z'
-        }
-        const { rotationSpeed, rotationDirection, rotationAxis } =
-          trophy.userData;
-        trophy.rotation[rotationAxis] += rotationSpeed * rotationDirection; // Adjust rotation speed and direction around the chosen axis
-      }
-    });
-  };
-
-  const onFrame = () => {
-    rotateTrophies();
-  };
-
-  const handleMouseDown = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    index: number
-  ) => {
-    setIsDragging(true);
-    setPrevMouseX(e.clientX);
-    setPrevMouseY(e.clientY);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    index: number
-  ) => {
-    if (!isDragging) return;
-
-    const mouseDeltaX = e.clientX - prevMouseX;
-    const mouseDeltaY = e.clientY - prevMouseY;
-    setPrevMouseX(e.clientX);
-    setPrevMouseY(e.clientY);
-
-    if (trophyRefs.current[index]?.rotation) {
-      trophyRefs.current[index]!.rotation.y += mouseDeltaX * 0.01; // Rotate around Y-axis
-      trophyRefs.current[index]!.rotation.x += mouseDeltaY * 0.01; // Rotate around X-axis
-    }
-  };
-
   useEffect(() => {
     if (isAuthenticated) {
       fetchUserData();
@@ -218,44 +176,21 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     fetchUserTrophyData().catch((error) => {
       console.error('Error fetching user trophy data:', error);
     });
-  }, [userData]);
+  }, [profileData]);
 
-  const trophiesPerPage = 9;
-  const startIndex = (currentPage - 1) * trophiesPerPage;
-  const endIndex = startIndex + trophiesPerPage;
-  const trophiesToDisplay = userTrophyData.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(userTrophyData.length / trophiesPerPage);
-
-  const infoMessage = 'Oooh, shiny!\n\nEarn trophies when you win games.';
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+    <TrophyContainer>
       {hasLoaded === false ? (
         <LoadingMessage>
           <h2>LOADING...</h2>
         </LoadingMessage>
       ) : (
         <div>
-          {trophiesToDisplay.length === 0 ? (
-            <div
-              className='glassmorphism'
-              style={{
-                fontWeight: 'bold',
-                borderRadius: '1em',
-                padding: '1em',
-                width: '100%',
-                textAlign: 'center',
-                marginTop: '1em',
-              }}
-            >
+          {userTrophyData.length === 0 ? (
+            <GlassmorphismDiv>
               <h3>No Trophies?!?</h3>
-              <h3>Get Out There and Hunt!</h3>
+              <h3>Must be a novice bounty hunter</h3>
               <iframe
                 src='https://giphy.com/embed/v3mSElAsyJSqA'
                 width='250'
@@ -264,28 +199,13 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 allowFullScreen
               ></iframe>
               <NoTrophyInfoPopup message={infoMessage} />
-            </div>
+            </GlassmorphismDiv>
           ) : (
-            trophiesToDisplay
-              .slice(0)
-              .reverse()
-              .map((trophy, index) => (
+            <div>
+              {userTrophyData.map((trophy, index) => (
                 <div key={index}>
-                  <div
-                    className='glassmorphism'
-                    onMouseDown={(e) => handleMouseDown(e, index)}
-                    onMouseUp={handleMouseUp}
-                    onMouseMove={(e) => handleMouseMove(e, index)}
-                    style={{
-                      marginTop: '4em',
-                      borderRadius: '1em',
-                      padding: '4em',
-                      width: '100%',
-                    }}
-                  >
-                    <Canvas
-                      onCreated={({ gl }) => gl.setAnimationLoop(onFrame)}
-                    >
+                  <CanvasWrapper>
+                    <Canvas  camera={{ position: [0, 0, 15], fov: 50, up: [0, 0, 1], near: 0.1, far: 100 }}>
                       <ambientLight intensity={0.5} />
                       <pointLight position={[10, 10, 10]} />
                       {trophy.shape === 'box' && (
@@ -296,7 +216,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                             trophy.dimensionTwo,
                             trophy.dimensionThree,
                           ]}
-                          position={[0, 0, 0]}
+                          position={calculateTrophyPosition(index, userTrophyData.length)}
                           rotation={[0, 0.4, 0]}
                         >
                           <meshStandardMaterial
@@ -309,7 +229,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                         <Dodecahedron
                           ref={(ref) => (trophyRefs.current[index] = ref)}
                           args={[trophy.dimension, 0]}
-                          position={[0, 0, 0]}
+                          position={calculateTrophyPosition(index, userTrophyData.length)}
                           rotation={[0, 0.4, 0]}
                         >
                           <meshStandardMaterial
@@ -327,7 +247,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                             16,
                             trophy.tubularSegments,
                           ]}
-                          position={[0, 0, 0]}
+                          position={calculateTrophyPosition(index, userTrophyData.length)}
                           rotation={[0, 0.4, 0]}
                         >
                           <meshStandardMaterial
@@ -340,58 +260,23 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                     <div>
                       <TrophyInfoPopup
                         message={`${trophy.name}
-                      Report: ${trophy.description}
-                      Class: ${trophy.shape}
-                      Magnitude: ${trophy.dimension}
-                      Chroma: ${getColorName(trophy.color)}
-                      Earned On: ${trophy.createdAt}
-                    `}
+                        Report: ${trophy.description}
+                        Class: ${trophy.shape}
+                        Magnitude: ${trophy.dimension}
+                        Chroma: ${trophy.color}
+                        Earned On: ${trophy.createdAt}
+                      `}
                       />
                     </div>
-                  </div>
+                  </CanvasWrapper>
                 </div>
-              ))
-          )}
-
-          <div
-            style={{
-              display: 'flex',
-              alignSelf: 'center',
-              position: 'sticky',
-              bottom: 1,
-            }}
-          >
-            <div>
-              {totalPages > 1 && (
-                <div
-                  style={{
-                    display: 'flex',
-                    width: '70%',
-                  }}
-                >
-                  <div></div>
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                  >
-                    Prev
-                  </button>
-
-                  <button
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
-              {totalPages > 1 && <span>Pg {currentPage}</span>}
+              ))}
             </div>
-          </div>
+          )}
         </div>
       )}
-    </div>
+    </TrophyContainer>
   );
 };
 
-export default SavedTrophies;
+export default OtherSavedTrophies;
