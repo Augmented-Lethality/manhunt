@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';import styled from 'styled-components';
-import DropDownMenu from '../components/DropDownMenu';
+import DropDownMenu from './DropDownMenu';
 import { useNavigate } from 'react-router-dom';
 
 export const StyledHeader = styled.header`
