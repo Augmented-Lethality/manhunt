@@ -12,16 +12,12 @@ Friends.get('/:userId', async (req, res) => {
       return res.status(404).send({error: "User not found"});
     }
     // Get user's friends and received requests
-    const friendsObjects = await Promise.all(user.friends.map(friendId => 
-      User.findByPk(friendId, {attributes: ['username']})
+    const friends = await Promise.all(user.friends.map(friendId => 
+      User.findByPk(friendId, {attributes: ['username', 'image']})
     ));
-    const receivedRequestsObjects = await Promise.all(user.receivedRequests.map(requesterId => 
-      User.findByPk(requesterId, {attributes: ['username']})
+    const receivedRequests = await Promise.all(user.receivedRequests.map(requesterId => 
+      User.findByPk(requesterId, {attributes: ['username', 'image']})
     ));
-
-    // Extract usernames from returned objects
-    const friends = friendsObjects.map(friend => friend?.username);
-    const receivedRequests = receivedRequestsObjects.map(request => request?.username);
 
     return res.status(200).json({
       friends: friends,
