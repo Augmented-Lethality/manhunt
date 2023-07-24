@@ -316,6 +316,13 @@ input::placeholder{color: cyan;}
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+}
+
+.right {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .padded {
