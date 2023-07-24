@@ -8,18 +8,20 @@ export const Friends = Router();
 Friends.get('/:userId', async (req, res) => {
   try {
     const user = await User.findOne({where: { authId: req.params.userId }});
-    
     if (!user) {
       return res.status(404).send({error: "User not found"});
     }
-
     // Get user's friends and received requests
-    const friends = await Promise.all(user.friends.map(friendId => 
+    const friendsObjects = await Promise.all(user.friends.map(friendId => 
       User.findByPk(friendId, {attributes: ['username']})
     ));
-    const receivedRequests = await Promise.all(user.receivedRequests.map(requesterId => 
+    const receivedRequestsObjects = await Promise.all(user.receivedRequests.map(requesterId => 
       User.findByPk(requesterId, {attributes: ['username']})
     ));
+
+    // Extract usernames from returned objects
+    const friends = friendsObjects.map(friend => friend?.username);
+    const receivedRequests = receivedRequestsObjects.map(request => request?.username);
 
     return res.status(200).json({
       friends: friends,
@@ -32,24 +34,22 @@ Friends.get('/:userId', async (req, res) => {
 });
 
 // SEND A REQUEST USING USER'S AUTHID AND FRIEND'S USERNAME
-Friends.post('/:userId', async (req, res) => {
+Friends.post('/', async (req, res) => {
   try {
     const {userId, friendName} = req.body
     const initiator = await User.findOne({where: { authId: userId }});
     const recipient = await User.findOne({where: { username: friendName }});
-    console.log(initiator, "INITIATOR")
-    console.log(recipient, "recipient")
     if (!initiator) {
-      return res.status(404).send({ error: "User not found" });
+      return res.status(404).send({ error: "Your user id cannot be found." });
     } else if (!recipient) {
       return res.status(404).send({ error: "Friend not found" });
     } else if (initiator.friends && initiator.friends.includes(recipient.id)) {
-      return res.status(409).send({ message: "Friendship already exists" });
+      return res.status(409).send({ message: "This friendship already exists" });
     } else if (initiator.sentRequests && initiator.sentRequests.includes(recipient.id)) {
-      return res.status(409).send({ message: "Request already exists" });
+      return res.status(409).send({ message: "You have already sent a request." });
     } else if (initiator.receivedRequests && initiator.receivedRequests.includes(recipient.id)) {
       await addFriend(initiator, recipient);
-      return res.status(201).send({ message: "Accepted already existing request." });
+      return res.status(201).send({ message: "You just accepted a preexisting friend request." });
     } else {
       //Create new friend request
       await createFriendRequest(initiator, recipient);
@@ -61,9 +61,38 @@ Friends.post('/:userId', async (req, res) => {
   }
 });
 
+//ACCEPT OR DECLINE A FRIEND REQUEST
+Friends.patch('/respond', async (req, res) => {
+  try {
+    const {userId, friendName, accepted} = req.body;
+    const initiator = await User.findOne({where: { authId: userId }});
+    const recipient = await User.findOne({where: { username: friendName }});
+
+    if (!initiator || !recipient) {
+      return res.status(404).send({ error: "User or friend not found" });
+    }
+    
+    if (initiator.receivedRequests && initiator.receivedRequests.includes(recipient.id)) {
+      if (accepted) {
+        await addFriend(initiator, recipient);
+        return res.status(200).send({ message: "Friend request accepted." });
+      } else {
+        await declineFriendRequest(initiator, recipient);
+        return res.status(200).send({ message: "Friend request declined." });
+      }
+    } else {
+      return res.status(404).send({ message: "Friend request not found." });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send({error: "An error occurred while responding to the friend request."});
+  }
+});
+
 //HELPER FUNCITONS
 
-//ADDS FRIENDSHIP FOR BOTH INITIATOR AND RECIPIENT
+// ACCEPTS FRIEND REQUEST
+// ADDS FRIENDSHIP FOR BOTH INITIATOR AND RECIPIENT
 async function addFriend(initiator: User, recipient: User) {
   try {
     // Removes the request from both users' sent and received requests.
