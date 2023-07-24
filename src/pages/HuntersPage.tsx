@@ -51,7 +51,9 @@ const FriendsContainer = styled.div`
   // border: 2px solid green;
 `;
 
-const FriendsPage: React.FC = () => {
+
+
+const HuntersPage: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [friends, setFriends] = useState<any[]>([]);
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
@@ -68,17 +70,23 @@ const FriendsPage: React.FC = () => {
   }, [user, isAuthenticated]);
 
   useEffect(() => {
+    console.log(friends, 'friends')
+  }, [friends]);
+
+  useEffect(() => {
     handleSearch();
   }, [searchText]);
 
+  //get the users friends when the page loads
   const getFriends = async () => {
     try {
       const res = await axios.get(`/friends/${user?.sub}`);
-      const {friendsRes, pendingRes} = res.data;
-      console.log(res.data);
-      if (res.status === 200 && friendsRes && pendingRes) {
-        setFriends(friendsRes);
-        setPendingRequests(pendingRes);
+      const {friends, receivedRequests} = res.data;
+      console.log(res.data, 'status')
+      console.log(friends, receivedRequests, 'friends, pending');
+      if (res.status === 200 && friends && receivedRequests) {
+        setFriends(friends);
+        setPendingRequests(receivedRequests);
       }
     } catch (err) {
       console.error(err);
@@ -92,6 +100,7 @@ const FriendsPage: React.FC = () => {
     try {
       const res = await axios.get(`/users/search/${searchText}`);
       if (res.status === 200) {
+        console.log(res.data)
         const filteredFriends = res.data.filter(player => player.authId !== user?.sub);
         setSearchResults(filteredFriends);
       }
@@ -110,7 +119,7 @@ const FriendsPage: React.FC = () => {
 
   return (
     <>
-      <Header page='Friends' />
+      <Header page='Hunters' />
       <Main style={{ height: '100vh' }}>
         <Image />
         <SearchBar>
@@ -156,4 +165,4 @@ const FriendsPage: React.FC = () => {
   )
 };
 
-export default FriendsPage;
+export default HuntersPage;

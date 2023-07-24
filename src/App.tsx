@@ -12,7 +12,7 @@ import TestPage from './pages/TestPage';
 import GameLobby from './pages/GameLobby';
 import EndGame from './pages/EndGame';
 import FindGamePage from './pages/FindGamePage';
-import FriendsPage from './pages/FriendsPage';
+import HuntersPage from './pages/HuntersPage';
 import OtherUserProfilePage from './pages/OtherUserProfilePage';
 import SocketComponent from './contexts/Socket/SocketComponent';
 import Settings from './pages/Settings';
@@ -115,9 +115,9 @@ const App = () => {
         element={<AboutPage />}
       />
       <Route
-        path="/friends"
+        path="/hunters"
         element={<SocketComponent>
-          <AuthenticationGuard component={FriendsPage} />
+          <AuthenticationGuard component={HuntersPage} />
         </SocketComponent>
         }
       />
