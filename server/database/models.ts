@@ -4,6 +4,7 @@ import sequelize from './index';
 ////////////////////////////////////////////////
 class User extends Model {
   id!: number;
+  username!: string;
   gamesPlayed!: number;
   gamesWon!: number;
   killsConfirmed!: number;
