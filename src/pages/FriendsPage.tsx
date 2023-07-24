@@ -53,10 +53,8 @@ const FriendsContainer = styled.div`
 
 const FriendsPage: React.FC = () => {
   const [searchText, setSearchText] = useState('');
-  const [onlineFriends, setOnlineFriends] = useState<any[]>([]);
-  const [offlineFriends, setOfflineFriends] = useState<any[]>([]);
+  const [friends, setFriends] = useState<any[]>([]);
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
-  const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [viewingPending, setViewingPending] = useState(false);
   const { user, isAuthenticated } = useAuth0();
@@ -76,24 +74,11 @@ const FriendsPage: React.FC = () => {
   const getFriends = async () => {
     try {
       const res = await axios.get(`/friends/${user?.sub}`);
-      // console.log(res.data);
-      if (res.status === 200) {
-        let online: any[] = [];
-        let pending: any[] = [];
-        let blocked: any[] = [];
-        res.data.forEach(resUser => {
-          if (resUser.status === 'blocked') {
-            blocked.push(resUser);
-          } else if (resUser.status === 'pending') {
-            pending.push(resUser)
-          }
-          else {
-            online.push(resUser);
-          }
-        });
-        setOnlineFriends(online);
-        setPendingRequests(pending);
-        setBlockedUsers(blocked);
+      const {friendsRes, pendingRes} = res.data;
+      console.log(res.data);
+      if (res.status === 200 && friendsRes && pendingRes) {
+        setFriends(friendsRes);
+        setPendingRequests(pendingRes);
       }
     } catch (err) {
       console.error(err);
@@ -144,22 +129,26 @@ const FriendsPage: React.FC = () => {
           />
         </SearchBar>
         <FriendsContainer>
-          <Bell
+          <div
             className='digital-h1'
             style={{ position: 'absolute', right: 0 }}
-            onClick={() => { setViewingPending(viewingPending => !viewingPending) }} />
+            onClick={() => { setViewingPending(viewingPending => !viewingPending) }}>
+            <Bell/>
+            {pendingRequests.length &&
+              <h2>{` • ${pendingRequests.length} `}</h2>
+            }
+          </div>
           {searchText === '' ? (
             <>
               {viewingPending &&
                 <UsersList users={pendingRequests} header={`Pending • ${pendingRequests.length}`} />
               }
-              <UsersList users={onlineFriends} header={`Online • ${onlineFriends.length}`} />
-              <UsersList users={offlineFriends} header={`Offline • ${offlineFriends.length}`} />
+              <UsersList users={friends} header={`Friends • ${friends.length}`} />
             </>
           ) : searchResults.length === 0 ? (
             <h2 className='digital-h1' style={{ textAlign: 'left' }}>Target not found</h2>
           ) : (
-            <UsersList header={`Results • ${onlineFriends.length}`} users={searchResults} />
+            <UsersList header={`Results • ${friends.length}`} users={searchResults} />
           )}
         </FriendsContainer>
       </Main>
