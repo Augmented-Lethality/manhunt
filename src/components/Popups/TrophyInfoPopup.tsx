@@ -40,8 +40,6 @@ const TrophyName = styled.div`
   justify-content: center;
 `;
 
-
-
 const StyledInfo = styled(Info)`
   font-weight: bold;
   text-decoration: none; 
