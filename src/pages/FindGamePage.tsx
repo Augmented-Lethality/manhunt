@@ -8,8 +8,7 @@ import { Main } from '../styles/Main';
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import { useNavigate } from 'react-router-dom';
 
-
-const HomeSign = styled.div<{onClick}>`
+const BackHomeSign = styled.div<{ onClick: () => void }>`
   height: 216px;
   width: 369px;
   margin-top: 47px;
@@ -24,9 +23,11 @@ const HomeSign = styled.div<{onClick}>`
   font-size: 2.7rem;
   text-align: center;
   box-sizing: border-box;
-  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
-const NoBountiesSign = styled.div`
+const NoBountySign = styled.div`
   height: 260px;
   width: 369px;
   margin-top: 47px;
@@ -42,6 +43,10 @@ const NoBountiesSign = styled.div`
   text-align: center;
   box-sizing: border-box;
   background-position: center;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const FindGamePage: React.FC = () => {
@@ -66,12 +71,12 @@ const FindGamePage: React.FC = () => {
               ))
             ) : (
               <>
-              <NoBountiesSign>
-                No Bounties Have Been Posted
-              </NoBountiesSign>
-              <HomeSign onClick={()=>navigate('/home')}>
-                Go Back Home
-              </HomeSign>
+                <NoBountySign>
+                  No Current Contracts
+                </NoBountySign>
+                <BackHomeSign onClick={() => navigate('/home')}>
+                  Back Home
+                </BackHomeSign>
               </>
             )}
           </>
