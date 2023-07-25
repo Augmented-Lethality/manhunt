@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-
+import { User } from '../contexts/Socket/SocketContext';
 
 const UserContainer = styled.div`
   display: flex;
@@ -19,10 +19,7 @@ const Username = styled.p`
   font-size: 16px;
   color: cyan;
 `;
-const KD = styled.p`
-  font-size: 16px;
-  color: #6e6b8c;
-`;
+
 
 const UserListItem: React.FC<{ player: User }> = ({ player }) => {
   const navigate = useNavigate();
