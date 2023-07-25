@@ -201,7 +201,8 @@ Users.get("/search/:terms", async (req, res) => {
         username: {
           [Op.iLike]: `%${req.params.terms}%`
         }
-      }
+      },
+      attributes: ['username', 'image']
     });
     res.status(200).send(users);
   } catch (err) {

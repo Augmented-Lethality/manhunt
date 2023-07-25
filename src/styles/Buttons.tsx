@@ -40,7 +40,7 @@ const StyledButton2 = styled.button<ButtonProps>`
   background-size: cover;
   background-position: center;
   box-shadow: -5px 7px 10px 3px #00000059;
-  background-image: url("/textures/find-game-button.png");
+  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/find-game-button.png");
   font-size: ${(props) =>
     props.label === 'Host a Contract'
       ? `3rem`
