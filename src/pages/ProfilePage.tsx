@@ -68,9 +68,8 @@ const ProfilePage: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
   const [trophiesExist, setTrophiesExist] = useState(true);
-
+  const mainHeight = ((window.visualViewport?.height || window.innerHeight) - 136) + 'px' || '100vh';
   const { player } = useContext(SocketContext).SocketState;
-
 
   useEffect(() => {
     fetchUserData();
@@ -137,12 +136,14 @@ const ProfilePage: React.FC = () => {
             <h1 style={{ fontSize: '2.3rem' }}>Bio Data</h1>
           </div>
         </StyledHeader>
-        <CreateFaceDescriptions
-          setPhotoStatus={setPhotoStatus}
-          username={user?.name}
-          userID={user?.sub}
-          setUser={setUserData}
-        />
+        <Main style={{ height: '100vh', paddingTop: '0px' }}>
+          <CreateFaceDescriptions
+            setPhotoStatus={setPhotoStatus}
+            username={user?.name}
+            userID={user?.sub}
+            setUser={setUserData}
+            />
+        </Main>
       </>
     );
   }
