@@ -141,21 +141,30 @@ const HuntersPage: React.FC = () => {
           />
         </SearchBar>
         <FriendsContainer>
-          <div
-            className='digital-h1'
-            style={{ position: 'absolute', right: 0 }}
-            onClick={() => { setViewingPending(viewingPending => !viewingPending) }}>
-            <Bell/>
-            {pendingRequests.length &&
-              <h2>{` • ${pendingRequests.length} `}</h2>
-            }
-          </div>
+          {viewingPending 
+            ? <XCircle 
+                className='digital-h1'
+                style={{ position: 'absolute', right: 0 }}
+                onClick={() => { setViewingPending(viewingPending => !viewingPending) }}
+              />
+            : 
+              <div
+                className='digital-h1'
+                style={{ position: 'absolute', right: 0, flexDirection: 'row', display: 'flex' }}
+                onClick={() => { setViewingPending(viewingPending => !viewingPending) }}
+              >
+                <Bell/>
+                {pendingRequests.length &&
+                  <h4>{`${pendingRequests.length}`}</h4>
+                }
+              </div>
+          }
           {searchText === '' ? (
             <>
-              {viewingPending &&
-                <UsersList users={pendingRequests} header={`Pending • ${pendingRequests.length}`} />
+              {viewingPending 
+              ? <UsersList users={pendingRequests} header={`Pending • ${pendingRequests.length}`} />
+              : <UsersList users={friends} header={`Friends • ${friends.length}`} />
               }
-              <UsersList users={friends} header={`Friends • ${friends.length}`} />
             </>
           ) : searchResults.length === 0 ? (
             <h2 className='digital-h1' style={{ textAlign: 'left' }}>Target not found</h2>
