@@ -1,8 +1,7 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import SocketContext, { User } from '../contexts/Socket/SocketContext';
 
 const UserContainer = styled.div`
   display: flex;
@@ -30,17 +29,15 @@ const UserListItem: React.FC<{ player: User }> = ({ player }) => {
   const location = useLocation();
   const currentEndpoint = location.pathname;
 
-  // const { ready } = useContext(SocketContext).SocketState;
-  // const [errors, setErrors] = useState<string[]>([]);
 
-  // useEffect(() => {
-  //   if (ready[player.authId]) {
-  //     setErrors(ready[player.authId]);
-  //   }
-  // }, [ready, player.authId]);
+  const handleClick = () => {
+    if(currentEndpoint !== '/lobby'){
+      navigate(`/profile/${player.username}`);
+    }
+  }
 
   return (
-    <UserContainer onClick={() => navigate(`/profile/${player.username}`)}>
+    <UserContainer onClick={handleClick}>
       {player.image ? (
         <UserImage src={player.image} alt={player.username} />
       ) : (
