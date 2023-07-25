@@ -26,33 +26,27 @@ const StyledButton1 = styled.button<ButtonProps>`
 `;
 
 const StyledButton2 = styled.button<ButtonProps>`
-  height: 208px;
-  width: 284px;
-  margin-top: 50px;
-  margin-inline: auto;
-  border-radius: 57px;
-  border: none;
-  color: white;
-  padding: 20px;
-  font-size: 3rem;
-  font-family: lobster;
-  text-shadow: -2px -2px 0 #000, 2px -1px 0 #000, -2px 2px 0 #000, 1px 1px 0 #000;
-  background-size: cover;
-  background-position: center;
-  box-shadow: -5px 7px 10px 3px #00000059;
-  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/find-game-button.png");
+height: 208px;
+width: 285px;
+margin-top: 50px;
+margin-inline: auto;
+border-radius: 57px;
+color: white;
+padding: 20px;
+font-family: lobster;
+text-shadow: -2px -2px 0 #000, 2px -1px 0 #000, -2px 2px 0 #000, 1px 1px 0 #000;
+background-size: cover;
+background-position: center;
+box-shadow: -5px 7px 10px 3px #00000059;
+border: solid black;
+background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/find-game-button.png);
+background-color: #9c2e1e;
   font-size: ${(props) =>
     props.label === 'Host a Contract'
       ? `3rem`
       : `2.6rem`
   };
-  line-spacing: ${(props) =>
-    props.label === 'Host a Contract'
-      ? `1rem`
-      : `2.9rem`
-  };
-  };
-
+  
   > * {
     position: absolute;
     top: 0;
