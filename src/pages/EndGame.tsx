@@ -56,7 +56,7 @@ export const EndGame: React.FC = () => {
         games[0].hunted === player.authId
       ) {
         setGameOverMessage(
-          `Target aquired thanks to you, ${player.username}.`
+          `Target acquired thanks to you, ${player.username}.`
         );
         // user is a winner
         setWinner(true);
