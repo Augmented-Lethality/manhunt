@@ -112,7 +112,8 @@ const GameLobby: React.FC<{}> = () => {
     UpdateGameStatus,
     AddGameStart,
     AddGameDuration,
-    SetHunted
+    SetHunted,
+    LeaveGame
   } = useContext(SocketContext);
   const { isAuthenticated, user } = useAuth0();
   const { games, users, player } = useContext(SocketContext).SocketState;
@@ -200,6 +201,10 @@ const GameLobby: React.FC<{}> = () => {
     'Happy Hunting.';
   const playersInfoMessage = 'Be patient and wait for the host to start the game!'
 
+  const handleBackButton = () => {
+    LeaveGame(user);
+  }
+
   return (
     <>
       <Header page='Lobby' />
@@ -213,7 +218,7 @@ const GameLobby: React.FC<{}> = () => {
             <InfoPopup message={hostInfoMessage} />
           </>
         }
-        <BackButton onClick={() => navigate('/home')} />
+        <BackButton onClick={handleBackButton} />
         <TimeContainer>{selected}</TimeContainer>
         <PlayersContainer>
           <h2 className='digital-h1'>Hunters • {users.length}</h2>
