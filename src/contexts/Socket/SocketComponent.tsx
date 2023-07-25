@@ -99,6 +99,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.on('update_games', async (games) => {
       // console.log('updating games state:', games)
       SocketDispatch({ type: 'update_games', payload: games });
+      LeaveGame(user);
     });
 
     // updating users not in game
@@ -209,7 +210,6 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
       if (response) {
         setLoading(false);
       }
-      navigate('/home');
     });
   };
 

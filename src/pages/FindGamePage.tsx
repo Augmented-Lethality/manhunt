@@ -4,6 +4,7 @@ import { GameListItem } from '../components/GameLobby/GameListItem';
 import styled from 'styled-components';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import { useNavigate } from 'react-router-dom';
@@ -51,7 +52,9 @@ const HomeSign = styled.div<{ onClick: () => void }>`
 `
 
 const FindGamePage: React.FC = () => {
-  const { games, users } = useContext(SocketContext).SocketState;
+  const { games, users, player } = useContext(SocketContext).SocketState;
+  const { user } = useAuth0();
+  const { LeaveGame } = useContext(SocketContext);
   const navigate = useNavigate();
   const [joining, setJoining] = useState(false);
 
@@ -67,9 +70,13 @@ const FindGamePage: React.FC = () => {
         ) : (
           <>
             {games.length > 0 ? (
-              games.map((game) => (
-                <GameListItem key={game.gameId} game={game} setJoining={setJoining} />
-              ))
+              games.map((game) => {
+                if (game.host === player.authId) {
+                  LeaveGame(user);
+                  return null;
+                }
+                return <GameListItem key={game.gameId} game={game} setJoining={setJoining} />
+              })
             ) : (
               <>
                 <NoContracts>

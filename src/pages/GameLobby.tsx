@@ -203,6 +203,7 @@ const GameLobby: React.FC<{}> = () => {
 
   const handleBackButton = () => {
     LeaveGame(user);
+    navigate('/home');
   }
 
   return (
