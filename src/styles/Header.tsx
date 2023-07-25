@@ -11,11 +11,13 @@ export const StyledHeader = styled.header`
   position: fixed;
   top: 0;
   width: 100%;
-  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/header-small.png");
+  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/header-small.jpg");
+  background-color: #db840b;
   background-size: cover;
   background-position: left bottom;
   box-sizing: border-box;
   align-items: center;
+  border-bottom: solid black;
   z-index: 1;
 `;
 

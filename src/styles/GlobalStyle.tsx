@@ -13,7 +13,8 @@ body {
   font-family: 'Source Code Pro';
   font-size: var(--font-size);
   word-wrap: break-word;
-  background: url("https://d3d9qwhf4u1hj.cloudfront.net/images/background-small.png") no-repeat;
+  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/background-small.jpg");
+  background-color: #6d9ca1;
   background-size: cover;
   display: flex;
   flex-direction: column;
@@ -368,6 +369,10 @@ input::placeholder{color: cyan;}
 .bold {
   font-weight: 600;
 }
-`;
 
+.cameraMain {
+  padding: 0;
+}
+
+`;
 export default GlobalStyle;
