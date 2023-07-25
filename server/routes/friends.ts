@@ -45,7 +45,7 @@ Friends.post('/', async (req, res) => {
       return res.status(409).send({ message: "You have already sent a request." });
     } else if (initiator.receivedRequests && initiator.receivedRequests.includes(recipient.id)) {
       await addFriend(initiator, recipient);
-      return res.status(201).send({ message: "You just accepted a preexisting friend request." });
+      return res.status(201).send({ message: "You just accepted an existing friend request." });
     } else {
       //Create new friend request
       await createFriendRequest(initiator, recipient);
