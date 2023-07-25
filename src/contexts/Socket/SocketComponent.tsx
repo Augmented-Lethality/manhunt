@@ -169,7 +169,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
       if (endpoint !== 'fail') {
         SocketDispatch({ type: 'update_player', payload: playerObj });
-        console.log(playerObj)
+        // console.log(playerObj)
         setLoading(false);
         if (endpoint.length) {
           navigate(endpoint);

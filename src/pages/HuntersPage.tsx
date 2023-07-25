@@ -63,7 +63,7 @@ const HuntersPage: React.FC = () => {
 
   const { player } = useContext(SocketContext).SocketState;
 
-  console.log(user, 'user')
+  // console.log(user, 'user')
   useEffect(() => {
     if (user && isAuthenticated) {
       getFriends();
@@ -71,7 +71,7 @@ const HuntersPage: React.FC = () => {
   }, [user, isAuthenticated]);
 
   useEffect(() => {
-    console.log(friends, 'friends')
+    // console.log(friends, 'friends')
   }, [friends]);
 
   useEffect(() => {
@@ -82,9 +82,9 @@ const HuntersPage: React.FC = () => {
   const getFriends = async () => {
     try {
       const res = await axios.get(`/friends/${user?.sub}`);
-      const {friends, receivedRequests} = res.data;
-      console.log(res.data, 'status')
-      console.log(friends, receivedRequests, 'friends, pending');
+      const { friends, receivedRequests } = res.data;
+      // console.log(res.data, 'status')
+      // console.log(friends, receivedRequests, 'friends, pending');
       if (res.status === 200 && friends && receivedRequests) {
         setFriends(friends);
         setPendingRequests(receivedRequests);
@@ -141,29 +141,29 @@ const HuntersPage: React.FC = () => {
           />
         </SearchBar>
         <FriendsContainer>
-          {viewingPending 
-            ? <XCircle 
-                className='digital-h1'
-                style={{ position: 'absolute', right: 0 }}
-                onClick={() => { setViewingPending(viewingPending => !viewingPending) }}
-              />
-            : 
-              <div
-                className='digital-h1'
-                style={{ position: 'absolute', right: 0, flexDirection: 'row', display: 'flex' }}
-                onClick={() => { setViewingPending(viewingPending => !viewingPending) }}
-              >
-                <Bell/>
-                {pendingRequests.length &&
-                  <h4>{`${pendingRequests.length}`}</h4>
-                }
-              </div>
+          {viewingPending
+            ? <XCircle
+              className='digital-h1'
+              style={{ position: 'absolute', right: 0 }}
+              onClick={() => { setViewingPending(viewingPending => !viewingPending) }}
+            />
+            :
+            <div
+              className='digital-h1'
+              style={{ position: 'absolute', right: 0, flexDirection: 'row', display: 'flex' }}
+              onClick={() => { setViewingPending(viewingPending => !viewingPending) }}
+            >
+              <Bell />
+              {pendingRequests.length &&
+                <h4>{`${pendingRequests.length}`}</h4>
+              }
+            </div>
           }
           {searchText === '' ? (
             <>
-              {viewingPending 
-              ? <UsersList users={pendingRequests} header={`Pending • ${pendingRequests.length}`} />
-              : <UsersList users={friends} header={`Friends • ${friends.length}`} />
+              {viewingPending
+                ? <UsersList users={pendingRequests} header={`Pending • ${pendingRequests.length}`} />
+                : <UsersList users={friends} header={`Friends • ${friends.length}`} />
               }
             </>
           ) : searchResults.length === 0 ? (

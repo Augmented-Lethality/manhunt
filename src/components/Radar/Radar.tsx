@@ -197,7 +197,7 @@ const Radar: React.FC = () => {
         // calculate the coordinates in meters
         const meterCoords = haversineDistCoords(playerCoords, playerLocation);
 
-        console.log('distance:', meterCoords)
+        // console.log('distance:', meterCoords)
 
         // scaling the dot's x/y to the radar coordinate system
         const dotX = ((meterCoords.distanceLatitude / maxMapDistance) * radius);
