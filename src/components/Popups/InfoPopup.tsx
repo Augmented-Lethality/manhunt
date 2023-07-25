@@ -4,11 +4,11 @@ import styled from 'styled-components';
 import Info from 'react-feather/dist/icons/info';
 
 const Wrapper = styled.div`
-  border-bottom: 1px solid gray;
-  font-size: 18px;
-  text-align: center;
-  position: fixed;
-  left: 1%;
+font-size: 18px;
+text-align: center;
+position: fixed;
+left: 1%;
+top: 20%;
 `;
 
 const PopupContent = styled.span`
