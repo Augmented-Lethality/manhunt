@@ -8,7 +8,7 @@ import { Main } from '../styles/Main';
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import { useNavigate } from 'react-router-dom';
 
-const BackHomeSign = styled.div<{ onClick: () => void }>`
+const NoContracts = styled.div`
   height: 216px;
   width: 369px;
   margin-top: 47px;
@@ -26,10 +26,11 @@ const BackHomeSign = styled.div<{ onClick: () => void }>`
   display: flex;
   justify-content: center;
   align-items: center;
+  transform: rotate(5deg);
 `
-const NoBountySign = styled.div`
-  height: 260px;
-  width: 369px;
+const HomeSign = styled.div<{ onClick: () => void }>`
+  height: 208px;
+  width: 284px;
   margin-top: 47px;
   margin-inline: auto;
   border-radius: 37px;
@@ -71,12 +72,12 @@ const FindGamePage: React.FC = () => {
               ))
             ) : (
               <>
-                <NoBountySign>
-                  No Current Contracts
-                </NoBountySign>
-                <BackHomeSign onClick={() => navigate('/home')}>
+                <NoContracts>
+                  No Contracts!
+                </NoContracts>
+                <HomeSign onClick={() => navigate('/home')}>
                   Back Home
-                </BackHomeSign>
+                </HomeSign>
               </>
             )}
           </>
