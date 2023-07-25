@@ -204,7 +204,12 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // sending leave game to the server
   const LeaveGame = (user: any) => {
-    socket.emit('leave_game', user, () => {
+    setLoading(true);
+    socket.emit('leave_game', user, (response) => {
+      if (response) {
+        setLoading(false);
+      }
+      navigate('/home');
     });
   };
 
