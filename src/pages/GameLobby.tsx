@@ -67,7 +67,6 @@ const PlayButton = styled.div`
     bottom: calc(140vw - 100px);
   }
 `;
-
 const BackButton = styled.div`
   position: absolute;
   bottom: 134vw;
@@ -116,10 +115,12 @@ const GameLobby: React.FC<{}> = () => {
     SetHunted
   } = useContext(SocketContext);
   const { isAuthenticated, user } = useAuth0();
-  const { games, users } = useContext(SocketContext).SocketState;
+  const { games, users, player } = useContext(SocketContext).SocketState;
   const [bountyName, setBountyName] = useState<string | null>(null)
   const [isHost, setisHost] = useState(false);
+  const [countdown, setCountdown] = useState(10);
   const [selected, setSelected] = useState('03:00');
+  const listRef = useRef<HTMLUListElement>(null);
   const scrollValues = ['01', '02', '03', '04', '05', '07', '10', '15', '20', '30', '45', '60'];
   const selectedIndex = scrollValues.indexOf(selected.split(':')[0]);
   const navigate = useNavigate();
@@ -136,6 +137,21 @@ const GameLobby: React.FC<{}> = () => {
       : setisHost(false);
   }, [games]);
 
+  //starts the countdown to enter the game
+  // useEffect(() => {
+  //   //decreases the countdown by one every second
+  //   let timeoutId
+  //   if (bountyName && countdown > 0) {
+  //     timeoutId = setTimeout(() => setCountdown(countdown => countdown - 1), 1000);
+  //   }
+  //   // once the countdown reaches 0, navigate all players in lobby to game
+  //   if (!countdown) {
+  //     UpdateGameStatus(user, 'ongoing');
+  //     AddGameStart(Date.now(), user);
+  //   }
+  //   return () => clearTimeout(timeoutId);
+  // }, [bountyName, countdown])
+
   //Chose a random victim from the players and send to Socket
   const pickVictim = (users: User[], SetHunted: (user: User) => void) => {
     const bounty = users[Math.floor(Math.random() * users.length)];
@@ -151,7 +167,6 @@ const GameLobby: React.FC<{}> = () => {
       AddGameStart(Date.now(), user);
       UpdateGameStatus(user, 'ongoing');
     }
-
   }, [bountyName])
 
   //Allow clicking the arrows to change the time
@@ -163,9 +178,11 @@ const GameLobby: React.FC<{}> = () => {
     }
   };
 
+
   if (!isAuthenticated) {
     return null
   }
+
 
   if (bountyName) {
     return (
