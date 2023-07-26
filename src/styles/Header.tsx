@@ -1,6 +1,9 @@
-import React, { ReactNode } from 'react';import styled from 'styled-components';
+import React, { ReactNode, useContext } from 'react';
+import styled from 'styled-components';
 import DropDownMenu from './DropDownMenu';
 import { useNavigate } from 'react-router-dom';
+import SocketContext from '../contexts/Socket/SocketContext';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export const StyledHeader = styled.header`
   display: flex;
@@ -21,7 +24,7 @@ export const StyledHeader = styled.header`
   z-index: 1;
 `;
 
-const LogoContainer = styled.div `
+const LogoContainer = styled.div`
   height: 100%;
   width: 23vw;
   position: relative;
@@ -29,7 +32,7 @@ const LogoContainer = styled.div `
   left: -5vw;
 `;
 
-const TitleAndMenuContainer = styled.div `
+const TitleAndMenuContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -46,8 +49,11 @@ interface HeaderProps {
 // PLEASE KEEP THIS SOCKET FUNCTION WHEN USING A GOING HOME BUTTON
 export const Header: React.FC<HeaderProps> = ({ page, users }) => {
   const navigate = useNavigate();
+  const { user } = useAuth0();
+  const { LeaveGame } = useContext(SocketContext);
 
   const handleHome = () => {
+    LeaveGame(user);
     navigate('/home');
   }
 
@@ -58,9 +64,9 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
         <DropDownMenu page={page || ''} />
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
-          : page==='Game Over'
-          ? <h1 style={{ fontSize: '2rem', marginRight: '-20px' }}>{page}</h1>
-          : <h1 style={{ marginRight: '-20px' }}>{page}</h1>
+          : page === 'Game Over'
+            ? <h1 style={{ fontSize: '2rem', marginRight: '-20px' }}>{page}</h1>
+            : <h1 style={{ marginRight: '-20px' }}>{page}</h1>
         }
       </TitleAndMenuContainer>
     </StyledHeader>
