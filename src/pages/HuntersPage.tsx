@@ -124,7 +124,7 @@ const HuntersPage: React.FC = () => {
   return (
     <>
       <Header page='Hunters' />
-      <Main style={{ height: '100vh', background: 'black'}}>
+      <Main style={{ height: '100vh', background: '#1e1e1e'}}>
         <Image />
         <SearchBar>
           {searchText === ''
