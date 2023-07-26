@@ -3,8 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { Box, Dodecahedron, Torus } from '@react-three/drei';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
-import NoTrophyInfoPopup from '../Popups/NoTrophyInfoPopup';
-import TrophyInfoPopup from '../Popups/TrophyInfoPopup';
+import InfoPopup from '../Popups/InfoPopup';
 import styled from 'styled-components';
 
 const LoadingMessage = styled.div`
@@ -16,6 +15,7 @@ const LoadingMessage = styled.div`
   color: transparent;
   text-shadow: 0 0 4px black;
 `;
+
 
 export type TrophyData = {
   id: number;
@@ -263,7 +263,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 frameBorder='0'
                 allowFullScreen
               ></iframe>
-              <NoTrophyInfoPopup message={infoMessage} />
+              <InfoPopup message={infoMessage} />
             </div>
           ) : (
             trophiesToDisplay
@@ -277,9 +277,9 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                     onMouseUp={handleMouseUp}
                     onMouseMove={(e) => handleMouseMove(e, index)}
                     style={{
-                      marginTop: '4em',
+                      marginTop: '2em',
                       borderRadius: '1em',
-                      padding: '4em',
+                      padding: '1em',
                       width: '100%',
                     }}
                   >
@@ -337,17 +337,34 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                         </Torus>
                       )}
                     </Canvas>
-                    <div>
-                      <TrophyInfoPopup
-                        message={`${trophy.name}
-                      Report: ${trophy.description}
-                      Class: ${trophy.shape}
-                      Magnitude: ${trophy.dimension}
-                      Chroma: ${getColorName(trophy.color)}
-                      Earned On: ${trophy.createdAt}
-                    `}
-                      />
-                    </div>
+
+                    <details style={{ textAlign: 'left' }}>
+                      <summary
+                        style={{ textAlign: 'right', marginInline: '0px' }}
+                      >
+                        Details
+                      </summary>
+                      <div style={{ fontSize: '0.75em', padding: '1em' }}>
+                        <div>
+                          <strong>Designation:</strong> {trophy.name}
+                        </div>
+                        <div>
+                          <strong>Report:</strong> {trophy.description}
+                        </div>
+                        <div>
+                          <strong>Class:</strong> {trophy.shape}
+                        </div>
+                        <div>
+                          <strong>Magnitude:</strong> {trophy.dimension}
+                        </div>
+                        <div>
+                          <strong>Chroma:</strong> {getColorName(trophy.color)}
+                        </div>
+                        <div>
+                          <strong>Earned on:</strong> {trophy.createdAt}
+                        </div>
+                      </div>
+                    </details>
                   </div>
                 </div>
               ))
@@ -367,6 +384,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   style={{
                     display: 'flex',
                     width: '70%',
+                    margin: 'auto',
                   }}
                 >
                   <div></div>
@@ -376,7 +394,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   >
                     Prev
                   </button>
-
                   <button
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage(currentPage + 1)}
@@ -385,7 +402,17 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                   </button>
                 </div>
               )}
-              {totalPages > 1 && <span>Pg {currentPage}</span>}
+              {totalPages > 1 && (
+                <span
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  Page {currentPage}
+                </span>
+              )}
             </div>
           </div>
         </div>
