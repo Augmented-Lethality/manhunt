@@ -261,7 +261,7 @@ h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-family: 'Sonsie One';
   color: #76dfe4;
   text-shadow:
