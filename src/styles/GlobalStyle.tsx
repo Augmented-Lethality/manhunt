@@ -35,6 +35,17 @@ body {
     5px 10px 2px #00000030;
 }
 
+.glassmorphism-dark{
+  background: #000000a8;
+  backdrop-filter: blur(3px);
+  color: #80ffeec7;
+  border-radius: 45px;
+  box-shadow:
+    0 -1px 0 2px #afd5d66b,
+    0 1px 0 2px #00000063,
+    5px 10px 2px #00000030;
+}
+
 .paper{
   background: url("https://d3d9qwhf4u1hj.cloudfront.net/images/paper.png");
   background-size: cover;
