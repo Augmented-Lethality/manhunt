@@ -8,11 +8,11 @@ import {
 import React, { useState, useEffect, useContext } from 'react';
 import CapturePhoto from './CapturePhoto'
 import axios from 'axios';
-import { WebcamProvider } from '../contexts/WebcamProvider';
-import { UserData } from '../pages/ProfilePage'
+import { WebcamProvider } from '../../contexts/WebcamProvider';
+import { UserData } from '../../pages/ProfilePage'
 import { Save, Camera } from 'react-feather'
-import InfoPopup from './Popups/InfoPopup';
-import SocketContext from '../contexts/Socket/SocketContext';
+import InfoPopup from '../Popups/InfoPopup';
+import SocketContext from '../../contexts/Socket/SocketContext';
 
 interface CreateFaceDescriptionsProps {
   setPhotoStatus: (verify: string) => void;
