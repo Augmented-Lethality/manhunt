@@ -39,7 +39,7 @@ background-size: cover;
 background-position: center;
 box-shadow: -5px 7px 10px 3px #00000059;
 border: solid black;
-background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/find-game-button.png);
+background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/find-a-game.png);
 background-color: #9c2e1e;
   font-size: ${(props) =>
     props.label === 'Host a Contract'
