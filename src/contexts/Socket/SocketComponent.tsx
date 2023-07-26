@@ -99,6 +99,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
     socket.on('update_games', async (games) => {
       // console.log('updating games state:', games)
       SocketDispatch({ type: 'update_games', payload: games });
+      LeaveGame(user);
     });
 
     // updating users not in game
@@ -168,7 +169,7 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
       if (endpoint !== 'fail') {
         SocketDispatch({ type: 'update_player', payload: playerObj });
-        console.log(playerObj)
+        // console.log(playerObj)
         setLoading(false);
         if (endpoint.length) {
           navigate(endpoint);
@@ -204,7 +205,11 @@ const SocketComponent: React.FunctionComponent<ISocketComponentProps> = (props) 
 
   // sending leave game to the server
   const LeaveGame = (user: any) => {
-    socket.emit('leave_game', user, () => {
+    setLoading(true);
+    socket.emit('leave_game', user, (response) => {
+      if (response) {
+        setLoading(false);
+      }
     });
   };
 

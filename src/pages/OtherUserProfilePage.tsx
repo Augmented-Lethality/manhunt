@@ -43,7 +43,7 @@ const OtherUserProfilePage: React.FC = () => {
         userId: user?.sub,
         friendName: username,
       });
-      console.log(res.data.message)
+      // console.log(res.data.message)
       return { message: res.data.message };
     } catch (err: any) {
       console.error('Error adding friend', err.response.data.message);
@@ -69,31 +69,31 @@ const OtherUserProfilePage: React.FC = () => {
       <Main>
         {username &&
           <>
-          <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px' }}>
-            {profileData?.image ? (
-              <img
-                src={profileData?.image}
-                className='profile__avatar'
-                style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
-              />
-            ) : (
-              <h1 className='alt-user-pic-large'>
-                {username?.slice(0, 1)}
-              </h1>
-            )}
-            <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
-              <h2 className='profile__title'>{username}</h2>
+            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px' }}>
+              {profileData?.image ? (
+                <img
+                  src={profileData?.image}
+                  className='profile__avatar'
+                  style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
+                />
+              ) : (
+                <h1 className='alt-user-pic-large'>
+                  {username?.slice(0, 1)}
+                </h1>
+              )}
+              <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
+                <h2 className='profile__title'>{username}</h2>
                 <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
+              </div>
             </div>
-          </div>
-          <div className='profile__details' style={{ marginLeft: '20px' }}>
-            <br />
-            <br />
-            <h2>Games Played: {profileData?.gamesPlayed}</h2>
-            <h2>Games Won: {profileData?.gamesWon}</h2>
-            <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
-          </div>
-        </>
+            <div className='profile__details' style={{ marginLeft: '20px' }}>
+              <br />
+              <br />
+              <h2>Games Played: {profileData?.gamesPlayed}</h2>
+              <h2>Games Won: {profileData?.gamesWon}</h2>
+              <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
+            </div>
+          </>
         }
       </Main>
     </>

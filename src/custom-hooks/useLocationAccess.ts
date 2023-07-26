@@ -14,7 +14,7 @@ const useLocationAccess = (): LocationAccessState => {
 
     const timeout = setTimeout(() => {
       setChecking(false);
-      setAccessMessage('We have hit the nuclear option; reset the location permissions to \'Ask Next Time\' in your mobile browser, then restart your phone.');
+      setAccessMessage('We have hit the nuclear option; reset the location permissions to \'Ask Next Time\' in your browser\'s settings, refresh the page, and if it still does not work, exit out of your browser and try again.');
     }, 6000);
 
     if (!navigator.geolocation) {
