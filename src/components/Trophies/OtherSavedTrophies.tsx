@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import InfoPopup from '../Popups/InfoPopup';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 
 const LoadingMessage = styled.div`
   display: flex;
@@ -15,7 +16,6 @@ const LoadingMessage = styled.div`
   color: transparent;
   text-shadow: 0 0 4px black;
 `;
-
 
 export type TrophyData = {
   id: number;
@@ -31,46 +31,41 @@ export type TrophyData = {
   tubeWidth: number;
 };
 
-export type UserData = {
+type ProfileData = {
   id: number;
-  username: string;
-  email: string;
   authId: string;
   gamesPlayed: number;
   gamesWon: number;
   killsConfirmed: number;
-  facialDescriptions: Array<number> | null;
-  // Add other user data properties as needed
+  image: string;
 };
 
-const SavedTrophies: React.FC<TrophyData> = () => {
+const OtherSavedTrophies: React.FC<TrophyData> = () => {
   const trophyRefs = useRef<(THREE.Mesh | null)[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [prevMouseX, setPrevMouseX] = useState(0);
   const [prevMouseY, setPrevMouseY] = useState(0);
   const { user, isAuthenticated } = useAuth0();
-  const [userData, setUserData] = useState<UserData | null>(null);
   const [userTrophyData, setUserTrophyData] = useState<TrophyData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasLoaded, setHasLoaded] = useState(false);
-
+  const { username } = useParams();
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  
   const fetchUserData = async () => {
     try {
-      const response = await axios.get<UserData>(`/Users/${user?.sub}`, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      setUserData(response.data[0]);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
+      const res = await axios.get<ProfileData>(`/users/name/${username}`);
+      setProfileData(res.data);
+      setHasLoaded(false);
+    } catch (err) {
+      console.error('Error fetching user data:', err);
     }
   };
 
   // fetch, parse and set the trophy data
   const fetchUserTrophyData = async () => {
     try {
-      if (userData) {
+      if (profileData) {
         const response = await axios.get<
           {
             id: number;
@@ -79,7 +74,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
             createdAt: string;
             generationConditions: string;
           }[]
-        >(`/trophies/${userData.id}`, {
+        >(`/trophies/${profileData.id}`, {
           headers: {
             Authorization: `Bearer ${user?.token}`,
           },
@@ -218,7 +213,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
     fetchUserTrophyData().catch((error) => {
       console.error('Error fetching user trophy data:', error);
     });
-  }, [userData]);
+  }, [profileData]);
 
   const trophiesPerPage = 9;
   const startIndex = (currentPage - 1) * trophiesPerPage;
@@ -234,6 +229,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
+        padding: '20px'
       }}
     >
       {hasLoaded === false ? (
@@ -255,7 +251,7 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               }}
             >
               <h3>No Trophies?!?</h3>
-              <h3>Get Out There and Hunt!</h3>
+              <h3>Must be a novice.</h3>
               <iframe
                 src='https://giphy.com/embed/v3mSElAsyJSqA'
                 width='250'
@@ -378,13 +374,13 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               bottom: 1,
             }}
           >
-            <div style={{marginRight: '2em'}}>
+            <div>
               {totalPages > 1 && (
                 <div
                   style={{
                     display: 'flex',
                     width: '70%',
-                    marginLeft: '0',
+                    margin: 'auto',
                   }}
                 >
                   <div></div>
@@ -406,6 +402,8 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 <span
                   style={{
                     display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
                   Page {currentPage}
@@ -419,4 +417,4 @@ const SavedTrophies: React.FC<TrophyData> = () => {
   );
 };
 
-export default SavedTrophies;
+export default OtherSavedTrophies;
