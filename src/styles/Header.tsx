@@ -29,6 +29,17 @@ const LogoContainer = styled.div `
   left: -5vw;
 `;
 
+const TitleAndMenuContainer = styled.div `
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  top: 1vh;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  text-align: end;
+`;
+
 interface HeaderProps {
   page?: string;
   users?: Array<Object> | null;
@@ -45,21 +56,15 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
   return (
     <StyledHeader>
       <LogoContainer onClick={handleHome}></LogoContainer>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '87%',
-        width: '100%',
-        textAlign: 'end',
-      }}>
+      <TitleAndMenuContainer>
         <DropDownMenu page={page || ''} />
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
           : page==='Game Over'
-          ? <h1 style={{ fontSize: '2rem', marginRight: '-20px', }}>{page}</h1>
-          : <h1 style={{ marginRight: '-20px', }}>{page}</h1>
+          ? <h1 style={{ fontSize: '2rem', marginRight: '-20px' }}>{page}</h1>
+          : <h1 style={{ marginRight: '-20px' }}>{page}</h1>
         }
-      </div>
+      </TitleAndMenuContainer>
     </StyledHeader>
   );
 }
