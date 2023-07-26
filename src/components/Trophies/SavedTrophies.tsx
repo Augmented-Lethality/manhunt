@@ -378,13 +378,13 @@ const SavedTrophies: React.FC<TrophyData> = () => {
               bottom: 1,
             }}
           >
-            <div>
+            <div style={{marginRight: '2em'}}>
               {totalPages > 1 && (
                 <div
                   style={{
                     display: 'flex',
                     width: '70%',
-                    margin: 'auto',
+                    marginLeft: '0',
                   }}
                 >
                   <div></div>
@@ -406,8 +406,6 @@ const SavedTrophies: React.FC<TrophyData> = () => {
                 <span
                   style={{
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
                   }}
                 >
                   Page {currentPage}

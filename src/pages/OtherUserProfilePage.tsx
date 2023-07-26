@@ -96,6 +96,7 @@ const OtherUserProfilePage: React.FC = () => {
               <h2>Games Won: {profileData?.gamesWon}</h2>
               <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
             </div>
+            <OtherSavedTrophies id={0} name={''} description={''} createdAt={''} dimension={0} dimensionTwo={0} dimensionThree={0} color={''} shape={''} tubularSegments={0} tubeWidth={0} />
           </>
         }
       </Main>
