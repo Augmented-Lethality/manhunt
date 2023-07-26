@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   FaceMatcher,
   createCanvasFromMedia,
@@ -30,6 +29,7 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
   const displaySize = { width: videoWidth, height: videoHeight };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   let [targetCounter, setTargetCounter] = useState(0);
+  let [targetCounterGoal] = useState(10);
   let wasBountyDetected = false;
   const { user } = useAuth0();
 
@@ -91,7 +91,7 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
   // whenever targetCounter is updated, if it's at 10, navigate the users
   // NEED TO CHANGE BACK FOR PRODUCTION
   useEffect(() => {
-    if (targetCounter === 10) {
+    if (targetCounter === targetCounterGoal) {
       AddGameStats(user);
       UpdateGameStatus(user, 'complete')
     }
@@ -156,7 +156,7 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
   return (
     <>
       <canvas ref={canvasRef} style={{ position: 'absolute', width: '100%', height: '100%' }} />
-      <TargetRecognition progress={targetCounter} />
+      <TargetRecognition progress={targetCounter} targetCounterGoal={targetCounterGoal}/>
     </>
   );
 }
