@@ -83,7 +83,7 @@ interface GameHeaderProps {
 
 export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
   return (
-    <GameStyledHeader className='glassmorphism'>
+    <GameStyledHeader className='glassmorphism-dark'>
       {children}
     </GameStyledHeader>
   );
