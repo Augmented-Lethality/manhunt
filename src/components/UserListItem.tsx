@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { User } from '../contexts/Socket/SocketContext';
 
 const UserContainer = styled.div`
   display: flex;
@@ -21,14 +20,14 @@ const Username = styled.p`
 `;
 
 
-const UserListItem: React.FC<{ player: User }> = ({ player }) => {
+const UserListItem: React.FC<{ player: any }> = ({ player }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentEndpoint = location.pathname;
 
 
   const handleClick = () => {
-    if(currentEndpoint !== '/lobby'){
+    if (currentEndpoint !== '/lobby') {
       navigate(`/profile/${player.username}`);
     }
   }

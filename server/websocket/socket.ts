@@ -89,59 +89,63 @@ export class ServerSocket {
           // if the user exists, update the socket.id
           await this.UserUpdate('socketId', socket.id, 'authId', user.sub);
 
+          // if (existingUser.gameId.length) {
+          //   // now see if they were part of the game
+          //   const existingGame = await this.FindGameByGameId(existingUser.gameId)
+
+          //   // if they have a gameId
+          //   if (existingGame && existingGame.dataValues !== undefined) {
+          //     console.log('existing game on handshake:', existingGame.dataValues)
+
+          //     const endpoint = await this.RedirectIfGaming(existingGame.dataValues.status);
+
+          //     // if the game is over, redirect them home, delete the game if there was only one user
+          //     if (endpoint === '/gameover' || endpoint === '/home') {
+          //       await this.UserUpdate('gameId', '', 'authId', user.sub);
+          //       socket.leave(existingGame.gameId);
+          //       socket.join('users');
+          //       await this.EmitGeneralUpdates()
+
+          //       if (existingGame.users.length < 2) {
+          //         await Game.destroy({ where: { gameId: existingGame.gameId } });
+          //       }
+
+          //       socket.emit('handshake_reply', player, '/home');
+
+          //     } else {
+
+          //       // if the game isn't over, but there's only one player in the game WHICH IS THEM, delete the game and send them home
+          //       if (existingGame.users.length < 2 && existingGame.users.includes(user.sub)) {
+          //         await Game.destroy({ where: { gameId: existingGame.gameId } });
+          //         await this.UserUpdate('gameId', '', 'authId', user.sub);
+          //         socket.leave(existingGame.gameId);
+          //         socket.join('users');
+          //         await this.EmitGeneralUpdates()
+          //         socket.emit('handshake_reply', player, '/home');
+
+          //         // the game isn't over and there's more than one player, add them back into the game
+          //       } else if (!existingGame.users.includes(existingUser.authId) && existingGame.users.length > 2) {
+          //         await this.GameUpdateUsers([...existingGame.users, existingUser.authId], 'gameId', existingUser.gameId);
+          //         await this.UserUpdate('gameId', existingGame.gameId, 'authId', user.sub);
+          //         console.log('put user back in game')
+          //         socket.leave('users');
+          //         socket.join(existingUser.gameId);
+          //         await this.EmitLobbyUpdates(existingUser.gameId);
+          //         socket.emit('handshake_reply', player, endpoint);
+          //       }
+          //     }
+
+          //     // no existing game exists
+          //   } else {
+          //     await this.UserUpdate('gameId', '', 'authId', user.sub);
+          //     socket.join('users');
+          //     // send new user to all connected users to update their state
+          //     await this.EmitGeneralUpdates()
+          //   }
+          // }
+
           if (existingUser.gameId.length) {
-            // now see if they were part of the game
-            const existingGame = await this.FindGameByGameId(existingUser.gameId)
-
-            // if they have a gameId
-            if (existingGame && existingGame.dataValues !== undefined) {
-              console.log('existing game on handshake:', existingGame.dataValues)
-
-              const endpoint = await this.RedirectIfGaming(existingGame.dataValues.status);
-
-              // if the game is over, redirect them home, delete the game if there was only one user
-              if (endpoint === '/gameover' || endpoint === '/home') {
-                await this.UserUpdate('gameId', '', 'authId', user.sub);
-                socket.leave(existingGame.gameId);
-                socket.join('users');
-                await this.EmitGeneralUpdates()
-
-                if (existingGame.users.length < 2) {
-                  await Game.destroy({ where: { gameId: existingGame.gameId } });
-                }
-
-                socket.emit('handshake_reply', player, '/home');
-
-              } else {
-
-                // if the game isn't over, but there's only one player in the game WHICH IS THEM, delete the game and send them home
-                if (existingGame.users.length < 2 && existingGame.users.includes(user.sub)) {
-                  await Game.destroy({ where: { gameId: existingGame.gameId } });
-                  await this.UserUpdate('gameId', '', 'authId', user.sub);
-                  socket.leave(existingGame.gameId);
-                  socket.join('users');
-                  await this.EmitGeneralUpdates()
-                  socket.emit('handshake_reply', player, '/home');
-
-                  // the game isn't over and there's more than one player, add them back into the game
-                } else if (!existingGame.users.includes(existingUser.authId) && existingGame.users.length > 2) {
-                  await this.GameUpdateUsers([...existingGame.users, existingUser.authId], 'gameId', existingUser.gameId);
-                  await this.UserUpdate('gameId', existingGame.gameId, 'authId', user.sub);
-                  console.log('put user back in game')
-                  socket.leave('users');
-                  socket.join(existingUser.gameId);
-                  await this.EmitLobbyUpdates(existingUser.gameId);
-                  socket.emit('handshake_reply', player, endpoint);
-                }
-              }
-
-              // no existing game exists
-            } else {
-              await this.UserUpdate('gameId', '', 'authId', user.sub);
-              socket.join('users');
-              // send new user to all connected users to update their state
-              await this.EmitGeneralUpdates()
-            }
+            await this.LeaveTheGame(socket, user);
           }
 
         } else {
@@ -256,30 +260,6 @@ export class ServerSocket {
       }
     });
 
-    socket.on('reconnect_in_game', async (user) => {
-
-      try {
-        const existingUser = await this.FindUserByAuthId(user.sub);
-
-        if (existingUser) {
-          const game = await this.FindGameByGameId(existingUser.gameId)
-
-          if (game) {
-            if (!game.users.includes(user.sub)) {
-              await this.GameUpdateUsers([...game.users, user.sub], 'gameId', existingUser.gameId);
-              socket.join(existingUser.gameId);
-
-              this.EmitLobbyUpdates(existingUser.gameId);
-            }
-          } else {
-            console.log('can not reconnect, no game with that host exists')
-          }
-        }
-
-      } catch (err) {
-        console.log(err);
-      }
-    });
 
     socket.on('reconnect_user', async (user) => {
 
@@ -295,7 +275,7 @@ export class ServerSocket {
               socket.join(existingUser.gameId);
 
               console.log('user in game again, updating the game lobby')
-              this.EmitLobbyUpdates(existingUser.gameId);
+              await this.EmitLobbyUpdates(existingUser.gameId);
             }
           }
         } else {
@@ -410,8 +390,13 @@ export class ServerSocket {
 
     });
 
-    socket.on('leave_game', async (user) => {
-      await this.LeaveTheGame(socket, user);
+    socket.on('leave_game', async (user, toClient) => {
+      try {
+        await this.LeaveTheGame(socket, user);
+        toClient('left');
+      } catch (err) {
+        console.log('could not leave game:', err);
+      }
     });
 
     socket.on('update_game_timer', async (time, user) => {

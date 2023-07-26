@@ -4,12 +4,12 @@ import { GameListItem } from '../components/GameLobby/GameListItem';
 import styled from 'styled-components';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
+import { useAuth0 } from '@auth0/auth0-react';
 
 import PhoneLoader from '../components/Loaders/PhoneLoader';
 import { useNavigate } from 'react-router-dom';
 
-
-const HomeSign = styled.div<{onClick}>`
+const NoContracts = styled.div`
   height: 216px;
   width: 369px;
   margin-top: 47px;
@@ -24,11 +24,14 @@ const HomeSign = styled.div<{onClick}>`
   font-size: 2.7rem;
   text-align: center;
   box-sizing: border-box;
-  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: rotate(5deg);
 `
-const NoBountiesSign = styled.div`
-  height: 260px;
-  width: 369px;
+const HomeSign = styled.div<{ onClick: () => void }>`
+  height: 208px;
+  width: 284px;
   margin-top: 47px;
   margin-inline: auto;
   border-radius: 37px;
@@ -42,10 +45,16 @@ const NoBountiesSign = styled.div`
   text-align: center;
   box-sizing: border-box;
   background-position: center;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const FindGamePage: React.FC = () => {
-  const { games, users } = useContext(SocketContext).SocketState;
+  const { games, users, player } = useContext(SocketContext).SocketState;
+  const { user } = useAuth0();
+  const { LeaveGame } = useContext(SocketContext);
   const navigate = useNavigate();
   const [joining, setJoining] = useState(false);
 
@@ -61,17 +70,21 @@ const FindGamePage: React.FC = () => {
         ) : (
           <>
             {games.length > 0 ? (
-              games.map((game) => (
-                <GameListItem key={game.gameId} game={game} setJoining={setJoining} />
-              ))
+              games.map((game) => {
+                if (game.host === player.authId) {
+                  LeaveGame(user);
+                  return null;
+                }
+                return <GameListItem key={game.gameId} game={game} setJoining={setJoining} />
+              })
             ) : (
               <>
-              <NoBountiesSign>
-                No Bounties Have Been Posted
-              </NoBountiesSign>
-              <HomeSign onClick={()=>navigate('/home')}>
-                Go Back Home
-              </HomeSign>
+                <NoContracts>
+                  No Contracts!
+                </NoContracts>
+                <HomeSign onClick={() => navigate('/home')}>
+                  Back Home
+                </HomeSign>
               </>
             )}
           </>

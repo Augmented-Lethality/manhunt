@@ -136,13 +136,13 @@ const ProfilePage: React.FC = () => {
             <h1 style={{ fontSize: '2.3rem' }}>Bio Data</h1>
           </div>
         </StyledHeader>
-        <Main style={{ height: '100vh', paddingTop: '0px' }}>
+        <Main>
           <CreateFaceDescriptions
             setPhotoStatus={setPhotoStatus}
             username={user?.name}
             userID={user?.sub}
             setUser={setUserData}
-            />
+          />
         </Main>
       </>
     );
