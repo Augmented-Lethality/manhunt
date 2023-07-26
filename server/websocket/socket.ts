@@ -145,8 +145,11 @@ export class ServerSocket {
           // }
 
           if (existingUser.gameId.length) {
+            socket.leave(existingUser.gameId);
             await this.LeaveTheGame(socket, user);
           }
+          socket.join('users');
+
 
         } else {
           console.log('new user, adding them to the database first');
