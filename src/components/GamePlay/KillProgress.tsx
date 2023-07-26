@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
+//Contains the ProgressBar
 const ProgressContainer = styled.div`
   position: relative;
   width: 35vh;
-  border: 1px solid black;
   border-radius: 0 0 10px 10px;
   height: 33px;
   top: 164px;
@@ -12,11 +12,12 @@ const ProgressContainer = styled.div`
   background-color: #1a1a1a;
 `;
 
-const ProgressBar = styled.div<{ progress: number }>`
+//Displays how much progress has been made as a percentage of the progress container
+const ProgressBar = styled.div<{ progress: number, goal: number }>`
   position: absolute;
   top: 0;
   left: 0;
-  width: ${(props) => props.progress * 10}%; /* Calculate the width based on the progress */
+  width: ${(props) => props.progress / props.goal * 100}%;
   height: 100%;
   background-color: #f06;
   transition: width 0.5s ease-out;
@@ -24,12 +25,13 @@ const ProgressBar = styled.div<{ progress: number }>`
 
 interface TargetRecognitionProps {
   progress: number;
+  targetCounterGoal: number;
 }
 
-const TargetRecognition: React.FC<TargetRecognitionProps> = ({ progress }) => {
+const TargetRecognition: React.FC<TargetRecognitionProps> = ({ progress, targetCounterGoal }) => {
   return (
     <ProgressContainer>
-      <ProgressBar progress={progress} />
+      <ProgressBar progress={progress} goal={targetCounterGoal}/>
     </ProgressContainer>
   );
 };
