@@ -28,8 +28,8 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
   const videoWidth = window.innerWidth;
   const displaySize = { width: videoWidth, height: videoHeight };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  let [targetCounter, setTargetCounter] = useState(0);
-  let [targetCounterGoal] = useState(10);
+  const [targetCounter, setTargetCounter] = useState(0);
+  const targetCounterGoal = 10;
   let wasBountyDetected = false;
   const { user } = useAuth0();
 
