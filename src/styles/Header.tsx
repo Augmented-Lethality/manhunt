@@ -80,6 +80,7 @@ export const GameStyledHeader = styled.header`
   z-index: 1;
   text-align: center;
   width: 100vw;
+  height: 160px;
 `;
 
 interface GameHeaderProps {
