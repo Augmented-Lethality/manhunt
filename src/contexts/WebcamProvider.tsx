@@ -39,12 +39,10 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
     if (path === '/profile') {
       setMode('user');
     } else {
-      setStyle({
+      setStyle(prevStyle => ({
+        ...prevStyle,
         position: "absolute",
-        height: "100%",
-        width: "100%",
-        objectFit: "cover",
-      })
+      }))
     }
   }, [path]);
 
