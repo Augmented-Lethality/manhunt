@@ -1,7 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState, useContext, lazy, Suspense } from 'react';
 import axios from 'axios';
-import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
+import CreateFaceDescriptions from '../components/ProfilePieces/CreateFaceDescriptions';
 import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
