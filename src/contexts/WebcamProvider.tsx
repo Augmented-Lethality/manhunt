@@ -17,12 +17,14 @@ interface WebcamProviderProps {
 export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
   const webcamRef = useRef<Webcam | null>(null);
   const [videoStarted, setVideoStarted] = useState(false);
-
   const location = useLocation();
   const path = location.pathname;
-
   const [mode, setMode] = useState('environment');
-  const [style, setStyle] = useState({});
+  const [style, setStyle] = useState<any>({
+    height: "100%",
+    width: "100%",
+    objectFit: "cover"
+  });
 
   const setRef = useCallback((webcam: Webcam | null) => {
     webcamRef.current = webcam;
@@ -36,13 +38,7 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
   useEffect(() => {
     if (path === '/profile') {
       setMode('user');
-      setStyle({
-        height: "100%",
-        width: "100%",
-        objectFit: "cover",
-      })
     } else {
-      setMode('environment');
       setStyle({
         position: "absolute",
         height: "100%",
