@@ -32,8 +32,6 @@ const LogoContainer = styled.div `
 const TitleAndMenuContainer = styled.div `
   display: flex;
   flex-direction: column;
-  position: relative;
-  top: 1vh;
   justify-content: space-between;
   height: 100%;
   width: 100%;
