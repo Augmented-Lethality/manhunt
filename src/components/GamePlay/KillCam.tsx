@@ -16,17 +16,11 @@ import TargetRecognition from './KillProgress';
 import { useAuth0 } from "@auth0/auth0-react";
 import SocketContext from '../../contexts/Socket/SocketContext';
 
-interface KillCamProps {
-  setImg?: (img: ImageData | null) => void;
-}
-
-const KillCam: React.FC<KillCamProps> = (setImg) => {
+const KillCam: React.FC = () => {
   const webcamContext = useWebcam();
   const webcamRef = webcamContext?.webcamRef;
   const videoStarted = webcamContext?.videoStarted;
-  const videoHeight = window.innerHeight;
-  const videoWidth = window.innerWidth;
-  const displaySize = { width: videoWidth, height: videoHeight };
+  const displaySize = { width: window.innerWidth, height: window.innerHeight };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [targetCounter, setTargetCounter] = useState(0);
   const targetCounterGoal = 10;
@@ -125,7 +119,7 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
             .withFaceLandmarks()
             .withFaceDescriptors();
           const resizedDetections = resizeResults(detections, displaySize);
-          context.clearRect(0, 0, videoWidth, videoHeight);
+          context.clearRect(0, 0, window.innerWidth, window.innerHeight);
           draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
           const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
           results.forEach((result, i) => {
@@ -142,7 +136,6 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
                 drawBox.draw(canvasRef.current)
               }
             }
-
           });
           requestAnimationFrame(processVideoFrame);
         }
