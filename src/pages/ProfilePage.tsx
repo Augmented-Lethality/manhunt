@@ -12,7 +12,6 @@ import IdCard from '../components/ProfilePieces/IdCard';
 import IdPaper from '../components/ProfilePieces/IdPaper';
 import SocketContext from '../contexts/Socket/SocketContext'
 
-
 export type UserData = {
   id: number;
   username: string;
@@ -64,11 +63,10 @@ margin: 10px;
 
 
 const ProfilePage: React.FC = () => {
-  const { user, isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
   const [trophiesExist, setTrophiesExist] = useState(true);
-  const mainHeight = ((window.visualViewport?.height || window.innerHeight) - 136) + 'px' || '100vh';
   const { player } = useContext(SocketContext).SocketState;
 
   useEffect(() => {
@@ -78,7 +76,6 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     fetchUserTrophyData();
   }, [userData]);
-
 
   const fetchUserData = async () => {
     try {
@@ -136,7 +133,7 @@ const ProfilePage: React.FC = () => {
             <h1 style={{ fontSize: '2.3rem' }}>Bio Data</h1>
           </div>
         </StyledHeader>
-        <Main>
+        <Main style={{height: '100vh'}}>
           <CreateFaceDescriptions
             setPhotoStatus={setPhotoStatus}
             username={user?.name}
@@ -147,7 +144,6 @@ const ProfilePage: React.FC = () => {
       </>
     );
   }
-
 
   const verifiedMessage = 'At Corpoverse, we prioritize your privacy and security.\n\n' +
     'Your Bio Data is used for internal state-related activities and is stored as vectors, not the picture itself, ensuring your utmost safety.\n\n' +
