@@ -42,7 +42,7 @@ app.use(express.json());
 app.use(express.static(dist));
 app.use(express.urlencoded({ extended: true }));
 
-//server static files. will need to change for production.
+//server static files. for production upload files to s3 bucket.
 app.use('/textures', express.static(path.join(__dirname, '..', '..', 'public/textures')))
 app.use('/models', express.static(path.join(__dirname, '..', '..', 'public/models')))
 

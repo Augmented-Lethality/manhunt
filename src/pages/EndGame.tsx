@@ -33,11 +33,11 @@ export const EndGame: React.FC = () => {
   const [winner, setWinner] = useState(false);
 
   const handleGoHome = () => {
-    navigate('/home'); 
+    navigate('/home');
   };
-  
+
   const handleGoAgain = () => {
-    navigate('/lobby'); 
+    navigate('/lobby');
   };
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export const EndGame: React.FC = () => {
         games[0].hunted === player.authId
       ) {
         setGameOverMessage(
-          `Target aquired thanks to you, ${player.username}.`
+          `Target acquired thanks to you, ${player.username}.`
         );
         // user is a winner
         setWinner(true);
@@ -101,7 +101,7 @@ export const EndGame: React.FC = () => {
           </MessageContainer>
         ) :
           <PhoneLoader />}
-        <div className='glassmorphism column centered padded margined'>
+        {/* <div className='glassmorphism column centered padded margined'>
           Justice can wait, time to
           <button onClick={handleGoHome}>
             GO HOME
@@ -110,7 +110,7 @@ export const EndGame: React.FC = () => {
           <button onClick={handleGoAgain}>
             GO AGAIN
           </button>
-        </div>
+        </div> */}
       </Main>
     </ >
   );

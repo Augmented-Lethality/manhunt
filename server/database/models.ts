@@ -3,11 +3,16 @@ import sequelize from './index';
 
 ////////////////////////////////////////////////
 class User extends Model {
-  gamesPlayed: any;
-  gamesWon: any;
-  killsConfirmed: any;
+  id!: number;
+  username!: string;
+  gamesPlayed!: number;
+  gamesWon!: number;
+  killsConfirmed!: number;
   facialDescriptions: any;
-  largeFont: any;
+  largeFont!: boolean;
+  friends!: Array<number>;
+  sentRequests!: Array<number>;
+  receivedRequests!: Array<number>;
 }
 User.init({
   id: {
@@ -75,48 +80,21 @@ User.init({
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
-  }
-}, { sequelize });
-
-////////////////////////////////////////////////
-
-class Friend extends Model {
-  status!: string;
-  userId!: number;
-  friendId!: number;
-}
-Friend.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
   },
-  userId: {
-    type: DataTypes.STRING,
-    references: {
-      model: User,
-      key: 'authId'
-    }
-  },
-  friendId: {
-    type: DataTypes.STRING,
-    references: {
-      model: User,
-      key: 'authId'
-    }
-  },
-  status: {
-    type: DataTypes.ENUM('pending', 'accepted', 'blocked'),
+  friends: {
+    type: DataTypes.ARRAY(DataTypes.INTEGER),
     allowNull: false,
-    defaultValue: 'pending'
+    defaultValue: []
   },
-  initiator: {
-    type: DataTypes.STRING,
-    references: {
-      model: User,
-      key: 'authId'
-    },
-    allowNull: false
+  sentRequests: {
+    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    allowNull: false,
+    defaultValue: []
+  },
+  receivedRequests: {
+    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    allowNull: false,
+    defaultValue: []
   }
 }, { sequelize });
 
@@ -250,30 +228,4 @@ UserTrophy.init({
 User.belongsToMany(Trophy, { through: UserTrophy });
 Trophy.belongsToMany(User, { through: UserTrophy });
 
-User.hasMany(Friend, { foreignKey: 'userId' });
-Friend.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(Friend, { foreignKey: 'friendId' });
-Friend.belongsTo(User, { foreignKey: 'friendId' });
-
-export { User, Friend, Game, Trophy, UserTrophy, Locations };
-
-/*** THE FOLLOWING EXISTS INCASE YOU NEED TO DROP INDIVIDUAL TABLES ***/
-/*** JUST UNCOMMENT THE TABLE FROM THE LIST BELOW ***/
-/*** THEN RECOMMENT IT SO YOU DON'T ACCIDENTALLY DELETE A TABLE YOU DONT WANT TO ***/
-
-// async function dropTables(): Promise<void> {
-//   try {
-//     // Drop the tables in reverse order of their dependencies
-//     await UserTrophy.drop();
-//     await Trophy.drop();
-//     await Friend.drop();
-//     await Game.drop();
-//     await User.drop();
-
-//     console.log('Tables listed have been dropped.');
-//   } catch (error) {
-//     console.error('An error occurred while dropping the tables:', error);
-//   }
-// }
-
-// dropTables();
+export { User, Game, Trophy, UserTrophy, Locations };

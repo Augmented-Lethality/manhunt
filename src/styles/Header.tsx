@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';import styled from 'styled-components';
-import DropDownMenu from '../components/DropDownMenu';
+import DropDownMenu from './DropDownMenu';
 import { useNavigate } from 'react-router-dom';
 
 export const StyledHeader = styled.header`
@@ -11,7 +11,7 @@ export const StyledHeader = styled.header`
   position: fixed;
   top: 0;
   width: 100%;
-  background-image: url(/textures/header-small.png);
+  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/header-small.png");
   background-size: cover;
   background-position: left bottom;
   box-sizing: border-box;

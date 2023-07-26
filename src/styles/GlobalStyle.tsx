@@ -13,7 +13,7 @@ body {
   font-family: 'Source Code Pro';
   font-size: var(--font-size);
   word-wrap: break-word;
-  background: url("/textures/background-small.png") no-repeat;
+  background: url("https://d3d9qwhf4u1hj.cloudfront.net/images/background-small.png") no-repeat;
   background-size: cover;
   display: flex;
   flex-direction: column;
@@ -35,7 +35,7 @@ body {
 }
 
 .paper{
-  background: url(/textures/paper.png);
+  background: url("https://d3d9qwhf4u1hj.cloudfront.net/images/paper.png");
   background-size: cover;
   background-position: center;
 }
@@ -316,6 +316,13 @@ input::placeholder{color: cyan;}
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+}
+
+.right {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .padded {
@@ -346,6 +353,16 @@ input::placeholder{color: cyan;}
   justify-content: space-between;
   box-shadow: 0 10px 10px 2px #00000047;
   position: relative;
+}
+
+.dropdownicon {
+  width: 3rem;
+  height: 3rem;
+  padding: 5px;
+  border-radius: 50%;
+  background: #00000070;
+  color: #20e4e1;
+  box-shadow: 0 0 0 1px black, 0 0 0 4px #76dfe4, 0 0 0 7px black;
 }
 
 .bold {

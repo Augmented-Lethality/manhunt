@@ -23,28 +23,37 @@ const Image = styled.div<{ ishost: string }>`
   box-sizing: border-box;
   background-image:
     ${props => props.ishost
-    ? 'url(/textures/lobby-host.png)'
-    : 'url(/textures/lobby-guest.png)'};
+    ? 'url("https://d3d9qwhf4u1hj.cloudfront.net/images/lobby-host.png")'
+    : 'url("https://d3d9qwhf4u1hj.cloudfront.net/images/lobby-guest.png")'};
   background-size: contain;
   background-repeat: no-repeat;
+  @media (min-aspect-ratio: 334/700) {
+    background-position: center 100px;
+  }
 `;
 
 const MinusButton = styled.div`
   position: absolute;
   bottom: 131vw;
-  left: 47vw;
-  height: 9vw;
-  width: 9vw;
+  left: 41vw;
+  height: 13vw;
+  width: 12vw;
   // border: 2px solid blue;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(131vw - 100px);
+  }
 `;
 
 const PlusButton = styled.div`
   position: absolute;
   bottom: 130vw;
-  left: 81vw;
-  width: 9vw;
-  height: 9vw;
+  left: 83vw;
+  width: 13vw;
+  height: 14vw;
   // border: 2px solid red;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(130vw - 100px);
+  }
 `;
 
 const PlayButton = styled.div`
@@ -54,6 +63,9 @@ const PlayButton = styled.div`
   height: 22vw;
   width: 21vw;
   // border: 2px solid green;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(140vw - 100px);
+  }
 `;
 const BackButton = styled.div`
   position: absolute;
@@ -62,6 +74,9 @@ const BackButton = styled.div`
   height: 22vw;
   width: 22vw;
   // border: 2px solid pink;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(134vw - 100px);
+  }
 `;
 
 const PlayersContainer = styled.div`
@@ -72,6 +87,9 @@ const PlayersContainer = styled.div`
   width: 70vw;
   overflow: auto;
   // border: 2px solid cyan;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(54vw - 100px);
+  }
 `;
 const TimeContainer = styled.div`
   position: absolute;
@@ -84,29 +102,18 @@ const TimeContainer = styled.div`
   color: #009f40;
   font-size: 1.2rem;
   // border: 2px solid yellow;
+  @media (min-aspect-ratio: 334/700) {
+    bottom: calc(133vw - 100px);
+  }
 `;
-
-const CountdownContainer = styled.div`
-  background: url(/textures/paper.png);
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  margin-top: 50px;
-  margin-inline: 20px;
-  padding: 56px;
-  height: 30vh;
-  border-radius: 10px;
-  justify-content: space-around;
-`
 
 const GameLobby: React.FC<{}> = () => {
   const {
     UpdateGameStatus,
     AddGameStart,
     AddGameDuration,
-    SetHunted
+    SetHunted,
+    LeaveGame
   } = useContext(SocketContext);
   const { isAuthenticated, user } = useAuth0();
   const { games, users, player } = useContext(SocketContext).SocketState;
@@ -161,7 +168,6 @@ const GameLobby: React.FC<{}> = () => {
       AddGameStart(Date.now(), user);
       UpdateGameStatus(user, 'ongoing');
     }
-
   }, [bountyName])
 
   //Allow clicking the arrows to change the time
@@ -195,6 +201,11 @@ const GameLobby: React.FC<{}> = () => {
     'Happy Hunting.';
   const playersInfoMessage = 'Be patient and wait for the host to start the game!'
 
+  const handleBackButton = () => {
+    LeaveGame(user);
+    navigate('/home');
+  }
+
   return (
     <>
       <Header page='Lobby' />
@@ -208,7 +219,7 @@ const GameLobby: React.FC<{}> = () => {
             <InfoPopup message={hostInfoMessage} />
           </>
         }
-        <BackButton onClick={() => navigate('/home')} />
+        <BackButton onClick={handleBackButton} />
         <TimeContainer>{selected}</TimeContainer>
         <PlayersContainer>
           <h2 className='digital-h1'>Hunters • {users.length}</h2>
