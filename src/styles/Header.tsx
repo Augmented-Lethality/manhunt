@@ -4,10 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const StyledHeader = styled.header`
   display: flex;
-  padding: 2rem;
-  padding-top: 1rem;
-  height: 175px;
-  justify-content: space-between;
+  height: 140px;
   position: fixed;
   top: 0;
   width: 100%;
@@ -16,16 +13,15 @@ export const StyledHeader = styled.header`
   background-size: cover;
   background-position: left bottom;
   box-sizing: border-box;
-  align-items: center;
   border-bottom: solid black;
   z-index: 1;
 `;
 
 const LogoContainer = styled.div `
-  height: 100%;
-  width: 23vw;
+  height: 83%;
+  width: 53vw;
   position: relative;
-  bottom: 2vw;
+  bottom: -10px;
   left: -5vw;
 `;
 
@@ -33,9 +29,11 @@ const TitleAndMenuContainer = styled.div `
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
-  width: 100%;
-  text-align: end;
+  height: 72%;
+  width: 90%;
+  margin-right: 8vw;
+  margin-top: 15px;
+  align-items: end;
 `;
 
 interface HeaderProps {
@@ -58,16 +56,14 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
         <DropDownMenu page={page || ''} />
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
-          : page==='Game Over'
-          ? <h1 style={{ fontSize: '2rem', marginRight: '-20px' }}>{page}</h1>
-          : <h1 style={{ marginRight: '-20px' }}>{page}</h1>
+          : <h1 style={{ marginRight: '-15px' }}>{page}</h1>
         }
       </TitleAndMenuContainer>
     </StyledHeader>
   );
 }
 
-export const GameStyledHeader = styled.header`
+const GameStyledHeader = styled.header`
   display: flex;
   flex-direction: column;
   padding: 1rem;
