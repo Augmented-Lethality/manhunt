@@ -6,7 +6,7 @@ export const Main = styled.main`
   flex-grow: 1;
   overflow: auto;
   position: relative;
-  padding-top: 145px;
+  padding-top: 165px;
   min-height: 100vh;
   width: 100vw;
 `;
