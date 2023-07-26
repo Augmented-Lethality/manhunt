@@ -47,8 +47,8 @@ export const WebcamProvider: React.FC<WebcamProviderProps> = ({ children }) => {
   }, [path]);
 
   const videoConstraints = {
-    width: window.innerWidth,
-    height: window.innerHeight,
+    height: window.outerWidth,
+    width: window.outerHeight,
     facingMode: mode
   };
 
