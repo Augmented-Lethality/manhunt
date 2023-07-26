@@ -13,7 +13,8 @@ body {
   font-family: 'Source Code Pro';
   font-size: var(--font-size);
   word-wrap: break-word;
-  background: url("https://d3d9qwhf4u1hj.cloudfront.net/images/background-small.png") no-repeat;
+  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/background-small.jpg");
+  background-color: #6d9ca1;
   background-size: cover;
   display: flex;
   flex-direction: column;
@@ -27,6 +28,17 @@ body {
   background: #779baa45;
   backdrop-filter: blur(3px);
   color: #e1fffbc7;
+  border-radius: 45px;
+  box-shadow:
+    0 -1px 0 2px #afd5d66b,
+    0 1px 0 2px #00000063,
+    5px 10px 2px #00000030;
+}
+
+.glassmorphism-dark{
+  background: #000000a8;
+  backdrop-filter: blur(3px);
+  color: #80ffeec7;
   border-radius: 45px;
   box-shadow:
     0 -1px 0 2px #afd5d66b,
@@ -368,6 +380,10 @@ input::placeholder{color: cyan;}
 .bold {
   font-weight: 600;
 }
-`;
 
+.cameraMain {
+  padding: 0;
+}
+
+`;
 export default GlobalStyle;

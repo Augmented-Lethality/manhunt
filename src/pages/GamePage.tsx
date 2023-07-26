@@ -8,7 +8,7 @@ import ChaseCam from '../components/GamePlay/ChaseCam';
 import KillCam from '../components/GamePlay/KillCam';
 import Countdown from '../components/GameLobby/Countdown';
 import { GameHeader } from '../styles/Header';
-import { Main } from '../styles/Main';
+import { GameMain } from '../styles/Main';
 import { Crosshair, Eye } from 'react-feather';
 import DropDownMenu from '../styles/DropDownMenu';
 
@@ -50,7 +50,7 @@ const GamePage: React.FC = () => {
   return (
     <>
       <GameHeader>
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <div className='row centered' style={{ justifyContent: 'space-between' }}>
           {gameMode === 'Chase' ? (
             <div className='column centered'>
               <h5>Kill Mode</h5>
@@ -67,7 +67,7 @@ const GamePage: React.FC = () => {
         <Countdown />
         {huntedMessage && <h3>{huntedMessage}</h3>}
       </GameHeader>
-      <Main style={{ height: '100vh', paddingTop: '0px' }}>
+      <GameMain>
         {gameMode === 'Chase' ? (
           <WebcamChaseProvider key="chaseCam">
             <ChaseCam />
@@ -77,7 +77,7 @@ const GamePage: React.FC = () => {
             <KillCam />
           </WebcamProvider>
         )}
-      </Main>
+      </GameMain>
     </>
   );
 }

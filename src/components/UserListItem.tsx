@@ -18,10 +18,7 @@ const Username = styled.p`
   font-size: 16px;
   color: cyan;
 `;
-const KD = styled.p`
-  font-size: 16px;
-  color: #6e6b8c;
-`;
+
 
 const UserListItem: React.FC<{ player: any }> = ({ player }) => {
   const navigate = useNavigate();

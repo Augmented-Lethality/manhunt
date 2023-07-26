@@ -16,10 +16,11 @@ const Image = styled.div`
   transform: translateX(-50%);
   padding: 1rem;
   padding-bottom: 0;
-  height: 145.5vw;
+  height: 140.5vw;
   width: 100%;
   box-sizing: border-box;
-  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/computer.png");
+  background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/computer.jpg);
+  background-color: black;
   background-size: contain;
   background-repeat: no-repeat;
 `;
@@ -123,7 +124,7 @@ const HuntersPage: React.FC = () => {
   return (
     <>
       <Header page='Hunters' />
-      <Main style={{ height: '100vh' }}>
+      <Main style={{ height: '100vh', background: '#1e1e1e'}}>
         <Image />
         <SearchBar>
           {searchText === ''

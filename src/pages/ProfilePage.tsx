@@ -1,7 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState, useContext, lazy, Suspense } from 'react';
 import axios from 'axios';
-import CreateFaceDescriptions from '../components/CreateFaceDescriptions';
+import CreateFaceDescriptions from '../components/ProfilePieces/CreateFaceDescriptions';
 import { Header, StyledHeader } from '../styles/Header';
 import { Main } from '../styles/Main';
 import XCircle from 'react-feather/dist/icons/x-circle';
@@ -11,7 +11,6 @@ import InfoPopup from '../components/Popups/InfoPopup';
 import IdCard from '../components/ProfilePieces/IdCard';
 import IdPaper from '../components/ProfilePieces/IdPaper';
 import SocketContext from '../contexts/Socket/SocketContext'
-
 
 export type UserData = {
   id: number;
@@ -64,13 +63,11 @@ margin: 10px;
 
 
 const ProfilePage: React.FC = () => {
-  const { user, isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [photoStatus, setPhotoStatus] = useState('profile, camera, photo');
   const [trophiesExist, setTrophiesExist] = useState(true);
-
   const { player } = useContext(SocketContext).SocketState;
-
 
   useEffect(() => {
     fetchUserData();
@@ -79,7 +76,6 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     fetchUserTrophyData();
   }, [userData]);
-
 
   const fetchUserData = async () => {
     try {
@@ -137,7 +133,7 @@ const ProfilePage: React.FC = () => {
             <h1 style={{ fontSize: '2.3rem' }}>Bio Data</h1>
           </div>
         </StyledHeader>
-        <Main>
+        <Main style={{height: '100vh'}}>
           <CreateFaceDescriptions
             setPhotoStatus={setPhotoStatus}
             username={user?.name}
@@ -148,7 +144,6 @@ const ProfilePage: React.FC = () => {
       </>
     );
   }
-
 
   const verifiedMessage = 'At Corpoverse, we prioritize your privacy and security.\n\n' +
     'Your Bio Data is used for internal state-related activities and is stored as vectors, not the picture itself, ensuring your utmost safety.\n\n' +

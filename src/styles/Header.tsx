@@ -11,11 +11,13 @@ export const StyledHeader = styled.header`
   position: fixed;
   top: 0;
   width: 100%;
-  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/header-small.png");
+  background-image: url("https://d3d9qwhf4u1hj.cloudfront.net/images/header-small.jpg");
+  background-color: #db840b;
   background-size: cover;
   background-position: left bottom;
   box-sizing: border-box;
   align-items: center;
+  border-bottom: solid black;
   z-index: 1;
 `;
 
@@ -25,6 +27,15 @@ const LogoContainer = styled.div `
   position: relative;
   bottom: 2vw;
   left: -5vw;
+`;
+
+const TitleAndMenuContainer = styled.div `
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  text-align: end;
 `;
 
 interface HeaderProps {
@@ -43,21 +54,15 @@ export const Header: React.FC<HeaderProps> = ({ page, users }) => {
   return (
     <StyledHeader>
       <LogoContainer onClick={handleHome}></LogoContainer>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '87%',
-        width: '100%',
-        textAlign: 'end',
-      }}>
+      <TitleAndMenuContainer>
         <DropDownMenu page={page || ''} />
         {(page === 'Find')
           ? <h3>{users?.length} Hunter{users?.length !== 1 ? 's' : ''} Available for Contract</h3>
           : page==='Game Over'
-          ? <h1 style={{ fontSize: '2rem', marginRight: '-20px', }}>{page}</h1>
-          : <h1 style={{ marginRight: '-20px', }}>{page}</h1>
+          ? <h1 style={{ fontSize: '2rem', marginRight: '-20px' }}>{page}</h1>
+          : <h1 style={{ marginRight: '-20px' }}>{page}</h1>
         }
-      </div>
+      </TitleAndMenuContainer>
     </StyledHeader>
   );
 }
@@ -73,6 +78,7 @@ export const GameStyledHeader = styled.header`
   z-index: 1;
   text-align: center;
   width: 100vw;
+  height: 160px;
 `;
 
 interface GameHeaderProps {
@@ -81,7 +87,7 @@ interface GameHeaderProps {
 
 export const GameHeader: React.FC<GameHeaderProps> = ({ children }) => {
   return (
-    <GameStyledHeader className='glassmorphism'>
+    <GameStyledHeader className='glassmorphism-dark'>
       {children}
     </GameStyledHeader>
   );

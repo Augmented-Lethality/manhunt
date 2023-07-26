@@ -1,11 +1,10 @@
 
-import { useWebcam } from '../contexts/WebcamProvider';
-import React, { useState, useCallback } from 'react';
+import { useWebcam } from '../../contexts/WebcamProvider';
+import React, { useCallback } from 'react';
 
 interface CapturePhotoProps {
   setImg: (img: HTMLImageElement | null) => void;
 }
-
 
 const CapturePhoto: React.FC<CapturePhotoProps> = ({ setImg }) => {
   const webcamContext = useWebcam();

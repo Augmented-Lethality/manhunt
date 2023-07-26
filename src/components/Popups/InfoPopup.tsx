@@ -7,8 +7,8 @@ const Wrapper = styled.div`
 font-size: 18px;
 text-align: center;
 position: fixed;
-left: 1%;
-top: 20%;
+left: 4%;
+top: 22%;
 `;
 
 const PopupContent = styled.span`

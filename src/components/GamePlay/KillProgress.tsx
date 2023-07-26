@@ -1,54 +1,38 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const StyledSvg = styled.svg`
-  position: absolute;
-  transform: rotate(-90deg) scale(5);
-  bottom: 12vh;
-  left: 47vw;
+//Contains the ProgressBar
+const ProgressContainer = styled.div`
+  position: relative;
+  width: 35vh;
+  border-radius: 0 0 10px 10px;
+  height: 33px;
+  top: 160px;
+  margin-inline: auto;
+  background-color: #1a1a1a;
 `;
 
-const ProgressCircle = styled.circle<{ progress: number, circumference: number }>`
-  stroke: #f06;
-  fill: transparent;
-  stroke-width: 3;
-  stroke-dasharray: ${(props) => props.circumference};
-  stroke-dashoffset: ${(props) => props.circumference};
-  transition: stroke-dashoffset 0.5s ease-out;
-  stroke-dashoffset: ${(props) => props.circumference - props.progress / 10 * props.circumference};
+//Displays how much progress has been made as a percentage of the progress container
+const ProgressBar = styled.div<{ progress: number, goal: number }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: ${(props) => props.progress / props.goal * 100}%;
+  height: 100%;
+  background-color: #f06;
+  transition: width 0.5s ease-out;
 `;
 
 interface TargetRecognitionProps {
-  progress: number; // Progress from 0 to 10
+  progress: number;
+  targetCounterGoal: number;
 }
 
-const TargetRecognition: React.FC<TargetRecognitionProps> = ({ progress }) => {
-  const radius = 20;
-  const stroke = 3;
-  const normalizedRadius = radius - stroke * 2;
-  const circumference = normalizedRadius * 2 * Math.PI;
-
+const TargetRecognition: React.FC<TargetRecognitionProps> = ({ progress, targetCounterGoal }) => {
   return (
-    <StyledSvg
-      height={radius * 2}
-      width={radius * 2}
-    >
-      <circle
-        stroke="#6cf"
-        fill="transparent"
-        strokeWidth={stroke}
-        r={normalizedRadius}
-        cx={radius}
-        cy={radius}
-      />
-      <ProgressCircle
-        progress={progress}
-        circumference={circumference}
-        r={normalizedRadius}
-        cx={radius}
-        cy={radius}
-      />
-    </StyledSvg>
+    <ProgressContainer>
+      <ProgressBar progress={progress} goal={targetCounterGoal}/>
+    </ProgressContainer>
   );
 };
 

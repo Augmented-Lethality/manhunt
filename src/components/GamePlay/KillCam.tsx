@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   FaceMatcher,
   createCanvasFromMedia,
@@ -17,19 +16,14 @@ import TargetRecognition from './KillProgress';
 import { useAuth0 } from "@auth0/auth0-react";
 import SocketContext from '../../contexts/Socket/SocketContext';
 
-interface KillCamProps {
-  setImg?: (img: ImageData | null) => void;
-}
-
-const KillCam: React.FC<KillCamProps> = (setImg) => {
+const KillCam: React.FC = () => {
   const webcamContext = useWebcam();
   const webcamRef = webcamContext?.webcamRef;
   const videoStarted = webcamContext?.videoStarted;
-  const videoHeight = window.innerHeight - 196;
-  const videoWidth = window.innerWidth;
-  const displaySize = { width: videoWidth, height: videoHeight };
+  const displaySize = { width: window.innerWidth, height: window.innerHeight };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  let [targetCounter, setTargetCounter] = useState(0);
+  const [targetCounter, setTargetCounter] = useState(0);
+  const targetCounterGoal = 10;
   let wasBountyDetected = false;
   const { user } = useAuth0();
 
@@ -91,7 +85,7 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
   // whenever targetCounter is updated, if it's at 10, navigate the users
   // NEED TO CHANGE BACK FOR PRODUCTION
   useEffect(() => {
-    if (targetCounter === 10) {
+    if (targetCounter === targetCounterGoal) {
       AddGameStats(user);
       UpdateGameStatus(user, 'complete')
     }
@@ -125,7 +119,7 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
             .withFaceLandmarks()
             .withFaceDescriptors();
           const resizedDetections = resizeResults(detections, displaySize);
-          context.clearRect(0, 0, videoWidth, videoHeight);
+          context.clearRect(0, 0, window.innerWidth, window.innerHeight);
           draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
           const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
           results.forEach((result, i) => {
@@ -142,7 +136,6 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
                 drawBox.draw(canvasRef.current)
               }
             }
-
           });
           requestAnimationFrame(processVideoFrame);
         }
@@ -156,7 +149,7 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
   return (
     <>
       <canvas ref={canvasRef} style={{ position: 'absolute', width: '100%', height: '100%' }} />
-      <TargetRecognition progress={targetCounter} />
+      <TargetRecognition progress={targetCounter} targetCounterGoal={targetCounterGoal}/>
     </>
   );
 }

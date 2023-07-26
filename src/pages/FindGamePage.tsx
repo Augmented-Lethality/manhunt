@@ -40,7 +40,7 @@ const HomeSign = styled.div<{ onClick: () => void }>`
   font-family: lobster;
   text-shadow: -2px -2px 0 #000, 2px -1px 0 #000, -2px 2px 0 #000, 1px 1px 0 #000;
   background-size: cover;
-  background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/find-game-button.png);
+  background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/find-a-game.png);
   font-size: 3rem;
   text-align: center;
   box-sizing: border-box;
