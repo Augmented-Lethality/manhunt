@@ -25,7 +25,7 @@ const KillCam: React.FC<KillCamProps> = (setImg) => {
   const webcamContext = useWebcam();
   const webcamRef = webcamContext?.webcamRef;
   const videoStarted = webcamContext?.videoStarted;
-  const videoHeight = window.innerHeight - 196;
+  const videoHeight = window.innerHeight;
   const videoWidth = window.innerWidth;
   const displaySize = { width: videoWidth, height: videoHeight };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
