@@ -31,25 +31,29 @@ export const GameListItem: React.FC<{ game: Game, setJoining: (joining: boolean)
 
   const { user } = useAuth0();
 
-
   const navigate = useNavigate();
 
   const handleJoinGame = async (host: string, user: any) => {
     JoinGame(host, user);
     setJoining(true);
-    // navigate('/lobby');
   };
 
   useEffect(() => {
-    // console.log('game host', game.host)
   }, [users])
+
   return (
     <GameContainer>
-      <div onClick={() => handleJoinGame(game.host, user)}>
-        <h4 style={{ fontSize: '1.5rem' }}>{game.hostName}</h4>
-        <h4 style={{ fontSize: '1.5rem' }}>{game.users.length} Hunter{game.users.length !== 1 ? 's' : ''} in Lobby</h4>
-      </div>
-
+      {game.status !== 'lobby' ? (
+        <div>
+          <h4 style={{ fontSize: '1.5rem' }}>{game.hostName}</h4>
+          <h4 style={{ fontSize: '1.5rem' }}>In Progress, Can't Join</h4>
+        </div>
+      ) : (
+        <div onClick={() => handleJoinGame(game.host, user)}>
+          <h4 style={{ fontSize: '1.5rem' }}>{game.hostName}</h4>
+          <h4 style={{ fontSize: '1.5rem' }}>{game.users.length} Hunter{game.users.length !== 1 ? 's' : ''} in Lobby</h4>
+        </div>
+      )}
     </GameContainer>
   );
 

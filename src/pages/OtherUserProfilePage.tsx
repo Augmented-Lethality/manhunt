@@ -1,4 +1,4 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
@@ -7,6 +7,7 @@ import { Main } from '../styles/Main';
 import { UserPlus } from 'react-feather';
 import Loading from '../components/Loaders/Loading';
 import FriendRequestPopup from '../components/Popups/FriendRequest';
+import IdCardOtherUser from '../components/ProfilePieces/IdCardOtherUser';
 
 import OtherSavedTrophies from '../components/Trophies/OtherSavedTrophies';
 
@@ -22,7 +23,13 @@ const OtherUserProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
   const { username } = useParams()
   const [loading, setLoading] = useState(true);
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [profileData, setProfileData] = useState<ProfileData>({
+    authId: '',
+    gamesPlayed: 0,
+    gamesWon: 0,
+    killsConfirmed: 0,
+    image: 'string'
+  });
 
   useEffect(() => {
     fetchUserData();
@@ -58,7 +65,7 @@ const OtherUserProfilePage: React.FC = () => {
     return null;
   }
 
-  if (!profileData && !loading) {
+  if (!profileData.authId.length && !loading) {
     return <h1>User Not Found</h1>
   }
 
@@ -68,34 +75,17 @@ const OtherUserProfilePage: React.FC = () => {
 
   return (
     <>
-      <Header page='Profile' />
+      <Header page='Hunter' />
       <Main>
-        {username &&
+        {username && profileData.authId.length &&
           <>
-            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px' }}>
-              {profileData?.image ? (
-                <img
-                  src={profileData?.image}
-                  className='profile__avatar'
-                  style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
-                />
-              ) : (
-                <h1 className='alt-user-pic-large'>
-                  {username?.slice(0, 1)}
-                </h1>
-              )}
+            <IdCardOtherUser profileData={profileData} username={username} />
+            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px', justifyContent: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
-                <h2 className='profile__title'>{username}</h2>
                 <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
               </div>
             </div>
-            <div className='profile__details' style={{ marginLeft: '20px' }}>
-              <br />
-              <br />
-              <h2>Games Played: {profileData?.gamesPlayed}</h2>
-              <h2>Games Won: {profileData?.gamesWon}</h2>
-              <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
-            </div>
+            <h2 style={{ marginTop: '12px', textAlign: 'center' }}>Trophy Showcase</h2>
             <OtherSavedTrophies id={0} name={''} description={''} createdAt={''} dimension={0} dimensionTwo={0} dimensionThree={0} color={''} shape={''} tubularSegments={0} tubeWidth={0} />
           </>
         }

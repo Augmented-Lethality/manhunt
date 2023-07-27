@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
@@ -12,6 +12,7 @@ import {
   Award,
   Menu
 } from 'react-feather';
+import SocketContext from '../contexts/Socket/SocketContext';
 
 const dropdownAnimation = keyframes`
   0% { opacity: 0; transform: translateY(-10vh); }
@@ -83,16 +84,24 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const { LeaveGame } = useContext(SocketContext);
+
+  const handleNav = (pageName: string) => {
+    LeaveGame(user);
+    navigate(`/${pageName}`);
+  }
+
+
   return (
     <div style={{ display: 'flex', justifyContent: 'end' }}>
-      <Menu onClick={toggleMenu} className='dropdownicon'/>
+      <Menu onClick={toggleMenu} className='dropdownicon' />
       <Backdrop open={isMenuOpen} onClick={toggleMenu} />
       <MenuContainer className='glassmorphism' open={isMenuOpen}>
         <Close onClick={toggleMenu} />
         {pages.map((pageName, index) => {
           if (page.toLowerCase() !== pageName) {
             const PageComponent = icons[pageName]
-            return <p key={index} onClick={() => { navigate(`/${pageName}`) }}>
+            return <p key={index} onClick={() => handleNav(pageName)}>
               {PageComponent}
               {pageName}
             </p>
