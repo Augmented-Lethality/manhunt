@@ -79,12 +79,14 @@ const OtherUserProfilePage: React.FC = () => {
           <>
             <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
             <IdCard player={profileData}/>
-            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px', justifyContent: 'center' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
-                <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
-              </div>
-            </div>
-            <h2 style={{ marginTop: '12px', textAlign: 'center' }}>Trophy Showcase</h2>
+            <h1 className='glassmorphism' style={{
+              marginTop: '12px',
+              textAlign: 'center',
+              marginInline: 'auto',
+              width: 'min-content',
+              padding: '20px' }}>
+                Trophy Showcase
+            </h1>
             <OtherSavedTrophies
               id={0}
               name={''}
