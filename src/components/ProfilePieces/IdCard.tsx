@@ -86,9 +86,11 @@ const Barcode = styled.h2`
   text-align: center;
 `;
 
+interface IdCardProps {
+  player: any;
+}
 
-const IdCard: React.FC = () => {
-  const { player } = useContext(SocketContext).SocketState;
+const IdCard: React.FC<IdCardProps> = ({player}) => {
 
   if (!player.username.length) {
     return null;
