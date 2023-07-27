@@ -74,7 +74,7 @@ const OtherUserProfilePage: React.FC = () => {
   return (
     <>
       <Header page='Hunter' />
-      <Main>
+      <Main style={{backgroundImage: 'url(https://d3d9qwhf4u1hj.cloudfront.net/images/background-small.jpg)', backgroundSize:"contain"}}>
         {username && profileData.authId.length &&
           <>
             <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
