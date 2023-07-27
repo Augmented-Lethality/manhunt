@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Popup from 'reactjs-popup';
-import { XCircle } from 'react-feather';
+import { XCircle, UserPlus } from 'react-feather';
 
 interface PopupProps {
   username: string;
@@ -29,7 +29,7 @@ const FriendRequestPopup: React.FC<PopupProps> = ({ username, sendFriendRequest 
       open={open}
       onOpen={openPopup}
       onClose={closePopup}
-      trigger={<button>Add friend</button>}
+      trigger={<UserPlus/>}
       modal
       closeOnDocumentClick
       contentStyle={{
