@@ -37,7 +37,6 @@ font-family: lobster;
 text-shadow: -2px -2px 0 #000, 2px -1px 0 #000, -2px 2px 0 #000, 1px 1px 0 #000;
 background-size: cover;
 background-position: center;
-box-shadow: -5px 7px 10px 3px #00000059;
 border: solid black;
 background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/find-a-game.png);
 background-color: #9c2e1e;
