@@ -1,13 +1,12 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { Header } from '../styles/Header';
 import { Main } from '../styles/Main';
-import { UserPlus } from 'react-feather';
 import Loading from '../components/Loaders/Loading';
 import FriendRequestPopup from '../components/Popups/FriendRequest';
-
+import IdCard from '../components/ProfilePieces/IdCard';
 import OtherSavedTrophies from '../components/Trophies/OtherSavedTrophies';
 
 type ProfileData = {
@@ -68,35 +67,25 @@ const OtherUserProfilePage: React.FC = () => {
 
   return (
     <>
-      <Header page='Profile' />
+      <Header page='Opponent'/>
       <Main>
         {username &&
           <>
-            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px' }}>
-              {profileData?.image ? (
-                <img
-                  src={profileData?.image}
-                  className='profile__avatar'
-                  style={{ height: '14vh', width: '14vh', borderRadius: '50%' }}
-                />
-              ) : (
-                <h1 className='alt-user-pic-large'>
-                  {username?.slice(0, 1)}
-                </h1>
-              )}
-              <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
-                <h2 className='profile__title'>{username}</h2>
-                <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
-              </div>
-            </div>
-            <div className='profile__details' style={{ marginLeft: '20px' }}>
-              <br />
-              <br />
-              <h2>Games Played: {profileData?.gamesPlayed}</h2>
-              <h2>Games Won: {profileData?.gamesWon}</h2>
-              <h2>Kills Confirmed: {profileData?.killsConfirmed}</h2>
-            </div>
-            <OtherSavedTrophies id={0} name={''} description={''} createdAt={''} dimension={0} dimensionTwo={0} dimensionThree={0} color={''} shape={''} tubularSegments={0} tubeWidth={0} />
+            <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
+            <IdCard player={profileData}/>
+            <OtherSavedTrophies
+              id={0}
+              name={''}
+              description={''}
+              createdAt={''}
+              dimension={0}
+              dimensionTwo={0}
+              dimensionThree={0}
+              color={''}
+              shape={''}
+              tubularSegments={0}
+              tubeWidth={0}
+            />
           </>
         }
       </Main>
