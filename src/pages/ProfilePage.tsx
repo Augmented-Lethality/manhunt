@@ -191,7 +191,7 @@ const ProfilePage: React.FC = () => {
             </TrophyContainer>
           )
         )}
-        {player.facialDescriptions ? <IdCard /> : <IdPaper />}
+        {player.facialDescriptions ? <IdCard player={player} /> : <IdPaper />}
         <VerificationContainer className='glassmorphism'>
           <VerTitleContainer>
             {player.facialDescriptions ? (
