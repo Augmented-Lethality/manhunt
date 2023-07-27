@@ -10,44 +10,42 @@ import PhoneLoader from '../components/Loaders/PhoneLoader';
 import { useNavigate } from 'react-router-dom';
 
 const NoContracts = styled.div`
-  height: 216px;
-  width: 369px;
+  height: 134px;
+  width: 291px;
   margin-top: 47px;
   margin-inline: auto;
-  border-radius: 37px;
-  color: #eee9d5d9;
-  padding: 56px;
+  border-radius: 33px;
+  color: white;
   font-family: lobster;
   text-shadow: -2px -2px 0 #000, 2px -1px 0 #000, -2px 2px 0 #000, 1px 1px 0 #000;
   background-size: cover;
-  background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/find-a-contract.png);
+  background-position: center;
+  border: solid black;
+  background-image: url(https://manhuntar.s3.amazonaws.com/images/find-a-contract.png);
+  background-color: #eba134;
   font-size: 2.7rem;
-  text-align: center;
-  box-sizing: border-box;
-  display: flex;
   justify-content: center;
+  display: flex;
   align-items: center;
   transform: rotate(5deg);
 `
 const HomeSign = styled.div<{ onClick: () => void }>`
   height: 208px;
-  width: 284px;
+  width: 285px;
   margin-top: 47px;
   margin-inline: auto;
-  border-radius: 37px;
-  color: #eee9d5d9;
-  padding: 45px;
+  border-radius: 57px;
+  color: white;
   font-family: lobster;
   text-shadow: -2px -2px 0 #000, 2px -1px 0 #000, -2px 2px 0 #000, 1px 1px 0 #000;
   background-size: cover;
-  background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/find-a-game.png);
-  font-size: 3rem;
-  text-align: center;
-  box-sizing: border-box;
   background-position: center;
-
-  display: flex;
+  border: solid black;
+  background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/find-a-game.png);
+  background-color: #9c2e1e;
+  font-size: 3rem;
   justify-content: center;
+  display: flex;
   align-items: center;
 `
 
