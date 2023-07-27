@@ -27,7 +27,7 @@ const CapturePhoto: React.FC<CapturePhotoProps> = ({ setImg }) => {
       style={{
         position: 'absolute',
         left: '50%',
-        top: '85%',
+        top: '80vh',
         transform: 'translate(-50%, -50%)',
         background: 'rgba(255, 255, 255, 0.4)',
         borderRadius: '50%',

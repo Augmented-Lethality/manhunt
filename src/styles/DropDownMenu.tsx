@@ -53,8 +53,8 @@ const MenuContainer = styled.div<{ open: boolean }>`
 `;
 
 const Close = styled(XCircle)`
-height: 3rem;
-width: 3rem;
+height: 2.7rem;
+width: 2.7rem;
 padding: 0;
 z-index: 3;
 position: absolute;
@@ -93,8 +93,8 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
 
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'end' }}>
-      <Menu onClick={toggleMenu} className='dropdownicon' />
+    <>
+      <Menu onClick={toggleMenu} className='dropdownicon'/>
       <Backdrop open={isMenuOpen} onClick={toggleMenu} />
       <MenuContainer className='glassmorphism' open={isMenuOpen}>
         <Close onClick={toggleMenu} />
@@ -112,7 +112,7 @@ const DropDownMenu: FC<DropDownMenuProps> = ({ page }) => {
           logout
         </p>
       </MenuContainer>
-    </div>
+    </>
   );
 };
 

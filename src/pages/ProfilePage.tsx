@@ -61,6 +61,17 @@ align-items: center;
 margin: 10px;
 `;
 
+const PageTitleAndCloseButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 72%;
+  width: 90%;
+  margin-right: 5vw;
+  margin-top: 15px;
+  align-items: end;  
+`;
+
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuth0();
@@ -123,15 +134,15 @@ const ProfilePage: React.FC = () => {
     return (
       <>
         <StyledHeader style={{ display: 'flex', alignItems: 'start', justifyContent: 'end' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}>
+          <PageTitleAndCloseButtonContainer>
             <XCircle
               className='react-icon'
               onClick={() => {
                 setPhotoStatus('profile');
               }}
             />
-            <h1 style={{ fontSize: '2.3rem' }}>Bio Data</h1>
-          </div>
+            <h1>Bio Data</h1>
+          </PageTitleAndCloseButtonContainer>
         </StyledHeader>
         <Main style={{height: '100vh'}}>
           <CreateFaceDescriptions
@@ -180,7 +191,7 @@ const ProfilePage: React.FC = () => {
             </TrophyContainer>
           )
         )}
-        {player.facialDescriptions ? <IdCard /> : <IdPaper />}
+        {player.facialDescriptions ? <IdCard player={player} /> : <IdPaper />}
         <VerificationContainer className='glassmorphism'>
           <VerTitleContainer>
             {player.facialDescriptions ? (
