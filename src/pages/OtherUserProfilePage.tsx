@@ -36,7 +36,7 @@ const OtherUserProfilePage: React.FC = () => {
   const fetchUserData = async () => {
     try {
       const res = await axios.get<ProfileData>(`/users/name/${username}`);
-      console.log(res.data)
+      // console.log(res.data)
       setProfileData(res.data)
       setLoading(false);
     } catch (err) {
@@ -78,14 +78,15 @@ const OtherUserProfilePage: React.FC = () => {
         {username && profileData.authId.length &&
           <>
             <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
-            <IdCard player={profileData}/>
+            <IdCard player={profileData} />
             <h1 className='glassmorphism' style={{
               marginTop: '12px',
               textAlign: 'center',
               marginInline: 'auto',
               width: 'min-content',
-              padding: '20px' }}>
-                Trophy Showcase
+              padding: '20px'
+            }}>
+              Trophy Showcase
             </h1>
             <OtherSavedTrophies
               id={0}
