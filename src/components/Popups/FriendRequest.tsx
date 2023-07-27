@@ -1,6 +1,26 @@
 import React, { useState } from 'react';
 import Popup from 'reactjs-popup';
 import { XCircle, UserPlus } from 'react-feather';
+import styled from 'styled-components';
+
+const Wrapper = styled.div`
+  position: fixed;
+  right: 4%;
+  top: 150px;
+  background: #ffffff59;
+  border: black solid;
+  border-radius: 50%;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 75px;
+  z-index: 2;
+  backdrop-filter: blur(1px);
+  box-shadow: 0 -1px 0 2px #afd5d66b,
+  0 1px 0 2px #00000063,
+  5px 10px 2px #00000030;
+`;
 
 interface PopupProps {
   username: string;
@@ -29,7 +49,11 @@ const FriendRequestPopup: React.FC<PopupProps> = ({ username, sendFriendRequest 
       open={open}
       onOpen={openPopup}
       onClose={closePopup}
-      trigger={<UserPlus/>}
+      trigger={
+        <Wrapper>
+          <UserPlus/>
+        </Wrapper>
+      }
       modal
       closeOnDocumentClick
       contentStyle={{
