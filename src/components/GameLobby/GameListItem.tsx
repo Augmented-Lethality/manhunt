@@ -18,7 +18,7 @@ export const GameContainer = styled.div`
   background-size: cover;
   background-position: center;
   border: solid black;
-  background-image: url(https://manhuntar.s3.amazonaws.com/images/find-a-contract.png);
+  background-image: url(https://d3d9qwhf4u1hj.cloudfront.net/images/find-contract.png);
   background-color: #eba134;
   font-size: 1.5rem;
   display: flex;
