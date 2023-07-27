@@ -23,7 +23,7 @@ const KillCam: React.FC = () => {
   const displaySize = { width: window.innerWidth, height: window.innerHeight };
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [targetCounter, setTargetCounter] = useState(0);
-  const targetCounterGoal = 6;
+  const targetCounterGoal = 5;
   let wasBountyDetected = false;
   const { user } = useAuth0();
 
