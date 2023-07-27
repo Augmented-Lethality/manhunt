@@ -1,4 +1,4 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -21,7 +21,13 @@ const OtherUserProfilePage: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
   const { username } = useParams()
   const [loading, setLoading] = useState(true);
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [profileData, setProfileData] = useState<ProfileData>({
+    authId: '',
+    gamesPlayed: 0,
+    gamesWon: 0,
+    killsConfirmed: 0,
+    image: 'string'
+  });
 
   useEffect(() => {
     fetchUserData();
@@ -57,7 +63,7 @@ const OtherUserProfilePage: React.FC = () => {
     return null;
   }
 
-  if (!profileData && !loading) {
+  if (!profileData.authId.length && !loading) {
     return <h1>User Not Found</h1>
   }
 
@@ -67,12 +73,18 @@ const OtherUserProfilePage: React.FC = () => {
 
   return (
     <>
-      <Header page='Opponent'/>
+      <Header page='Hunter' />
       <Main>
-        {username &&
+        {username && profileData.authId.length &&
           <>
             <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
             <IdCard player={profileData}/>
+            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginTop: '10px', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', margin: '2vh', alignItems: 'start' }}>
+                <FriendRequestPopup username={username} sendFriendRequest={sendFriendRequest} />
+              </div>
+            </div>
+            <h2 style={{ marginTop: '12px', textAlign: 'center' }}>Trophy Showcase</h2>
             <OtherSavedTrophies
               id={0}
               name={''}

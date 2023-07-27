@@ -61,6 +61,11 @@ const FindGamePage: React.FC = () => {
   useEffect(() => {
   }, [users, games]);
 
+  const handleHome = () => {
+    LeaveGame(user);
+    navigate('/home');
+  }
+
   return (
     <>
       <Header page={'Contracts'} users={users} />
@@ -82,7 +87,7 @@ const FindGamePage: React.FC = () => {
                 <NoContracts>
                   No Contracts!
                 </NoContracts>
-                <HomeSign onClick={() => navigate('/home')}>
+                <HomeSign onClick={handleHome}>
                   Back Home
                 </HomeSign>
               </>

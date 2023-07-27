@@ -1,6 +1,9 @@
-import React, { ReactNode } from 'react';import styled from 'styled-components';
+import React, { ReactNode, useContext } from 'react';
+import styled from 'styled-components';
 import DropDownMenu from './DropDownMenu';
 import { useNavigate } from 'react-router-dom';
+import SocketContext from '../contexts/Socket/SocketContext';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export const StyledHeader = styled.header`
   display: flex;
@@ -25,7 +28,7 @@ const LogoContainer = styled.div `
   left: -5vw;
 `;
 
-const TitleAndMenuContainer = styled.div `
+const TitleAndMenuContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -44,8 +47,11 @@ interface HeaderProps {
 // PLEASE KEEP THIS SOCKET FUNCTION WHEN USING A GOING HOME BUTTON
 export const Header: React.FC<HeaderProps> = ({ page, users }) => {
   const navigate = useNavigate();
+  const { user } = useAuth0();
+  const { LeaveGame } = useContext(SocketContext);
 
   const handleHome = () => {
+    LeaveGame(user);
     navigate('/home');
   }
 
